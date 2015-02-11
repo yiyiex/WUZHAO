@@ -10,4 +10,9 @@
 
 @interface UserListTableViewCell : UITableViewCell
 
+@property (nonatomic ,strong) IBOutlet UIImageView *avatorImageView;
+@property (nonatomic ,strong) IBOutlet UILabel *userNameLabel;
+@property (nonatomic ,strong) IBOutlet UILabel *selfDescriptionLabel;
+
+
 @end

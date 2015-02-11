@@ -12,7 +12,7 @@
 #import "SVProgressHUD.h"
 
 #import "SCNavigationController.h"
-
+#import "WZFilterUIViewController.h"
 #import "AddImageInfoViewController.h"
 
 
@@ -29,10 +29,10 @@
 #define CAMERA_MENU_VIEW_HEIGH  44  //menu
 
 //color
-#define bottomContainerView_UP_COLOR     [UIColor colorWithRed:51/255.0f green:51/255.0f blue:51/255.0f alpha:1.f]       //bottomContainerView的上半部分
-#define bottomContainerView_DOWN_COLOR   [UIColor colorWithRed:68/255.0f green:68/255.0f blue:68/255.0f alpha:1.f]       //bottomContainerView的下半部分
-#define DARK_GREEN_COLOR        [UIColor colorWithRed:10/255.0f green:107/255.0f blue:42/255.0f alpha:1.f]    //深绿色
-#define LIGHT_GREEN_COLOR       [UIColor colorWithRed:143/255.0f green:191/255.0f blue:62/255.0f alpha:1.f]    //浅绿色
+#define bottomContainerView_UP_COLOR     [UIColor colorWithRed:233/255.0f green:233/255.0f blue:233/255.0f alpha:1.f]       //bottomContainerView的上半部分
+#define bottomContainerView_DOWN_COLOR   [UIColor colorWithRed:15/255.0f green:15/255.0f blue:15/255.0f alpha:1.f]       //bottomContainerView的下半部分
+#define DARK_GREEN_COLOR        [UIColor colorWithRed:15/255.0f green:15/255.0f blue:15/255.0f alpha:1.f]    //深绿色
+#define LIGHT_GREEN_COLOR       [UIColor colorWithRed:233/255.0f green:233/255.0f blue:233/255.0f alpha:.8f]    //浅绿色
 
 
 //对焦
@@ -45,7 +45,8 @@
 //    bottomContainerViewTypeAudio     =   1   //录音页面
 //} BottomContainerViewType;
 
-@interface SCCaptureCameraController () {
+@interface SCCaptureCameraController ()  <WZFilterUIViewControllerDelegate>
+{
     int alphaTimes;
     CGPoint currTouchPoint;
 }
@@ -93,13 +94,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
 	// Do any additional setup after loading the view.
-    
+    //[[NSNotificationCenter defaultCenter] postNotificationName:@"showBar" object:nil];
     //navigation bar
-    if (self.navigationController && !self.navigationController.navigationBarHidden) {
+   /* if (self.navigationController && !self.navigationController.navigationBarHidden) {
         self.navigationController.navigationBarHidden = YES;
-    }
-    
+    }*/
+    self.tabBarController.navigationController.navigationBarHidden = YES;
     //status bar
     if (!self.navigationController) {
         _isStatusBarHiddenBeforeShowCamera = [UIApplication sharedApplication].statusBarHidden;
@@ -112,7 +114,7 @@
     //notification
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationOrientationChange object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChange:) name:kNotificationOrientationChange object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endPostImage) name:@"finishPostImage" object:nil];
     //session manager
     SCCaptureSessionManager *manager = [[SCCaptureSessionManager alloc] init];
     
@@ -123,20 +125,17 @@
     [manager configureWithParentLayer:self.view previewRect:_previewRect];
     self.captureManager = manager;
     
-   // [self addTopViewWithText:@"拍照"];
-    //[self addbottomContainerView];
-   // [self addCameraMenuView];
     [self addShotButtons];
     [self addMenuViewButtons];
     [self addFocusView];
     [self addCameraCover];
-   // [self addPinchGesture];
+    [self addPinchGesture];
     
     [_captureManager.session startRunning];
     
 #if SWITCH_SHOW_DEFAULT_IMAGE_FOR_NONE_CAMERA
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        [SVProgressHUD showErrorWithStatus:@"设备不支持拍照功能，给个妹纸给你喵喵T_T"];
+        [SVProgressHUD showErrorWithStatus:@"设备不支持拍照功能"];
         
         UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, CAMERA_TOPVIEW_HEIGHT, self.view.frame.size.width, self.view.frame.size.width)];
         imgView.clipsToBounds = YES;
@@ -147,8 +146,11 @@
 #endif
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+
+-(void)viewWillAppear:(BOOL)animated
+{
     [super viewWillAppear:animated];
+     self.tabBarController.navigationController.navigationBarHidden = YES;
 }
 
 
@@ -184,7 +186,7 @@
 {
     if ([[segue identifier] isEqualToString:@"addImageInfo"])
     {
-        WZLog(@"began to the info page");
+        NSLog(@"began to the info page");
         AddImageInfoViewController *imageInfoCon = segue.destinationViewController;
         imageInfoCon.postImage = self.stillImage;
         
@@ -208,6 +210,7 @@
 }
 
 //拍照菜单栏上的按钮
+//设置各状态显示以及响应方法 actionArr
 - (void)addMenuViewButtons {
     NSMutableArray *normalArr = [[NSMutableArray alloc] initWithObjects:@"close_cha.png", @"camera_line.png", @"switch_camera.png", @"flashing_off.png", nil];
     NSMutableArray *highlightArr = [[NSMutableArray alloc] initWithObjects:@"close_cha_h.png", @"", @"", @"", nil];
@@ -217,6 +220,7 @@
     
     CGFloat eachW = WZ_APP_SIZE.width / actionArr.count;
     
+    //叉与其他按钮的分割线
     [PhotoCommon drawALineWithFrame:CGRectMake(eachW, 0, 1, CAMERA_MENU_VIEW_HEIGH) andColor:rgba_WZ(102, 102, 102, 1.0000) inLayer:_cameraMenuView.layer];
     
     
@@ -283,7 +287,7 @@
     [self.view addSubview:upView];
     self.doneCameraUpView = upView;
     
-    UIView *downView = [[UIView alloc] initWithFrame:CGRectMake(0, _bottomContainerView.frame.origin.y, WZ_APP_SIZE.width, 0)];
+    UIView *downView = [[UIView alloc] initWithFrame:CGRectMake(0, _bottomContainerView.frame.origin.y - 44, WZ_APP_SIZE.width, 0)];
     downView.backgroundColor = [UIColor blackColor];
     [self.view addSubview:downView];
     self.doneCameraDownView = downView;
@@ -297,7 +301,7 @@
         _doneCameraUpView.frame = upFrame;
         
         CGRect downFrame = _doneCameraDownView.frame;
-        downFrame.origin.y = (toShow ? WZ_APP_SIZE.width / 2 + CAMERA_TOPVIEW_HEIGHT : _bottomContainerView.frame.origin.y);
+        downFrame.origin.y = (toShow ? WZ_APP_SIZE.width / 2 + CAMERA_TOPVIEW_HEIGHT : _bottomContainerView.frame.origin.y -44);
         downFrame.size.height = (toShow ? WZ_APP_SIZE.width / 2 : 0);
         _doneCameraDownView.frame = downFrame;
     }];
@@ -446,6 +450,7 @@ void c_slideAlpha() {
     [actiView startAnimating];
     [self.view addSubview:actiView];
     
+    
     WEAKSELF_WZ
     [_captureManager takePicture:^(UIImage *stillImage) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -461,10 +466,13 @@ void c_slideAlpha() {
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             sender.userInteractionEnabled = YES;
             [weakSelf_WZ showCameraCover:NO];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"hideBar" object:nil];
         });
         
-        CLImageEditor *editor = [[CLImageEditor alloc] initWithImage:stillImage delegate:self];
-        [self presentViewController:editor animated:YES completion:nil];
+        WZFilterUIViewController *editor = [[WZFilterUIViewController alloc]initWithImage:stillImage delegate:self];
+        [self.navigationController showViewController:editor sender:self];
+       // [self presentViewController:editor animated:YES completion:nil];
+        
 
     }];
 }
@@ -475,32 +483,39 @@ void c_slideAlpha() {
 
 //拍照页面，"X"按钮
 - (void)dismissBtnPressed:(id)sender {
-    if (self.navigationController) {
-        if (self.navigationController.viewControllers.count == 1) {
-            [self.navigationController dismissModalViewControllerAnimated:YES];
+    NSLog(@"dismissButton Pressed");
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"finishPostImage" object:nil];
+    
+    /*if (self.navigationController) {
+        if (self.navigationController.viewControllers.count ==1) {
+            
+            [self.navigationController dismissViewControllerAnimated:YES completion:nil];
         } else {
             [self.navigationController popViewControllerAnimated:YES];
         }
     } else {
-        [self dismissModalViewControllerAnimated:YES];
-    }
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }*/
 }
 
 
 //拍照页面，网格按钮
 - (void)gridBtnPressed:(UIButton*)sender {
+    NSLog(@"gird btn pressed");
     sender.selected = !sender.selected;
     [_captureManager switchGrid:sender.selected];
 }
 
 //拍照页面，切换前后摄像头按钮按钮
 - (void)switchCameraBtnPressed:(UIButton*)sender {
+    NSLog(@"switch btn pressed");
     sender.selected = !sender.selected;
     [_captureManager switchCamera:sender.selected];
 }
 
 //拍照页面，闪光灯按钮
 - (void)flashBtnPressed:(UIButton*)sender {
+    NSLog(@"flash btn pressed");
     [_captureManager switchFlashMode:sender];
 }
 
@@ -599,24 +614,29 @@ void c_slideAlpha() {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-
-#pragma mark ------------CLImageEditorDelegate------------------
--(void)imageEditor:(CLImageEditor *)editor didFinishEdittingWithImage:(UIImage *)image
+#pragma mark ------------WZFilterUIViewControllerDelegate
+-(void)FilterController:(WZFilterUIViewController *)controller didEndFilterThePhoto:(UIImage *)newPhoto
 {
-    [PhotoCommon saveImageToPhotoAlbum:image];
-    [editor dismissViewControllerAnimated:YES completion:^{
-        self.stillImage = image;
-        [self performSegueWithIdentifier:@"addImageInfo" sender:self];
+    /*
+    WEAKSELF_WZ
+    [controller dismissViewControllerAnimated:YES completion:^{
+        __strong typeof(weakSelf_WZ) strongSelf = weakSelf_WZ;
+        strongSelf.stillImage = newPhoto;
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
+        
+        AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
+        [addImageInfoCon setPostImage:newPhoto];
+        [strongSelf.navigationController pushViewController:addImageInfoCon animated:YES];
     }];
-    
-    //完成图片编辑和保存，跳转到图片发表页面
-    //.........
-    //.........
+     */
 }
 
--(void)imageEditorDidCancel:(CLImageEditor *)editor
+#pragma mark -----NSNotificationCenter selector
+-(void)endPostImage
 {
-    
+   // [self.navigationController popToViewController:self animated:YES];
+    [self.navigationController popViewControllerAnimated:NO];
+    [self.navigationController popViewControllerAnimated:NO];
 }
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_6_0

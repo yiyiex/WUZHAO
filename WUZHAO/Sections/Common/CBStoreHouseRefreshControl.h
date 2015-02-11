@@ -1,4 +1,4 @@
-//
+//  一个用于下拉刷新加载新的内容的控件；配合BarItem.h,可自绘制图形
 //  CBStoreHouseRefreshControl.h
 //  CBStoreHouseRefreshControl
 //

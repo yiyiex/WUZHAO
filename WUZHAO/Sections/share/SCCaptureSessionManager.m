@@ -115,16 +115,16 @@
     
     for (AVCaptureDevice *device in devices) {
         
-        WZLog(@"Device name: %@", [device localizedName]);
+        NSLog(@"Device name: %@", [device localizedName]);
         
         if ([device hasMediaType:AVMediaTypeVideo]) {
             
             if ([device position] == AVCaptureDevicePositionBack) {
-                WZLog(@"Device position : back");
+                NSLog(@"Device position : back");
                 backCamera = device;
                 
             }  else {
-                WZLog(@"Device position : front");
+                NSLog(@"Device position : front");
                 frontCamera = device;
             }
         }
@@ -140,7 +140,7 @@
                 self.inputDevice = frontFacingCameraDeviceInput;
                 
             } else {
-                WZLog(@"Couldn't add front facing video input");
+                NSLog(@"Couldn't add front facing video input");
             }
         }
     } else {
@@ -150,7 +150,7 @@
                 [_session addInput:backFacingCameraDeviceInput];
                 self.inputDevice = backFacingCameraDeviceInput;
             } else {
-                WZLog(@"Couldn't add back facing video input");
+                NSLog(@"Couldn't add back facing video input");
             }
         }
     }
@@ -199,32 +199,33 @@
 //    [videoConnection setVideoOrientation:avcaptureOrientation];
     [videoConnection setVideoScaleAndCropFactor:_scaleNum];
     
-	WZLog(@"about to request a capture from: %@", _stillImageOutput);
+	NSLog(@"about to request a capture from: %@", _stillImageOutput);
     
+    //从输出获取图片，并对其重新裁剪保存
     [_stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         
         CFDictionaryRef exifAttachments = CMGetAttachment(imageDataSampleBuffer, kCGImagePropertyExifDictionary, NULL);
         if (exifAttachments) {
-            WZLog(@"attachements: %@", exifAttachments);
+            NSLog(@"attachements: %@", exifAttachments);
         } else {
-            WZLog(@"no attachments");
+            NSLog(@"no attachments");
         }
         NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
         UIImage *image = [[UIImage alloc] initWithData:imageData];
-        WZLog(@"originImage:%@", [NSValue valueWithCGSize:image.size]);
-//        [SCCommon saveImageToPhotoAlbum:image];
+        NSLog(@"originImage:%@", [NSValue valueWithCGSize:image.size]);
+
         
         CGFloat squareLength = WZ_APP_SIZE.width;
         CGFloat headHeight = _previewLayer.bounds.size.height - squareLength;//_previewLayer的frame是(0, 44, 320, 320 + 44)
         CGSize size = CGSizeMake(squareLength * 2, squareLength * 2);
         
         UIImage *scaledImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:size interpolationQuality:kCGInterpolationHigh];
-        WZLog(@"scaledImage:%@", [NSValue valueWithCGSize:scaledImage.size]);
+        NSLog(@"scaledImage:%@", [NSValue valueWithCGSize:scaledImage.size]);
         
         CGRect cropFrame = CGRectMake((scaledImage.size.width - size.width) / 2, (scaledImage.size.height - size.height) / 2 + headHeight, size.width, size.height);
-        WZLog(@"cropFrame:%@", [NSValue valueWithCGRect:cropFrame]);
+        NSLog(@"cropFrame:%@", [NSValue valueWithCGRect:cropFrame]);
         UIImage *croppedImage = [scaledImage croppedImage:cropFrame];
-        WZLog(@"croppedImage:%@", [NSValue valueWithCGSize:croppedImage.size]);
+        NSLog(@"croppedImage:%@", [NSValue valueWithCGSize:croppedImage.size]);
         
         
         UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
@@ -327,7 +328,7 @@
         [gesture state] == UIGestureRecognizerStateCancelled ||
         [gesture state] == UIGestureRecognizerStateFailed) {
         _preScaleNum = _scaleNum;
-        WZLog(@"final scale: %f", _scaleNum);
+        NSLog(@"final scale: %f", _scaleNum);
     }
 }
 
@@ -432,7 +433,7 @@
 		}
 		else
 		{
-			WZLog(@"%@", error);
+			NSLog(@"%@", error);
 		}
 	});
 }
@@ -544,57 +545,6 @@
         [PhotoCommon drawALineWithFrame:frame andColor:[UIColor whiteColor] inLayer:_preview.layer];
     }
 }
-
-////画一条线
-//+ (void)drawALineWithFrame:(CGRect)frame andColor:(UIColor*)color inLayer:(CALayer*)parentLayer {
-//    CALayer *layer = [CALayer layer];
-//    layer.frame = frame;
-//    layer.backgroundColor = color.CGColor;
-//    [parentLayer addSublayer:layer];
-//}
-
-//
-//AVAsset* asset = // your input
-//
-//AVMutableComposition *videoComposition = [AVMutableComposition composition];
-//
-//AVMutableCompositionTrack *compositionVideoTrack = [videoComposition  addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-//
-//AVAssetTrack *clipVideoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-//
-//AVMutableVideoComposition* videoComposition = [[AVMutableVideoComposition videoComposition]retain];
-//videoComposition.renderSize = CGSizeMake(320, 320);
-//videoComposition.frameDuration = CMTimeMake(1, 30);
-//
-//AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-//instruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(60, 30) );
-//
-//AVMutableVideoCompositionLayerInstruction* transformer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:clipVideoTrack];
-//CGAffineTransform finalTransform = // setup a transform that grows the video, effectively causing a crop
-//[transformer setTransform:finalTransform atTime:kCMTimeZero];
-//instruction.layerInstructions = [NSArray arrayWithObject:transformer];
-//videoComposition.instructions = [NSArray arrayWithObject: instruction];
-//
-//exporter = [[AVAssetExportSession alloc] initWithAsset:saveComposition presetName:AVAssetExportPresetHighestQuality] ;
-//exporter.videoComposition = videoComposition;
-//exporter.outputURL=url3;
-//exporter.outputFileType=AVFileTypeQuickTimeMovie;
-//
-//[exporter exportAsynchronouslyWithCompletionHandler:^(void){}];
-
-
-//- (void)saveImageToPhotoAlbum:(UIImage*)image {
-//    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
-//}
-//
-//- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
-//    if (error != NULL) {
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"出错了!" message:@"存不了T_T" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-//        [alert show];
-//    } else {
-//        WZLog(@"保存成功111");
-//    }
-//}
 
 
 #pragma mark ---------------private--------------

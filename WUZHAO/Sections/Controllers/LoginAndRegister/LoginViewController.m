@@ -8,7 +8,12 @@
 
 #import "LoginViewController.h"
 #import "AFHTTPAPIClient.h"
+
+#import "SVProgressHUD.h"
+
 @interface LoginViewController ()
+@property (nonatomic,strong) NSString *userName;
+@property (nonatomic,strong) NSString *password;
 
 @end
 
@@ -16,17 +21,39 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.navigationController setNavigationBarHidden:YES];
     [self checkLoginState];
+    self.view.backgroundColor = [UIColor colorWithWhite:45.f/255.f alpha:1];
+
     // Do any additional setup after loading the view.
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES];
+    //[self.navigationItem setHidesBackButton:YES];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
     // Dispose of any resources that can be recreated.
 }
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+   // [self.navigationItem setHidesBackButton:YES];
+    
+}
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    
+}
 
+-(UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
 /*
 #pragma mark - Navigation
 
@@ -39,13 +66,19 @@
 
 - (IBAction)LoginButtonPressed:(id)sender {
     
-    NSString *userName = self.UserNameTextField.text;
-    NSString *password = self.PasswordTextField.text;
-    if([self checkInput])
+    if(![self checkInput])
     {
-        [self loginWithUser:userName Password:password];
+        return;
     }
+    self.LoginButton.enabled = NO;
+    [self Login];
+   // [self performSegueWithIdentifier:@"HasLogin" sender:self];
     
+}
+
+- (IBAction)registerBtnPressed:(id)sender
+{
+        [self performSegueWithIdentifier:@"register" sender:sender];
 }
 
 -(void)checkLoginState
@@ -58,28 +91,82 @@
 }
 
 
--(void)loginWithUser:(NSString *)userName Password:(NSString *)Password
+-(void)Login
 {
-    /* NSURLSessionDataTask *loginTask = [[AFHTTPAPIClient sharedInstance]LoginWithUserName:userName password:Password complete:^
+     NSURLSessionDataTask *loginTask = [[AFHTTPAPIClient sharedInstance]LoginWithUserName:self.userName password:self.password complete:^(NSDictionary *result,NSError *error)
      {
-         if ( [[AFHTTPAPIClient sharedInstance] IsAuthenticated])
-         {
-             [self performSegueWithIdentifier:@"HasLogin" sender:self];
-         }
+         NSLog(@"got the result :***** %@ \nand the error %@",result,error);
+        if (error)
+        {
+            [SVProgressHUD showErrorWithStatus:@"连接服务器失败"];
+            self.LoginButton.enabled = YES;
+            return ;
+        }
          else
          {
-     
+
+             if ([result objectForKey:@"msg"])
+             {
+
+                 [SVProgressHUD showErrorWithStatus:[result objectForKey:@"msg"]];
+                 self.LoginButton.enabled = YES;
+                 return;
+                 
+             }
+             else
+             {
+                 [SVProgressHUD dismiss];
+                 
+                 if ([[AFHTTPAPIClient sharedInstance] IsAuthenticated])
+                 {
+                     [self performSegueWithIdentifier:@"HasLogin" sender:nil];
+                     self.LoginButton.enabled = YES;
+                     User *userInfo = [[AFHTTPAPIClient sharedInstance] currentUser];
+                     [self setDefaultUserInfoWithUser:userInfo];
+                     
+                 }
+                 return;
+             }
          }
-     }];*/
-     
+     }];
+    [SVProgressHUD showWithStatus:@"登录中"];
+    NSLog(@"%@",loginTask);
     
-    NSLog(@"get login button pressed");
-    [self performSegueWithIdentifier:@"HasLogin" sender:self];
+   // [self performSegueWithIdentifier:@"HasLogin" sender:self];
     
 }
 
 -(BOOL)checkInput
 {
+    self.userName = self.UserNameTextField.text;
+    self.password = self.PasswordTextField.text;
     return true;
 }
+
+#pragma mark ================textview delegate====================
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if (![self.UserNameTextField isExclusiveTouch])
+    {
+        [self.UserNameTextField resignFirstResponder];
+    }
+    if (![self.PasswordTextField isExclusiveTouch])
+
+    {
+        [self.PasswordTextField resignFirstResponder];
+    }
+}
+
+#pragma mark ---------set userDefaultData
+-(void)setDefaultUserInfoWithUser:(User *)user
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setInteger:user.UserID forKey:@"userId"];
+    [userDefaults setObject:user.UserName forKey:@"userName"];
+    NSLog(@"%lu",[userDefaults integerForKey:@"userId"]);
+    [userDefaults synchronize];
+}
+
+
+
 @end

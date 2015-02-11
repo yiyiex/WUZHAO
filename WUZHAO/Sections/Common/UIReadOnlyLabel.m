@@ -7,7 +7,24 @@
 //
 
 #import "UIReadOnlyLabel.h"
+#import "GlobalAppearance.h"
 
 @implementation UIReadOnlyLabel
+
+
+
+-(void)setLabelTextColor:(UIColor *)labelFontColor
+{
+    [self setTextColor:labelFontColor];
+}
+
+-(void)setLabelFont:(UIFont *)labelFont
+{
+    [self setFont:labelFont];
+}
+
+
+
+
 
 @end

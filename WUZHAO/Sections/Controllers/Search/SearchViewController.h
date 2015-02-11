@@ -10,11 +10,12 @@
 
 
 
-@interface SearchViewController : UIViewController
+@interface SearchViewController : UIViewController 
 @property (nonatomic,strong) IBOutlet UISegmentedControl *segmentControl;
 
-- (IBAction)segmentIndexChanged:(id)sender;
 
+
+- (IBAction)segmentIndexChanged:(id)sender;
 
 
 @end

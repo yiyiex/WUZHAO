@@ -7,6 +7,7 @@
 //
 
 #import <CoreImage/CoreImage.h>
+#import <UIKit/UIKit.h>
 @class CIFilter;
 
 @interface CIFilter (LUT)

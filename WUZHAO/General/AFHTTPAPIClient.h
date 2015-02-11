@@ -8,16 +8,77 @@
 
 #import <Foundation/Foundation.h>
 #import "AFHTTPSessionManager.h"
+#import "User.h"
+#import "WhatsGoingOn.h"
 @interface AFHTTPAPIClient : AFHTTPSessionManager
-
-
-@property (nonatomic,strong) NSDictionary *User;
+@property (nonatomic,strong) User *currentUser;
 
 +(AFHTTPAPIClient*)sharedInstance;
 
 -(BOOL)IsAuthenticated;
 
-//通过用户名密码登陆请求
--(NSURLSessionDataTask *)LoginWithUserName:(NSString *)UserName password:(NSString *)Password complete:(void (^)(void))complete;
+
+#pragma mark ===login and register====
+//login with userName and password
+-(NSURLSessionDataTask *)LoginWithUserName:(NSString *)UserName password:(NSString *)Password complete:(void (^)(NSDictionary *result ,NSError *error))complete;
+
+//register with nickName phoneNumber and Password
+- (NSURLSessionDataTask *) RegisterWithUserName:(NSString *)userName email:(NSString *)email password:(NSString *)password complete:(void (^)(NSDictionary *result ,NSError *error))complete;
+
+-(NSURLSessionDataTask *) UpdatePwdWithUserId:(NSInteger)userId password:(NSString *)password newpassword:(NSString *)newPwd whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+
+#pragma mark ====personal info
+//get personal info with userId
+- (void)GetPersonalInfoWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//edit personal info with userinfo
+- (void)PostPersonalInfoWithUser:(User *)user whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//get current user photo list
+-(void)GetPersonalPhotosListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//get current user photo address list
+-(void)GetPersonalAddressListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//get current user photo follows list
+-(void)GetPersonalFollowsListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//get current user photo followers list
+-(void)GetPersonalFollowersListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+
+
+//get photo list with userId
+-(void) GetPersonalPhotosListWithUserId:(NSInteger )userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//get photo address list with userId
+-(void) GetPersonalAddressListWithUserId:(NSInteger )userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//get follows with userId
+-(void) GetPersonalFollowsListWithUserId:(NSInteger )userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//get followers with userId
+-(void) GetPersonalFollowersListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+
+#pragma mark =====photos info
+//get qiniu uploadToken with userId
+- (void) GetQiNiuTokenWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+
+//post the image info to server
+- (void) PostPhotoInfomationWithUserId:(NSInteger)userId photo:(NSString *)photoName thought:(NSString *)thought whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+
+//get whats going on with userId
+-(void) GetWhatsGoingOnWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+
+//get photo info with userId or photo post Id
+-(void) GetPhotoInfoWithPostId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//get photo comment list with photo post Id
+-(void) GetPhotoCommentsWithPostId:(NSInteger)postId comment:(NSString *)comment whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//zan photo with userId and photo post Id
+-(void) ZanPhotoWithUserId:(NSInteger )userId postId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//comment with userId and photo PostId
+-(void) CommentPhotoWithUserId:(NSInteger )userId postId:(NSInteger)postId comment:(NSString *)comment whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+
+
+#pragma mark =====notice
+//get system notice list
+
+//get relative item list
+
+
+//
+
+
 
 @end

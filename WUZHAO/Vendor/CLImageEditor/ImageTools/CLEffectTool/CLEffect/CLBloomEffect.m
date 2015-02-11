@@ -51,7 +51,6 @@
     CIImage *ciImage = [[CIImage alloc] initWithImage:image];
     CIFilter *filter = [CIFilter filterWithName:@"CIBloom" keysAndValues:kCIInputImageKey, ciImage, nil];
     
-    //NSLog(@"%@", [filter attributes]);
     
     [filter setDefaults];
     

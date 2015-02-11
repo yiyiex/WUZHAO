@@ -1,4 +1,4 @@
-//
+//  一个用于绘制由线段组成的图形的组件
 //  BarItem.h
 //  CBStoreHouseRefreshControl
 //

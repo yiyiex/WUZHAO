@@ -10,24 +10,31 @@
 #import "FootPrint.h"
 
 @interface FootPrintTableViewController()
-@property (nonatomic,strong) NSArray *footprintData;
+
 
 @end
 
 @implementation FootPrintTableViewController
 
-
--(NSArray *)footprintData
+-(void)viewDidLoad
 {
-    if (!_footprintData)
-    {
-        _footprintData = [[FootPrint newData]mutableCopy];
-        
-    }
-    return _footprintData;
+    [super viewDidLoad];
+    [self loadData];
 }
 
+- (NSArray *)datasource
+{
+    if (!_datasource)
+    {
+        _datasource = [[NSArray alloc]init];
+    }
+    return _datasource;
+}
 
+-(void)loadData
+{
+    [self.tableView reloadData];
+}
 
 #pragma mark =======tableview delegate
 
@@ -38,14 +45,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return [self.footprintData count];
+    return [self.datasource count];
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"footprintCell" forIndexPath:indexPath];
-    cell.imageView.image = [UIImage imageNamed:[[self.footprintData objectAtIndex:indexPath.row] topImageUrl]];
-    cell.textLabel.text = [[self.footprintData objectAtIndex:indexPath.row] addressInfo];
+    cell.imageView.image = [UIImage imageNamed:[[self.datasource objectAtIndex:indexPath.row] topImageUrl]];
+    cell.textLabel.text = [[self.datasource objectAtIndex:indexPath.row] addressInfo];
     
     return cell;
 }

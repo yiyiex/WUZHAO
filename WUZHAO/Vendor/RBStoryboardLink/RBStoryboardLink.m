@@ -101,17 +101,23 @@
     // Grabs the UINavigationItem stuff.
     UINavigationItem * navItem = self.navigationItem;
     UINavigationItem * linkedNavItem = scene.navigationItem;
-    navItem.title = linkedNavItem.title;
-    navItem.titleView = linkedNavItem.titleView;
-    navItem.prompt = linkedNavItem.prompt;
-    navItem.hidesBackButton = linkedNavItem.hidesBackButton;
-    navItem.backBarButtonItem = linkedNavItem.backBarButtonItem;
-    navItem.rightBarButtonItem = linkedNavItem.rightBarButtonItem;
-    navItem.rightBarButtonItems = linkedNavItem.rightBarButtonItems;
-    navItem.leftBarButtonItem = linkedNavItem.leftBarButtonItem;
-    navItem.leftBarButtonItems = linkedNavItem.leftBarButtonItems;
-    navItem.leftItemsSupplementBackButton = linkedNavItem.leftItemsSupplementBackButton;
+     navItem.title = linkedNavItem.title;
+     navItem.titleView = linkedNavItem.titleView;
+     navItem.prompt = linkedNavItem.prompt;
+     navItem.hidesBackButton = linkedNavItem.hidesBackButton;
+     navItem.backBarButtonItem = linkedNavItem.backBarButtonItem;
+     navItem.rightBarButtonItem = linkedNavItem.rightBarButtonItem;
+     navItem.rightBarButtonItems = linkedNavItem.rightBarButtonItems;
+     navItem.leftBarButtonItem = linkedNavItem.leftBarButtonItem;
+     navItem.leftBarButtonItems = linkedNavItem.leftBarButtonItems;
+     navItem.leftItemsSupplementBackButton = linkedNavItem.leftItemsSupplementBackButton;
 
+    
+    
+    
+    
+
+    
     // Grabs the UITabBarItem
     // The link overrides the contained view's tab bar item.
     if (self.tabBarController)

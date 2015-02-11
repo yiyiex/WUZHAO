@@ -30,6 +30,9 @@
 
 // Reload
 -(void) reloadFilter;
+
+//direct select one filter
+-(void)selectFilterAtIndex:(NSInteger)index;
 @end
 
 ////////////////

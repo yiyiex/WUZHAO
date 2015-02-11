@@ -486,4 +486,18 @@ typedef NS_ENUM(NSInteger, FeSlideFilterViewState) {
         [_delegate FeSlideFilterView:self didTapDoneButtonAtIndex:_currentIndex];
     }
 }
+
+#pragma mark - Select one filter directly
+-(void)selectFilterAtIndex:(NSInteger)index
+{
+    if (_currentIndex == index)
+        return;
+    else
+    {
+        // Next
+        _frontLayer.contents = (id)[[_dataSource FeSlideFilterView:self imageFilterAtIndex:_currentIndex] CGImage];
+        _backLayer.contents = (id)[[_dataSource FeSlideFilterView:self imageFilterAtIndex:_currentIndex + 1] CGImage];
+        
+    }
+}
 @end

@@ -185,6 +185,7 @@ static char UIViewKeyboardPanRecognizer;
     CGRect keyboardEndFrameWindow;
     [[notification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] getValue: &keyboardEndFrameWindow];
     
+    
     double keyboardTransitionDuration;
     [[notification.userInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&keyboardTransitionDuration];
     

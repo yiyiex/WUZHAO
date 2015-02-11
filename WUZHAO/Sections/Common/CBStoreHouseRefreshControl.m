@@ -77,6 +77,7 @@ NSString *const yKey = @"y";
                           internalAnimationFactor:(CGFloat)internalAnimationFactor
 {
     CBStoreHouseRefreshControl *refreshControl = [[CBStoreHouseRefreshControl alloc] init];
+    //refreshControl.backgroundColor = [UIColor yellowColor];
     refreshControl.dropHeight = dropHeight;
     refreshControl.horizontalRandomness = horizontalRandomness;
     refreshControl.scrollView = scrollView;

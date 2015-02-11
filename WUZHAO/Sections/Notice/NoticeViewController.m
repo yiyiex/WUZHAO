@@ -16,6 +16,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+   /* self.navigationController.navigationBarHidden = NO;
+    self.navigationItem.hidesBackButton = YES;
+    self.navigationItem.title = @"TEST";
+    */
+   /* self.parentViewController.navigationController.navigationBarHidden = NO;
+    self.parentViewController.navigationItem.title = @"test";
+    self.navigationItem.hidesBackButton = YES;
+    */
+    /*self.tabBarController.navigationController.navigationBarHidden = NO;
+    //self.tabBarController.navigationItem.hidesBackButton = YES;
+    self.parentViewController.navigationItem.hidesBackButton = YES;
+    self.parentViewController.navigationItem.title = @"test";*/
+
     // Do any additional setup after loading the view.
 }
 

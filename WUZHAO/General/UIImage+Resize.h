@@ -6,8 +6,28 @@
 //  Copyright (c) 2014年 yiyi. All rights reserved.
 //
 
-#ifndef WUZHAO_UIImage_Resize_h
-#define WUZHAO_UIImage_Resize_h
+#import <UIKit/UIKit.h>
 
+@interface UIImage (Resize)
 
-#endif
+- (UIImage *)croppedImage:(CGRect)bounds;
+
+- (UIImage *)resizedImage:(CGSize)newSize
+     interpolationQuality:(CGInterpolationQuality)quality;
+
+- (UIImage *)resizedImageWithContentMode:(UIViewContentMode)contentMode
+                                  bounds:(CGSize)bounds
+                    interpolationQuality:(CGInterpolationQuality)quality;
+
+- (UIImage *)resizedImage:(CGSize)newSize
+                transform:(CGAffineTransform)transform
+           drawTransposed:(BOOL)transpose
+     interpolationQuality:(CGInterpolationQuality)quality;
+
+- (CGAffineTransform)transformForOrientation:(CGSize)newSize;
+
+- (UIImage *)fixOrientation;
+
+- (UIImage *)rotatedByDegrees:(CGFloat)degrees;
+
+@end

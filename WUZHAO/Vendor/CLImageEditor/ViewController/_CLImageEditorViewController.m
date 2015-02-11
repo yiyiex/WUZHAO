@@ -32,7 +32,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.toolInfo = [CLImageToolInfo toolInfoForToolClass:[self class]];
-       // NSLog([self class]);
     }
     return self;
 }
@@ -216,6 +215,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     if(self.targetImageView){
         [self expropriateImageView];
     }
@@ -399,7 +399,7 @@
     return nil;
 }
 
-#pragma mark- 
+#pragma mark- set Toolbar MEnu Item
 //设置编辑工具 CLToolbarMenuItem
 - (void)setMenuView
 {

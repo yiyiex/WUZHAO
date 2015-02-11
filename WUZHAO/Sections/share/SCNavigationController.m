@@ -17,14 +17,7 @@
 
 @implementation SCNavigationController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
+
 
 - (void)viewDidLoad
 {
@@ -67,7 +60,9 @@
 - (void)showCameraWithParentController:(UIViewController*)parentController {
     SCCaptureCameraController *con = [[SCCaptureCameraController alloc] init];
     [self setViewControllers:[NSArray arrayWithObjects:con, nil]];
-    [parentController presentModalViewController:self animated:YES];
+    [parentController presentViewController:self animated:YES completion:nil];
+     
+     
 }
 
 

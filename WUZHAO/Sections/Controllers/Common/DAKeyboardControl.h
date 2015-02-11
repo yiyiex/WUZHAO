@@ -1,4 +1,4 @@
-//
+//  一个可控制键盘的加载、隐藏、显示的控件
 //  DAKeyboardControl.h
 //  DAKeyboardControlExample
 //

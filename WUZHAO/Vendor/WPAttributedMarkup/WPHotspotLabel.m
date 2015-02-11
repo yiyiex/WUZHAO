@@ -82,7 +82,7 @@
     // Get each of the typeset lines
     NSArray *lines = (__bridge id)CTFrameGetLines(frameRef);
     
-    CFIndex linesCount = [lines count];
+    CFIndex linesCount = [lines count] ;
     CGPoint *lineOrigins = (CGPoint *) malloc(sizeof(CGPoint) * linesCount);
     CTFrameGetLineOrigins(frameRef, CFRangeMake(0, linesCount), lineOrigins);
     
@@ -147,6 +147,20 @@
     
     
     return dictionary;
+}
+
+
+
+#pragma  mark  ========set appearance ==============
+-(void)setTextColour:(UIColor *)textColour
+{
+    //[self setTextColour:WZ_FONT__READONLY];
+    
+}
+
+-(void)setTextFont:(UIFont *)textFont
+{
+    [self setTextFont:textFont];
 }
 
 @end

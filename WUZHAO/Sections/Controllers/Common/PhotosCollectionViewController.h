@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PhotoCollectionViewCell.h"
+
+
+@class WhatsGoingOn;
 
 @interface PhotosCollectionViewController : UICollectionViewController
 
+@property (nonatomic,strong) NSMutableArray *datasource;
+
+-(void)loadData;
+
+-(void)configureCell:(PhotoCollectionViewCell *)cell forContent:(WhatsGoingOn *)content atIndexPath:(NSIndexPath *)indexPath;
 @end

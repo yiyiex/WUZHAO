@@ -128,8 +128,6 @@
     CIImage *ciImage = [[CIImage alloc] initWithImage:image];
     CIFilter *filter = [CIFilter filterWithName:filterName keysAndValues:kCIInputImageKey, ciImage, nil];
     
-    //NSLog(@"%@", [filter attributes]);
-    
     [filter setDefaults];
     
     if([filterName isEqualToString:@"CIVignetteEffect"]){

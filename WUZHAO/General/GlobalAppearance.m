@@ -7,7 +7,121 @@
 //
 
 #import "GlobalAppearance.h"
+#import "macro.h"
+#import "UIReadOnlyLabel.h"
+#import "UIBoldBlackFontLabel.h"
+#import "UIBlackLabel.h"
+#import "UILightReadOnlyLabel.h"
+#import "UIThemeLabel.h"
+#import "WPHotspotLabel.h"
+
 
 @implementation GlobalAppearance
 
+
++(void)setGlobalAppearance
+{
+    [self setNavigationAppearance];
+    //[self setTabBarAppearance];
+    [self setLabelsAppearance];
+    [self setButtonAppearance];
+    [self setThemeLabelAppearance];
+    
+}
+
+#pragma mark  =============set navigator appearance===========
++(void)setNavigationAppearance
+{
+    UINavigationBar *appearance = [UINavigationBar appearance];
+    [appearance setBarTintColor:THEME_COLOR];
+    [appearance setTintColor:[UIColor whiteColor]];
+    [appearance setTitleTextAttributes:
+     @{
+       NSForegroundColorAttributeName:[UIColor whiteColor],
+       NSFontAttributeName:[UIFont boldSystemFontOfSize:18]
+       
+       }];
+    
+    UIBarButtonItem *barItemAppearance = [UIBarButtonItem appearance];
+    //[barItemAppearance setBackgroundImage:[UIImage new] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+}
+
+    
+
+#pragma mark ==============set TabBarAppearance==============
++(void)setTabBarAppearance
+{
+    UITabBar *appearance = [UITabBar appearance];
+    [appearance setBarTintColor:THEME_COLOR_PARENT];
+    [appearance setTintColor:[UIColor whiteColor]];
+}
+
+
+#pragma mark =============set Button Appearance==============
++(void)setButtonAppearance
+{
+    UIButton *appearance = [UIButton appearance];
+    [appearance setTintColor:[UIColor whiteColor]];
+    [appearance setBackgroundColor:THEME_COLOR];
+    
+    
+    
+}
+
+#pragma mark    ==========set Labels appearance=============
++(void)setLabelsAppearance
+{
+    [self setReadOnlyLabelAppearance];
+    [self setBlodBlackLabelAppearance];
+    [self setBlackLabelAppearance];
+    [self setLightReadOnlyLabelAppearance];
+    [self setWPHotLabelAppearance];
+}
+
++(void)setReadOnlyLabelAppearance
+{
+    UIReadOnlyLabel *appearance = [UIReadOnlyLabel appearance];
+    [appearance setTextColor:[UIColor darkGrayColor]];
+    [appearance setFont:WZ_FONT__READONLY];
+    //[appearance ]
+    
+}
+
++(void)setBlodBlackLabelAppearance
+{
+    UIBoldBlackFontLabel *appearance = [UIBoldBlackFontLabel appearance];
+    [appearance setTextColor:[UIColor blackColor]];
+    [appearance setFont:WZ_FONT_LARGE_SIZE];
+    //[appearance ]
+}
+
++(void)setBlackLabelAppearance
+{
+    UIBlackLabel *appearance = [UIBlackLabel appearance];
+    [appearance setTextColor:[UIColor blackColor]];
+    [appearance setFont:WZ_FONT_LARGE_SIZE];
+    //[appearance ]
+}
+
++(void)setLightReadOnlyLabelAppearance
+{
+    UILightReadOnlyLabel *appearance = [UILightReadOnlyLabel appearance];
+    [appearance setTextColor:[UIColor lightGrayColor]];
+    [appearance setFont:WZ_FONT__READONLY];
+    //[appearance ]
+}
++(void)setThemeLabelAppearance
+{
+    UIThemeLabel *appearance = [UIThemeLabel appearance];
+    [appearance setTextColor:THEME_COLOR];
+    [appearance setFont:WZ_FONT_COMMON_SIZE];
+}
+
++(void)setWPHotLabelAppearance
+{
+    WPHotspotLabel *appearance = [WPHotspotLabel appearance];
+    [appearance setFont:WZ_FONT__READONLY];
+}
 @end

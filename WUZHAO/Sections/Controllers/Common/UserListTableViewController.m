@@ -1,4 +1,4 @@
-//
+//  展示一个用户的列表
 //  UserListTableViewController.m
 //  WUZHAO
 //
@@ -8,14 +8,22 @@
 
 #import "UserListTableViewController.h"
 
-@interface UserListTableViewController ()
+#import "UserListTableViewCell.h"
 
+#import "UIImageView+WebCache.h"
+
+#import "User.h"
+
+#define REUSEIDENTIFIER @"userListCell"
+@interface UserListTableViewController ()
+@property (nonatomic,strong) NSArray *datasource;
 @end
 
 @implementation UserListTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.datasource = [[User userList]mutableCopy];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -32,26 +40,29 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Potentially incomplete method implementation.
+
     // Return the number of sections.
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete method implementation.
+
     // Return the number of rows in the section.
-    return 0;
+    return self.datasource.count;
 }
 
-/*
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+     UserListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:REUSEIDENTIFIER forIndexPath:indexPath];
     
     // Configure the cell...
-    
+    User *celldata = [self.datasource objectAtIndex:indexPath.row];
+    [cell.avatorImageView sd_setImageWithURL:celldata.avatarImageURLString placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    cell.userNameLabel.text = celldata.UserName;
+    cell.selfDescriptionLabel.text = celldata.selfDescriptions;
     return cell;
 }
-*/
+
 
 /*
 // Override to support conditional editing of the table view.

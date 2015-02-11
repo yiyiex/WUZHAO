@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
+#import "QiniuSDK.h"
+
 @interface WUZHAOTests : XCTestCase
 
 @end
@@ -36,5 +38,6 @@
         // Put the code you want to measure the time of here.
     }];
 }
+
 
 @end

@@ -7,6 +7,8 @@
 //
 
 #import "SetPasswordTableViewController.h"
+#import "AFHTTPAPIClient.h"
+#import  "SVProgressHUD.h"
 
 @interface SetPasswordTableViewController ()
 
@@ -16,6 +18,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setNavigationItem];
+    [self setTablePerform];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -29,23 +33,60 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)setNavigationItem
+{
+    self.title = @"设置密码";
+    //左侧取消按钮
+    
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(canButtonPressed)];
+    self.navigationItem.leftBarButtonItem = cancelButton;
+    //右侧保存按钮
+    UIButton *save = [[UIButton alloc]init];
+    save.titleLabel.text =@"完成";
+    UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonPressed)];
+    self.navigationItem.rightBarButtonItem = saveButton;
+}
+-(void)setTablePerform
+{
+    self.myOldPwdCell.imageView.image = [UIImage imageNamed:@"defaultAvator"];
+    self.myOldPwdTextField =  [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
+
+    self.myOldPwdTextField.placeholder = @"当前密码";
+    [self.myOldPwdCell addSubview:self.myOldPwdTextField];
+    
+    self.myNewPwdCell.imageView.image = [UIImage imageNamed:@"defaultAvator"];
+    self.myNewPwdTextField =  [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
+
+    self.myNewPwdTextField.placeholder = @"新密码";
+    [self.myNewPwdCell addSubview:self.myNewPwdTextField];
+    
+    self.comfirmPwdCell.imageView.image = [UIImage imageNamed:@"defaultAvator"];
+    self.comfirmPwdTextField =  [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
+
+    self.comfirmPwdTextField.placeholder = @"再次输入新密码";
+    [self.comfirmPwdCell addSubview:self.comfirmPwdTextField];
+    
+}
+-(void)canButtonPressed
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+-(void)saveButtonPressed
+{
+    NSInteger userId = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
+    NSDictionary *result = [[AFHTTPAPIClient sharedInstance ]UpdatePwdWithUserId:(NSInteger)userId password:self.myOldPwdTextField.text newpassword:self.myNewPwdTextField.text];
+    if ([result objectForKey:@"data"])
+    {
+
+    }
+ 
+}
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Potentially incomplete method implementation.
-    // Return the number of sections.
-    return 0;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete method implementation.
-    // Return the number of rows in the section.
-    return 0;
-}
 
 /*
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: forIndexPath:indexPath];
     
     // Configure the cell...
     

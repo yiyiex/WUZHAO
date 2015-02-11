@@ -7,7 +7,16 @@
 //
 
 #import "UIRoundedImageView.h"
+#define RADIUS  8.0
 
-@implementation UIRoundedImageView
+@implementation RoundImageView
 
+-(void)willMoveToWindow:(UIWindow *)newWindow
+{
+    CALayer *roundedLayer = [self layer];
+    [roundedLayer setMasksToBounds:YES];
+    roundedLayer.cornerRadius = self.bounds.size.width/2;
+    roundedLayer.borderColor = [[UIColor grayColor] CGColor];
+
+}
 @end

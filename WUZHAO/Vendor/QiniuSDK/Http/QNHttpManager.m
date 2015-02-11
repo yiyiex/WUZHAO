@@ -6,7 +6,7 @@
 //  Copyright (c) 2014年 Qiniu. All rights reserved.
 //
 
-#import <AFNetworking/AFNetworking.h>
+#import "AFNetworking.h"
 
 #import "QNConfig.h"
 #import "QNHttpManager.h"

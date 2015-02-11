@@ -1,4 +1,4 @@
-//
+//  自绘制拍照界面
 //  SCCaptureCameraController.h
 //  SCCaptureCameraDemo
 //
@@ -9,9 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "SCCaptureSessionManager.h"
 
-#import "CLImageEditor.h"
 
-@interface SCCaptureCameraController : UIViewController< CLImageEditorDelegate,CLImageEditorTransitionDelegate>
+@interface SCCaptureCameraController : UIViewController
 
 @property (nonatomic, assign) CGRect previewRect;
 @property (nonatomic, assign) BOOL isStatusBarHiddenBeforeShowCamera;

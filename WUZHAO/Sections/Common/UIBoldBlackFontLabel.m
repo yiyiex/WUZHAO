@@ -10,4 +10,15 @@
 
 @implementation UIBoldBlackFontLabel
 
+
+-(void)setLabelTextColor:(UIColor *)labelFontColor
+{
+    [self setTextColor:labelFontColor];
+}
+
+-(void)setLabelFont:(UIFont *)labelFont
+{
+    [self setFont:labelFont];
+}
+
 @end

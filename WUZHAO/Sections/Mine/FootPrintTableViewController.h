@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface FootPrintTableViewController : UITableViewController
-
+@property (nonatomic,strong) NSArray *datasource;
+-(void)loadData;
 
 @end

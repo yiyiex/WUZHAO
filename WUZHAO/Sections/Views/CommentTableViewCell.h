@@ -8,6 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+#import "UIRoundedImageView.h"
+#import "UIThemeLabel.h"
+#import "UIBlackLabel.h"
+#import "UIReadOnlyLabel.h"
+
 @interface CommentTableViewCell : UITableViewCell
+
+@property (strong, nonatomic)  RoundImageView *userAvatorView;
+@property (strong, nonatomic)  UIBlackLabel *userName;
+@property (strong, nonatomic)  UIReadOnlyLabel *commentContent;
+@property (strong, nonatomic)  UIThemeLabel *commentTime;
 
 @end

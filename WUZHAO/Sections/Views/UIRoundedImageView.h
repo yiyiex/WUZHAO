@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIRoundedImageView : UIImageView
+@interface RoundImageView : UIImageView
 
 @end

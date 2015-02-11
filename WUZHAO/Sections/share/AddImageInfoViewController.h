@@ -9,13 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "WhatsGoingOn.h"
 
-
-@protocol AddImageInfoViewDelegate;
-
-
-@interface AddImageInfoViewController : UIViewController <UITableViewDataSource,UITableViewDelegate ,UITextViewDelegate>
-
-@property (nonatomic,assign) id<AddImageInfoViewDelegate> addImageInfoDelegate;
+@interface AddImageInfoViewController : UIViewController <UITableViewDataSource,UITableViewDelegate ,UITextViewDelegate ,UIAlertViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UIImageView *postImageView;
 @property (strong, nonatomic) IBOutlet UITextField *postImageDescription;
@@ -28,11 +22,6 @@
 - (IBAction)PostButtonPressed:(UIBarButtonItem *)sender;
 @end
 
-@protocol AddImageInfoViewDelegate <NSObject>
-
--(void)endPostImageInfo;
-
-@end
 
 
 

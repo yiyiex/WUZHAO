@@ -35,6 +35,13 @@
 
 //color
 #define rgba_WZ(r, g, b, a) [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:a]
+//#define THEME_COLOR rgba_WZ(120, 194, 196, 1.0)
+#define THEME_COLOR rgba_WZ(48,208,223,1.0)
+#define THEME_COLOR_DARK rgba_WZ(28,191,206,1.0)
+#define THEME_COLOR_PARENT rgba_WZ(48, 208, 223, 0.8)
+#define THEME_COLOR_WHITE rgba_WZ(255,255,255,1.0)
+#define THEME_COLOR_LIGHT_GREY rgba_WZ(95,113,135,1.0)
+#define THEME_COLOR_BLACK rgba_WZ(0,0,0,1.0)
 
 //frame and size
 #define WZ_DEVICE_BOUNDS    [[UIScreen mainScreen] bounds]
@@ -86,5 +93,21 @@
 #   define kTextLineBreakByTruncatingMiddle_SC   UILineBreakModeMiddleTruncation
 
 #endif
+
+
+
+/*
+ Font Family: Courier
+ Font: Courier
+ Font: Courier-BoldOblique
+ Font: Courier-Oblique
+ Font: Courier-Bold
+ */
+#define WZ_FONT_NAME @"Courier"
+#define WZ_FONT_COMMON_SIZE [UIFont fontWithName:WZ_FONT_NAME size:14]
+#define WZ_FONT__READONLY [UIFont fontWithName:WZ_FONT_NAME size:13]
+#define WZ_FONT_LARGE_SIZE [UIFont fontWithName:WZ_FONT_NAME size:15]
+#define WZ_FONT_TITLE [UIFont fontwithName:WZ_FONT_NAME size:25]
+
 
 #endif

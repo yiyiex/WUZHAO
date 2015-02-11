@@ -7,12 +7,19 @@
 //
 
 #import "WhatsGoingOn.h"
-#import "WPAttributedStyleAction.h"
-#import "NSString+WPAttributedMarkup.h"
+
 
 @implementation WhatsGoingOn
 
 
+-(User *)photoUser
+{
+    if (!_photoUser)
+    {
+        _photoUser = [[User alloc]init];
+    }
+    return _photoUser;
+}
 
 + (NSArray *) newDataSource
 {
@@ -26,99 +33,140 @@
 
     //评论user的展示和交互
     //评论内容自定义展现、交互、LINK内容
-    NSDictionary *nameStyle = @{@"body":[UIFont fontWithName:@"HelveticaNeue" size:16],
-                                @"userName":[WPAttributedStyleAction styledActionWithAction:^{
+   /* NSDictionary *nameStyle = @{@"userName":[WPAttributedStyleAction styledActionWithAction:^{
                                     [[[UIAlertView alloc] initWithTitle:@"提示" message:@"点击了" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil] show];
                                 }],
-                                @"link": [UIColor blueColor]};
+                                @"address":[WPAttributedStyleAction styledActionWithAction:^{
+                                    [[[UIAlertView alloc] initWithTitle:@"提示" message:@"点击了" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil] show];
+                                }],
+                                @"link": [UIColor greenColor]};*/
+    
     
     WhatsGoingOn *item = [[WhatsGoingOn alloc] init];
+    item.postId = 1;
+    item.adddresMark = @"上海市静安区";
+    item.imageDescription = @"一人食";
     item.imageUrlString = [imageUrlStrings objectAtIndex:0];
-    item.likeCount = @"525";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 111;
+    item.postTime = @"1天";
+    item.comment = @"<userName>@小球！@#￥%……&*（）</userName> 我了就散了放假进口料件来烦死了快解放手机放大了！（*&&*@#……*@！（*sasfsdfasf”\n<seeMore>点击查看更多</seeMore>\n<userName>@一一</userName>水电费受身蹲伏撒方式地方舒服舒服十大发生的发撒发射点法撒旦范德萨发撒旦法水电费水电费水电费水电费阿斯蒂芬阿斯蒂芬撒地方撒地方圣达菲阿斯蒂芬啊是 2\b\n<userName>@test</userName>沙发啊分撒旦撒旦发撒旦法阿斯蒂芬撒旦防撒旦法是的发撒旦法撒旦防撒旦法撒旦发射点发的说法但是电风扇多少分水电费萨法撒旦发射点发撒旦发射点发舒服的 撒地方圣达菲 舒服阿斯蒂芬啊舒服舒服撒地方分手的萨芬撒旦发 舒服撒阿双方萨芬撒风多少分阿斯蒂芬 的撒分手发撒旦法适当第三附属发撒、\nsd d fsasfsad fsadf asdf sadf a 3\n\n<userName>user4</userName>testcommnet 4<address>www.douqiu.com</address>";
+    item.commentList = @[@{@"avatorUrl":@"http://pic1.zhimg.com/9e2cf566532ec4cd24ce0f18b5282c79_l.jpg",@"username":@"xiaoqiu",@"content":@"lalalalallalal",@"time":@"12:22"},
+        @{@"avatorUrl":@"http://pic4.zhimg.com/88db1114b_l.jpg",@"username":@"xiaoqiu2",@"content":@"lalalalallalal骚随机发送是foisjfosjoi 水电费sdfaoij 是的哦风景史丹佛水电费哦就是的哦飞机哦节 是的哦减肥哦就撒地方哦\n sdof josdojfoidsj ",@"time":@"12:22"},
+        @{@"avatorUrl":@"http://pic4.zhimg.com/88db1114b_l.jpg",@"username":@"xiaoqiu3",@"content":@"lalalalallalal",@"time":@"12:22"},
+        @{@"avatorUrl":@"http://pic1.zhimg.com/9e2cf566532ec4cd24ce0f18b5282c79_l.jpg",@"username":@"xiaoqiu4",@"content":@"lalalalallalal",@"time":@"12:22"},];
+    
+   // item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>" attributedStringWithStyleBook:nameStyle];
     
     [dataSource addObject:item];
     
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 2;
     item.imageUrlString = [imageUrlStrings objectAtIndex:1];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 1000;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！\n”<address>www.douqiu.com</address>";
+   // item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind <more>查看全部评论</more>" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
     
     item = [[WhatsGoingOn alloc] init];
     item.imageUrlString = [imageUrlStrings objectAtIndex:2];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 1000;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+   // item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
     
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 14;
     item.imageUrlString = [imageUrlStrings objectAtIndex:3];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 1000;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+    //item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
     
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 3;
     item.imageUrlString = [imageUrlStrings objectAtIndex:4];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 1000;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+   // item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
     
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 4;
     item.imageUrlString = [imageUrlStrings objectAtIndex:0];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 1000;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+   // item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
     
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 5;
     item.imageUrlString = [imageUrlStrings objectAtIndex:1];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 1000;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+    //item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
     
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 6;
     item.imageUrlString = [imageUrlStrings objectAtIndex:2];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 1000;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+    //item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
     
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 7;
     item.imageUrlString = [imageUrlStrings objectAtIndex:3];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 1000;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+    //item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
     
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 8;
     item.imageUrlString = [imageUrlStrings objectAtIndex:4];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 100;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+    //item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 9;
     item.imageUrlString = [imageUrlStrings objectAtIndex:0];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 100;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+    //item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
+    
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 10;
     item.imageUrlString = [imageUrlStrings objectAtIndex:1];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 100;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+    //item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
     
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 11;
     item.imageUrlString = [imageUrlStrings objectAtIndex:2];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 100;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+    //item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
     
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 12;
     item.imageUrlString = [imageUrlStrings objectAtIndex:3];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 100;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+    //item.attributedComment = [@"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”\n\nThis is a game, please don't mind" attributedStringWithStyleBook:nameStyle];
     [dataSource addObject:item];
     
     item = [[WhatsGoingOn alloc] init];
+    item.postId = 13;
     item.imageUrlString = [imageUrlStrings objectAtIndex:4];
-    item.likeCount = @"1000";
-    item.attributedComment = [@"<userName>@Jack</userName> 上课时，老师问小明怎么不玩手机啊，小明说：因为快递还没到，老师问“什么快递啊”？   这时教室门响了一个巨型充电宝+灯光+高音效音响+无线WIFI放到了小明面前，音乐灯光顿时响起，全班集体皮鞋高跟鞋换上嗨起，老师被无视的说怎么不叫上我\n\n<userName>@曾宪华</userName> 室友经常抱怨，20好几的人了还没有女朋友，连女孩手也没牵过，哪怕多做点春梦也行啊！于是我默默地出去买了一包春药和一瓶安眠药各拿一颗放入开水中溶了给他喝。大家说我这样做得对吗？" attributedStringWithStyleBook:nameStyle];
+    item.likeCount = 100;
+    item.comment = @"<userName>@Arkadiusz Holko</userName>  ne generation plants the trees in whose shade another generation rests.One sows and another reaps。！”<address>www.douqiu.com</address>";
+    //item.attributedComment = [@"<userName>@Jack</userName> 上课时，老师问小明怎么不玩手机啊，小明说：因为快递还没到，老师问“什么快递啊”？   这时教室门响了一个巨型充电宝+灯光+高音效音响+无线WIFI放到了小明面前，音乐灯光顿时响起，全班集体皮鞋高跟鞋换上嗨起，老师被无视的说怎么不叫上我\n\n<userName>@曾宪华</userName> 室友经常抱怨，20好几的人了还没有女朋友，连女孩手也没牵过，哪怕多做点春梦也行啊！于是我默默地出去买了一包春药和一瓶安眠药各拿一颗放入开水中溶了给他喝。大家说我这样做得对吗？" attributedStringWithStyleBook:nameStyle];
     
     [dataSource addObject:item];
     

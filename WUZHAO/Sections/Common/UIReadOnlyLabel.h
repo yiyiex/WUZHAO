@@ -10,4 +10,7 @@
 
 @interface UIReadOnlyLabel : UILabel
 
+@property (nonatomic,weak) UIColor *labelTextColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic,weak) UIFont *labelFont UI_APPEARANCE_SELECTOR;
+
 @end

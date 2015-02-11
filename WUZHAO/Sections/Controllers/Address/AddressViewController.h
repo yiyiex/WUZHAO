@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AddressViewController : UIViewController
+@interface AddressViewController : UIViewController <UITabBarDelegate>
+
+@property (strong, nonatomic) IBOutlet UITabBar *selectControllerToShowTabBar;
 
 @end

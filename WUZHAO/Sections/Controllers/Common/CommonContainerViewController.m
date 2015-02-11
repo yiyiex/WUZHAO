@@ -1,4 +1,4 @@
-//
+//  
 //  CommonContainerViewController.m
 //  WUZHAO
 //
@@ -7,14 +7,13 @@
 //
 
 #import "CommonContainerViewController.h"
-
+#import "EmptySegue.h"
 @interface CommonContainerViewController ()
-@property (nonatomic,strong) NSString * currentSegueIdentifier;
 @property (nonatomic) BOOL transitionInProgress;
 @end
 
 @implementation CommonContainerViewController
-#define initSegue @"SegueFirst"
+
 - (instancetype)initWithChildren:(NSArray *)childrenName
 {
     self = [super init];
@@ -28,28 +27,42 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self performSegueWithIdentifier:self.currentSegueIdentifier sender:self];
+    
     // Do any additional setup after loading the view.
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-- (void)setChildrenName:(NSArray *)ChildrenName
+
+-(NSArray *)ChildrenName
 {
     if (!_ChildrenName)
     {
-        _ChildrenName = ChildrenName;
+        _ChildrenName = @[];
     }
+    return _ChildrenName;
+}
+
+-(NSString *)currentSegueIdentifier
+{
+    if (!_currentSegueIdentifier)
+    {
+        _currentSegueIdentifier = [self.ChildrenName objectAtIndex:0];
+    }
+    return _currentSegueIdentifier;
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if([segue.identifier isEqualToString:initSegue])
+    if([segue.identifier isEqualToString:[self.ChildrenName objectAtIndex:0]])
     {
         if (self.childViewControllers.count > 0)
         {
+            
             [self swapFromViewController:[self.childViewControllers firstObject] toViewController:segue.destinationViewController];
         }
         else
@@ -65,6 +78,12 @@
     else{
         [self swapFromViewController:[self.childViewControllers firstObject] toViewController:segue.destinationViewController];
     }
+    self.currentViewController = segue.destinationViewController;
+    if ([_delegate respondsToSelector:@selector(finishLoadChildController:)])
+    {
+        [_delegate finishLoadChildController:self.currentViewController];
+    }
+
 }
 -(void)swapFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController
 {
@@ -87,11 +106,19 @@
     {
         return;
     }
-    self.transitionInProgress = YES;
-    self.currentSegueIdentifier =identifier;
-    NSLog(@"swap with identifier %@",identifier);
-    
-    [self performSegueWithIdentifier:self.currentSegueIdentifier sender:nil];
+   
+    if ([self.currentSegueIdentifier isEqualToString:identifier])
+    {
+        return;
+    }
+    else
+    {
+        self.transitionInProgress = YES;
+        self.currentSegueIdentifier =identifier;
+        [self performSegueWithIdentifier:self.currentSegueIdentifier sender:nil];
+
+    }
+
 }
 /*
 #pragma mark - Navigation

@@ -10,4 +10,10 @@
 
 @interface SetPasswordTableViewController : UITableViewController
 
+@property (strong, nonatomic) IBOutlet UITableViewCell *myOldPwdCell;
+@property (strong, nonatomic) UITextField *myOldPwdTextField;
+@property (strong, nonatomic) IBOutlet UITableViewCell *myNewPwdCell;
+@property (strong, nonatomic) UITextField *myNewPwdTextField;
+@property (strong, nonatomic) IBOutlet UITableViewCell *comfirmPwdCell;
+@property (strong, nonatomic) UITextField *comfirmPwdTextField;
 @end

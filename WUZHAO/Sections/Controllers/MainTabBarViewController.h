@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "AddImageInfoViewController.h"
 
-@interface MainTabBarViewController : UITabBarController <AddImageInfoViewDelegate>
+@interface MainTabBarViewController : UITabBarController <UITabBarControllerDelegate>
 
 @end

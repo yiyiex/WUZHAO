@@ -10,4 +10,5 @@
 
 @interface CommentsCommon : NSObject
 
++(NSDictionary *)createCommentStyleWithAttributeDic:(NSDictionary *)dic;
 @end

@@ -10,4 +10,5 @@
 
 @interface PhotoCollectionViewCell : UICollectionViewCell
 @property (nonatomic,strong) IBOutlet UIImageView  *cellImageView;
+
 @end

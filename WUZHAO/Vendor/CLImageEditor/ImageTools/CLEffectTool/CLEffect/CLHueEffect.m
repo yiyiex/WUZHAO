@@ -50,8 +50,6 @@
     CIImage *ciImage = [[CIImage alloc] initWithImage:image];
     CIFilter *filter = [CIFilter filterWithName:@"CIHueAdjust" keysAndValues:kCIInputImageKey, ciImage, nil];
     
-    //NSLog(@"%@", [filter attributes]);
-    
     [filter setDefaults];
     [filter setValue:[NSNumber numberWithFloat:_hueSlider.value] forKey:@"inputAngle"];
     
