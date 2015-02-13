@@ -12,7 +12,7 @@
 @interface AddImageInfoViewController : UIViewController <UITableViewDataSource,UITableViewDelegate ,UITextViewDelegate ,UIAlertViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UIImageView *postImageView;
-@property (strong, nonatomic) IBOutlet UITextField *postImageDescription;
+@property (strong, nonatomic) IBOutlet UITextView *postImageDescription;
 @property (strong, nonatomic) IBOutlet UITableView *addressTableView;
 @property (strong, nonatomic) IBOutlet UILabel *addressInfoLabel;
 

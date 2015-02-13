@@ -250,24 +250,25 @@
                 NSMutableDictionary *photoItem = [[NSMutableDictionary alloc]init];
                 for (NSDictionary *item in photoList)
                 {
-                    [photoItem setValue:[item objectForKey:@"post_id"] forKey:@"postId"];
-                    [photoItem setValue:[item objectForKey:@"create_time"] forKey:@"time"];
-                    [photoItem setValue:[item objectForKey:@"photo"] forKey:@"photoUrl"];
+                    [photoItem setObject:[item objectForKey:@"post_id"] forKey:@"postId"];
+                    [photoItem setObject:[item objectForKey:@"create_time"] forKey:@"time"];
+                    [photoItem setObject:[item objectForKey:@"photo"] forKey:@"photoUrl"];
                     [user.photoList addObject:photoItem];
                     [photoItem removeAllObjects];
                 
                 }
-                [returnData setValue:user forKey:@"data"];
+                [returnData setObject:user forKey:@"data"];
+               // [returnData setValue:user forKey:@"data"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
+                [returnData setObject:@"接口请求失败" forKey:@"error"];
             }
         }
         
         else if (error)
         {
-            [returnData setValue:@"服务器异常" forKey:@"error"];
+            [returnData setObject:@"服务器异常" forKey:@"error"];
         }
         whenComplete(returnData);
         

@@ -47,10 +47,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     
     [super viewDidLoad];
     [_mineButton setTitle:@"正在加载" forState:UIControlStateNormal];
-    //self.userInfo = [[AFHTTPAPIClient sharedInstance] currentUser] ;
     
     [self setPersonalInfo];
-    //[self GetPersonalData];
     
     self.selectToShowTabbar.selectedItem = [self.selectToShowTabbar.items objectAtIndex:0];
    
@@ -65,6 +63,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     self.tabBarController.navigationItem.hidesBackButton = YES;
    // self.hidesBottomBarWhenPushed = YES;
     //[[NSNotificationCenter defaultCenter] postNotificationName:@"showBar" object:nil];
+    [self SetPhotosCollectionData];
     
 }
 - (void)didReceiveMemoryWarning {
@@ -77,7 +76,9 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     {
         _userInfo = [[User alloc]init];
     }
-    _userInfo = userInfo;
+    _userInfo = [userInfo mutableCopy];
+    
+    
 }
 
 -(void)setPersonalInfo
@@ -95,6 +96,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
             User *user = [returnData objectForKey:@"data"];
             [self setUserInfo:user];
             [self updateUI];
+            [self SetPhotosCollectionData];
         }
         else if ([returnData objectForKey:@"error"])
         {
@@ -150,13 +152,13 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     if ([childController isKindOfClass: [PhotosCollectionViewController class]])
     {
         self.myPhotoCollectionViewController = (PhotosCollectionViewController *)childController;
-        [self SetPhotosCollectionData];
+       // [self SetPhotosCollectionData];
         
     }
     else if( [childController isKindOfClass:[FootPrintTableViewController class]])
     {
         self.myFootPrintViewController = (FootPrintTableViewController *)childController;
-        [self SetAddressListData];
+        //[self SetAddressListData];
     }
 }
 
@@ -196,27 +198,22 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 {
     if (!_myPhotosCollectionDatasource)
     {
-        //exec the http request for the data
-        //根据个人信息，获取更多信息
-        /*
-         [AFHTTPAPIClient sharedInstance]GetPersonalPhotosListWithUserId:self.userInfo.UserID complete:^(NSDictionary *result, NSError *error) {
-         if (result)
-         {
-         //self.dataSource = [result mutableCopy];
-         //set more info to userInfo
-         //....
-         }
-         else if (error)
-         {
-         [SVProgressHUD showErrorWithStatus:@"请求失败,请检查连接"];
-         
-         }
-         }];
-         */
- 
+        _myPhotosCollectionDatasource = [[NSMutableArray alloc]init];
+    }
+    
+    if (self.userInfo.photoList)
+    {
+        [_myPhotosCollectionDatasource removeAllObjects];
+        for (NSDictionary *i in self.userInfo.photoList)
+        {
+            WhatsGoingOn *item = [[WhatsGoingOn alloc]init];
+            item.postId = [(NSNumber *)[i objectForKey:@"post_id"] integerValue];
+            item.imageUrlString = [i objectForKey:@"photo"];
+            [_myPhotosCollectionDatasource addObject:item];
+        }
         
     }
-    _myPhotosCollectionDatasource = [[WhatsGoingOn newDataSource]mutableCopy];
+    //_myPhotosCollectionDatasource = [[WhatsGoingOn newDataSource]mutableCopy];
     [self.myPhotoCollectionViewController setDatasource:_myPhotosCollectionDatasource];
     [self.myPhotoCollectionViewController loadData];
 

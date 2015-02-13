@@ -87,6 +87,7 @@
     //获取token和filename请求
     [SVProgressHUD showWithStatus:@"图片上传中..."];
     NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    NSString *photoDescription = self.postImageDescription.text;
     [[AFHTTPAPIClient sharedInstance] GetQiNiuTokenWithUserId:userId whenComplete:^(NSDictionary *result) {
         NSDictionary *data;
         if ([result objectForKey:@"data"])
@@ -111,7 +112,7 @@
             {
                 //用户端提示
                 
-                [[AFHTTPAPIClient sharedInstance]PostPhotoInfomationWithUserId:userId photo:(NSString *)[data objectForKey:@"imageName"] thought:@"this is my first photo!" whenComplete:^(NSDictionary *returnData) {
+                [[AFHTTPAPIClient sharedInstance]PostPhotoInfomationWithUserId:userId photo:(NSString *)[data objectForKey:@"imageName"] thought:photoDescription whenComplete:^(NSDictionary *returnData) {
                     if (returnData)
                     {
                         [SVProgressHUD showSuccessWithStatus:@"上传图片成功"];

@@ -13,9 +13,9 @@
 
 @end
 @implementation User
-@synthesize UserID,UserName,userToken;
+@synthesize UserID,UserName,userToken,avatarImageURLString;
 @synthesize numFollowers,numFollows,photosNumber,selfDescriptions;
-
+@synthesize photoList;
 
 -(instancetype)initWithAttributes:(NSDictionary *)attributes
 {
@@ -37,14 +37,45 @@
 
 }
 
--(NSMutableArray *)photoList
+-(id)copyWithZone:(NSZone *)zone
 {
-    if (!_photoList)
-    {
-        _photoList = [[NSMutableArray alloc]init];
-    }
-    return _photoList;
+    User *copy = [[[self class]allocWithZone:zone]init];
+    copy->UserID = UserID;
+    copy->UserName = [UserName copy];
+    copy->userToken = [userToken copy];
+    copy->selfDescriptions = [selfDescriptions copy];
+    copy->avatarImageURLString = [avatarImageURLString copy];
+    
+    copy->numFollowers = numFollowers;
+    copy->numFollows = numFollows;
+    copy->photosNumber = photosNumber;
+    
+    copy->photoList = [photoList copy];
+    return copy;
+    
+    
 }
+-(id)mutableCopyWithZone:(NSZone *)zone
+{
+    User *copy =[[[self class]allocWithZone:zone]init];
+    copy->UserID = UserID;
+    copy->UserName = [UserName mutableCopy];
+    copy->userToken = [userToken mutableCopy];
+    copy->selfDescriptions = [selfDescriptions mutableCopy];
+    copy->avatarImageURLString = [avatarImageURLString mutableCopy];
+    
+    copy->numFollowers = numFollowers;
+    copy->numFollows = numFollows;
+    copy->photosNumber = photosNumber;
+    
+    copy->photoList = [photoList mutableCopy];
+    
+    return copy;
+    
+
+}
+
+
 
 
 

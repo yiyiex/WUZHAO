@@ -280,14 +280,14 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    NSLog(@"scroll view did scroll");
+    //NSLog(@"scroll view did scroll");
     self.shouldRefreshData = true;
     [self.QIUDAOYURefreshControl scrollViewDidScroll];
 }
 
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    NSLog(@"scroll view did end dragging");
+    //NSLog(@"scroll view did end dragging");
     [self.QIUDAOYURefreshControl scrollViewDidEndDragging];
 }
 

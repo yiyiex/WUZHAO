@@ -213,8 +213,9 @@
         NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
         UIImage *image = [[UIImage alloc] initWithData:imageData];
         NSLog(@"originImage:%@", [NSValue valueWithCGSize:image.size]);
+        UIImage *croppedImage = [self cropAndResizeImage:image withHead:44.0f];
 
-        
+        /*
         CGFloat squareLength = WZ_APP_SIZE.width;
         CGFloat headHeight = _previewLayer.bounds.size.height - squareLength;//_previewLayer的frame是(0, 44, 320, 320 + 44)
         CGSize size = CGSizeMake(squareLength * 2, squareLength * 2);
@@ -226,7 +227,7 @@
         NSLog(@"cropFrame:%@", [NSValue valueWithCGRect:cropFrame]);
         UIImage *croppedImage = [scaledImage croppedImage:cropFrame];
         NSLog(@"croppedImage:%@", [NSValue valueWithCGSize:croppedImage.size]);
-        
+        */
         
         UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
         if (orientation != UIDeviceOrientationPortrait) {
@@ -265,6 +266,23 @@
 	return result;
 }
 
+-(UIImage *)cropAndResizeImage:(UIImage *)image withHead:(CGFloat)headHeight
+{
+    
+    CGFloat squareLength = WZ_APP_SIZE.width;
+   // CGFloat headHeight = _previewLayer.bounds.size.height - squareLength;//_previewLayer的frame是(0, 44, 320, 320 + 44)
+    CGSize size = CGSizeMake(squareLength * 2, squareLength * 2);
+    
+    UIImage *scaledImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:size interpolationQuality:kCGInterpolationHigh];
+    NSLog(@"scaledImage:%@", [NSValue valueWithCGSize:scaledImage.size]);
+    
+    CGRect cropFrame = CGRectMake((scaledImage.size.width - size.width) / 2, (scaledImage.size.height - size.height) / 2 + headHeight, size.width, size.height);
+    NSLog(@"cropFrame:%@", [NSValue valueWithCGRect:cropFrame]);
+    UIImage *croppedImage = [scaledImage croppedImage:cropFrame];
+    NSLog(@"croppedImage:%@", [NSValue valueWithCGSize:croppedImage.size]);
+    return croppedImage;
+    
+}
 /**
  *  切换前后摄像头
  *

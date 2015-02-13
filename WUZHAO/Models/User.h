@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface User : NSObject
+@interface User : NSObject <NSCopying, NSMutableCopying>
 
 @property (readwrite,nonatomic ) NSInteger UserID;
 @property (readwrite,nonatomic,strong) NSString *UserName;

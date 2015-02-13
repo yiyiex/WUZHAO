@@ -45,7 +45,7 @@
 //    bottomContainerViewTypeAudio     =   1   //录音页面
 //} BottomContainerViewType;
 
-@interface SCCaptureCameraController ()  <WZFilterUIViewControllerDelegate>
+@interface SCCaptureCameraController ()  <WZFilterUIViewControllerDelegate,UIImagePickerControllerDelegate>
 {
     int alphaTimes;
     CGPoint currTouchPoint;
@@ -126,6 +126,7 @@
     self.captureManager = manager;
     
     [self addShotButtons];
+    [self addSelectPhotoButtons];
     [self addMenuViewButtons];
     [self addFocusView];
     [self addCameraCover];
@@ -140,7 +141,7 @@
         UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, CAMERA_TOPVIEW_HEIGHT, self.view.frame.size.width, self.view.frame.size.width)];
         imgView.clipsToBounds = YES;
         imgView.contentMode = UIViewContentModeScaleAspectFill;
-        imgView.image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"meizi" ofType:@"jpg"]];
+        imgView.image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"default" ofType:@"jpg"]];
         [self.view addSubview:imgView];
     }
 #endif
@@ -209,6 +210,13 @@
            parentView:_bottomContainerView];
 }
 
+-(void)addSelectPhotoButtons
+{
+    CGFloat downH = 0;
+    CGFloat buttonLength = 40;
+    [self buildButton:CGRectMake(50, (_bottomContainerView.frame.size.height -downH - buttonLength)/2, buttonLength, buttonLength) normalImgStr:@"" highlightImgStr:@"" selectedImgStr:@"" action:@selector(selectPhotoFromAlubm:) parentView:_bottomContainerView];
+    
+}
 //拍照菜单栏上的按钮
 //设置各状态显示以及响应方法 actionArr
 - (void)addMenuViewButtons {
@@ -469,14 +477,34 @@ void c_slideAlpha() {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"hideBar" object:nil];
         });
         
-        WZFilterUIViewController *editor = [[WZFilterUIViewController alloc]initWithImage:stillImage delegate:self];
-        [self.navigationController showViewController:editor sender:self];
+        //直接进入发布页面
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
+        
+        AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
+        [addImageInfoCon setPostImage:stillImage];
+        [self.navigationController pushViewController:addImageInfoCon animated:YES];
+        //暂时屏蔽滤镜
+       // WZFilterUIViewController *editor = [[WZFilterUIViewController alloc]initWithImage:stillImage delegate:self];
+        //[self.navigationController showViewController:editor sender:self];
        // [self presentViewController:editor animated:YES completion:nil];
         
 
     }];
 }
 
+-(void)selectPhotoFromAlubm:(id)sender
+{
+    NSLog(@"select photo library");
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary])
+    {
+        UIImagePickerController *controller = [[UIImagePickerController alloc]init];
+        controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        controller.delegate = self;
+        [self presentViewController:controller animated:YES completion:^{
+            NSLog(@"picker view controller  is presented");
+        }];
+    }
+}
 - (void)tmpBtnPressed:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -542,20 +570,25 @@ void c_slideAlpha() {
 }
 
 
-//#pragma mark -------------save image to local---------------
-////保存照片至本机
-//- (void)saveImageToPhotoAlbum:(UIImage*)image {
-//    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
-//}
-//
-//- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
-//    if (error != NULL) {
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"出错了!" message:@"存不了T_T" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-//        [alert show];
-//    } else {
-//        SCDLog(@"保存成功");
-//    }
-//}
+#pragma mark - UIImagePickerControllerDelegate
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [picker dismissViewControllerAnimated:YES completion:^{
+        
+        self.stillImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+        UIImage *cropImage = [_captureManager cropAndResizeImage:self.stillImage withHead:0];
+        //暂时屏蔽滤镜
+       // WZFilterUIViewController *editor = [[WZFilterUIViewController alloc]initWithImage:self.stillImage delegate:self];
+        //[self.navigationController showViewController:editor sender:self];
+        //直接进入发布页面
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
+        
+        AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
+        [addImageInfoCon setPostImage:cropImage];
+        [self.navigationController pushViewController:addImageInfoCon animated:YES];
+
+    }];
+}
 
 #pragma mark ------------notification-------------
 - (void)orientationDidChange:(NSNotification*)noti {
@@ -614,29 +647,13 @@ void c_slideAlpha() {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-#pragma mark ------------WZFilterUIViewControllerDelegate
--(void)FilterController:(WZFilterUIViewController *)controller didEndFilterThePhoto:(UIImage *)newPhoto
-{
-    /*
-    WEAKSELF_WZ
-    [controller dismissViewControllerAnimated:YES completion:^{
-        __strong typeof(weakSelf_WZ) strongSelf = weakSelf_WZ;
-        strongSelf.stillImage = newPhoto;
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
-        
-        AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
-        [addImageInfoCon setPostImage:newPhoto];
-        [strongSelf.navigationController pushViewController:addImageInfoCon animated:YES];
-    }];
-     */
-}
 
 #pragma mark -----NSNotificationCenter selector
 -(void)endPostImage
 {
    // [self.navigationController popToViewController:self animated:YES];
     [self.navigationController popViewControllerAnimated:NO];
-    [self.navigationController popViewControllerAnimated:NO];
+   // [self.navigationController popViewControllerAnimated:NO];
 }
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_6_0
@@ -658,6 +675,7 @@ void c_slideAlpha() {
 	return UIInterfaceOrientationPortrait;
 }
 #endif
+
 
 
 
