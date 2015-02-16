@@ -105,9 +105,9 @@
     {
         self.commentContentLabel.attributedText = whatsGoinOnItem.attributedComment;
     }
-    if (whatsGoinOnItem.adddresMark)
+    if (whatsGoinOnItem.poiName)
     {
-        self.addressLabel.text = whatsGoinOnItem.adddresMark;
+        self.addressLabel.text = whatsGoinOnItem.poiName;
     }
     if (whatsGoinOnItem.imageUrlString)
     {

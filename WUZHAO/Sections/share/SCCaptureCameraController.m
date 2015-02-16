@@ -15,6 +15,10 @@
 #import "WZFilterUIViewController.h"
 #import "AddImageInfoViewController.h"
 
+#import "CaptureItemContainerUIView.h"
+
+#import "VPImageCropperViewController.h"
+
 
 //static void * CapturingStillImageContext = &CapturingStillImageContext;
 //static void * RecordingContext = &RecordingContext;
@@ -45,7 +49,7 @@
 //    bottomContainerViewTypeAudio     =   1   //录音页面
 //} BottomContainerViewType;
 
-@interface SCCaptureCameraController ()  <WZFilterUIViewControllerDelegate,UIImagePickerControllerDelegate>
+@interface SCCaptureCameraController ()  <VPImageCropperDelegate,UIImagePickerControllerDelegate>
 {
     int alphaTimes;
     CGPoint currTouchPoint;
@@ -53,11 +57,11 @@
 
 @property (nonatomic, strong) SCCaptureSessionManager *captureManager;
 
-@property (nonatomic, strong) IBOutlet UIView *topContainerView;//顶部view
+@property (nonatomic, strong) IBOutlet CaptureItemContainerUIView *topContainerView;//顶部view
 @property (nonatomic, strong) IBOutlet UILabel *topLbl;//顶部的标题
 
-@property (nonatomic, strong) IBOutlet UIView *bottomContainerView;//除了顶部标题、拍照区域剩下的所有区域
-@property (nonatomic, strong) IBOutlet UIView *cameraMenuView;//网格、闪光灯、前后摄像头等按钮
+@property (nonatomic, strong) IBOutlet CaptureItemContainerUIView *bottomContainerView;//除了顶部标题、拍照区域剩下的所有区域
+@property (nonatomic, strong) IBOutlet CaptureItemContainerUIView *cameraMenuView;//网格、闪光灯、前后摄像头等按钮
 @property (nonatomic, strong) NSMutableSet *cameraBtnSet;
 
 @property (nonatomic, strong) IBOutlet UIView *doneCameraUpView;
@@ -88,6 +92,8 @@
         
         _cameraBtnSet = [[NSMutableSet alloc] init];
     }
+    self.modalPresentationStyle = UIModalPresentationFullScreen;
+    self.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     return self;
 }
 
@@ -268,6 +274,7 @@
         [btn setImage:[UIImage imageNamed:selectedImgStr] forState:UIControlStateSelected];
     }
     [btn addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
+    [btn setBackgroundColor:[UIColor blackColor]];
     [parentView addSubview:btn];
     
     return btn;
@@ -476,6 +483,15 @@ void c_slideAlpha() {
             [weakSelf_WZ showCameraCover:NO];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"hideBar" object:nil];
         });
+        /*
+        VPImageCropperViewController *imgCropperVC = [[VPImageCropperViewController alloc]initWithImage:self.stillImage cropFrame:CGRectMake(0, 100, self.view.frame.size.width, self.view.frame.size.width) limitScaleRatio:3.0];
+        imgCropperVC.delegate = self;
+        [self presentViewController:imgCropperVC animated:YES completion:^{
+            
+            
+            
+        }];
+         */
         
         //直接进入发布页面
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
@@ -483,12 +499,13 @@ void c_slideAlpha() {
         AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
         [addImageInfoCon setPostImage:stillImage];
         [self.navigationController pushViewController:addImageInfoCon animated:YES];
+        
         //暂时屏蔽滤镜
        // WZFilterUIViewController *editor = [[WZFilterUIViewController alloc]initWithImage:stillImage delegate:self];
         //[self.navigationController showViewController:editor sender:self];
        // [self presentViewController:editor animated:YES completion:nil];
         
-
+        
     }];
 }
 
@@ -513,6 +530,7 @@ void c_slideAlpha() {
 - (void)dismissBtnPressed:(id)sender {
     NSLog(@"dismissButton Pressed");
     [[NSNotificationCenter defaultCenter] postNotificationName:@"finishPostImage" object:nil];
+   // [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     
     /*if (self.navigationController) {
         if (self.navigationController.viewControllers.count ==1) {
@@ -576,21 +594,47 @@ void c_slideAlpha() {
     [picker dismissViewControllerAnimated:YES completion:^{
         
         self.stillImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-        UIImage *cropImage = [_captureManager cropAndResizeImage:self.stillImage withHead:0];
+        UIImage *resizeImage = [self.captureManager resizeImage:self.stillImage];
+        //UIImage *cropImage = [_captureManager cropAndResizeImage:self.stillImage withHead:0];
         //暂时屏蔽滤镜
        // WZFilterUIViewController *editor = [[WZFilterUIViewController alloc]initWithImage:self.stillImage delegate:self];
         //[self.navigationController showViewController:editor sender:self];
+        //进入相片裁剪页面
+        VPImageCropperViewController *imgCropperVC = [[VPImageCropperViewController alloc]initWithImage:resizeImage cropFrame:CGRectMake(0, 100, self.view.frame.size.width, self.view.frame.size.width) limitScaleRatio:3.0];
+        
+        imgCropperVC.delegate = self;
+        [self presentViewController:imgCropperVC animated:YES completion:^{
+            
+
+            
+        }];
+
+
+    }];
+}
+#pragma mark - VPImageCropperViewControllerDelegate
+-(void)imageCropperDidCancel:(VPImageCropperViewController *)cropperViewController
+{
+    [cropperViewController dismissViewControllerAnimated:YES completion:nil];
+    
+}
+-(void)imageCropper:(VPImageCropperViewController *)cropperViewController didFinished:(UIImage *)editedImage
+{
+    self.stillImage = editedImage;
+    [cropperViewController dismissViewControllerAnimated:YES completion:^{
         //直接进入发布页面
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
         
         AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
-        [addImageInfoCon setPostImage:cropImage];
+        [addImageInfoCon setPostImage:self.stillImage];
         [self.navigationController pushViewController:addImageInfoCon animated:YES];
-
     }];
+
+    
 }
 
-#pragma mark ------------notification-------------
+
+#pragma mark - notification
 - (void)orientationDidChange:(NSNotification*)noti {
     
     //    [_captureManager.previewLayer.connection setVideoOrientation:(AVCaptureVideoOrientation)[UIDevice currentDevice].orientation];
@@ -652,7 +696,11 @@ void c_slideAlpha() {
 -(void)endPostImage
 {
    // [self.navigationController popToViewController:self animated:YES];
-    [self.navigationController popViewControllerAnimated:NO];
+    NSLog(@"%ld",[[self.navigationController childViewControllers]count]);
+    if ([[self.navigationController childViewControllers]count]>2)
+    {
+        [self.navigationController popViewControllerAnimated:NO];
+    }
    // [self.navigationController popViewControllerAnimated:NO];
 }
 

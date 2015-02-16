@@ -41,6 +41,7 @@
     [super viewDidLoad];
     self.delegate = self;
     self.tabIndex =0;
+    NSLog(@"%@",[[NSBundle mainBundle]bundleIdentifier]);
     
    // [self activeCurrentTab];
     

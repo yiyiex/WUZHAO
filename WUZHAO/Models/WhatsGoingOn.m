@@ -44,7 +44,7 @@
     
     WhatsGoingOn *item = [[WhatsGoingOn alloc] init];
     item.postId = 1;
-    item.adddresMark = @"上海市静安区";
+
     item.imageDescription = @"一人食";
     item.imageUrlString = [imageUrlStrings objectAtIndex:0];
     item.likeCount = 111;

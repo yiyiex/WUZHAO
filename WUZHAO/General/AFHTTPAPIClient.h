@@ -56,7 +56,7 @@
 - (void) GetQiNiuTokenWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
 //post the image info to server
-- (void) PostPhotoInfomationWithUserId:(NSInteger)userId photo:(NSString *)photoName thought:(NSString *)thought whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+- (void) PostPhotoInfomationWithUserId:(NSInteger)userId method:(NSString *)method photo:(NSString *)photoName thought:(NSString *)thought haspoi:(BOOL)haspoi  provider:(NSInteger)provider uid:(NSString *)uid name:(NSString *)name classify:(NSString *)classify location:(NSString *)location address:(NSString *)address province:(NSString *)province city:(NSString *)city district:(NSString *)district stamp:(NSString *)stamp whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
 //get whats going on with userId
 -(void) GetWhatsGoingOnWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;

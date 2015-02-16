@@ -6,7 +6,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/General/AFHTTPAPIClient.m"
-            timestampString = "445445711.385237"
+            timestampString = "445796784.088997"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "330"
-            endingLineNumber = "330"
+            startingLineNumber = "340"
+            endingLineNumber = "340"
             landmarkName = "-GetWhatsGoingOnWithUserId:whenComplete:"
             landmarkType = "5">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "445424872.121201"
+            timestampString = "445792393.583975"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "30"
-            endingLineNumber = "30"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "445424872.121201"
+            timestampString = "445797411.09738"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "88"
-            endingLineNumber = "88"
+            startingLineNumber = "134"
+            endingLineNumber = "134"
             landmarkName = "-uploadPhotoToQiNiu"
             landmarkType = "5">
          </BreakpointContent>
@@ -102,7 +102,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
@@ -150,7 +150,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
@@ -166,7 +166,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
@@ -179,13 +179,13 @@
             landmarkType = "5">
             <Locations>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "-[MineViewController setPersonalInfo]"
                   moduleName = "WUZHAO"
                   urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Mine/MineViewController.m"
-                  timestampString = "445450090.394351"
+                  timestampString = "445503289.195874"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "93"
@@ -193,13 +193,13 @@
                   offsetFromSymbolStart = "504">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "__37-[MineViewController setPersonalInfo]_block_invoke"
                   moduleName = "WUZHAO"
                   urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Mine/MineViewController.m"
-                  timestampString = "445450090.394677"
+                  timestampString = "445503289.196079"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "93"
@@ -212,27 +212,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/General/AFHTTPAPIClient.m"
-            timestampString = "445445522.05519"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "227"
-            endingLineNumber = "227"
-            landmarkName = "-GetPersonalInfoWithUserId:whenComplete:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/General/AFHTTPAPIClient.m"
-            timestampString = "445445529.73601"
+            timestampString = "445796784.088997"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "237"
@@ -244,15 +228,31 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/General/AFHTTPAPIClient.m"
-            timestampString = "445445535.750392"
+            timestampString = "445796784.088997"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "251"
-            endingLineNumber = "251"
+            startingLineNumber = "247"
+            endingLineNumber = "247"
+            landmarkName = "-GetPersonalInfoWithUserId:whenComplete:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/General/AFHTTPAPIClient.m"
+            timestampString = "445796784.088997"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "261"
+            endingLineNumber = "261"
             landmarkName = "-GetPersonalInfoWithUserId:whenComplete:"
             landmarkType = "5">
          </BreakpointContent>
@@ -296,59 +296,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "445447620.836227"
+            timestampString = "445797411.09738"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "103"
-            endingLineNumber = "103"
+            startingLineNumber = "150"
+            endingLineNumber = "150"
             landmarkName = "-uploadPhotoToQiNiu"
             landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "445447698.985025"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "115"
-            endingLineNumber = "115"
-            landmarkName = "-uploadPhotoToQiNiu"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__48-[AddImageInfoViewController uploadPhotoToQiNiu]_block_invoke_2"
-                  moduleName = "WUZHAO"
-                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/share/AddImageInfoViewController.m"
-                  timestampString = "445448900.415688"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "115"
-                  endingLineNumber = "115"
-                  offsetFromSymbolStart = "276">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__48-[AddImageInfoViewController uploadPhotoToQiNiu]_block_invoke_3"
-                  moduleName = "WUZHAO"
-                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/share/AddImageInfoViewController.m"
-                  timestampString = "445448900.415898"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "115"
-                  endingLineNumber = "115"
-                  offsetFromSymbolStart = "40">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -364,6 +318,198 @@
             startingLineNumber = "272"
             endingLineNumber = "272"
             landmarkName = "-cropAndResizeImage:withHead:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Controllers/MainTabBarViewController.m"
+            timestampString = "445666128.519688"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
+            timestampString = "445797411.09738"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
+            timestampString = "445797411.09738"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
+            landmarkName = "-searchAddress"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
+            timestampString = "445797411.09738"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "254"
+            endingLineNumber = "254"
+            landmarkName = "-locationManager:didUpdateLocations:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
+            timestampString = "445797411.09738"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "273"
+            endingLineNumber = "273"
+            landmarkName = "-onPlaceSearchDone:response:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
+            timestampString = "445797411.09738"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "127"
+            endingLineNumber = "127"
+            landmarkName = "-searchAddress"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
+            timestampString = "445797411.09738"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "301"
+            endingLineNumber = "301"
+            landmarkName = "-onPlaceSearchDone:response:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
+            timestampString = "445797411.09738"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "280"
+            endingLineNumber = "280"
+            landmarkName = "-onPlaceSearchDone:response:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
+            timestampString = "445797411.09738"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
+            landmarkName = "-searchAddress"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
+            timestampString = "445797411.09738"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "319"
+            endingLineNumber = "319"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
+            timestampString = "445797411.09738"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
+            landmarkName = "-uploadPhotoToQiNiu"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/General/AFHTTPAPIClient.m"
+            timestampString = "445794733.738338"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "199"
+            endingLineNumber = "199"
+            landmarkName = "-PostPhotoInfomationWithUserId:method:photo:thought:haspoi:provider:uid:name:classify:location:address:province:city:district:stamp:whenComplete:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

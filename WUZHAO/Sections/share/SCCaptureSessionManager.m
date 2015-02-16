@@ -283,6 +283,20 @@
     return croppedImage;
     
 }
+
+-(UIImage *)resizeImage:(UIImage *)image
+{
+    CGFloat width = WZ_APP_SIZE.width;
+    CGFloat height = WZ_APP_SIZE.height;
+    CGSize size = CGSizeMake(width, height);
+    
+    UIImage *scaledImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:size interpolationQuality:kCGInterpolationHigh];
+
+    return scaledImage;
+    
+    
+}
+
 /**
  *  切换前后摄像头
  *

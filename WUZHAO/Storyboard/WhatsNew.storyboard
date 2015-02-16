@@ -43,14 +43,22 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="time" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KoH-CL-qtU" customClass="UIReadOnlyLabel">
-                                                    <rect key="frame" x="86" y="54" width="34" height="21"/>
+                                                    <rect key="frame" x="521" y="22" width="34" height="21"/>
+                                                    <fontDescription key="fontDescription" name="Courier" family="Courier" pointSize="13"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="self description" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ll-qf-dDr" customClass="UIReadOnlyLabel">
+                                                    <rect key="frame" x="83" y="52" width="125" height="21"/>
                                                     <fontDescription key="fontDescription" name="Courier" family="Courier" pointSize="13"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="4ll-qf-dDr" firstAttribute="top" secondItem="1HN-rO-o3h" secondAttribute="bottom" constant="13" id="4Bo-LR-8iP"/>
                                                 <constraint firstAttribute="width" secondItem="9PP-xh-A9k" secondAttribute="height" multiplier="8:1" id="N85-eB-3kR"/>
+                                                <constraint firstAttribute="trailing" secondItem="KoH-CL-qtU" secondAttribute="trailing" constant="10" id="Rzc-0c-3qi"/>
                                                 <constraint firstAttribute="width" secondItem="9PP-xh-A9k" secondAttribute="height" multiplier="8:1" id="U0m-oe-u3x"/>
                                                 <constraint firstItem="Ncc-Da-gBe" firstAttribute="leading" secondItem="9PP-xh-A9k" secondAttribute="leading" constant="2" id="Yu1-ha-H7z"/>
                                                 <constraint firstItem="KoH-CL-qtU" firstAttribute="bottom" secondItem="Ncc-Da-gBe" secondAttribute="bottom" id="aNS-rI-zHa"/>
@@ -59,14 +67,20 @@
                                                 <constraint firstAttribute="trailing" secondItem="Ncc-Da-gBe" secondAttribute="trailing" constant="10" id="dta-iJ-UO3"/>
                                                 <constraint firstItem="1HN-rO-o3h" firstAttribute="leading" secondItem="Ncc-Da-gBe" secondAttribute="trailing" constant="10" id="e7L-nP-dDd"/>
                                                 <constraint firstItem="KoH-CL-qtU" firstAttribute="leading" secondItem="Ncc-Da-gBe" secondAttribute="trailing" constant="10" id="fhC-Td-O0B"/>
+                                                <constraint firstItem="KoH-CL-qtU" firstAttribute="top" secondItem="9PP-xh-A9k" secondAttribute="top" constant="22" id="gKx-tl-cgv"/>
                                                 <constraint firstAttribute="centerY" secondItem="1HN-rO-o3h" secondAttribute="centerY" constant="5" id="hxZ-pO-SW6"/>
+                                                <constraint firstItem="4ll-qf-dDr" firstAttribute="leading" secondItem="1HN-rO-o3h" secondAttribute="leading" id="kzY-d2-l5f"/>
                                                 <constraint firstAttribute="bottom" secondItem="Ncc-Da-gBe" secondAttribute="bottom" constant="2" id="q7N-jV-C8l"/>
+                                                <constraint firstAttribute="centerY" secondItem="KoH-CL-qtU" secondAttribute="centerY" constant="5" id="vZl-Dd-Mq0"/>
                                             </constraints>
                                             <variation key="default">
                                                 <mask key="constraints">
                                                     <exclude reference="N85-eB-3kR"/>
                                                     <exclude reference="aQW-L5-ywE"/>
                                                     <exclude reference="dta-iJ-UO3"/>
+                                                    <exclude reference="aNS-rI-zHa"/>
+                                                    <exclude reference="fhC-Td-O0B"/>
+                                                    <exclude reference="gKx-tl-cgv"/>
                                                 </mask>
                                             </variation>
                                         </view>
@@ -321,6 +335,8 @@
                                     <outlet property="homeCellImageView" destination="zZN-dP-Ryp" id="ABp-xX-e6s"/>
                                     <outlet property="likeLabel" destination="dpz-uI-IT5" id="SWa-jT-uy2"/>
                                     <outlet property="postTimeLabel" destination="KoH-CL-qtU" id="yNE-u5-AhC"/>
+                                    <outlet property="postUserName" destination="1HN-rO-o3h" id="35O-70-3dc"/>
+                                    <outlet property="postUserSelfDescription" destination="4ll-qf-dDr" id="0Ik-BK-jav"/>
                                     <outlet property="zanClickLabel" destination="Qom-LI-FZB" id="6Gm-sm-DGc"/>
                                     <outlet property="zanView" destination="RhZ-yN-Bm8" id="9zt-ok-z4c"/>
                                 </connections>

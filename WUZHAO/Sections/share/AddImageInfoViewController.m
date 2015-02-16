@@ -14,8 +14,20 @@
 
 #import "QiniuSDK.h"
 
-@interface AddImageInfoViewController()
-@property (nonatomic ,strong)  NSArray *addressDataSource;
+#import <AMapSearchKit/AMapSearchAPI.h>
+#import <CoreLocation/CoreLocation.h>
+
+#define poi_privider 1
+
+@interface AddImageInfoViewController()<AMapSearchDelegate,CLLocationManagerDelegate>
+{
+    AMapSearchAPI *_search;
+    CLLocationManager *_locationManager;
+}
+@property (nonatomic ,strong)  NSMutableArray *addressDataSource;
+
+@property (nonatomic) BOOL hasPoi;
+@property (nonatomic ,strong) NSMutableDictionary *poiInfo;
 
 @property (atomic) float progress;
 @end
@@ -28,16 +40,38 @@
     self.navigationController.navigationBarHidden = NO;
     self.navigationItem.hidesBackButton = NO;
     self.postImageView.image = self.postImage;
-    [self.addressTableView reloadData];
+    self.hasPoi = NO;
+    [self searchAddress];
+    self.addressTableView.backgroundColor = [UIColor colorWithWhite:45.f/255.f alpha:1];
+    self.addressTableView.tintColor = [UIColor whiteColor];
+    //[self.addressTableView reloadData];
 }
-#pragma mark =================datas===================
+#pragma mark -datas
 - (NSArray *) addressDataSource
 {
     if (!_addressDataSource)
     {
-        _addressDataSource = [[AddressInfoList newDataSource] mutableCopy];
+        _addressDataSource = [[NSMutableArray alloc]init];
     }
     return _addressDataSource;
+}
+
+-(NSMutableDictionary *)poiInfo
+{
+    if (!_poiInfo)
+    {
+        _poiInfo = [[NSMutableDictionary alloc]init];
+        [_poiInfo setObject:@"" forKey:@"uid"];
+        [_poiInfo setObject:@"" forKey:@"name"];
+        [_poiInfo setObject:@"" forKey:@"classify"];
+        [_poiInfo setObject:@"" forKey:@"location"];
+        [_poiInfo setObject:@"" forKey:@"address"];
+        [_poiInfo setObject:@"" forKey:@"province"];
+        [_poiInfo setObject:@"" forKey:@"city"];
+        [_poiInfo setObject:@"" forKey:@"district"];
+        [_poiInfo setObject:@"" forKey:@"stamp"];
+    }
+    return _poiInfo;
 }
 
 -(UIImageView *)postImageView
@@ -58,7 +92,9 @@
     return _whatsGoingOnItem;
 }
 
-#pragma mark ==============buttons
+
+
+#pragma mark -buttons
 
 -(void)PostButtonPressed:(UIBarButtonItem *)sender
 {
@@ -70,16 +106,26 @@
     self.whatsGoingOnItem.imageUrlString = @"";
     self.whatsGoingOnItem.likeCount = 0;
     self.whatsGoingOnItem.comment = @"";
-    //self.whatsGoingOnItem.photoUser =
+
     [self.postImageDescription resignFirstResponder];
     //发布照片信息,上传到七牛;上传成功后提示并转回主页
     [self uploadPhotoToQiNiu];
 
-    //[[[UIAlertView alloc] initWithTitle:@"info" message:@"发布成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
- 
+
     
 }
 
+-(void)searchAddress
+{
+    _locationManager = [[CLLocationManager alloc]init];
+    _locationManager.delegate = self;
+    _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    if ([_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [_locationManager requestWhenInUseAuthorization];
+    }
+    _locationManager.distanceFilter = 50;
+    [_locationManager startUpdatingLocation];
+}
 
 -(void)uploadPhotoToQiNiu
 {
@@ -88,6 +134,7 @@
     [SVProgressHUD showWithStatus:@"图片上传中..."];
     NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
     NSString *photoDescription = self.postImageDescription.text;
+    
     [[AFHTTPAPIClient sharedInstance] GetQiNiuTokenWithUserId:userId whenComplete:^(NSDictionary *result) {
         NSDictionary *data;
         if ([result objectForKey:@"data"])
@@ -101,8 +148,8 @@
         }
         QNUploadManager *upLoadManager = [[QNUploadManager alloc]init];
         NSData *imageData = UIImageJPEGRepresentation(self.postImage, 1.0f);
-        [upLoadManager putData:imageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
-            
+        [upLoadManager putData:imageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
+         {
             NSLog(@"%@",info);
             if (info.error)
             {
@@ -110,9 +157,25 @@
             }
             else
             {
+
                 //用户端提示
-                
-                [[AFHTTPAPIClient sharedInstance]PostPhotoInfomationWithUserId:userId photo:(NSString *)[data objectForKey:@"imageName"] thought:photoDescription whenComplete:^(NSDictionary *returnData) {
+               [[AFHTTPAPIClient sharedInstance]PostPhotoInfomationWithUserId:userId
+                                                                       method:@"post"
+                                                                        photo:[data objectForKey:@"imageName"]
+                                                                    thought:photoDescription
+                                                                       haspoi:_hasPoi
+                                                                     provider:poi_privider
+                                                                          uid:[_poiInfo valueForKey:@"uid"]
+                                                                         name:[_poiInfo valueForKey:@"name"]
+                                                                     classify:[_poiInfo valueForKey:@"classify"]
+                                                                     location:[_poiInfo valueForKey:@"location"]
+                                                                      address:[_poiInfo valueForKey:@"address"]
+                                                                     province:[_poiInfo valueForKey:@"province"]
+                                                                         city:[_poiInfo valueForKey:@"city"]
+                                                                     district:[_poiInfo valueForKey:@"district"]
+                                                                        stamp:[_poiInfo valueForKey:@"stamp"]
+                                                                 whenComplete:^(NSDictionary *returnData)
+                {
                     if (returnData)
                     {
                         [SVProgressHUD showSuccessWithStatus:@"上传图片成功"];
@@ -130,6 +193,7 @@
                     //....
 
                 }];
+
                 
             }
             
@@ -140,7 +204,7 @@
 }
 
 
-#pragma mark -------------dataformat
+#pragma mark -dataformat
 
 - (NSString *)getDateTimeString
 {
@@ -178,8 +242,66 @@
 
     
 }*/
+#pragma mark - CLLocationManagerDelegate
+-(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    NSLog(@"location failed!");
+    self.addressDataSource = nil;
+}
 
-#pragma mark ==============tableview delegate===================
+-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    NSLog(@"location success");
+    NSLog(@"location: %@",locations);
+    _search = [[AMapSearchAPI alloc]initWithSearchKey:@"2552aafe945c02ece19c41739007ca14" Delegate:self];
+    AMapPlaceSearchRequest *poiRequest = [[AMapPlaceSearchRequest alloc]init];
+    poiRequest.searchType = AMapSearchType_PlaceAround;
+    AMapGeoPoint *postImageGeoPoint = [[AMapGeoPoint alloc]init];
+    CLLocation *nowLocation = locations.lastObject;
+    postImageGeoPoint.latitude = nowLocation.coordinate.latitude;
+    postImageGeoPoint.longitude = nowLocation.coordinate.longitude;
+    poiRequest.location = postImageGeoPoint;
+    poiRequest.radius = 5000;
+    poiRequest.sortrule = 1;
+    poiRequest.requireExtension = YES;
+    
+    [_search AMapPlaceSearch:poiRequest];
+    
+}
+#pragma mark -amapSearch delegaet
+-(void)onPlaceSearchDone:(AMapPlaceSearchRequest *)request response:(AMapPlaceSearchResponse *)response
+{
+    NSLog(@"on place search Done");
+    if (response.pois.count == 0)
+    {
+        return;
+    }
+    //通过AMapPlaceSearchResponse对象处理搜索结果
+    [self.addressDataSource removeAllObjects];
+    NSString *strCount = [NSString stringWithFormat:@"count: %ld",(long)response.count];
+    NSString *strSuggestion = [NSString stringWithFormat:@"Suggestion: %@", response.suggestion];
+    NSString *strPoi = @"";
+    for (AMapPOI *p in response.pois) {
+        strPoi = [NSString stringWithFormat:@"%@\nPOI: %@", strPoi, p.description];
+        NSMutableDictionary *poiInfo = [[NSMutableDictionary alloc]init];
+        [poiInfo setValue:p.uid forKey:@"uid"];
+        [poiInfo setValue:p.name forKey:@"name"];
+        [poiInfo setValue:p.address forKey:@"address"];
+        [poiInfo setValue:p.city forKey:@"city"];
+        [poiInfo setValue:p.district forKey:@"district"];
+        [poiInfo setValue:p.province forKey:@"province"];
+        [poiInfo setValue:p.timestamp forKey:@"stamp"];
+        NSString *location = [NSString stringWithFormat:@"%f,%f",p.location.latitude,p.location.longitude];
+        [poiInfo setValue:location forKey:@"location"];
+        [poiInfo setValue:p.type forKey:@"classify"];
+        [self.addressDataSource addObject:poiInfo];
+    }
+    NSString *result = [NSString stringWithFormat:@"%@ \n %@ \n %@", strCount, strSuggestion, strPoi];
+    NSLog(@"Place: %@", result);
+    [self.addressTableView reloadData];
+    
+}
+#pragma mark -tableview delegate
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -194,20 +316,26 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"addressInfoCell" forIndexPath:indexPath];
-    cell.textLabel.text = [self.addressDataSource objectAtIndex:indexPath.row];
+    NSDictionary *poiInfo = [self.addressDataSource objectAtIndex:indexPath.row];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@~%@~%@",[poiInfo valueForKey:@"city"],[poiInfo valueForKey:@"district"],[poiInfo valueForKey:@"name"]];
+    cell.backgroundColor = [UIColor colorWithWhite:45.f/255.f alpha:1];
+    cell.textLabel.textColor = [UIColor whiteColor];
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.whatsGoingOnItem.adddresMark = [self.addressDataSource objectAtIndex:indexPath.row];
-    self.whatsGoingOnItem.imageDescription = @"";
-    self.addressInfoLabel.text = [NSString stringWithFormat:@"you chooese : %@",self.whatsGoingOnItem.adddresMark];
+    self.hasPoi = YES;
     
+    NSDictionary *poiInfo = [self.addressDataSource objectAtIndex:indexPath.row];
+   // self.whatsGoingOnItem.imageDescription = @"";
+    self.poiInfo = [poiInfo copy];
+    self.whatsGoingOnItem.poiName = [NSString stringWithFormat:@"%@~%@~%@",[poiInfo valueForKey:@"city"],[poiInfo valueForKey:@"district"],[poiInfo valueForKey:@"name"]];
+    self.addressInfoLabel.text = [NSString stringWithFormat:@"   %@",self.whatsGoingOnItem.poiName];
     
 }
 
-#pragma mark ================textview delegate====================
+#pragma mark -textview delegate
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if (![self.postImageDescription isExclusiveTouch])

@@ -42,7 +42,10 @@ typedef void(^DidCapturePhotoBlock)(UIImage *stillImage);
 - (void)configureWithParentLayer:(UIView*)parent previewRect:(CGRect)preivewRect;
 
 - (void)takePicture:(DidCapturePhotoBlock)block;
+
 -(UIImage *)cropAndResizeImage:(UIImage *)image withHead:(CGFloat)headHeight;
+-(UIImage *)resizeImage:(UIImage *)image;
+
 - (void)switchCamera:(BOOL)isFrontCamera;
 - (void)pinchCameraViewWithScalNum:(CGFloat)scale;
 - (void)pinchCameraView:(UIPinchGestureRecognizer*)gesture;

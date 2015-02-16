@@ -128,6 +128,11 @@
 		7D7047EA1A45CDFB00EC0D40 /* touch_focus_x@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D7047CE1A45CDFB00EC0D40 /* touch_focus_x@2x.png */; };
 		7D73A9D61A6F7D3C00353F39 /* VPImageCropperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D73A9D51A6F7D3C00353F39 /* VPImageCropperViewController.m */; };
 		7D73A9D91A6FEA4400353F39 /* SetPasswordTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D73A9D81A6FEA4400353F39 /* SetPasswordTableViewController.m */; };
+		7D78E8831A90652B00611422 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D78E8821A90652B00611422 /* CoreLocation.framework */; };
+		7D78E8851A90653500611422 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D78E8841A90653500611422 /* CoreTelephony.framework */; };
+		7D78E8871A90654A00611422 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D78E8861A90654A00611422 /* libstdc++.6.0.9.dylib */; };
+		7D78E88A1A906ED800611422 /* AMapSearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D78E8891A906ED800611422 /* AMapSearchKit.framework */; };
+		7D78E88C1A906EF400611422 /* MAMapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D78E88B1A906EF400611422 /* MAMapKit.framework */; };
 		7D83C0571A6CBBCD00B754C2 /* EditPersonalInfoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D83C0561A6CBBCD00B754C2 /* EditPersonalInfoTableViewController.m */; };
 		7DB6D60F1A4BAD53005F1442 /* GlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB6D60E1A4BAD53005F1442 /* GlobalAppearance.m */; };
 		7DB6D6121A4BB609005F1442 /* UIReadOnlyLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB6D6111A4BB609005F1442 /* UIReadOnlyLabel.m */; };
@@ -148,6 +153,7 @@
 		7DC29DC91A3F34BB0065BBD2 /* RBStoryboardSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DC21A3F34BB0065BBD2 /* RBStoryboardSegue.m */; };
 		7DC29DCA1A3F34BB0065BBD2 /* UIViewController+RBStoryboardLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DC41A3F34BB0065BBD2 /* UIViewController+RBStoryboardLink.m */; };
 		7DC29DCD1A3F3AC90065BBD2 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DCC1A3F3AC90065BBD2 /* SearchViewController.m */; };
+		7DCD2E2B1A8DD8AA005BBCD2 /* CaptureItemContainerUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD2E2A1A8DD8AA005BBCD2 /* CaptureItemContainerUIView.m */; };
 		7DE066A01A3F03A3008086BD /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE0669F1A3F03A3008086BD /* CoreData.framework */; };
 		7DE066A21A3F03A8008086BD /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE066A11A3F03A8008086BD /* MobileCoreServices.framework */; };
 		7DE066A41A3F03AE008086BD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE066A31A3F03AE008086BD /* Security.framework */; };
@@ -388,6 +394,11 @@
 		7D73A9D51A6F7D3C00353F39 /* VPImageCropperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VPImageCropperViewController.m; sourceTree = "<group>"; };
 		7D73A9D71A6FEA4400353F39 /* SetPasswordTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SetPasswordTableViewController.h; path = WUZHAO/Sections/Mine/SetPasswordTableViewController.h; sourceTree = "<group>"; };
 		7D73A9D81A6FEA4400353F39 /* SetPasswordTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SetPasswordTableViewController.m; path = WUZHAO/Sections/Mine/SetPasswordTableViewController.m; sourceTree = "<group>"; };
+		7D78E8821A90652B00611422 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		7D78E8841A90653500611422 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		7D78E8861A90654A00611422 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
+		7D78E8891A906ED800611422 /* AMapSearchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AMapSearchKit.framework; path = WUZHAO/Vendor/AMapSearchKit.framework; sourceTree = "<group>"; };
+		7D78E88B1A906EF400611422 /* MAMapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MAMapKit.framework; path = WUZHAO/Vendor/MAMapKit.framework; sourceTree = "<group>"; };
 		7D83C0551A6CBBCD00B754C2 /* EditPersonalInfoTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditPersonalInfoTableViewController.h; path = WUZHAO/Sections/Mine/EditPersonalInfoTableViewController.h; sourceTree = "<group>"; };
 		7D83C0561A6CBBCD00B754C2 /* EditPersonalInfoTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EditPersonalInfoTableViewController.m; path = WUZHAO/Sections/Mine/EditPersonalInfoTableViewController.m; sourceTree = "<group>"; };
 		7DB6D60D1A4BAD53005F1442 /* GlobalAppearance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GlobalAppearance.h; path = WUZHAO/General/GlobalAppearance.h; sourceTree = "<group>"; };
@@ -426,6 +437,8 @@
 		7DC29DC41A3F34BB0065BBD2 /* UIViewController+RBStoryboardLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+RBStoryboardLink.m"; sourceTree = "<group>"; };
 		7DC29DCB1A3F3AC90065BBD2 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchViewController.h; path = WUZHAO/Sections/Controllers/Search/SearchViewController.h; sourceTree = "<group>"; };
 		7DC29DCC1A3F3AC90065BBD2 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchViewController.m; path = WUZHAO/Sections/Controllers/Search/SearchViewController.m; sourceTree = "<group>"; };
+		7DCD2E291A8DD8AA005BBCD2 /* CaptureItemContainerUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CaptureItemContainerUIView.h; path = WUZHAO/Sections/Views/CaptureItemContainerUIView.h; sourceTree = "<group>"; };
+		7DCD2E2A1A8DD8AA005BBCD2 /* CaptureItemContainerUIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CaptureItemContainerUIView.m; path = WUZHAO/Sections/Views/CaptureItemContainerUIView.m; sourceTree = "<group>"; };
 		7DE0669F1A3F03A3008086BD /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		7DE066A11A3F03A8008086BD /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		7DE066A31A3F03AE008086BD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -514,6 +527,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D78E88C1A906EF400611422 /* MAMapKit.framework in Frameworks */,
+				7D78E88A1A906ED800611422 /* AMapSearchKit.framework in Frameworks */,
+				7DE066A41A3F03AE008086BD /* Security.framework in Frameworks */,
+				7D78E8871A90654A00611422 /* libstdc++.6.0.9.dylib in Frameworks */,
+				7D78E8851A90653500611422 /* CoreTelephony.framework in Frameworks */,
+				7D78E8831A90652B00611422 /* CoreLocation.framework in Frameworks */,
 				7D6376E51A7688A100CCD1AA /* CoreImage.framework in Frameworks */,
 				7DE35EA91A640D450086B544 /* libz.dylib in Frameworks */,
 				7D70476B1A45A5AB00EC0D40 /* OpenGLES.framework in Frameworks */,
@@ -526,7 +545,6 @@
 				7D7047301A43B95400EC0D40 /* UIKit.framework in Frameworks */,
 				7DE066A81A3F03BA008086BD /* Foundation.framework in Frameworks */,
 				7DE066A61A3F03B5008086BD /* SystemConfiguration.framework in Frameworks */,
-				7DE066A41A3F03AE008086BD /* Security.framework in Frameworks */,
 				7DE066A21A3F03A8008086BD /* MobileCoreServices.framework in Frameworks */,
 				7DE066A01A3F03A3008086BD /* CoreData.framework in Frameworks */,
 			);
@@ -1001,6 +1019,11 @@
 		7DE0669E1A3F037F008086BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7D78E88B1A906EF400611422 /* MAMapKit.framework */,
+				7D78E8891A906ED800611422 /* AMapSearchKit.framework */,
+				7D78E8861A90654A00611422 /* libstdc++.6.0.9.dylib */,
+				7D78E8841A90653500611422 /* CoreTelephony.framework */,
+				7D78E8821A90652B00611422 /* CoreLocation.framework */,
 				7D6376E41A7688A100CCD1AA /* CoreImage.framework */,
 				7DE35EA81A640D450086B544 /* libz.dylib */,
 				7D70476A1A45A5AB00EC0D40 /* OpenGLES.framework */,
@@ -1219,6 +1242,8 @@
 		7DE067901A3F0F42008086BD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				7DCD2E291A8DD8AA005BBCD2 /* CaptureItemContainerUIView.h */,
+				7DCD2E2A1A8DD8AA005BBCD2 /* CaptureItemContainerUIView.m */,
 				7D0071AD1A787C0B0053A1AA /* FeSlideFilterView.h */,
 				7D0071AE1A787C0B0053A1AA /* FeSlideFilterView.m */,
 				7D21E9301A5BEB6700815A33 /* ImagesView */,
@@ -1503,6 +1528,7 @@
 				7DC29DAE1A3F13F30065BBD2 /* WhatsGoingOn.m in Sources */,
 				7DC29DC91A3F34BB0065BBD2 /* RBStoryboardSegue.m in Sources */,
 				7DC29DA81A3F113C0065BBD2 /* HomeTableViewController.m in Sources */,
+				7DCD2E2B1A8DD8AA005BBCD2 /* CaptureItemContainerUIView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1626,11 +1652,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: yiyi shen (37PYG22632)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/WUZHAO/Vendor",
+				);
 				INFOPLIST_FILE = WUZHAO/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -1640,11 +1671,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: yiyi shen (37PYG22632)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: yiyi shen (37PYG22632)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/WUZHAO/Vendor",
+				);
 				INFOPLIST_FILE = WUZHAO/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};

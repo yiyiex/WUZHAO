@@ -15,6 +15,8 @@
 #import "UIThemeLabel.h"
 #import "WPHotspotLabel.h"
 
+#import "CaptureItemContainerUIView.h"
+
 
 @implementation GlobalAppearance
 
@@ -42,7 +44,8 @@
        
        }];
     
-    UIBarButtonItem *barItemAppearance = [UIBarButtonItem appearance];
+    
+    //UIBarButtonItem *barItemAppearance = [UIBarButtonItem appearance];
     //[barItemAppearance setBackgroundImage:[UIImage new] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
     //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -65,7 +68,9 @@
     UIButton *appearance = [UIButton appearance];
     [appearance setTintColor:[UIColor whiteColor]];
     [appearance setBackgroundColor:THEME_COLOR];
-    
+    [[UIButton appearanceWhenContainedIn:[UINavigationBar class], nil]setBackgroundColor:[UIColor clearColor]];
+    [[UIButton appearanceWhenContainedIn:[UITableViewCell class], nil] setBackgroundColor:[UIColor clearColor]];
+    [[UIButton appearanceWhenContainedIn:[CaptureItemContainerUIView class], nil] setBackgroundColor:[UIColor blackColor]];
     
     
 }

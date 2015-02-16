@@ -17,13 +17,14 @@
 @property (nonatomic,copy) NSString *imageUrlString;
 @property (nonatomic,copy) NSString *postTime;
 @property (nonatomic,copy) NSString *imageDescription;
-@property (nonatomic,copy) NSString *adddresMark;
+//@property (nonatomic,copy) NSString *adddresMark;
 @property (nonatomic) NSInteger likeCount;
 @property (nonatomic,copy) NSString *comment;
 @property (nonatomic,copy) NSArray  *commentList;
 @property (nonatomic,copy) NSAttributedString *attributedComment;
 @property (nonatomic) BOOL hasMoreComments;
-
+@property (nonatomic) NSInteger poiId;
+@property (nonatomic,strong) NSString *poiName;
 + (NSArray *) newDataSource;
 
 @end

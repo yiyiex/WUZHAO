@@ -194,11 +194,22 @@
         whenComplete(returnData);
     }];
 }
-
-- (void ) PostPhotoInfomationWithUserId:(NSInteger)userId photo:(NSString *)photoName thought:(NSString *)thought whenComplete:(void (^)(NSDictionary *))whenComplete
+-(void) PostPhotoInfomationWithUserId:(NSInteger)userId method:(NSString *)method photo:(NSString *)photoName thought:(NSString *)thought haspoi:(BOOL)haspoi provider:(NSInteger)provider uid:(NSString *)uid name:(NSString *)name classify:(NSString *)classify location:(NSString *)location address:(NSString *)address province:(NSString *)province city:(NSString *)city district:(NSString *)district stamp:(NSString *)stamp whenComplete:(void (^)(NSDictionary *))whenComplete
 {
     NSString *api = [NSString stringWithFormat:@"api/post/%ld",(long)userId];
-    NSDictionary *photoInfo = @{@"photo":photoName,@"thought":thought};
+    NSDictionary *photoInfo = @{@"photo":photoName,
+                                @"method":method,
+                                @"thought":thought,
+                                @"haspoi":haspoi?@"true":@"false",
+                                @"provider":[NSNumber numberWithInteger:provider],
+                                @"uid":uid,@"name":name,
+                                @"classify":classify,
+                                @"location":location,
+                                @"address":address,
+                                @"province":province,
+                                @"city":city,
+                                @"district":district,
+                                @"stamp":stamp};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"POST" api:api parameters:photoInfo complete:^(NSDictionary *result, NSError *error) {
         if (result) {
@@ -218,9 +229,8 @@
         }
         whenComplete(returnData);
     }];
-    
-    
 }
+
 
 //personal info
 
@@ -334,7 +344,7 @@
                     item.postId =[(NSNumber *)[[data objectAtIndex:i] objectForKey:@"post_id"] integerValue];
                 
                     
-                    item.photoUser.UserID = [[data objectAtIndex:i] objectForKey:@"user_id"];
+                    item.photoUser.UserID = [(NSNumber *)[[data objectAtIndex:i] objectForKey:@"user_id"]integerValue];
                     item.photoUser.UserName = [data[i] objectForKey:@"nick"];
                     item.photoUser.avatarImageURLString = [data[i] objectForKey:@"avatar"];
                     item.photoUser.selfDescriptions = [data[i] objectForKey:@"description"];
@@ -345,7 +355,12 @@
                     item.imageDescription = [data[i] objectForKey:@"thought"];
                     item.likeCount = [(NSNumber *)[data[i] objectForKey:@"like_num"] integerValue];
                     
-                    item.commentNum = [data[i] objectForKey:@"comment_num"];
+                    item.commentNum = [(NSNumber *)[data[i] objectForKey:@"comment_num"]integerValue];
+                    
+                    item.poiId = [(NSNumber *)[data[i] objectForKey:@"poi_id"] integerValue];
+                    item.poiName = [data[i] objectForKey:@"poi_name"];
+                    
+                    
                     if ([[data[i] objectForKey:@"more_comments"] isEqualToString:@"false"])
                     {
                         item.hasMoreComments =  NO;
@@ -445,6 +460,7 @@
             complete(responseObject,nil);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             NSLog(@"request failed");
+            NSLog(@"%@",error);
             complete(@{@"msg":@"请求成功，但服务器返回错误"},nil);
         }];
         
@@ -470,6 +486,7 @@
             complete(responseObject,nil);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             NSLog(@"request failed");
+            NSLog(@"%@",error);
             complete(@{@"msg":@"请求成功，但服务器返回错误"},nil);
         }];
     }

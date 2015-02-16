@@ -74,11 +74,11 @@
 -(void)saveButtonPressed
 {
     NSInteger userId = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
-    NSDictionary *result = [[AFHTTPAPIClient sharedInstance ]UpdatePwdWithUserId:(NSInteger)userId password:self.myOldPwdTextField.text newpassword:self.myNewPwdTextField.text];
-    if ([result objectForKey:@"data"])
-    {
+   // NSDictionary *result = [[AFHTTPAPIClient sharedInstance ]UpdatePwdWithUserId:(NSInteger)userId password:self.myOldPwdTextField.text newpassword:self.myNewPwdTextField.text];
+    //if ([result objectForKey:@"data"])
+   // {
 
-    }
+   // }
  
 }
 #pragma mark - Table view data source

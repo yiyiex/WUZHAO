@@ -10,7 +10,7 @@
         <!--Capture Camera Controller-->
         <scene sceneID="JqX-ca-4B0">
             <objects>
-                <viewController id="ylf-36-K0f" customClass="SCCaptureCameraController" sceneMemberID="viewController">
+                <viewController wantsFullScreenLayout="YES" id="ylf-36-K0f" customClass="SCCaptureCameraController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="GgT-wQ-cRk"/>
                         <viewControllerLayoutGuide type="bottom" id="T4l-uO-pXx"/>

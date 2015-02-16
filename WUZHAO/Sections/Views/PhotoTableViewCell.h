@@ -16,6 +16,8 @@
 
 
 @property (nonatomic, strong) IBOutlet UIImageView *homeCellAvatorImageView;
+@property (nonatomic, strong) IBOutlet UILabel *postUserName;
+@property (nonatomic, strong) IBOutlet UILabel *postUserSelfDescription;
 @property (nonatomic, weak) IBOutlet UILabel *postTimeLabel;
 
 @property (nonatomic, weak) IBOutlet UIImageView *homeCellImageView;

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "User.h"
 
-#import "VPImageCropperViewController.h"
+
 
 @interface EditPersonalInfoTableViewController : UITableViewController
 

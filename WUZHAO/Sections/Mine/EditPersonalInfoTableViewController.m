@@ -8,6 +8,8 @@
 
 #import "EditPersonalInfoTableViewController.h"
 
+#import "VPImageCropperViewController.h"
+
 #import "UIImageView+WebCache.h"
 #import "SVProgressHUD.h"
 
@@ -257,7 +259,9 @@
 {
     self.avatorInfoCell.imageView.image = editedImage;
     [cropperViewController dismissViewControllerAnimated:YES completion:^{
+        //TO DO
         //upload avator to the server
+        //
     }];
     
 }

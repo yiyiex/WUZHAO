@@ -126,12 +126,16 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     content.attributedComment = [content.comment attributedStringWithStyleBook:nameStyle];
     
     //配置图片相关基本信息
-    [cell.homeCellAvatorImageView sd_setImageWithURL:[NSURL URLWithString:content.photoUser.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"default"]];
     cell.postTimeLabel.text = content.postTime;
+    cell.postUserName.text = content.photoUser.UserName;
+    cell.postUserSelfDescription.text = content.photoUser.selfDescriptions;
+    
+    [cell.homeCellAvatorImageView sd_setImageWithURL:[NSURL URLWithString:content.photoUser.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"default"]];
+    
     cell.likeLabel.text = [NSString stringWithFormat:@"%lu 次赞", (long)content.likeCount];
-    if (content.adddresMark)
+    if (content.poiName)
     {
-        cell.addressLabel.text = content.adddresMark;
+        cell.addressLabel.text = content.poiName;
     }
     else
     {
@@ -147,6 +151,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         [cell.descriptionLabel removeFromSuperview];
         //[cell.descIcon removeFromSuperview];
     }
+    
     if (content.attributedComment)
     {
         cell.commentLabel.attributedText = content.attributedComment;
