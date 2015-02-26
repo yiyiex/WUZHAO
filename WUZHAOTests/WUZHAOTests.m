@@ -11,6 +11,8 @@
 
 #import "QiniuSDK.h"
 
+#import "SHA1WithSalt.h"
+
 @interface WUZHAOTests : XCTestCase
 
 @end
@@ -39,5 +41,12 @@
     }];
 }
 
-
+-(void)testSHA1
+{
+    
+    NSString *passWord = @"passw0Rd@1";
+    NSString *hashString = [SHA1WithSalt SHA1WithSalt:passWord];
+    NSLog(@"hash string : %@",hashString);
+    
+}
 @end

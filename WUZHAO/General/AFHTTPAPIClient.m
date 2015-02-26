@@ -288,32 +288,32 @@
 
 - (void)GetPersonalPhotosListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"api/*******%ld",(long)userId];
-    NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
+    //NSString *api = [NSString stringWithFormat:@"api/*******%ld",(long)userId];
+    //NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     whenComplete(returnData);
 }
 
 -(void)GetPersonalAddressListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"api/*******%ld",(long)userId];
-    NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
+    //NSString *api = [NSString stringWithFormat:@"api/*******%ld",(long)userId];
+    //NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     whenComplete(returnData);
 }
 
 -(void )GetPersonalFollowersListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"api/*******%ld",(long)userId];
-    NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
+    //NSString *api = [NSString stringWithFormat:@"api/*******%ld",(long)userId];
+    //NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     whenComplete(returnData);
 }
 
 -(void )GetPersonalFollowsListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"api/*******%ld",(long)userId];
-    NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
+    //NSString *api = [NSString stringWithFormat:@"api/*******%ld",(long)userId];
+    //NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     whenComplete(returnData);
 }
@@ -412,16 +412,16 @@
 // data = {'post_id':'1','user_id':'11','comment':'用什么相机拍的这是？iphone么'}
 -(void)ZanPhotoWithUserId:(NSInteger)userId postId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"api/like/%ld",(long)postId];
+   // NSString *api = [NSString stringWithFormat:@"api/like/%ld",(long)postId];
    // NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:self.currentUser.UserID],@"post_id":[NSNumber numberWithInteger:postId]};
-    NSDictionary *param = @{@"user_id":@"2",@"post_id":@"1"};
+    //NSDictionary *param = @{@"user_id":@"2",@"post_id":@"1"};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     whenComplete(returnData);
 }
 -(void)CommentPhotoWithUserId:(NSInteger)userId postId:(NSInteger)postId comment:(NSString *)comment whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"api/comment/%ld",(long)postId];
-    NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:self.currentUser.UserID],@"post_id":[NSNumber numberWithInteger:postId],@"comment":comment};
+   // NSString *api = [NSString stringWithFormat:@"api/comment/%ld",(long)postId];
+    //NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:self.currentUser.UserID],@"post_id":[NSNumber numberWithInteger:postId],@"comment":comment};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     whenComplete(returnData);
 }

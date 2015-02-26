@@ -11,9 +11,12 @@
 
 #import "SVProgressHUD.h"
 
+#import "NSString+SHA1WithSalt.h"
+
 @interface LoginViewController ()
 @property (nonatomic,strong) NSString *userName;
 @property (nonatomic,strong) NSString *password;
+@property (nonatomic,strong) NSString *sPassword;
 
 @end
 
@@ -23,6 +26,7 @@
     [super viewDidLoad];
     [self checkLoginState];
     self.view.backgroundColor = [UIColor colorWithWhite:45.f/255.f alpha:1];
+
 
     // Do any additional setup after loading the view.
 }
@@ -71,7 +75,7 @@
         return;
     }
     self.LoginButton.enabled = NO;
-    [self Login];
+    [self login];
    // [self performSegueWithIdentifier:@"HasLogin" sender:self];
     
 }
@@ -91,9 +95,9 @@
 }
 
 
--(void)Login
+-(void)login
 {
-     NSURLSessionDataTask *loginTask = [[AFHTTPAPIClient sharedInstance]LoginWithUserName:self.userName password:self.password complete:^(NSDictionary *result,NSError *error)
+     NSURLSessionDataTask *loginTask = [[AFHTTPAPIClient sharedInstance]LoginWithUserName:self.userName password:self.sPassword complete:^(NSDictionary *result,NSError *error)
      {
          NSLog(@"got the result :***** %@ \nand the error %@",result,error);
         if (error)
@@ -140,6 +144,8 @@
 {
     self.userName = self.UserNameTextField.text;
     self.password = self.PasswordTextField.text;
+    
+    self.sPassword = [self.password SHA1];
     return true;
 }
 
@@ -163,7 +169,7 @@
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setInteger:user.UserID forKey:@"userId"];
     [userDefaults setObject:user.UserName forKey:@"userName"];
-    NSLog(@"%lu",[userDefaults integerForKey:@"userId"]);
+    NSLog(@"%lu",(long)[userDefaults integerForKey:@"userId"]);
     [userDefaults synchronize];
 }
 
