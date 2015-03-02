@@ -16,6 +16,10 @@
 @property (strong, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (strong, nonatomic) IBOutlet UIButton *registerButton;
 
+
 - (IBAction)registerToServer:(id)sender;
 
+- (IBAction)emailTextFieldEditEnd:(id)sender;
+- (IBAction)userNameTextFieldEditEnd:(id)sender;
+- (IBAction)passwordTextFieldEditEnd:(id)sender;
 @end

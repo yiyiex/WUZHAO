@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface RoundImageView : UIImageView
+-(void)setRoundCornerWithRadius:(float)radius;
 
 @end

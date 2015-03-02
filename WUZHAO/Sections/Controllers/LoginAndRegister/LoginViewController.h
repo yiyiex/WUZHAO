@@ -13,7 +13,10 @@
 @property (strong, nonatomic) IBOutlet UITextField *PasswordTextField;
 @property (strong, nonatomic) IBOutlet UIButton *LoginButton;
 
-- (IBAction)LoginButtonPressed:(id)sender;
-- (IBAction)registerBtnPressed:(id)sender;
 
+- (IBAction)LoginButtonPressed:(id)sender;
+
+
+- (IBAction)userNameInputEnd:(id)sender;
+- (IBAction)passWordInputEnd:(id)sender;
 @end

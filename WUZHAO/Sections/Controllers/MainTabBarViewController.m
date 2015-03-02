@@ -39,6 +39,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     self.delegate = self;
     self.tabIndex =0;
     NSLog(@"%@",[[NSBundle mainBundle]bundleIdentifier]);
@@ -65,12 +66,19 @@
     }
 }
 
+-(BOOL)prefersStatusBarHidden
+{
+    return NO;
+}
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
    // [self showNavBarAnimated:YES];
     
 }
+
+
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self];

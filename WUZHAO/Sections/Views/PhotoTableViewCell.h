@@ -10,7 +10,7 @@
 #import "WhatsGoingOn.h"
 #import "WPHotspotLabel.h"
 
-
+#import "UIRoundedImageView.h"
 
 @interface PhotoTableViewCell : UITableViewCell
 

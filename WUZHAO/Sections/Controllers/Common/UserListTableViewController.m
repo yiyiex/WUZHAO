@@ -11,6 +11,7 @@
 #import "UserListTableViewCell.h"
 
 #import "UIImageView+WebCache.h"
+#import "UIImageView+ChangeAppearance.h"
 
 #import "User.h"
 
@@ -58,6 +59,7 @@
     // Configure the cell...
     User *celldata = [self.datasource objectAtIndex:indexPath.row];
     [cell.avatorImageView sd_setImageWithURL:celldata.avatarImageURLString placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [cell.avatorImageView setRoundConerWithRadius:cell.avatorImageView.frame.size.width/2];
     cell.userNameLabel.text = celldata.UserName;
     cell.selfDescriptionLabel.text = celldata.selfDescriptions;
     return cell;

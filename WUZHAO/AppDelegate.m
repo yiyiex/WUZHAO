@@ -9,6 +9,10 @@
 #import "AppDelegate.h"
 #import "GlobalAppearance.h"
 
+#import "MainTabBarViewController.h"
+
+#import "PIOSearchAPI.h"
+
 @interface AppDelegate ()
 
 @end
@@ -17,8 +21,31 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    
     // Override point for customization after application launch.
     [GlobalAppearance setGlobalAppearance];
+    NSUserDefaults *userDefaul = [NSUserDefaults standardUserDefaults];
+    NSLog(@"userdefault id%@",[userDefaul objectForKey:@"userId"]);
+    NSLog(@"userdefault token%@",[userDefaul objectForKey:@"token"]);
+    /*
+    NSString *path = NSHomeDirectory();
+    NSLog(@"NSHomeDirectory : %@",path);
+    NSString *userName = NSUserName();
+    NSLog(@"NSUserName : %@",userName);
+    NSLog(@"root path for userName :%@",NSHomeDirectoryForUser(userName));
+
+    ///*
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    if ([userDefault objectForKey:@"userId"] &&[userDefault objectForKey:@"token"])
+    {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        MainTabBarViewController *mainTabBarController = [storyboard instantiateViewControllerWithIdentifier:@"mainTabBarViewController"];
+        
+    }*/
+    [[PIOSearchAPI sharedInstance]SearchAroundPIOWithLongitude:20.5 Latitude:140.5 whenComplete:^(NSDictionary *result) {
+        NSLog(@"%@",result);
+    }];
     return YES;
 }
 

@@ -10,6 +10,8 @@
 
 @interface UIImage (Resize)
 
+
+
 - (UIImage *)croppedImage:(CGRect)bounds;
 
 - (UIImage *)resizedImage:(CGSize)newSize
@@ -29,5 +31,7 @@
 - (UIImage *)fixOrientation;
 
 - (UIImage *)rotatedByDegrees:(CGFloat)degrees;
+
+- (void)setRoundCornerWithRadius:(float)radius;
 
 @end

@@ -35,13 +35,31 @@
 
 //color
 #define rgba_WZ(r, g, b, a) [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:a]
+
+//字体颜色
 //#define THEME_COLOR rgba_WZ(120, 194, 196, 1.0)
-#define THEME_COLOR rgba_WZ(48,208,223,1.0)
-#define THEME_COLOR_DARK rgba_WZ(28,191,206,1.0)
-#define THEME_COLOR_PARENT rgba_WZ(48, 208, 223, 0.8)
+#define THEME_COLOR rgba_WZ(153,224,253,1.0)
+#define THEME_COLOR_DARK rgba_WZ(49,175,223,1.0)
+
+#define THEME_COLOR_PARENT rgba_WZ(153,224,253, 0.5)
+#define THEME_COLOR_DARK_PARENT rgba_WZ(167,230,254,0.5)
+
 #define THEME_COLOR_WHITE rgba_WZ(255,255,255,1.0)
-#define THEME_COLOR_LIGHT_GREY rgba_WZ(95,113,135,1.0)
+
+#define THEME_COLOR_LIGHT_GREY rgba_WZ(160,160,160,1.0)
+#define THEME_COLOR_LIGHT_GREY_PARENT rgba_WZ(160,160,160,1.0)
+
+#define THEME_COLOR_DARK_GREY rgba_WZ(40,45,50,1.0)
+#define THEME_COLOR_DARK_GREY_PARENT rgba_WZ(40,45,50,0.5)
 #define THEME_COLOR_BLACK rgba_WZ(0,0,0,1.0)
+#define THEME_COLOR_BLACK_PARENT rgba_WZ(0,0,0,0.5)
+
+
+//控件相关颜色
+#define VIEW_COLOR_BLACK rgba_WZ(21,22,26,1.0)
+#define VIEW_COLOR_DRAKGREY rgba_WZ(45,45,45,1.0)
+#define VIEW_COLOR_WHITEGREY rgba_WZ(250,250,252,1.0)
+#define VIEW_COLOR_LIGHTGREY rgba_WZ(221,221,221,1.0)
 
 //frame and size
 #define WZ_DEVICE_BOUNDS    [[UIScreen mainScreen] bounds]

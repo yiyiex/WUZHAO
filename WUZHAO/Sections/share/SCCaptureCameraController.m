@@ -201,7 +201,7 @@
     }
 }
 
-#pragma mark -------------buttons---------------
+#pragma mark - buttons
 
 //拍照按钮
 - (void)addShotButtons
@@ -222,6 +222,7 @@
     CGFloat buttonLength = 40;
     [self buildButton:CGRectMake(50, (_bottomContainerView.frame.size.height -downH - buttonLength)/2, buttonLength, buttonLength) normalImgStr:@"" highlightImgStr:@"" selectedImgStr:@"" action:@selector(selectPhotoFromAlubm:) parentView:_bottomContainerView];
     
+    
 }
 //拍照菜单栏上的按钮
 //设置各状态显示以及响应方法 actionArr
@@ -235,7 +236,7 @@
     CGFloat eachW = WZ_APP_SIZE.width / actionArr.count;
     
     //叉与其他按钮的分割线
-    [PhotoCommon drawALineWithFrame:CGRectMake(eachW, 0, 1, CAMERA_MENU_VIEW_HEIGH) andColor:rgba_WZ(102, 102, 102, 1.0000) inLayer:_cameraMenuView.layer];
+    [PhotoCommon drawALineWithFrame:CGRectMake(eachW, 10, 1, CAMERA_MENU_VIEW_HEIGH-20) andColor:THEME_COLOR_DARK_GREY inLayer:_cameraMenuView.layer];
     
     
     
@@ -274,7 +275,7 @@
         [btn setImage:[UIImage imageNamed:selectedImgStr] forState:UIControlStateSelected];
     }
     [btn addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
-    [btn setBackgroundColor:[UIColor blackColor]];
+    [btn setBackgroundColor:[UIColor clearColor]];
     [parentView addSubview:btn];
     
     return btn;

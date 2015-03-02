@@ -12,11 +12,15 @@
 #import "FootPrintTableViewController.h"
 
 #import "UIImageView+WebCache.h"
+#import "UIImageView+ChangeAppearance.h"
+#import "UIButton+ChangeAppearance.h"
+
+
 #import "SVProgressHUD.h"
 
 
 
-#import "AFHTTPAPIClient.h"
+#import "QDYHTTPClient.h"
 #import "macro.h"
 
 
@@ -90,10 +94,11 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         _userInfo.UserID = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
         _userInfo.UserName = [[NSUserDefaults standardUserDefaults] objectForKey:@"userName"];
     }
-    [[AFHTTPAPIClient sharedInstance]GetPersonalInfoWithUserId:_userInfo.UserID whenComplete:^(NSDictionary *returnData) {
+    [[QDYHTTPClient sharedInstance]GetPersonalInfoWithUserId:_userInfo.UserID whenComplete:^(NSDictionary *returnData) {
         if ([returnData objectForKey:@"data"])
         {
             User *user = [returnData objectForKey:@"data"];
+            NSLog(@"userinfo %@",user);
             [self setUserInfo:user];
             [self updateUI];
             [self SetPhotosCollectionData];
@@ -128,7 +133,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 }
 
 
-#pragma mark -----tapbar----------
+#pragma mark -tapbar
 -(void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
     NSString *segueIdentifier = SEGUEFIRST;
@@ -152,13 +157,13 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     if ([childController isKindOfClass: [PhotosCollectionViewController class]])
     {
         self.myPhotoCollectionViewController = (PhotosCollectionViewController *)childController;
-       // [self SetPhotosCollectionData];
+        [self SetPhotosCollectionData];
         
     }
     else if( [childController isKindOfClass:[FootPrintTableViewController class]])
     {
         self.myFootPrintViewController = (FootPrintTableViewController *)childController;
-        //[self SetAddressListData];
+        [self SetAddressListData];
     }
 }
 
@@ -168,7 +173,12 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 
 -(void) updateUI
 {
-    [self.avator sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"defaultAvator"]];
+    [self.avator setRoundConerWithRadius:self.avator.frame.size.width/2];
+    
+    [self.avator sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"default"]];
+    
+    [self.mineButton setThemeBackGroundAppearance];
+    
     self.userNameLabel.text = self.userInfo.UserName;
     self.photosNumLabel.text =[NSString stringWithFormat:@"%lu", self.userInfo.photosNumber ? (unsigned long)self.userInfo.photosNumber:0];
     self.followersNumLabel.text =[NSString stringWithFormat:@"%lu", self.userInfo.numFollowers ? (unsigned long)self.userInfo.numFollowers:0];
@@ -203,12 +213,14 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     
     if (self.userInfo.photoList)
     {
+        NSLog(@"photolist %@",self.userInfo.photoList);
         [_myPhotosCollectionDatasource removeAllObjects];
         for (NSDictionary *i in self.userInfo.photoList)
         {
             WhatsGoingOn *item = [[WhatsGoingOn alloc]init];
             item.postId = [(NSNumber *)[i objectForKey:@"post_id"] integerValue];
-            item.imageUrlString = [i objectForKey:@"photo"];
+            item.imageUrlString = [i objectForKey:@"photoUrl"];
+            item.postTime = [i objectForKey:@"time"];
             [_myPhotosCollectionDatasource addObject:item];
         }
         

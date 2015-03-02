@@ -9,7 +9,7 @@
 #import "AddImageInfoViewController.h"
 #import "AddressInfoList.h"
 
-#import "AFHTTPAPIClient.h"
+#import "QDYHTTPClient.h"
 #import "SVProgressHUD.h"
 
 #import "QiniuSDK.h"
@@ -17,6 +17,9 @@
 #import <AMapSearchKit/AMapSearchAPI.h>
 #import <CoreLocation/CoreLocation.h>
 
+
+//#define PIOTKEYWORDS @"餐饮|购物|生活|体育|住宿|风景|地名|商务|科教|公司";
+#define POIKEYWORDS @"餐饮"
 #define poi_privider 1
 
 @interface AddImageInfoViewController()<AMapSearchDelegate,CLLocationManagerDelegate>
@@ -42,9 +45,7 @@
     self.postImageView.image = self.postImage;
     self.hasPoi = NO;
     [self searchAddress];
-    self.addressTableView.backgroundColor = [UIColor colorWithWhite:45.f/255.f alpha:1];
-    self.addressTableView.tintColor = [UIColor whiteColor];
-    //[self.addressTableView reloadData];
+
 }
 #pragma mark -datas
 - (NSArray *) addressDataSource
@@ -135,7 +136,7 @@
     NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
     NSString *photoDescription = self.postImageDescription.text;
     
-    [[AFHTTPAPIClient sharedInstance] GetQiNiuTokenWithUserId:userId whenComplete:^(NSDictionary *result) {
+    [[QDYHTTPClient sharedInstance] GetQiNiuTokenWithUserId:userId whenComplete:^(NSDictionary *result) {
         NSDictionary *data;
         if ([result objectForKey:@"data"])
         {
@@ -159,7 +160,7 @@
             {
 
                 //用户端提示
-               [[AFHTTPAPIClient sharedInstance]PostPhotoInfomationWithUserId:userId
+               [[QDYHTTPClient sharedInstance]PostPhotoInfomationWithUserId:userId
                                                                        method:@"post"
                                                                         photo:[data objectForKey:@"imageName"]
                                                                     thought:photoDescription
@@ -258,12 +259,17 @@
     poiRequest.searchType = AMapSearchType_PlaceAround;
     AMapGeoPoint *postImageGeoPoint = [[AMapGeoPoint alloc]init];
     CLLocation *nowLocation = locations.lastObject;
-    postImageGeoPoint.latitude = nowLocation.coordinate.latitude;
+    //postImageGeoPoint.latitude = nowLocation.coordinate.latitude;
+    postImageGeoPoint.latitude = -33.88;
     postImageGeoPoint.longitude = nowLocation.coordinate.longitude;
     poiRequest.location = postImageGeoPoint;
-    poiRequest.radius = 5000;
-    poiRequest.sortrule = 1;
-    poiRequest.requireExtension = YES;
+    poiRequest.keywords = POIKEYWORDS;
+    //poiRequest.types = @"050000";
+    poiRequest.radius = 500;
+    poiRequest.sortrule = 0;
+    poiRequest.offset = 50;
+    
+    //poiRequest.requireExtension = YES;
     
     [_search AMapPlaceSearch:poiRequest];
     
@@ -317,9 +323,8 @@
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"addressInfoCell" forIndexPath:indexPath];
     NSDictionary *poiInfo = [self.addressDataSource objectAtIndex:indexPath.row];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@~%@~%@",[poiInfo valueForKey:@"city"],[poiInfo valueForKey:@"district"],[poiInfo valueForKey:@"name"]];
-    cell.backgroundColor = [UIColor colorWithWhite:45.f/255.f alpha:1];
-    cell.textLabel.textColor = [UIColor whiteColor];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@",[poiInfo valueForKey:@"name"]];
+    cell.detailTextLabel.text =[NSString stringWithFormat:@"%@ %@",[poiInfo valueForKey:@"city"],[poiInfo valueForKey:@"district"]];
     return cell;
 }
 

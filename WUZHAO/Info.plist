@@ -29,9 +29,9 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>获取您周边的地址信息</string>
 	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
+	<string>Launch</string>
 	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
+	<string>Launch</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

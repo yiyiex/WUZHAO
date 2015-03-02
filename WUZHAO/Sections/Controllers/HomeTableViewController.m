@@ -17,12 +17,15 @@
 #import "WPAttributedStyleAction.h"
 #import "NSString+WPAttributedMarkup.h"
 #import "UIImageView+WebCache.h"
+#import "UIImageView+ChangeAppearance.h"
+#import "UILabel+ChangeAppearance.h"
+
 
 #import "CBStoreHouseRefreshControl.h"
 
 #import "SVProgressHUD.h"
 
-#import "AFHTTPAPIClient.h"
+#import "QDYHTTPClient.h"
 #import "macro.h"
 
 @interface HomeTableViewController ()
@@ -37,7 +40,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     [super viewDidLoad];
     self.tableView.estimatedRowHeight = 700.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
-    
     self.tableView.alwaysBounceVertical = YES;
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -84,7 +86,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 -(void)loadData
 {
     //self.dataSource = [[WhatsGoingOn newDataSource] mutableCopy];
-    self.currentUser = [[AFHTTPAPIClient sharedInstance]currentUser];
+    self.currentUser = [[QDYHTTPClient sharedInstance]currentUser];
     //获取最新data
     if (self.shouldRefreshData)
     {
@@ -127,10 +129,15 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     
     //配置图片相关基本信息
     cell.postTimeLabel.text = content.postTime;
+    
     cell.postUserName.text = content.photoUser.UserName;
+    
+
     cell.postUserSelfDescription.text = content.photoUser.selfDescriptions;
     
     [cell.homeCellAvatorImageView sd_setImageWithURL:[NSURL URLWithString:content.photoUser.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"default"]];
+    float radius = (WZ_APP_SIZE.width/8-4)/2;
+    [cell.homeCellAvatorImageView setRoundConerWithRadius:radius];
     
     cell.likeLabel.text = [NSString stringWithFormat:@"%lu 次赞", (long)content.likeCount];
     if (content.poiName)
@@ -172,6 +179,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     
     UITapGestureRecognizer *avatorClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(avatorclick:)];
     [cell.homeCellAvatorImageView addGestureRecognizer:avatorClick];
+    
     //点击 ”赞“，添加”赞“数量
     UITapGestureRecognizer *zanViewClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(zanViewClick:)];
     [cell.zanView addGestureRecognizer:zanViewClick];
@@ -221,11 +229,15 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 {
     //我们获取gesture关联的view,并将view的类名打印出来
     //NSString *className = NSStringFromClass([gesture.view class]);
-    NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
-    WhatsGoingOn *item = [self.dataSource objectAtIndex:selectedIndexPath.row];
+    PhotoTableViewCell * cell = [[(PhotoTableViewCell *) [gesture.view superview]superview]superview];
+    NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
+
+    NSLog(@"select item indexpath%lu",selectItemIndexPath.row);
+    WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
     
     User *showUserInfo = [[User alloc]init];
     showUserInfo.UserID = item.photoUser.UserID;
+    NSLog(@"show user ID %ld",(long)showUserInfo.UserID);
     
     UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
     MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
@@ -244,6 +256,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
    // [self.tableView reloadRowsAtIndexPaths:@[selectItemIndexPath] withRowAnimation:UITableViewRowAnimationNone];
     PhotoTableViewCell * cell = (PhotoTableViewCell *) [[gesture.view superview]superview];
     NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
+    NSLog(@"select item indexpath%lu",selectItemIndexPath.row);
     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
     if ([cell.zanClickLabel.text isEqualToString:@"赞"])
     {
@@ -362,7 +375,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 {
     self.shouldRefreshData = false;
     NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-    [[AFHTTPAPIClient sharedInstance]GetWhatsGoingOnWithUserId:userId whenComplete:^(NSDictionary *result) {
+    [[QDYHTTPClient sharedInstance]GetWhatsGoingOnWithUserId:userId whenComplete:^(NSDictionary *result) {
         
         if ([result objectForKey:@"data"])
         {
@@ -398,7 +411,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 
 -(void)zanPhotoWithItem:(WhatsGoingOn *)item
 {
-   [[AFHTTPAPIClient sharedInstance]ZanPhotoWithUserId:self.currentUser.UserID postId:item.postId whenComplete:^(NSDictionary *result) {
+   [[QDYHTTPClient sharedInstance]ZanPhotoWithUserId:self.currentUser.UserID postId:item.postId whenComplete:^(NSDictionary *result) {
         if (result)
         {
             // self.dataSource = [result mutableCopy];

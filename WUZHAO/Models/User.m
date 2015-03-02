@@ -17,6 +17,15 @@
 @synthesize numFollowers,numFollows,photosNumber,selfDescriptions;
 @synthesize photoList;
 
+-(NSMutableArray *)photoList
+{
+    if (!photoList)
+    {
+        photoList = [[NSMutableArray alloc]init];
+    }
+    return photoList;
+}
+
 -(instancetype)initWithAttributes:(NSDictionary *)attributes
 {
     self = [super init];
@@ -36,6 +45,7 @@
     return self;
 
 }
+
 
 -(id)copyWithZone:(NSZone *)zone
 {

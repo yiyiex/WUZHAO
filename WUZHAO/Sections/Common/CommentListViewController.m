@@ -11,6 +11,7 @@
 #import "CommentTableViewCell.h"
 #import "CommonContainerViewController.h"
 #import "UIImageView+WebCache.h"
+#import "UIButton+ChangeAppearance.h"
 
 #import "DAKeyboardControl.h"
 #define SEGUEFIRST @"showCommentList"
@@ -97,6 +98,7 @@
         _sendButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         _sendButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         [_sendButton setTitle:@"发送" forState:UIControlStateNormal];
+        [_sendButton setNormalButtonAppearance];
         _sendButton.frame = CGRectMake(_toolbar.bounds.size.width - 68.0f,
                                   6.0f,
                                   58.0f,

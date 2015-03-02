@@ -35,19 +35,19 @@
 +(void)setNavigationAppearance
 {
     UINavigationBar *appearance = [UINavigationBar appearance];
-    [appearance setBarTintColor:THEME_COLOR];
-    [appearance setTintColor:[UIColor whiteColor]];
+    [appearance setBarTintColor:THEME_COLOR_WHITE];
+    [appearance setTintColor:THEME_COLOR_DARK_GREY];
     [appearance setTitleTextAttributes:
      @{
-       NSForegroundColorAttributeName:[UIColor whiteColor],
+       NSForegroundColorAttributeName:THEME_COLOR_BLACK,
        NSFontAttributeName:[UIFont boldSystemFontOfSize:18]
        
        }];
-    
+    [appearance setBarStyle:UIBarStyleDefault];
     
     //UIBarButtonItem *barItemAppearance = [UIBarButtonItem appearance];
     //[barItemAppearance setBackgroundImage:[UIImage new] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
 }
 
@@ -57,7 +57,7 @@
 +(void)setTabBarAppearance
 {
     UITabBar *appearance = [UITabBar appearance];
-    [appearance setBarTintColor:THEME_COLOR_PARENT];
+    [appearance setBarTintColor:VIEW_COLOR_DRAKGREY];
     [appearance setTintColor:[UIColor whiteColor]];
 }
 
@@ -67,10 +67,15 @@
 {
     UIButton *appearance = [UIButton appearance];
     [appearance setTintColor:[UIColor whiteColor]];
-    [appearance setBackgroundColor:THEME_COLOR];
+    [appearance setBackgroundColor:VIEW_COLOR_BLACK];
+    
     [[UIButton appearanceWhenContainedIn:[UINavigationBar class], nil]setBackgroundColor:[UIColor clearColor]];
     [[UIButton appearanceWhenContainedIn:[UITableViewCell class], nil] setBackgroundColor:[UIColor clearColor]];
     [[UIButton appearanceWhenContainedIn:[CaptureItemContainerUIView class], nil] setBackgroundColor:[UIColor blackColor]];
+    
+   
+    
+    
     
     
 }
