@@ -11,7 +11,7 @@
 
 @implementation UIButton (ChangeAppearance)
 
--(void)setNormalButtonAppearance
+-(void)setBigButtonAppearance
 {
     [self.layer setCornerRadius:4.0f];
     self.layer.masksToBounds = YES;
@@ -19,10 +19,23 @@
     //self.layer.borderColor = [THEME_COLOR CGColor];
 }
 
--(void)setWitheBackGroundAppearance
+-(void)setNormalButtonAppearance
 {
-    [self.layer setCornerRadius:4.0f];
+    [self.layer setCornerRadius:2.0f];
     self.layer.masksToBounds = YES;
+    [self.titleLabel setFont:WZ_FONT_SMALL_SIZE];
+}
+
+-(void)setSmallButtonAppearance
+{
+    [self.layer setCornerRadius:1.0f];
+    self.layer.masksToBounds = YES;
+
+}
+
+-(void)setWhiteBackGroundAppearance
+{
+
     self.layer.borderWidth = 0.5;
     self.layer.borderColor = [THEME_COLOR_DARK_GREY CGColor];
     self.backgroundColor = THEME_COLOR_WHITE;
@@ -31,17 +44,21 @@
 
 -(void)setDarkGreyBackGroundAppearance
 {
-    [self.layer setCornerRadius:4.0f];
-    self.layer.masksToBounds = YES;
+
     self.backgroundColor = THEME_COLOR_DARK_GREY;
     [self setTitleColor:THEME_COLOR_WHITE forState:UIControlStateNormal];
 }
 
+-(void)setThemeFrameAppearence
+{
+    self.layer.borderWidth = 1.0;
+    self.layer.borderColor = [THEME_COLOR_DARK CGColor];
+    self.backgroundColor = THEME_COLOR_WHITE;
+    [self setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
+}
 
 -(void)setThemeBackGroundAppearance
 {
-    [self.layer setCornerRadius:4.0f];
-    self.layer.masksToBounds = YES;
     self.backgroundColor = THEME_COLOR_DARK;
     [self setTitleColor:THEME_COLOR_WHITE forState:UIControlStateNormal];
 }

@@ -6,25 +6,39 @@
 //  Copyright (c) 2015年 yiyi. All rights reserved.
 //
 
+#import "macro.h"
 #import "UserListTableViewController.h"
 
 #import "UserListTableViewCell.h"
 
+#import "QDYHTTPClient.h"
+
+
 #import "UIImageView+WebCache.h"
 #import "UIImageView+ChangeAppearance.h"
+
+#import "SVProgressHUD.h"
+
 
 #import "User.h"
 
 #define REUSEIDENTIFIER @"userListCell"
+#define CELL_HEADERHEIGHT 44.0
+
 @interface UserListTableViewController ()
-@property (nonatomic,strong) NSArray *datasource;
+
+
 @end
 
 @implementation UserListTableViewController
+@synthesize userListStyle = _userListStyle;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.datasource = [[User userList]mutableCopy];
+    //self.userListStyle = UserListStyle3;
+    self.tableView.estimatedRowHeight = 150.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    [self configCellWithStyle];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -37,6 +51,28 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - basic method
+
+-(void)configCellWithStyle
+{
+    if ([self.userListStyle isEqualToString:UserListStyle1])
+    {
+        self.tableView.rowHeight = CELL_HEADERHEIGHT + 2.0;
+    }
+    else if ([self.userListStyle isEqualToString:UserListStyle2])
+    {
+        self.tableView.rowHeight = CELL_HEADERHEIGHT + 2.0;
+        
+    }
+    else if ([self.userListStyle isEqualToString:UserListStyle3])
+    {
+        self.tableView.rowHeight = CELL_HEADERHEIGHT + 10.0 + WZ_DEVICE_SIZE.width/3 ;
+        [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    }
+}
+
+
 
 #pragma mark - Table view data source
 
@@ -54,16 +90,21 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-     UserListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:REUSEIDENTIFIER forIndexPath:indexPath];
-    
+    UserListTableViewCell *cell;
+    cell = [tableView dequeueReusableCellWithIdentifier:self.userListStyle forIndexPath:indexPath];
+    if (!cell)
+    {
+        cell = [[UserListTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:self.userListStyle];
+    }
+
+    [cell configWithUser:self.datasource[indexPath.row] style:self.userListStyle];
     // Configure the cell...
-    User *celldata = [self.datasource objectAtIndex:indexPath.row];
-    [cell.avatorImageView sd_setImageWithURL:celldata.avatarImageURLString placeholderImage:[UIImage imageNamed:@"placeholder"]];
-    [cell.avatorImageView setRoundConerWithRadius:cell.avatorImageView.frame.size.width/2];
-    cell.userNameLabel.text = celldata.UserName;
-    cell.selfDescriptionLabel.text = celldata.selfDescriptions;
     return cell;
+    
 }
+
+
+
 
 
 /*

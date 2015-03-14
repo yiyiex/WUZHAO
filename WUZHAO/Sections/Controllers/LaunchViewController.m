@@ -63,7 +63,7 @@
     {
         [self.LoginButton setHidden:NO];
         [self.RegisterButton setHidden:NO];
-        [self.LoginButton setWitheBackGroundAppearance];
+        [self.LoginButton setWhiteBackGroundAppearance];
         [self.RegisterButton setDarkGreyBackGroundAppearance];
     }
 }

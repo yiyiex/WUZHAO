@@ -43,9 +43,9 @@
         MainTabBarViewController *mainTabBarController = [storyboard instantiateViewControllerWithIdentifier:@"mainTabBarViewController"];
         
     }*/
-    [[PIOSearchAPI sharedInstance]SearchAroundPIOWithLongitude:20.5 Latitude:140.5 whenComplete:^(NSDictionary *result) {
-        NSLog(@"%@",result);
-    }];
+   // [[PIOSearchAPI sharedInstance]SearchAroundPIOWithLongitude:20.5 Latitude:140.5 whenComplete:^(NSDictionary *result) {
+    //    NSLog(@"%@",result);
+   // }];
     return YES;
 }
 

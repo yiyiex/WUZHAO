@@ -7,13 +7,20 @@
 //
 
 #import "EditPersonalInfoTableViewController.h"
+#import "LaunchViewController.h"
 
 #import "VPImageCropperViewController.h"
 
+#import "UIImage+Resize.h"
+
 #import "UIImageView+WebCache.h"
+#import "UIImageView+ChangeAppearance.h"
+#import "UIButton+ChangeAppearance.h"
 #import "SVProgressHUD.h"
 
-#import "AFHTTPAPIClient.h"
+#import "QDYHTTPClient.h"
+#import "QiniuSDK.h"
+
 
 #define ORIGINAL_MAX_WIDTH 640.0f
 @interface EditPersonalInfoTableViewController ()<VPImageCropperDelegate ,UIActionSheetDelegate ,UIImagePickerControllerDelegate>
@@ -70,6 +77,7 @@
 {
     [self.avatorInfoCell.imageView sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"defaultAvator"]];
     
+    [self.avatorInfoCell.imageView setRoundConerWithRadius:self.avatorInfoCell.imageView.frame.size.width/2];
     
     self.nickNameCell.imageView.image = [UIImage imageNamed:@"default"];
     
@@ -85,32 +93,7 @@
     {
         self.nickNameTextField.placeholder = @"昵称";
     }
-    /*
-    //add constraint
-    UIImageView *cellImageView = _nickNameCell.imageView;
-    //[cellImageView setContentMode:UIViewContentModeScaleAspectFit];
-    NSDictionary *viewDic = NSDictionaryOfVariableBindings(cellImageView,_nickNameTextField);
-    NSArray *hconstraint = nil;
-    hconstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-4-[cellImageView(30)]-10-[_nickNameTextField(>=200)]-10-|"
-                                                         options:NSLayoutFormatAlignAllCenterY
-                                                         metrics:nil
-                                                         views:viewDic
-                  ];
-    [self.nickNameCell addConstraints:hconstraint];
-    NSArray *vconstraint =  nil;
-    vconstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-4-[cellImageView(30)]-4-|"
-                                                          options:0
-                                                          metrics:nil
-                                                            views:viewDic
-                   ];
-    [self.nickNameCell addConstraints:vconstraint];
-    vconstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-4-[_nickNameTextField(30)]-4-|"
-                                                          options:0
-                                                          metrics:nil
-                                                            views:viewDic
-                   ];
-    [self.nickNameCell addConstraints:vconstraint];
-     */
+
     self.selfDescriptionCell.imageView.image = [UIImage imageNamed:@"default"];
     self.selfDescriptionTextField = [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
     [self.selfDescriptionCell addSubview:self.selfDescriptionTextField];
@@ -146,6 +129,9 @@
     self.changePwdCell.textLabel.text = @"修改密码";
     
     
+    [self.logoutButton setBigButtonAppearance];
+    [self.logoutButton setThemeBackGroundAppearance];
+    [self.logoutButton setTitle:@"退出登录" forState:UIControlStateNormal];
     
 
     
@@ -178,7 +164,13 @@
     }];*/
 
 }
-
+- (IBAction)logOutButtonPressed:(id)sender {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:@"token"];
+    UIStoryboard *loginStoryboard = [UIStoryboard storyboardWithName:@"Launch" bundle:nil];
+    LaunchViewController *launchViewController = [loginStoryboard instantiateViewControllerWithIdentifier:@"launchView"];
+    [self showViewController:launchViewController sender:nil];
+}
 
 -(void)editAvator
 {
@@ -257,11 +249,57 @@
 #pragma mark ---VPImageCropperDelegate
 -(void)imageCropper:(VPImageCropperViewController *)cropperViewController didFinished:(UIImage *)editedImage
 {
-    self.avatorInfoCell.imageView.image = editedImage;
+    UIImage *newAvatorImage = [self imageByScalingToMaxSize:editedImage];
+    self.avatorInfoCell.imageView.image = newAvatorImage;
+    [self.avatorInfoCell.imageView setRoundConerWithRadius:self.avatorInfoCell.imageView.frame.size.width/2];
     [cropperViewController dismissViewControllerAnimated:YES completion:^{
+        
         //TO DO
         //upload avator to the server
         //
+        
+        
+        [[QDYHTTPClient sharedInstance]GetQiNiuTokenWithUserId:self.userInfo.UserID type:2 whenComplete:^(NSDictionary *returnData) {
+            NSDictionary *data;
+            if ([returnData objectForKey:@"data"])
+            {
+                data = [returnData objectForKey:@"data"];
+                NSLog(@"%@",data);
+            }
+            else
+            {
+                [SVProgressHUD showErrorWithStatus:@"获取token失败"];
+                return ;
+            }
+            QNUploadManager *upLoadManager = [[QNUploadManager alloc]init];
+            NSData *imageData = UIImageJPEGRepresentation(newAvatorImage, 0.6f);
+            [upLoadManager putData:imageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
+             {
+                 NSLog(@"%@",info);
+                 if (info.error)
+                 {
+                     [SVProgressHUD showErrorWithStatus:@"上传图片失败"];
+                 }
+                 else
+                 {
+                     [[QDYHTTPClient sharedInstance]PostAvatorWithUserId:self.userInfo.UserID avatorName:[data objectForKey:@"imageName"] whenComplete:^(NSDictionary *returnData) {
+                         if ([returnData objectForKey:@"data"])
+                         {
+                             //上传图片成功
+                         }
+                         else if ([returnData objectForKey:@"error"])
+                         {
+                             [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                         }
+                     }];
+                     
+                 }
+                 
+                 
+             } option:nil];
+        }];
+    
+        
     }];
     
 }
@@ -326,6 +364,7 @@
         
             
             //to do
+            
             
         }];
     }];
@@ -455,5 +494,6 @@
         UIGraphicsEndImageContext();
         return newImage;
 }
+
 
 @end

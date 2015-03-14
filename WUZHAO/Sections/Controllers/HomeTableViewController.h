@@ -12,12 +12,10 @@
 @class WhatsGoingOn;
 @class User;
 
-@class CBStoreHouseRefreshControl;
 
 @interface HomeTableViewController : UITableViewController
 
-@property (nonatomic,strong) CBStoreHouseRefreshControl *QIUDAOYURefreshControl;
-
 
 - (void) configureCell:(PhotoTableViewCell *)cell forContent:(WhatsGoingOn *)content atIndexPath:(NSIndexPath *)indexPath;
+
 @end

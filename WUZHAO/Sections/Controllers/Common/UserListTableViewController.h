@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface UserListTableViewController : UITableViewController
-
+@property (nonatomic,strong) NSString *userListStyle;
+@property (nonatomic,strong) NSArray *datasource;
 @end

@@ -56,8 +56,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 -(void)configureCell:(PhotoCollectionViewCell *)cell forContent:(WhatsGoingOn *)content atIndexPath:(NSIndexPath *)indexPath
 {
     [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:content.imageUrlString] placeholderImage:[UIImage imageNamed:@"default"] options:indexPath.row ==0?SDWebImageRefreshCached : 0];
-    NSLog(@"image url %@",content.imageUrlString);
-    NSLog(@"image description,%@",content.imageDescription);
+
     [cell setBackgroundColor:[UIColor whiteColor]];
 }
 

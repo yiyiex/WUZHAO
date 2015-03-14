@@ -19,7 +19,7 @@
 
 
 //#define PIOTKEYWORDS @"餐饮|购物|生活|体育|住宿|风景|地名|商务|科教|公司";
-#define POIKEYWORDS @"餐饮"
+#define POIKEYWORDS @"餐饮|风景"
 #define poi_privider 1
 
 @interface AddImageInfoViewController()<AMapSearchDelegate,CLLocationManagerDelegate>
@@ -136,7 +136,7 @@
     NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
     NSString *photoDescription = self.postImageDescription.text;
     
-    [[QDYHTTPClient sharedInstance] GetQiNiuTokenWithUserId:userId whenComplete:^(NSDictionary *result) {
+    [[QDYHTTPClient sharedInstance] GetQiNiuTokenWithUserId:userId type:1 whenComplete:^(NSDictionary *result) {
         NSDictionary *data;
         if ([result objectForKey:@"data"])
         {
@@ -146,6 +146,7 @@
         else
         {
             [SVProgressHUD showErrorWithStatus:@"获取token失败"];
+            return ;
         }
         QNUploadManager *upLoadManager = [[QNUploadManager alloc]init];
         NSData *imageData = UIImageJPEGRepresentation(self.postImage, 1.0f);
@@ -159,6 +160,7 @@
             else
             {
 
+
                 //用户端提示
                [[QDYHTTPClient sharedInstance]PostPhotoInfomationWithUserId:userId
                                                                        method:@"post"
@@ -166,15 +168,15 @@
                                                                     thought:photoDescription
                                                                        haspoi:_hasPoi
                                                                      provider:poi_privider
-                                                                          uid:[_poiInfo valueForKey:@"uid"]
-                                                                         name:[_poiInfo valueForKey:@"name"]
-                                                                     classify:[_poiInfo valueForKey:@"classify"]
-                                                                     location:[_poiInfo valueForKey:@"location"]
-                                                                      address:[_poiInfo valueForKey:@"address"]
-                                                                     province:[_poiInfo valueForKey:@"province"]
-                                                                         city:[_poiInfo valueForKey:@"city"]
-                                                                     district:[_poiInfo valueForKey:@"district"]
-                                                                        stamp:[_poiInfo valueForKey:@"stamp"]
+                                                                          uid:[self.poiInfo valueForKey:@"uid"]
+                                                                         name:[self.poiInfo valueForKey:@"name"]
+                                                                     classify:[self.poiInfo valueForKey:@"classify"]
+                                                                     location:[self.poiInfo valueForKey:@"location"]
+                                                                      address:[self.poiInfo valueForKey:@"address"]
+                                                                     province:[self.poiInfo valueForKey:@"province"]
+                                                                         city:[self.poiInfo valueForKey:@"city"]
+                                                                     district:[self.poiInfo valueForKey:@"district"]
+                                                                        stamp:[self.poiInfo valueForKey:@"stamp"]
                                                                  whenComplete:^(NSDictionary *returnData)
                 {
                     if (returnData)
@@ -259,8 +261,7 @@
     poiRequest.searchType = AMapSearchType_PlaceAround;
     AMapGeoPoint *postImageGeoPoint = [[AMapGeoPoint alloc]init];
     CLLocation *nowLocation = locations.lastObject;
-    //postImageGeoPoint.latitude = nowLocation.coordinate.latitude;
-    postImageGeoPoint.latitude = -33.88;
+    postImageGeoPoint.latitude = nowLocation.coordinate.latitude;
     postImageGeoPoint.longitude = nowLocation.coordinate.longitude;
     poiRequest.location = postImageGeoPoint;
     poiRequest.keywords = POIKEYWORDS;

@@ -18,8 +18,10 @@
 @property (strong, nonatomic) IBOutlet UIImageView *avator;
 
 @property (strong, nonatomic) IBOutlet UILabel *selfDescriptionLabel;
-@property (strong, nonatomic) IBOutlet UILabel *userNameLabel;
+
+@property (strong, nonatomic) IBOutlet UIView *rightHeaderView;
 @property (strong, nonatomic) IBOutlet UILabel *followsNumLabel;
+@property (strong, nonatomic) IBOutlet UILabel *followsLabel;
 @property (strong, nonatomic) IBOutlet UILabel *followersNumLabel;
 @property (strong, nonatomic) IBOutlet UILabel *photosNumLabel;
 
@@ -28,6 +30,7 @@
 @property (strong, nonatomic) IBOutlet UITabBar *selectToShowTabbar;
 
 @property (nonatomic, strong ) User *userInfo; //当前页面载入的用户信息
+
 
 - (IBAction)MineButtonClick:(id)sender;
 

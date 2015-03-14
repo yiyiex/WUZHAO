@@ -32,6 +32,5 @@
 
 - (UIImage *)rotatedByDegrees:(CGFloat)degrees;
 
-- (void)setRoundCornerWithRadius:(float)radius;
 
 @end

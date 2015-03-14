@@ -8,7 +8,7 @@
         <!--Launch View Controller-->
         <scene sceneID="hNe-oK-0bO">
             <objects>
-                <viewController id="Edh-Jy-mJC" customClass="LaunchViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="launchView" id="Edh-Jy-mJC" customClass="LaunchViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Vie-aR-Gjj"/>
                         <viewControllerLayoutGuide type="bottom" id="R24-Dw-fUS"/>
@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="秋刀鱼" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XHa-2e-Fjb">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Place" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XHa-2e-Fjb">
                                 <rect key="frame" x="235" y="185" width="129" height="59"/>
                                 <fontDescription key="fontDescription" name="IowanOldStyle-Bold" family="Iowan Old Style" pointSize="43"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -40,6 +40,11 @@
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="ewS-8f-IZF"/>
+                                    </mask>
+                                </variation>
                                 <connections>
                                     <segue destination="RXc-Ia-2Hl" kind="presentation" id="4lk-bS-09B"/>
                                 </connections>
@@ -55,6 +60,11 @@
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="fEi-8m-ip9"/>
+                                    </mask>
+                                </variation>
                                 <connections>
                                     <segue destination="7uv-Ec-Iaw" kind="presentation" id="6sj-YY-v61"/>
                                 </connections>
@@ -62,15 +72,17 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="centerY" secondItem="XHa-2e-Fjb" secondAttribute="centerY" constant="85.5" id="8eE-5w-ze6"/>
+                            <constraint firstAttribute="centerY" secondItem="XHa-2e-Fjb" secondAttribute="centerY" constant="86" id="8eE-5w-ze6"/>
                             <constraint firstItem="A89-55-5YW" firstAttribute="top" secondItem="XHa-2e-Fjb" secondAttribute="bottom" constant="8" id="CgT-sR-jJm"/>
                             <constraint firstItem="R24-Dw-fUS" firstAttribute="top" secondItem="F5a-ke-Y58" secondAttribute="bottom" constant="35" id="Fln-7J-3iL"/>
                             <constraint firstAttribute="centerX" secondItem="XHa-2e-Fjb" secondAttribute="centerX" id="Lzs-Sq-BC1"/>
                             <constraint firstAttribute="centerX" secondItem="A89-55-5YW" secondAttribute="centerX" id="ZbW-N3-QmT"/>
                             <constraint firstItem="R24-Dw-fUS" firstAttribute="top" secondItem="rhZ-W3-7aJ" secondAttribute="bottom" constant="35" id="aOt-52-oMq"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="F5a-ke-Y58" secondAttribute="trailing" constant="15" id="atr-SJ-LDk"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="F5a-ke-Y58" secondAttribute="trailing" constant="1" id="atr-SJ-LDk"/>
                             <constraint firstItem="F5a-ke-Y58" firstAttribute="leading" secondItem="rhZ-W3-7aJ" secondAttribute="trailing" constant="80" id="cTP-SK-gq0"/>
-                            <constraint firstItem="rhZ-W3-7aJ" firstAttribute="leading" secondItem="pwR-5H-0eI" secondAttribute="leadingMargin" constant="15" id="gbh-7D-8NR"/>
+                            <constraint firstItem="F5a-ke-Y58" firstAttribute="leading" secondItem="rhZ-W3-7aJ" secondAttribute="trailing" constant="15" id="djo-qc-51K"/>
+                            <constraint firstItem="rhZ-W3-7aJ" firstAttribute="leading" secondItem="pwR-5H-0eI" secondAttribute="leadingMargin" constant="1" id="gbh-7D-8NR"/>
+                            <constraint firstItem="F5a-ke-Y58" firstAttribute="width" secondItem="rhZ-W3-7aJ" secondAttribute="width" id="jAD-rx-afv"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">

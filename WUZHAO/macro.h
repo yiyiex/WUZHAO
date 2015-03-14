@@ -47,7 +47,7 @@
 #define THEME_COLOR_WHITE rgba_WZ(255,255,255,1.0)
 
 #define THEME_COLOR_LIGHT_GREY rgba_WZ(160,160,160,1.0)
-#define THEME_COLOR_LIGHT_GREY_PARENT rgba_WZ(160,160,160,1.0)
+#define THEME_COLOR_LIGHT_GREY_PARENT rgba_WZ(160,160,160,0.5)
 
 #define THEME_COLOR_DARK_GREY rgba_WZ(40,45,50,1.0)
 #define THEME_COLOR_DARK_GREY_PARENT rgba_WZ(40,45,50,0.5)
@@ -123,9 +123,15 @@
  */
 #define WZ_FONT_NAME @"Courier"
 #define WZ_FONT_COMMON_SIZE [UIFont fontWithName:WZ_FONT_NAME size:14]
+#define WZ_FONT_SMALL_SIZE [UIFont fontWithName:WZ_FONT_NAME size:14]
 #define WZ_FONT__READONLY [UIFont fontWithName:WZ_FONT_NAME size:13]
 #define WZ_FONT_LARGE_SIZE [UIFont fontWithName:WZ_FONT_NAME size:15]
 #define WZ_FONT_TITLE [UIFont fontwithName:WZ_FONT_NAME size:25]
 
 
+
+//userListTableViewStyle
+#define UserListStyle1 @"UserListTableViewCellSimple"
+#define UserListStyle2 @"UserListTableViewCellWithFollowButton"
+#define UserListStyle3 @"UserListTableViewCellWithBigPhotoAndFollowButton"
 #endif

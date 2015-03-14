@@ -44,7 +44,7 @@
 -(void)GetPersonalFollowsListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 //get current user photo followers list
 -(void)GetPersonalFollowersListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
-
+-(void)PostAvatorWithUserId:(NSInteger)userId avatorName:(NSString *)avatarName whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
 //get photo list with userId
 -(void) GetPersonalPhotosListWithUserId:(NSInteger )userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
@@ -57,7 +57,7 @@
 
 #pragma mark =====photos info
 //get qiniu uploadToken with userId
-- (void) GetQiNiuTokenWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+- (void) GetQiNiuTokenWithUserId:(NSInteger)userId type:(NSInteger)type whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
 //post the image info to server
 - (void) PostPhotoInfomationWithUserId:(NSInteger)userId method:(NSString *)method photo:(NSString *)photoName thought:(NSString *)thought haspoi:(BOOL)haspoi  provider:(NSInteger)provider uid:(NSString *)uid name:(NSString *)name classify:(NSString *)classify location:(NSString *)location address:(NSString *)address province:(NSString *)province city:(NSString *)city district:(NSString *)district stamp:(NSString *)stamp whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
@@ -71,10 +71,17 @@
 -(void) GetPhotoCommentsWithPostId:(NSInteger)postId comment:(NSString *)comment whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 //zan photo with userId and photo post Id
 -(void) ZanPhotoWithUserId:(NSInteger )userId postId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+-(void) CancelZanPhotoWithUserId:(NSInteger)userId postId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+-(void)GetPhotoZanUserListWithPostId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 //comment with userId and photo PostId
 -(void) CommentPhotoWithUserId:(NSInteger )userId postId:(NSInteger)postId comment:(NSString *)comment whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
+#pragma mark ===== follow
+-(void)followUser:(NSInteger)userIdToFollow withUserId:(NSInteger)myUserId whenComplete:(void (^)(NSDictionary *))whenComplete;
+-(void)unFollowUser:(NSInteger)userIdToUnFollow withUserId:(NSInteger)myUserId whenComplete:(void (^)(NSDictionary *))whenComplete;
 
+#pragma mark =====search
+-(void)searchWithType:(NSString *)type keyword:(NSString *)keyword whenComplete:(void (^)(NSDictionary *))whenComplete;
 #pragma mark =====notice
 //get system notice list
 

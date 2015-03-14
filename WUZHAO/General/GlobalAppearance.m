@@ -17,6 +17,8 @@
 
 #import "CaptureItemContainerUIView.h"
 
+#import "SVProgressHUD.h"
+
 
 @implementation GlobalAppearance
 
@@ -28,6 +30,9 @@
     [self setLabelsAppearance];
     [self setButtonAppearance];
     [self setThemeLabelAppearance];
+    [SVProgressHUD setBackgroundColor:[UIColor darkGrayColor]];
+    [SVProgressHUD setForegroundColor:[UIColor whiteColor]];
+    
     
 }
 
@@ -93,7 +98,7 @@
 +(void)setReadOnlyLabelAppearance
 {
     UIReadOnlyLabel *appearance = [UIReadOnlyLabel appearance];
-    [appearance setTextColor:[UIColor darkGrayColor]];
+    [appearance setTextColor:THEME_COLOR_DARK_GREY];
     [appearance setFont:WZ_FONT__READONLY];
     //[appearance ]
     
@@ -118,14 +123,14 @@
 +(void)setLightReadOnlyLabelAppearance
 {
     UILightReadOnlyLabel *appearance = [UILightReadOnlyLabel appearance];
-    [appearance setTextColor:[UIColor lightGrayColor]];
+    [appearance setTextColor:THEME_COLOR_LIGHT_GREY];
     [appearance setFont:WZ_FONT__READONLY];
     //[appearance ]
 }
 +(void)setThemeLabelAppearance
 {
     UIThemeLabel *appearance = [UIThemeLabel appearance];
-    [appearance setTextColor:THEME_COLOR];
+    [appearance setTextColor:THEME_COLOR_DARK];
     [appearance setFont:WZ_FONT_COMMON_SIZE];
 }
 

@@ -11,6 +11,8 @@
 #import "PhotosCollectionViewController.h"
 #import "FootPrintTableViewController.h"
 
+#import "UserListTableViewController.h"
+
 #import "UIImageView+WebCache.h"
 #import "UIImageView+ChangeAppearance.h"
 #import "UIButton+ChangeAppearance.h"
@@ -53,6 +55,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [_mineButton setTitle:@"正在加载" forState:UIControlStateNormal];
     
     [self setPersonalInfo];
+    [self configGesture];
     
     self.selectToShowTabbar.selectedItem = [self.selectToShowTabbar.items objectAtIndex:0];
    
@@ -63,7 +66,14 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 {
     [super viewWillAppear:animated];
     self.tabBarController.navigationController.navigationBarHidden = NO;
-    self.tabBarController.navigationItem.title = @"个人主页";
+    if ([self.userInfo.UserName isEqualToString:@""])
+    {
+        self.tabBarController.navigationItem.title = @"个人主页";
+    }
+    else
+    {
+        self.tabBarController.navigationItem.title = self.userInfo.UserName;
+    }
     self.tabBarController.navigationItem.hidesBackButton = YES;
    // self.hidesBottomBarWhenPushed = YES;
     //[[NSNotificationCenter defaultCenter] postNotificationName:@"showBar" object:nil];
@@ -107,10 +117,109 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         {
             [SVProgressHUD showErrorWithStatus:@"获取个人信息失败"];
         }
+        
+        
     }];
 
 }
 
+#pragma mark - gesture and action
+-(void)configGesture
+{
+    self.rightHeaderView.userInteractionEnabled = YES;
+    self.followersNumLabel.userInteractionEnabled = YES;
+    self.followsNumLabel.userInteractionEnabled = YES;
+    UITapGestureRecognizer *photoListClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(photoListShow:)];
+    [self.photosNumLabel addGestureRecognizer:photoListClick];
+    UITapGestureRecognizer *followsCilck = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(followsShow:)];
+    [self.followsNumLabel addGestureRecognizer:followsCilck];
+    //[self.followsLabel addGestureRecognizer:followsCilck];
+    UITapGestureRecognizer *followersClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(followersShow:)];
+    NSLog(@"add gesture");
+    [self.followersNumLabel addGestureRecognizer:followersClick];
+    
+}
+
+-(void)photoListShow:(UITapGestureRecognizer *)gesture
+{
+    
+}
+
+-(void)followsShow:(UITapGestureRecognizer *)gesture
+{
+    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    [[QDYHTTPClient sharedInstance]GetPersonalFollowsListWithUserId:userId whenComplete:^(NSDictionary *returnData) {
+        NSLog(@"%@",[returnData objectForKey:@"data"]);
+        
+        UIStoryboard *userListStoryBoard = [UIStoryboard storyboardWithName:@"UserList" bundle:nil];
+        UserListTableViewController *followsList = [userListStoryBoard instantiateViewControllerWithIdentifier:@"userListTableView"];
+        [followsList setUserListStyle:UserListStyle2];
+        [followsList setDatasource:[returnData objectForKey:@"data"]];
+        [followsList setTitle:@"我关注的"];
+        [self.navigationController showViewController:followsList sender:self];
+    }];
+
+    
+}
+
+-(void)followersShow:(UITapGestureRecognizer *)gesture
+
+{
+    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    [[QDYHTTPClient sharedInstance]GetPersonalFollowersListWithUserId:userId whenComplete:^(NSDictionary *returnData) {
+        NSLog(@"%@",[returnData objectForKey:@"data"]);
+        UIStoryboard *userListStoryBoard = [UIStoryboard storyboardWithName:@"UserList" bundle:nil];
+        UserListTableViewController *followsList = [userListStoryBoard instantiateViewControllerWithIdentifier:@"userListTableView"];
+        [followsList setUserListStyle:UserListStyle2];
+        [followsList setDatasource:[returnData objectForKey:@"data"]];
+        [followsList setTitle:@"关注我的"];
+        [self.navigationController showViewController:followsList sender:self];
+    }];
+    
+}
+- (IBAction)MineButtonClick:(id)sender {
+    if ( [sender isKindOfClass:[UIButton class]])
+    {
+        UIButton *myBtn = (UIButton *)sender;
+        if ([myBtn.titleLabel.text  isEqualToString:@"编辑个人信息"])
+        {
+            [self performSegueWithIdentifier:@"editPersonInfo" sender:self];
+        }
+        else if ([myBtn.titleLabel.text  isEqualToString:@"关注"])
+        {
+            NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+            [[QDYHTTPClient sharedInstance]followUser:self.userInfo.UserID withUserId:myUserId whenComplete:^(NSDictionary *result) {
+                if ([result objectForKey:@"data"])
+                {
+                    //[SVProgressHUD showInfoWithStatus:@"关注成功"];
+                    [myBtn setTitle:@"已关注" forState:UIControlStateNormal];
+                    
+                }
+                else if ([result objectForKey:@"error"])
+                {
+                    [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+                }
+            }];
+        }
+        else if ([myBtn.titleLabel.text  isEqualToString:@"已关注"])
+        {
+            NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+            [[QDYHTTPClient sharedInstance]unFollowUser:self.userInfo.UserID withUserId:myUserId whenComplete:^(NSDictionary *result) {
+                if ([result objectForKey:@"data"])
+                {
+                    //[SVProgressHUD showInfoWithStatus:@"关注成功"];
+                    [myBtn setTitle:@"关注" forState:UIControlStateNormal];
+                    
+                }
+                else if ([result objectForKey:@"error"])
+                {
+                    [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+                }
+            }];
+        }
+        
+    }
+}
 
 /*
 #pragma mark - Navigation
@@ -149,14 +258,14 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.containerViewController swapViewControllersWithIdentifier:segueIdentifier];
     
 }
-
-#pragma mark ----- commonContainerViewController delegate
+#pragma mark - commonContainerViewController delegate
 
 -(void)finishLoadChildController:(UIViewController *)childController
 {
     if ([childController isKindOfClass: [PhotosCollectionViewController class]])
     {
         self.myPhotoCollectionViewController = (PhotosCollectionViewController *)childController;
+        [self.myPhotoCollectionViewController.collectionView setBackgroundColor:[UIColor whiteColor]];
         [self SetPhotosCollectionData];
         
     }
@@ -167,23 +276,28 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     }
 }
 
-#pragma mark ----- control the model
+#pragma mark - control the model
 
 
 
 -(void) updateUI
 {
+    //set navigation title
+    [self.tabBarController.navigationItem setTitle:self.userInfo.UserName];
+    [self.navigationItem setTitle:self.userInfo.UserName];
+    
+    
     [self.avator setRoundConerWithRadius:self.avator.frame.size.width/2];
     
     [self.avator sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"default"]];
     
+    [self.mineButton setNormalButtonAppearance];
     [self.mineButton setThemeBackGroundAppearance];
-    
-    self.userNameLabel.text = self.userInfo.UserName;
+
     self.photosNumLabel.text =[NSString stringWithFormat:@"%lu", self.userInfo.photosNumber ? (unsigned long)self.userInfo.photosNumber:0];
     self.followersNumLabel.text =[NSString stringWithFormat:@"%lu", self.userInfo.numFollowers ? (unsigned long)self.userInfo.numFollowers:0];
     self.followsNumLabel.text = [NSString stringWithFormat:@"%lu", self.userInfo.numFollows ? (unsigned long)self.userInfo.numFollows:0];
-    self.selfDescriptionLabel.text = self.userInfo.selfDescriptions ? self.userInfo.selfDescriptions:@"";
+    self.selfDescriptionLabel.text = self.userInfo.selfDescriptions ? [self.userInfo.selfDescriptions stringByReplacingOccurrencesOfString:@"\\n" withString:@"\n"]:@"";
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     if ([ud objectForKey:@"userId"])
     {
@@ -213,7 +327,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     
     if (self.userInfo.photoList)
     {
-        NSLog(@"photolist %@",self.userInfo.photoList);
+        //NSLog(@"photolist %@",self.userInfo.photoList);
         [_myPhotosCollectionDatasource removeAllObjects];
         for (NSDictionary *i in self.userInfo.photoList)
         {
@@ -260,15 +374,10 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.myFootPrintViewController loadData];
 }
 
-- (IBAction)MineButtonClick:(id)sender {
-    if ( [sender isKindOfClass:[UIButton class]])
-    {
-        UIButton *myBtn = (UIButton *)sender;
-        if ([myBtn.titleLabel.text  isEqualToString:@"编辑个人信息"])
-        {
-            [self performSegueWithIdentifier:@"editPersonInfo" sender:self];
-        }
-        
-    }
+-(void)getFollowsList
+{
+
 }
+
+
 @end

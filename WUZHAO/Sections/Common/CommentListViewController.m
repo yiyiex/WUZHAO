@@ -24,7 +24,6 @@
 @end
 
 @implementation CommentListViewController
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -104,6 +103,9 @@
                                   58.0f,
                                   29.0f);
         [_toolbar addSubview:_sendButton];
+        [_sendButton setThemeBackGroundAppearance];
+        [_sendButton addTarget:self action:@selector(sendComment:) forControlEvents:UIControlEventTouchUpInside];
+        
         [self setSendButton:_sendButton];
     }
     
@@ -134,6 +136,12 @@
         
                 
     }];
+}
+
+#pragma mark -  action
+-(void)sendComment:(id)sender
+{
+    
 }
 /*
 #pragma mark - Navigation

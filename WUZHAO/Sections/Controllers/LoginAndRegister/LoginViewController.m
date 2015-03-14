@@ -34,7 +34,6 @@
     
     [self initView];
     [self drawLoginViewAppearance];
-    [self checkLoginState];
     
 
 
@@ -188,14 +187,7 @@
     return true;
 }
 
--(void)checkLoginState
-{
-    if ([[QDYHTTPClient sharedInstance] IsAuthenticated])
-    {
-        [self performSegueWithIdentifier:@"HasLogin" sender:self];
-    }
-    
-}
+
 /*
 #pragma mark - Navigation
 

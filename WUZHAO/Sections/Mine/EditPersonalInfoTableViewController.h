@@ -33,4 +33,9 @@
 
 @property (nonatomic, strong) User *userInfo;
 
+@property (nonatomic,strong) IBOutlet UIButton *logoutButton;
+
+- (IBAction)logOutButtonPressed:(id)sender;
+
+
 @end

@@ -8,13 +8,23 @@
 
 #import "SearchViewController.h"
 #import "CommonContainerViewController.h"
+#import "PhotosCollectionViewController.h"
+#import "UserListTableViewController.h"
+
+#import "User.h"
+#import "WhatsGoingOn.h"
+#import "macro.h"
 
 #define SEGUEFIRST @"segueForSuggestPhotos"
 #define SEGUESECOND @"segueForSuggestAddress"
 #define SEGUETHIRD @"segueForSuggestUsers"
 
-@interface SearchViewController () <UISearchBarDelegate,UISearchControllerDelegate,UISearchResultsUpdating,UITableViewDataSource,UITableViewDataSource>
+@interface SearchViewController () <UISearchBarDelegate,UISearchControllerDelegate,UISearchResultsUpdating,UITableViewDataSource,UITableViewDataSource ,CommonContainerViewControllerDelegate>
 @property (nonatomic, strong) CommonContainerViewController *containerViewController;
+@property (nonatomic, strong) PhotosCollectionViewController *suggestPhotoCollectionViewController;
+@property (nonatomic, strong) UserListTableViewController *suggestUserListViewConstroller;
+@property (nonatomic,strong) NSMutableArray *suggestPhotoData;
+@property (nonatomic,strong) NSMutableArray *suggestUserListData;
 
 @property (nonatomic, strong) UITableViewController *searchResultTableView;
 @property (nonatomic, strong) UISearchController *searchController;
@@ -93,6 +103,7 @@
     if ([segue.identifier isEqualToString:@"embedContainer"])
     {
         self.containerViewController = segue.destinationViewController;
+        self.containerViewController.delegate = self;
         self.containerViewController.ChildrenName = @[SEGUEFIRST,SEGUESECOND,SEGUETHIRD];
     }
 }
@@ -101,7 +112,7 @@
 {
     if (!_containerViewController)
     {
-        _containerViewController = [[CommonContainerViewController alloc]initWithChildren:@[SEGUEFIRST,SEGUESECOND,SEGUETHIRD,SEGUETHIRD]];
+        _containerViewController = [[CommonContainerViewController alloc]initWithChildren:@[SEGUEFIRST,SEGUESECOND,SEGUETHIRD]];
         
     }
     return _containerViewController;
@@ -165,7 +176,37 @@
     
 }
 
+#pragma mark - commonContainerViewController delegate
 
+-(void)finishLoadChildController:(UIViewController *)childController
+{
+    if ([childController isKindOfClass: [PhotosCollectionViewController class]])
+    {
+        self.suggestPhotoCollectionViewController = (PhotosCollectionViewController *)childController;
+        [self.suggestPhotoCollectionViewController.collectionView setBackgroundColor:[UIColor whiteColor]];
+        [self setSuggestPhotoCollectionData];
+        
+    }
+    else if( [childController isKindOfClass:[UserListTableViewController class]])
+    {
+        self.suggestUserListViewConstroller = (UserListTableViewController *)childController;
+        [self.suggestUserListViewConstroller setUserListStyle:UserListStyle3];
+        [self setSuggestUserListData];
+    }
+}
+
+-(void)setSuggestPhotoCollectionData
+{
+    self.suggestPhotoData = [[WhatsGoingOn newDataSource]mutableCopy];
+    [self.suggestPhotoCollectionViewController setDatasource:self.suggestPhotoData];
+    [self.suggestPhotoCollectionViewController loadData];
+}
+-(void)setSuggestUserListData
+{
+    self.suggestUserListData = [[User userList]mutableCopy];
+    [self.suggestUserListViewConstroller setDatasource:self.suggestUserListData];
+    [self.suggestUserListViewConstroller.tableView reloadData];
+}
 /*
 #pragma mark - Navigation
 

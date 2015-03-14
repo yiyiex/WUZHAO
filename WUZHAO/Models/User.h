@@ -21,7 +21,7 @@
 @property (readwrite,nonatomic) NSString *email;
 @property (readwrite,nonatomic) NSString *selfDescriptions;
 
-@property (readonly,nonatomic) BOOL isFollowed;
+@property (readwrite,nonatomic) BOOL isFollowed;
 
 @property (readwrite,nonatomic,strong) NSString *userToken;
 
