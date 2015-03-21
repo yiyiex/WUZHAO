@@ -14,6 +14,7 @@
 #import "WhatsGoingOn.h"
 
 @interface MineViewController : UIViewController <UITabBarDelegate>
+@property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
 
 @property (strong, nonatomic) IBOutlet UIImageView *avator;
 
@@ -34,5 +35,5 @@
 
 - (IBAction)MineButtonClick:(id)sender;
 
-
+-(void)getLatestData;
 @end

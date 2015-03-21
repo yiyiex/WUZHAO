@@ -47,15 +47,22 @@
     return UIStatusBarStyleLightContent;
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setNavigationAppearance];
+}
+
 #pragma mark - appearance
 
 -(void)setNavigationAppearance
 {
-    [self setTitle:@"注册秋刀鱼"];
+    [self setTitle:@"注册"];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     UIBarButtonItem *close = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"close_cha"] style:UIBarButtonItemStylePlain target:self action:@selector(returnToLaunch)];
     [self.navigationItem setLeftBarButtonItem:close];
-    [[UIApplication sharedApplication]setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
+    //[[UIApplication sharedApplication]setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 }
 
 
@@ -79,7 +86,8 @@
     
     [self.registerButton setTitle:@"注  册" forState:UIControlStateNormal];
     [self.registerButton setDarkGreyBackGroundAppearance];
-    [self.registerButton DisableAppearance];
+    [self.registerButton setBigButtonAppearance];
+    [self.registerButton setEnabled:NO];
     
 }
 -(void)drawRegisterViewAppearance
@@ -125,9 +133,9 @@
 {
 
     [self checkInput];
-    [self.registerButton EnableAppearance];
+    [self.registerButton setEnabled:YES];
     [self registerNewUser];
-    [self.registerButton DisableAppearance];
+    [self.registerButton setEnabled:NO];
 }
 
 - (IBAction)dismisButtonPressed:(id)sender {
@@ -195,20 +203,20 @@
     
     if ([self.userNameTextField.text isEqualToString:@""])
     {
-        [self.registerButton DisableAppearance];
+        [self.registerButton setEnabled:NO];
         return false;
     }
     if ([self.passwordTextField.text isEqualToString:@""])
     {
-        [self.registerButton DisableAppearance];
+        [self.registerButton setEnabled:NO];
         return false;
     }
     if ([self.emailTextField.text isEqualToString:@""])
     {
-        [self.registerButton DisableAppearance];
+        [self.registerButton setEnabled:NO];
         return false;
     }
-    [self.registerButton EnableAppearance];
+    [self.registerButton setEnabled:YES];
     return true;
 }
 

@@ -31,6 +31,8 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    [self setNavigationAppearance];
      NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     if ([userDefaults objectForKey:@"token"])
     {
@@ -43,7 +45,7 @@
 -(void)setNavigationAppearance
 {
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-    [[UIApplication sharedApplication]setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
+    [[UIApplication sharedApplication]setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 }
 -(void)initAppearance
 {
@@ -63,7 +65,9 @@
     {
         [self.LoginButton setHidden:NO];
         [self.RegisterButton setHidden:NO];
+        [self.LoginButton setBigButtonAppearance];
         [self.LoginButton setWhiteBackGroundAppearance];
+        [self.RegisterButton setBigButtonAppearance];
         [self.RegisterButton setDarkGreyBackGroundAppearance];
     }
 }

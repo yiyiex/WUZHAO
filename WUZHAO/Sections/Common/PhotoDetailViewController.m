@@ -19,6 +19,15 @@
 #import "AddressViewController.h"
 #import "CommentListViewController.h"
 
+#import "UIImageView+ChangeAppearance.h"
+#import "UIButton+ChangeAppearance.h"
+#import "UILabel+ChangeAppearance.h"
+#import "UIView+ChangeAppearance.h"
+
+
+#import "QDYHTTPClient.h"
+#import "SVProgressHUD.h"
+
 #import "User.h"
 
 @interface PhotoDetailViewController ()
@@ -31,8 +40,16 @@
     [super viewDidLoad];
     
     [self setTitle:@"照片详情"];
+   // [self setAppearance];
     
     [self configureView:self.whatsGoingOnItem];
+    if (!self.whatsGoingOnItem.photoUser.UserID)
+    {
+        [[QDYHTTPClient sharedInstance]GetPhotoInfoWithPostId:self.whatsGoingOnItem.postId whenComplete:^(NSDictionary *returnData) {
+            self.whatsGoingOnItem = [returnData objectForKey:@"data"];
+            [self configureView:self.whatsGoingOnItem];
+        }];
+    }
   //  [self loadCommentTableViewData];
     //NSArray * userList = [[User userList]mutableCopy];
    
@@ -43,6 +60,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    //[self setAppearance];
     
     //[[NSNotificationCenter defaultCenter] postNotificationName:@"hideBar" object:nil];
     
@@ -74,10 +92,41 @@
 }
 
 #pragma mark- set the content of the whole view
+-(void)setAppearance
+{
+    [self.userAvatarImageView setRoundConerWithRadius:self.userAvatarImageView.frame.size.width/2];
+    
+    [self.addressLabel setTextColor:THEME_COLOR_DARK_GREY];
+    [self.descriptionLabel setTextColor:THEME_COLOR_DARK_GREY];
+
+    
+    [self.addressIcon setHidden:[self.addressLabel.text isEqualToString:@""]? YES:NO];
+    [self.descriptionIcon setHidden:[self.descriptionLabel.text isEqualToString:@""]? YES:NO];
+    [self.likeIcon setHidden:[self.likeLabel.text isEqualToString:@""]? YES:NO];
+    [self.commentIcon setHidden:[self.commentContentLabel.text isEqualToString:@""]? YES:NO];
+
+    
+    [self.commentContentLabel setBackgroundColor:[UIColor clearColor]];
+    
+    [self.zanButton setSmallButtonAppearance];
+    [self.zanButton setGreyBackGroundAppearance];
+    [self.commentButton setSmallButtonAppearance];
+    [self.commentButton setGreyBackGroundAppearance];
+    [self.moreButton setSmallButtonAppearance];
+    [self.moreButton setGreyBackGroundAppearance];
+    
+}
+
 - (void)configureView:(WhatsGoingOn *)whatsGoinOnItem
 {
     _whatsGoingOnItem = whatsGoinOnItem;
-    self.likeLabel.text = [NSString stringWithFormat:@"%lu 次赞", whatsGoinOnItem.likeCount];
+    [self.userAvatarImageView sd_setImageWithURL:[NSURL URLWithString:self.whatsGoingOnItem.photoUser.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"default"]];
+    
+    self.userNameLabel.text = self.whatsGoingOnItem.photoUser.UserName;
+    self.userDescriptionLabel.text = [self.whatsGoingOnItem.photoUser.selfDescriptions stringByReplacingOccurrencesOfString:@"\\n" withString:@"\n"];
+    self.postTimeLabel.text = self.whatsGoingOnItem.postTime;
+    
+    self.likeLabel.text = [NSString stringWithFormat:@"%lu 次赞", (long)whatsGoinOnItem.likeCount];
 
     //评论内容显示样式
     NSDictionary *nameStyle = @{@"userName":[WPAttributedStyleAction styledActionWithAction:^{
@@ -100,14 +149,16 @@
                                 @"link": THEME_COLOR_DARK};
     
     _whatsGoingOnItem.attributedComment = [whatsGoinOnItem.comment attributedStringWithStyleBook:nameStyle];
-    
-    if (whatsGoinOnItem.comment)
+    self.commentContentLabel.attributedText = whatsGoinOnItem.attributedComment;
+    self.addressLabel.text = whatsGoinOnItem.poiName;
+    self.descriptionLabel.text = whatsGoinOnItem.imageDescription;
+    if (whatsGoinOnItem.likeCount >0)
     {
-        self.commentContentLabel.attributedText = whatsGoinOnItem.attributedComment;
+        self.likeLabel.text = [NSString stringWithFormat:@"%lu 次赞", (long)whatsGoinOnItem.likeCount];
     }
-    if (whatsGoinOnItem.poiName)
+    else
     {
-        self.addressLabel.text = whatsGoinOnItem.poiName;
+        self.likeLabel.text = @"";
     }
     if (whatsGoinOnItem.imageUrlString)
     {
@@ -126,11 +177,116 @@
                                             activityIndicator = nil;
                                         }];
     }
-    
-    self.commentList = whatsGoinOnItem.commentList;
+    [self.zanButton addTarget:self action:@selector(zanButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+
+    [self.commentButton addTarget:self action:@selector(commentButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.moreButton addTarget:self action:@selector(moreButtonCilck:) forControlEvents:UIControlEventTouchUpInside];
+    [self setAppearance];
 }
 
+#pragma mark -gesture and action
+-(void)zanButtonClick:(id)sender
+{
+    NSInteger userId = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
+    if (!self.whatsGoingOnItem.isLike)
+    {
+        [[QDYHTTPClient sharedInstance]ZanPhotoWithUserId:userId postId:self.whatsGoingOnItem.poiId whenComplete:^(NSDictionary *returnData) {
+            if ([returnData objectForKey:@"data"])
+            {
+                if ([self.zanButton.currentTitle isEqualToString:@"赞"])
+                {
+                    self.whatsGoingOnItem.likeCount += 1;
+                    [self.likeIcon setHidden:NO];
+                    self.likeLabel.text = [NSString stringWithFormat:@"%lu 次赞",(long)self.whatsGoingOnItem.likeCount];
+                    [self.zanButton setTitle:@"已赞" forState:UIControlStateNormal];
+                    [self setAppearance];
+                }
+            }
+            else
+            {
+                [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+            }
+        }];
+        
+    }
+    else
+    {
+        [[QDYHTTPClient sharedInstance]CancelZanPhotoWithUserId:userId postId:self.whatsGoingOnItem.poiId whenComplete:^(NSDictionary *returnData) {
+            if ([returnData objectForKey:@"data"])
+            {
+                if ([self.zanButton.currentTitle isEqualToString:@"已赞"])
+                {
+                    self.whatsGoingOnItem.likeCount -= 1;
+                    if (self.whatsGoingOnItem.likeCount == 0)
+                    {
+                        [self.likeIcon setHidden:YES];
+                        self.likeLabel.text = @"";
+                    }
+                    else
+                    {
+                        [self.likeIcon setHidden:NO];
+                        self.likeLabel.text = [NSString stringWithFormat:@"%lu 次赞",(long)self.whatsGoingOnItem.likeCount];
+                    }
+                    [self.zanButton setTitle:@"赞" forState:UIControlStateNormal];
+                    [self setAppearance];
+                }
+            }
+            else
+            {
+                [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+            }
+        }];
+    }
 
+}
+-(void)commentButtonClick:(id)sender
+{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"photoDetailAndComment" bundle:nil];
+    CommentListViewController *detailAndCommentView = [storyboard instantiateViewControllerWithIdentifier:@"commentListView"];
+    detailAndCommentView.poiItem = self.whatsGoingOnItem;
+    [self.navigationController pushViewController:detailAndCommentView animated:YES];
+}
+-(void)moreButtonCilck:(UIButton *)sender
+{
+    NSInteger userId = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        NSLog(@"cancel click");
+    }];
+    [alertController addAction:cancelAction];
+    
+    if (userId == self.whatsGoingOnItem.photoUser.UserID)
+    {
+        UIAlertAction *delectAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+            NSLog(@"delete pressed");
+            //TO DO
+            //删除该条记录
+            [self.navigationController popViewControllerAnimated:YES];
+            
+        }];
+        [alertController addAction:delectAction];
+    }
+    else
+    {
+        UIAlertAction *delectAction = [UIAlertAction actionWithTitle:@"举报不良内容" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+            NSLog(@"举报 pressed");
+            //TO DO
+            //举报
+        }];
+        [alertController addAction:delectAction];
+    }
+    /*
+     UIAlertAction *shareAction = [UIAlertAction actionWithTitle:@"复制共享网址" style:nil handler:^(UIAlertAction *action) {
+     NSLog(@"share pressed");
+     }];
+     [alertController addAction:shareAction];
+     */
+    [self presentViewController:alertController animated:YES completion:^{
+        
+        
+    }];
+}
 /*
 #pragma mark - Navigation
 

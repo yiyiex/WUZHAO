@@ -13,6 +13,8 @@
 
 #import "UIImageView+WebCache.h"
 
+#import "QDYHTTPClient.h"
+
 @interface PhotosCollectionViewController ()
 
 
@@ -27,7 +29,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     
     [self.collectionView registerNib:[UINib nibWithNibName:@"PhotosCollectionCell" bundle:nil] forCellWithReuseIdentifier:reuseIdentifier];
     [self.collectionView reloadData];
-    
+    //[self.collectionView setScrollEnabled:false];
     //self.datasource = [[WhatsGoingOn newDataSource]mutableCopy];
     
     
@@ -62,15 +64,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"showDetail"])
-    {
-        
-        NSIndexPath *selectedIndexPath = [[self.collectionView indexPathsForSelectedItems] firstObject];
-        
-        PhotoDetailViewController *detailViewController = [segue destinationViewController];
-        WhatsGoingOn *item = [self.datasource objectAtIndex:selectedIndexPath.row];        
-        [detailViewController setWhatsGoingOnItem:item];
-    }
+    
 }
 
 -(void)setDatasource:(NSMutableArray *)datasource
@@ -126,17 +120,17 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 2.0f;
+    return 1.0f;
 }
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 2.0f;
+    return 1.0f;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake((WZ_APP_FRAME.size.width-4)/3, (WZ_APP_FRAME.size.width-4)/3);
+    return CGSizeMake((WZ_APP_FRAME.size.width-2)/3, (WZ_APP_FRAME.size.width-2)/3);
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -147,12 +141,12 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     UIStoryboard *detailStoryBoard = [UIStoryboard storyboardWithName:@"photoDetailAndComment" bundle:nil];
     
     PhotoDetailViewController *detailViewController = [detailStoryBoard instantiateViewControllerWithIdentifier:@"photoDetailView"];
-    
-    [detailViewController setWhatsGoingOnItem:item];
-    
+    [detailViewController setWhatsGoingOnItem:item];    
     [self.navigationController pushViewController:detailViewController animated:YES];
     
 }
+
+
 
 /*
 // Uncomment this method to specify if the specified item should be highlighted during tracking

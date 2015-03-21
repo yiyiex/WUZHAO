@@ -42,17 +42,23 @@
 #define THEME_COLOR_DARK rgba_WZ(49,175,223,1.0)
 
 #define THEME_COLOR_PARENT rgba_WZ(153,224,253, 0.5)
-#define THEME_COLOR_DARK_PARENT rgba_WZ(167,230,254,0.5)
+#define THEME_COLOR_DARK_PARENT rgba_WZ(49,175,223,0.5)
+
+#define THEME_COLOR_DARKER rgba_WZ(49,120,175, 1)
+#define THEME_COLOR_DARKER_PARENT rgba_WZ(49,120,175,0.5)
+
 
 #define THEME_COLOR_WHITE rgba_WZ(255,255,255,1.0)
 
 #define THEME_COLOR_LIGHT_GREY rgba_WZ(160,160,160,1.0)
-#define THEME_COLOR_LIGHT_GREY_PARENT rgba_WZ(160,160,160,0.5)
+#define THEME_COLOR_LIGHT_GREY_PARENT rgba_WZ(200,200,200,0.5)
 
 #define THEME_COLOR_DARK_GREY rgba_WZ(40,45,50,1.0)
 #define THEME_COLOR_DARK_GREY_PARENT rgba_WZ(40,45,50,0.5)
+#define THEME_COLOR_DARKER_GREY rgba_WZ(20,20,25,1.0)
+#define THEME_COLOR_DARKER_GREY_PARENT rgba_WZ(20,20,25,0.5)
 #define THEME_COLOR_BLACK rgba_WZ(0,0,0,1.0)
-#define THEME_COLOR_BLACK_PARENT rgba_WZ(0,0,0,0.5)
+#define THEME_COLOR_BLACK_PARENT rgba_WZ(0,0,0,0.2)
 
 
 //控件相关颜色
@@ -82,6 +88,7 @@
 //iPhone5及以上设备，按钮的位置放在下面。iPhone5以下的按钮放上面。
 #define isHigherThaniPhone4_WZ ((isPad_AllTargetMode_WZ && [[UIScreen mainScreen] applicationFrame].size.height <= 960 ? NO : ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? ([[UIScreen mainScreen] currentMode].size.height > 960 ? YES : NO) : NO)))
 //#define isHigherThaniPhone4_SC (isPad_SC ? YES : ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? ([[UIScreen mainScreen] currentMode].size.height > 960 ? YES : NO) : NO))
+
 
 
 #if __IPHONE_6_0 // iOS6 and later
@@ -121,11 +128,20 @@
  Font: Courier-Oblique
  Font: Courier-Bold
  */
+/*
+#define WZ_FONT_NAME @"Arial"
+#define WZ_FONT_NAME_BOLD @"Arial-Bold"
+*/
+
 #define WZ_FONT_NAME @"Courier"
+#define WZ_FONT_NAME_BOLD @"Courier-Bold"
+
 #define WZ_FONT_COMMON_SIZE [UIFont fontWithName:WZ_FONT_NAME size:14]
+#define WZ_FONT_COMMON_BOLD_SIZE [UIFont fontWithName:WZ_FONT_NAME_BOLD size:14]
 #define WZ_FONT_SMALL_SIZE [UIFont fontWithName:WZ_FONT_NAME size:14]
 #define WZ_FONT__READONLY [UIFont fontWithName:WZ_FONT_NAME size:13]
 #define WZ_FONT_LARGE_SIZE [UIFont fontWithName:WZ_FONT_NAME size:15]
+#define WZ_FONT_LARGE_SIZE_BOLD [UIFont fontWithName:WZ_FONT_NAME_BOLD size:16]
 #define WZ_FONT_TITLE [UIFont fontwithName:WZ_FONT_NAME size:25]
 
 

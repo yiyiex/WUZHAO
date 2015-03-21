@@ -13,6 +13,7 @@
 #import "SVProgressHUD.h"
 
 #import "QiniuSDK.h"
+#import "macro.h"
 
 #import <AMapSearchKit/AMapSearchAPI.h>
 #import <CoreLocation/CoreLocation.h>
@@ -44,6 +45,12 @@
     self.navigationItem.hidesBackButton = NO;
     self.postImageView.image = self.postImage;
     self.hasPoi = NO;
+    self.postButton = [[UIButton alloc]initWithFrame:CGRectMake(0, WZ_DEVICE_SIZE.height - 48, WZ_APP_SIZE.width, 48)];
+    [self.postButton setBackgroundColor:THEME_COLOR_DARK];
+    [self.postButton setTitle:@"发表-->" forState:UIControlStateNormal];
+    [self.postButton addTarget:self action:@selector(PostButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.postButton];
+    
     [self searchAddress];
 
 }
@@ -191,7 +198,7 @@
                     NSLog(@"%lu",(unsigned long)[self.navigationController.viewControllers count]);
                     
                     [[NSNotificationCenter defaultCenter]postNotificationName:@"finishPostImage" object:nil];
-                    
+                    [self dismissViewControllerAnimated:YES completion:nil];
                     //通知服务器并补充信息
                     //....
 

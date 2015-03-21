@@ -20,6 +20,7 @@
 
 #import "QDYHTTPClient.h"
 #import "QiniuSDK.h"
+#import "macro.h"
 
 
 #define ORIGINAL_MAX_WIDTH 640.0f
@@ -31,7 +32,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self setTablePerform];
+    [self initView];
     [self setNavigationItem];
     
     
@@ -64,45 +65,54 @@
 
 -(void)setNavigationItem
 {
+    //[self.navigationController setNavigationBarHidden:NO];
     self.title = @"编辑个人信息";
     //左侧取消按钮
-    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed)];
+    //UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed)];
+    //self.navigationItem.leftBarButtonItem = cancelButton;
     //右侧保存按钮
     UIButton *save = [[UIButton alloc]init];
     save.titleLabel.text = @"完成";
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(savaButtonPressed)];
     self.navigationItem.rightBarButtonItem = saveButton;
 }
--(void)setTablePerform
+-(void)initView
 {
-    [self.avatorInfoCell.imageView sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"defaultAvator"]];
-    
-    [self.avatorInfoCell.imageView setRoundConerWithRadius:self.avatorInfoCell.imageView.frame.size.width/2];
+    [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"default"]];
+    [self.avatarImageView setRoundConerWithRadius:self.avatarImageView.frame.size.width/2];
     
     self.nickNameCell.imageView.image = [UIImage imageNamed:@"default"];
-    
     self.nickNameTextField = [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
-
-    
+    [self.nickNameTextField setFont:WZ_FONT_COMMON_SIZE];
     [self.nickNameCell addSubview:self.nickNameTextField];
-    if (self.userInfo.UserName)
-    {
-        self.nickNameTextField.text = self.userInfo.UserName;
-    }
-    else
+    if ([self.userInfo.UserName isEqualToString:@""])
     {
         self.nickNameTextField.placeholder = @"昵称";
     }
+    else
+    {
+        self.nickNameTextField.text = self.userInfo.UserName;
+    }
+
 
     self.selfDescriptionCell.imageView.image = [UIImage imageNamed:@"default"];
     self.selfDescriptionTextField = [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
+    [self.selfDescriptionTextField setFont:WZ_FONT_COMMON_SIZE];
     [self.selfDescriptionCell addSubview:self.selfDescriptionTextField];
-   
-    self.selfDescriptionTextField.text =@"我是哈利小球";
-    // [self.selfDescriptionTextField sizeToFit];
+    if ([self.userInfo.selfDescriptions isEqualToString:@""])
+    {
+        self.selfDescriptionTextField.placeholder = @"个人简介";
+    }
+    else
+    {
+        self.selfDescriptionTextField.text = self.userInfo.selfDescriptions;
+    }
     
+    // [self.selfDescriptionTextField sizeToFit];
+    /*
     self.emailCell.imageView.image = [UIImage imageNamed:@"default"];
     self.emailTextField = [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 300, 30)];
+    [self.emailTextField setFont:WZ_FONT_COMMON_SIZE];
     [self.emailCell addSubview:self.emailTextField];
     if (self.userInfo.email)
     {
@@ -123,15 +133,17 @@
     else
     {
         self.phoneNumTextField.placeholder = @"手机";
-    }
+    }*/
     
-    
+    [self.changePwdCell.textLabel setFont:WZ_FONT_COMMON_SIZE];
     self.changePwdCell.textLabel.text = @"修改密码";
+    [self.logoutCell setBackgroundColor:[UIColor whiteColor]];
+    self.logoutCell.textLabel.text = @"退出";
+    [self.logoutCell.textLabel setFont:WZ_FONT_COMMON_BOLD_SIZE];
+    [self.logoutCell.textLabel setTextColor:THEME_COLOR_DARK];
     
-    
-    [self.logoutButton setBigButtonAppearance];
-    [self.logoutButton setThemeBackGroundAppearance];
-    [self.logoutButton setTitle:@"退出登录" forState:UIControlStateNormal];
+
+
     
 
     
@@ -164,7 +176,8 @@
     }];*/
 
 }
-- (IBAction)logOutButtonPressed:(id)sender {
+- (void)logout
+{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:@"token"];
     UIStoryboard *loginStoryboard = [UIStoryboard storyboardWithName:@"Launch" bundle:nil];
@@ -192,7 +205,12 @@
     {
         //go to set password
     }
+    if (indexPath.section == 3)
+    {
+        [self logout];
+    }
 }
+
 /*
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: forIndexPath:indexPath];
@@ -250,8 +268,7 @@
 -(void)imageCropper:(VPImageCropperViewController *)cropperViewController didFinished:(UIImage *)editedImage
 {
     UIImage *newAvatorImage = [self imageByScalingToMaxSize:editedImage];
-    self.avatorInfoCell.imageView.image = newAvatorImage;
-    [self.avatorInfoCell.imageView setRoundConerWithRadius:self.avatorInfoCell.imageView.frame.size.width/2];
+    self.avatarImageView.image = newAvatorImage;
     [cropperViewController dismissViewControllerAnimated:YES completion:^{
         
         //TO DO
@@ -286,6 +303,7 @@
                          if ([returnData objectForKey:@"data"])
                          {
                              //上传图片成功
+                             [SVProgressHUD showInfoWithStatus:@"上传头像成功"];
                          }
                          else if ([returnData objectForKey:@"error"])
                          {

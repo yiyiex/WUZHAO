@@ -13,6 +13,9 @@
 #import "UILabel+ChangeAppearance.h"
 #import "UIButton+ChangeAppearance.h"
 #import "UIImageView+ChangeAppearance.h"
+
+#import "MineViewController.h"
+
 #import "macro.h"
 
 #import "QDYHTTPClient.h"
@@ -87,6 +90,8 @@
     }
 }
 
+
+
 #pragma mark - basic method
 
 -(void)configWithUser:(User *)user style:(NSString *)style
@@ -97,6 +102,10 @@
     
     [self.avatorImageView sd_setImageWithURL:[NSURL URLWithString:user.avatarImageURLString]  placeholderImage:[UIImage imageNamed:@"default"]];
     [self.avatorImageView setRoundConerWithRadius:AVATARIMAGEWIDTH/2];
+    
+    UITapGestureRecognizer *avatarClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(avatarClick:)];
+    [self.avatorImageView setUserInteractionEnabled:YES];
+    [self.avatorImageView addGestureRecognizer:avatarClick];
     if ([style isEqualToString:UserListStyle2 ]|| [style isEqualToString:UserListStyle3])
     {
         [self.followButton setNormalButtonAppearance];

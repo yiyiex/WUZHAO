@@ -17,6 +17,8 @@
 #import "UIImageView+WebCache.h"
 #import "UIImageView+ChangeAppearance.h"
 
+#import "MineViewController.h"
+
 #import "SVProgressHUD.h"
 
 
@@ -98,13 +100,37 @@
     }
 
     [cell configWithUser:self.datasource[indexPath.row] style:self.userListStyle];
+    UITapGestureRecognizer *avatarClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(avatarClick:)];
+    [cell.avatorImageView addGestureRecognizer:avatarClick];
+    [cell.avatorImageView setUserInteractionEnabled:YES];
     // Configure the cell...
     return cell;
     
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
+    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
+    [personalViewCon setUserInfo:[self.datasource objectAtIndex:indexPath.row]];
+    [personalViewCon.navigationController setNavigationBarHidden:YES];
+    [self.navigationController pushViewController:personalViewCon animated:YES];
+    
+}
 
 
+#pragma mark - gesture and action
+-(void)avatarClick:(UITapGestureRecognizer *)gesture
+{
+    
+    NSIndexPath *indexpath = [self.tableView indexPathForCell:(UserListTableViewCell *)[gesture.view superview]];
+    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
+    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
+    [personalViewCon setUserInfo:[self.datasource objectAtIndex:indexpath.row]];
+    [personalViewCon.navigationController setNavigationBarHidden:YES];
+    [self.navigationController pushViewController:personalViewCon animated:YES];
+     
+}
 
 
 /*

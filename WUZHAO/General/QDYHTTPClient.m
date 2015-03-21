@@ -48,7 +48,6 @@
 //login and register
 -(NSURLSessionDataTask *)LoginWithUserName:(NSString *)UserName password:(NSString *)Password complete:(void (^)(NSDictionary  *result, NSError *error))complete
 {
-    //NSLog(@"mobile:%@,password:%@",UserName,Password);
     NSDictionary *userDic = @{@"email":UserName,@"pwd":Password};
     return [[QDYHTTPClient sharedInstance] POST:@"api/login" parameters:userDic success:^(NSURLSessionDataTask *task, id responseObject)
             {
@@ -97,11 +96,9 @@
 {
     NSString *api = @"api/register";
     NSDictionary *userDic = @{@"nick":userName,@"email":email,@"pwd":password};
-    NSLog(@"%@",userDic);
     return [[QDYHTTPClient sharedInstance] POST:api parameters:userDic success:^(NSURLSessionDataTask *task, id responseObject)
             {
                 NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)task.response;
-                // NSLog(@"服务器返回结果：**************%@",responseObject);
                 if (httpResponse.statusCode == 200)
                 {
                     if ( [[responseObject objectForKey:@"success"] isEqualToString:@"false"])
@@ -353,7 +350,6 @@
             NSArray *data = [result objectForKey:@"data"];
             if (data)
             {
-                NSLog(@"data:%@",data);
                 for (NSDictionary *item in data)
                 {
                     User *user = [[User alloc]init];
@@ -434,7 +430,6 @@
                     item.photoUser.UserID = [(NSNumber *)[[data objectAtIndex:i] objectForKey:@"user_id"]integerValue];
                     item.photoUser.UserName = [data[i] objectForKey:@"nick"];
                     item.photoUser.avatarImageURLString = [data[i] objectForKey:@"avatar"];
-                    NSLog(@"%@",item.photoUser.avatarImageURLString);
                     item.photoUser.selfDescriptions = [data[i] objectForKey:@"description"];
                     
                     
@@ -501,7 +496,7 @@
 -(void)ZanPhotoWithUserId:(NSInteger)userId postId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
      NSString *api = [NSString stringWithFormat:@"api/like/%ld",(long)postId];
-     NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:self.currentUser.UserID]};
+     NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
     //NSDictionary *param = @{@"user_id":@"2",@"post_id":@"1"};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
@@ -530,7 +525,7 @@
 -(void)CancelZanPhotoWithUserId:(NSInteger)userId postId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
     NSString *api = [NSString stringWithFormat:@"api/unlike/%ld",(long)postId];
-    NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:self.currentUser.UserID]};
+    NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
     //NSDictionary *param = @{@"user_id":@"2",@"post_id":@"1"};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
@@ -568,7 +563,6 @@
             NSArray *data = [result objectForKey:@"data"];
             if (data)
             {
-                NSLog(@"data:%@",data);
                 for (NSDictionary *item in data)
                 {
                     User *user = [[User alloc]init];
@@ -606,13 +600,80 @@
 
 -(void)GetPhotoInfoWithPostId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"api/post/%ld",(long)postId];
-    NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:postId]};
+    NSString *api = [NSString stringWithFormat:@"/api/post/%ld",(long)postId];
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
-    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
-        
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+    if ([result objectForKey:@"success"])
+        {
+            WhatsGoingOn *postItem = [[WhatsGoingOn alloc]init];
+            NSDictionary *data = [result objectForKey:@"data"];
+            if (data)
+            {
+                postItem.postId =[(NSNumber *)[data objectForKey:@"post_id"] integerValue];
+                
+                
+                postItem.photoUser.UserID = [(NSNumber *)[data objectForKey:@"user_id"]integerValue];
+                postItem.photoUser.UserName = [data objectForKey:@"nick"];
+                postItem.photoUser.avatarImageURLString = [data objectForKey:@"avatar"];
+                postItem.photoUser.selfDescriptions = [data objectForKey:@"description"];
+                
+                
+                postItem.postTime = [data objectForKey:@"create_time"];
+                postItem.imageUrlString = [data objectForKey:@"photo"];
+                postItem.imageDescription = [data objectForKey:@"thought"];
+                postItem.likeCount = [(NSNumber *)[data objectForKey:@"like_num"] integerValue];
+                
+                postItem.commentNum = [(NSNumber *)[data objectForKey:@"comment_num"]integerValue];
+                
+                postItem.poiId = [(NSNumber *)[data objectForKey:@"poi_id"] integerValue];
+                postItem.poiName = [data objectForKey:@"poi_name"];
+                
+                
+                if ([[data objectForKey:@"more_comments"] isEqualToString:@"false"])
+                {
+                    postItem.hasMoreComments =  NO;
+                }
+                else
+                {
+                    postItem.hasMoreComments = YES;
+                }
+                NSMutableString *commentString = [[NSMutableString alloc]init];
+                NSMutableArray *commentList = [[NSMutableArray alloc]init];
+                NSArray *commentListInData = [data objectForKey:@"comment_list"];
+                NSMutableDictionary *commentItem = [[NSMutableDictionary alloc]init];
+                for (NSDictionary *comment in commentListInData)
+                {
+                    [commentItem setValue:[comment objectForKey:@"comment"] forKey:@"content"];
+                    [commentItem setValue:[comment objectForKey:@"comment_id"] forKey:@"comment_id"];
+                    [commentItem setValue:[comment objectForKey:@"create_time"] forKey:@"time"];
+                    [commentItem setValue:[comment objectForKey:@"post_id"] forKey:@"postId"];
+                    [commentItem setValue:[comment objectForKey:@"user_id"] forKey:@"userName"];
+                    [commentItem setValue:[comment objectForKey:@"user_name"] forKey:@"userId"];
+                    [commentList addObject:commentItem];
+                    [commentString appendString:[NSString stringWithFormat:@"<userName>%@</userName>%@\n",[commentItem objectForKey:@"userName"],[commentItem objectForKey:@"content"]]];
+                    
+                    
+                }
+                postItem.comment = [commentString mutableCopy];
+                postItem.commentList = [commentList mutableCopy];
+                
+               // postItem.photoUser
+                [returnData setValue:postItem forKey:@"data"];
+                
+            }
+            else
+            {
+                [returnData setValue:@"接口请求失败" forKey:@"error"];
+            }
+            
+        }
+        else
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        whenComplete(returnData);
     }];
-    whenComplete(returnData);
+    
 }
 
 -(void)followUser:(NSInteger)userIdToFollow withUserId:(NSInteger)myUserId whenComplete:(void (^)(NSDictionary *))whenComplete
@@ -679,7 +740,7 @@
             NSArray *data = [result objectForKey:@"data"];
             if (data)
             {
-                NSLog(@"data:%@",data);
+                [returnData setValue:data forKey:@"data"];
             }
             else
             {

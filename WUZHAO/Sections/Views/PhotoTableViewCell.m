@@ -11,6 +11,7 @@
 #import "UIImageView+ChangeAppearance.h"
 
 #import "UIView+ChangeAppearance.h"
+#import "UIButton+ChangeAppearance.h"
 
 #define AvatorImageWidth 38
 
@@ -35,41 +36,34 @@
     return self;
 }
 
+
+
 -(void)setAppearance
 {
-    [self.homeCellAvatorImageView setRoundConerWithRadius:19];
+    [self.homeCellAvatorImageView setRoundConerWithRadius:18];
     
     [self.addressLabel setTextColor:THEME_COLOR_DARK_GREY];
     [self.descriptionLabel setTextColor:THEME_COLOR_DARK_GREY];
+    [self.commentClickButton setTintColor:THEME_COLOR_DARK_GREY];
     
-    [self.zanView setRoundCornerAppearance];
-    [self.zanView setEnableButtonAppearance];
+    [self.zanClickButton setSmallButtonAppearance];
+    [self.zanClickButton setGreyBackGroundAppearance];
+    [self.commentClickButton setSmallButtonAppearance];
+    [self.commentClickButton setGreyBackGroundAppearance];
+    [self.moreButton setSmallButtonAppearance];
+    [self.moreButton setGreyBackGroundAppearance];
     
-    [self.commentView setRoundCornerAppearance];
-    [self.commentView setEnableButtonAppearance];
-    
-    self.commentClickButton.titleLabel.textColor = THEME_COLOR_DARK_GREY;
-    self.zanClickButton.titleLabel.textColor = THEME_COLOR_DARK_GREY;
     self.backgroundColor = [UIColor clearColor];
+    
+    [self.addIcon setHidden:[self.addressLabel.text isEqualToString:@""]?YES:NO];
+    [self.descIcon setHidden:[self.descriptionLabel.text isEqualToString:@""]?YES:NO];
+    [self.likeIcon setHidden:[self.likeLabel.text isEqualToString:@""]?YES:NO];
+    [self.commentIcon setHidden:[self.commentLabel.text isEqualToString:@""]?YES:NO];
+    
 }
 
 -(void) updateConstraints
 {
-    
-    NSLog(@"update constriants");
-    NSArray *constraints = self.likeLabelView.constraints;
-    for (NSLayoutConstraint *constraint in constraints)
-    {
-        if (constraint.firstAttribute == NSLayoutAttributeHeight)
-        {
-            constraint.constant = 0;
-        }
-        if (constraint.firstAttribute == NSLayoutAttributeBottom)
-        {
-            constraint.constant = 0;
-        }
-    }
-    
     [super updateConstraints];
 }
 
@@ -79,12 +73,4 @@
     // Configure the view for the selected state
 }
 
-
-
-
-- (IBAction)zanClick:(id)sender {
-}
-
-- (IBAction)CommentClick:(id)sender {
-}
 @end

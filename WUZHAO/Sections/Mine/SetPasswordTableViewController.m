@@ -9,6 +9,7 @@
 #import "SetPasswordTableViewController.h"
 #import "AFHTTPAPIClient.h"
 #import  "SVProgressHUD.h"
+#import "macro.h"
 
 @interface SetPasswordTableViewController ()
 
@@ -52,18 +53,22 @@
     self.myOldPwdTextField =  [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
 
     self.myOldPwdTextField.placeholder = @"当前密码";
+    [self.myNewPwdTextField setFont:WZ_FONT_COMMON_SIZE];
     [self.myOldPwdCell addSubview:self.myOldPwdTextField];
     
     self.myNewPwdCell.imageView.image = [UIImage imageNamed:@"defaultAvator"];
     self.myNewPwdTextField =  [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
 
     self.myNewPwdTextField.placeholder = @"新密码";
+    
     [self.myNewPwdCell addSubview:self.myNewPwdTextField];
     
     self.comfirmPwdCell.imageView.image = [UIImage imageNamed:@"defaultAvator"];
     self.comfirmPwdTextField =  [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
+    [self.myNewPwdTextField setFont:WZ_FONT_COMMON_SIZE];
 
     self.comfirmPwdTextField.placeholder = @"再次输入新密码";
+    [self.comfirmPwdTextField setFont:WZ_FONT_COMMON_SIZE];
     [self.comfirmPwdCell addSubview:self.comfirmPwdTextField];
     
 }

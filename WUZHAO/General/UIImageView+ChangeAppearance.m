@@ -7,6 +7,7 @@
 //
 
 #import "UIImageView+ChangeAppearance.h"
+#import "macro.h"
 
 @implementation UIImageView (ChangeAppearance)
 
@@ -14,8 +15,8 @@
 {
     CALayer *layer = self.layer;
     [layer setMasksToBounds:YES];
-    [layer setBorderWidth:1.0f];
-    layer.borderColor = [[UIColor clearColor]CGColor];
+    [layer setBorderWidth:0.5f];
+    layer.borderColor = [THEME_COLOR_LIGHT_GREY CGColor];
     layer.cornerRadius = radius;
 }
 

@@ -7,15 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HMSegmentedControl.h"
 
 
 
 @interface SearchViewController : UIViewController 
-@property (nonatomic,strong) IBOutlet UISegmentedControl *segmentControl;
+@property (nonatomic,strong) IBOutlet HMSegmentedControl *segmentControl;
 
 
 
-- (IBAction)segmentIndexChanged:(id)sender;
+- (void)segmentValueChanged;
 
 
 @end

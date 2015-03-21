@@ -13,7 +13,8 @@
 
 @interface EditPersonalInfoTableViewController : UITableViewController
 
-@property (strong, nonatomic) IBOutlet UITableViewCell *avatorInfoCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *avatarInfoCell;
+@property (strong, nonatomic) IBOutlet UIImageView *avatarImageView;
 
 @property (strong, nonatomic) IBOutlet UITableViewCell *nickNameCell;
 @property (strong, nonatomic) IBOutlet UITextField *nickNameTextField;
@@ -23,19 +24,21 @@
 @property (strong, nonatomic) IBOutlet UITextField *selfDescriptionTextField;
 
 @property (strong, nonatomic) IBOutlet UITableViewCell *changePwdCell;
-
+/*
 @property (strong, nonatomic) IBOutlet UITableViewCell *emailCell;
 @property (strong, nonatomic) IBOutlet UITextField *emailTextField;
 @property (strong, nonatomic) IBOutlet UITableViewCell *phoneNumCell;
 @property (strong, nonatomic) IBOutlet UITextField *phoneNumTextField;
+*/
 
-@property (strong, nonatomic) IBOutlet UITableViewCell *sexCell;
 
 @property (nonatomic, strong) User *userInfo;
 
-@property (nonatomic,strong) IBOutlet UIButton *logoutButton;
 
-- (IBAction)logOutButtonPressed:(id)sender;
+@property (nonatomic, strong) IBOutlet UITableViewCell *logoutCell;
+
+
+
 
 
 @end

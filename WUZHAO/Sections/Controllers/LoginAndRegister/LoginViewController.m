@@ -68,13 +68,17 @@
 
 -(void)setNavigationAppearance
 {
-    [self setTitle:@"登录秋刀鱼"];
+    [self setTitle:@"登录"];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     UIBarButtonItem *close = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"close_cha"] style:UIBarButtonItemStylePlain target:self action:@selector(returnToLaunch)];
     [self.navigationItem setLeftBarButtonItem:close];
-    [[UIApplication sharedApplication]setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+    [[UIApplication sharedApplication]setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 }
 
+-(BOOL)prefersStatusBarHidden
+{
+    return NO;
+}
 
 -(void)drawLoginViewAppearance
 {
@@ -102,7 +106,8 @@
 
     [self.LoginButton setTitle:@"登  录" forState:UIControlStateNormal];
     [self.LoginButton setDarkGreyBackGroundAppearance];
-    [self.LoginButton DisableAppearance];
+    [self.LoginButton setBigButtonAppearance];
+    [self.LoginButton setEnabled:NO];
     
 }
 #pragma mark - basic method
@@ -168,12 +173,12 @@
     //检查输入是否为空
     if ([self.UserNameTextField.text isEqualToString:@""])
     {
-        [self.LoginButton DisableAppearance];
+        [self.LoginButton setEnabled:NO];
         return  false;
     }
     if ([self.PasswordTextField.text isEqualToString:@""])
     {
-        [self.LoginButton DisableAppearance];
+        [self.LoginButton setEnabled:NO];
         return false;
     }
     
@@ -183,7 +188,7 @@
     //密码加密
     self.sPassword = [self.password SHA1];
     
-    [self.LoginButton EnableAppearance];
+    [self.LoginButton setEnabled:YES];
     return true;
 }
 
@@ -228,9 +233,9 @@
 - (IBAction)passWordInputEnd:(id)sender {
 
     [self checkInput];
-    [self.LoginButton EnableAppearance];
+    [self.LoginButton setEnabled:YES];
     [self login];
-    [self.LoginButton DisableAppearance];
+    [self.LoginButton setEnabled:NO];
 }
 
 -(void)returnToLaunch

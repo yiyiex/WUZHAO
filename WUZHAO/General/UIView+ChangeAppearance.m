@@ -14,14 +14,12 @@
 
 -(void)setEnableButtonAppearance
 {
-    self.backgroundColor = THEME_COLOR_LIGHT_GREY_PARENT;
-    
+    [self setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];    
 }
 
 -(void)setDisableButtonAppearance
 {
-
-    
+    [self setBackgroundColor:THEME_COLOR_DARK_GREY_PARENT];
 }
 
 

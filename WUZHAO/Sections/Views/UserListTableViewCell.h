@@ -21,5 +21,6 @@
 
 - (IBAction)followButtonPressed:(UIButton *)sender;
 
+
 -(void)configWithUser:(User *)user style:(NSString *)style;
 @end

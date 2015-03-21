@@ -39,7 +39,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    _segmentControl.sectionTitles = @[@"照片",@"地点",@"用户"];
+    _segmentControl.selectedSegmentIndex = 0;
+    _segmentControl.backgroundColor = [UIColor whiteColor];
+    _segmentControl.titleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
+     _segmentControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE};
+    [_segmentControl setSelectionIndicatorColor:THEME_COLOR_DARK_GREY];
+    _segmentControl.selectionIndicatorHeight = 2.0f;
     
+    _segmentControl.selectionStyle = HMSegmentedControlSelectionStyleFullWidthStripe;
+    _segmentControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationUp;
+    [_segmentControl addTarget:self action:@selector(segmentValueChanged) forControlEvents:UIControlEventValueChanged];
+
     _searchResultTableView = [[UITableViewController alloc]init];
     [_searchResultTableView.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"tableCell"];
     _searchController = [[UISearchController alloc]initWithSearchResultsController:_searchResultTableView];
@@ -50,7 +62,7 @@
     self.searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
     
     [self.searchController.searchBar sizeToFit];
-   // self.navigationItem.titleView = self.searchController.searchBar;
+    //self.navigationItem.titleView = self.searchController.searchBar;
     self.definesPresentationContext = YES;
     
     self.searchResultTableView.tableView.delegate = self;
@@ -60,6 +72,7 @@
     
     self.searchController.dimsBackgroundDuringPresentation = YES;
     self.searchController.searchBar.delegate = self;
+     
     
 }
 
@@ -70,7 +83,7 @@
     self.tabBarController.navigationItem.titleView = self.searchController.searchBar;
     self.tabBarController.navigationItem.hidesBackButton = YES;
 
-    //self.navigationItem.hidesBackButton = YES;
+    self.navigationItem.hidesBackButton = YES;
 }
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -216,8 +229,9 @@
     // Pass the selected object to the new view controller.
 }
 */
-#pragma mark ------------UISegment delegate-----------------
-- (IBAction)segmentIndexChanged:(id)sender {
+#pragma mark -HMSegment action
+- (void)segmentValueChanged
+{
     NSString *swapIdentifier ;
     switch (self.segmentControl.selectedSegmentIndex) {
         case 0:

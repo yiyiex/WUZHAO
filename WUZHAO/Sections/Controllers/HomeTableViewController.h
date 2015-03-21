@@ -16,6 +16,7 @@
 @interface HomeTableViewController : UITableViewController
 
 
-- (void) configureCell:(PhotoTableViewCell *)cell forContent:(WhatsGoingOn *)content atIndexPath:(NSIndexPath *)indexPath;
+- (void)configureCell:(PhotoTableViewCell *)cell forContent:(WhatsGoingOn *)content atIndexPath:(NSIndexPath *)indexPath;
 
+- (void)GetLatestDataList;
 @end

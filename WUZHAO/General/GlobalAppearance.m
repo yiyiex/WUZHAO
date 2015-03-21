@@ -52,7 +52,7 @@
     
     //UIBarButtonItem *barItemAppearance = [UIBarButtonItem appearance];
     //[barItemAppearance setBackgroundImage:[UIImage new] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     
 }
 
@@ -70,9 +70,9 @@
 #pragma mark =============set Button Appearance==============
 +(void)setButtonAppearance
 {
-    UIButton *appearance = [UIButton appearance];
-    [appearance setTintColor:[UIColor whiteColor]];
-    [appearance setBackgroundColor:VIEW_COLOR_BLACK];
+   // UIButton *appearance = [UIButton appearance];
+    //[appearance setTintColor:[UIColor whiteColor]];
+    //[appearance setBackgroundColor:VIEW_COLOR_BLACK];
     
     [[UIButton appearanceWhenContainedIn:[UINavigationBar class], nil]setBackgroundColor:[UIColor clearColor]];
     [[UIButton appearanceWhenContainedIn:[UITableViewCell class], nil] setBackgroundColor:[UIColor clearColor]];

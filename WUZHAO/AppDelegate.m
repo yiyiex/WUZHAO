@@ -28,6 +28,10 @@
     NSUserDefaults *userDefaul = [NSUserDefaults standardUserDefaults];
     NSLog(@"userdefault id%@",[userDefaul objectForKey:@"userId"]);
     NSLog(@"userdefault token%@",[userDefaul objectForKey:@"token"]);
+    CFUUIDRef uuidRef = CFUUIDCreate(kCFAllocatorDefault);
+    NSString *uuid = (NSString *)CFBridgingRelease(CFUUIDCreateString (kCFAllocatorDefault,uuidRef));
+    NSLog(@"uuid : %@",uuid);
+    
     /*
     NSString *path = NSHomeDirectory();
     NSLog(@"NSHomeDirectory : %@",path);

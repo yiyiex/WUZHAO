@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ylf-36-K0f">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ylf-36-K0f">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -9,7 +9,7 @@
         <!--Capture Camera Controller-->
         <scene sceneID="JqX-ca-4B0">
             <objects>
-                <viewController wantsFullScreenLayout="YES" id="ylf-36-K0f" customClass="SCCaptureCameraController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="cameraController" wantsFullScreenLayout="YES" id="ylf-36-K0f" customClass="SCCaptureCameraController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="GgT-wQ-cRk"/>
                         <viewControllerLayoutGuide type="bottom" id="T4l-uO-pXx"/>
@@ -17,69 +17,13 @@
                     <view key="view" contentMode="scaleToFill" id="mId-gF-IEe">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bB4-fQ-U7s" userLabel="HeaderView">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Zb-87-ADu">
-                                        <rect key="frame" x="255" y="25" width="42" height="21"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="n4R-KT-ghL"/>
-                                </constraints>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rkg-p7-jMz" userLabel="BottomView">
-                                <rect key="frame" x="0.0" y="508" width="600" height="92"/>
-                                <color key="backgroundColor" red="0.058823529411764705" green="0.058823529411764705" blue="0.058823529411764705" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="92" id="Ozb-2m-ohP"/>
-                                </constraints>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JH8-pV-hka" userLabel="Menu View">
-                                <rect key="frame" x="0.0" y="464" width="600" height="44"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="Xga-OP-rqz"/>
-                                </constraints>
-                            </view>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="bB4-fQ-U7s" firstAttribute="leading" secondItem="mId-gF-IEe" secondAttribute="leadingMargin" constant="-16" id="1Oc-31-rVX"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="JH8-pV-hka" secondAttribute="trailing" constant="-16" id="51g-eo-mqn"/>
-                            <constraint firstItem="rkg-p7-jMz" firstAttribute="top" secondItem="JH8-pV-hka" secondAttribute="bottom" id="5Cz-Mp-5Kq"/>
-                            <constraint firstItem="T4l-uO-pXx" firstAttribute="top" secondItem="rkg-p7-jMz" secondAttribute="bottom" id="Bdy-U5-q1g"/>
-                            <constraint firstAttribute="bottom" secondItem="bB4-fQ-U7s" secondAttribute="bottom" constant="519" id="JbQ-qG-xQ2"/>
-                            <constraint firstItem="bB4-fQ-U7s" firstAttribute="top" secondItem="GgT-wQ-cRk" secondAttribute="bottom" id="Q2j-Jc-6on"/>
-                            <constraint firstItem="rkg-p7-jMz" firstAttribute="leading" secondItem="mId-gF-IEe" secondAttribute="leadingMargin" constant="-16" id="avo-VT-QmW"/>
-                            <constraint firstAttribute="bottom" secondItem="bB4-fQ-U7s" secondAttribute="bottom" constant="476" id="q37-op-5vn"/>
-                            <constraint firstItem="bB4-fQ-U7s" firstAttribute="top" secondItem="GgT-wQ-cRk" secondAttribute="bottom" id="rLa-WX-6GV"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="bB4-fQ-U7s" secondAttribute="trailing" constant="-16" id="rON-pj-u9o"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="rkg-p7-jMz" secondAttribute="trailing" constant="-16" id="yZu-HK-nUs"/>
-                            <constraint firstItem="JH8-pV-hka" firstAttribute="leading" secondItem="mId-gF-IEe" secondAttribute="leadingMargin" constant="-16" id="zTO-rj-rD2"/>
-                        </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="JbQ-qG-xQ2"/>
-                                <exclude reference="q37-op-5vn"/>
-                                <exclude reference="rLa-WX-6GV"/>
-                            </mask>
-                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="QjV-y4-pxa"/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="bottomContainerView" destination="rkg-p7-jMz" id="gVG-29-Jxo"/>
-                        <outlet property="cameraMenuView" destination="JH8-pV-hka" id="BIv-1W-eK0"/>
-                        <outlet property="topContainerView" destination="bB4-fQ-U7s" id="zne-3H-bOc"/>
-                        <outlet property="topLbl" destination="8Zb-87-ADu" id="4Hl-Kj-rtH"/>
                         <segue destination="BKh-hg-XYL" kind="push" identifier="addImageInfo" id="ESJ-cV-bAk"/>
                     </connections>
                 </viewController>

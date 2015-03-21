@@ -36,48 +36,11 @@
 @property (nonatomic, weak) IBOutlet UIImageView *commentIcon;
 @property (nonatomic, weak) IBOutlet WPHotspotLabel *commentLabel;
 
-
-@property (strong, nonatomic) IBOutlet UIView *zanView;
-@property (weak, nonatomic  ) IBOutlet UIImageView *zanButtonIcon;
-@property (strong, nonatomic) IBOutlet UIView *commentView;
-@property (weak, nonatomic  ) IBOutlet UIImageView *commentButtonIcon;
-
 @property (strong, nonatomic) IBOutlet UIButton *zanClickButton;
 @property (strong, nonatomic) IBOutlet UIButton *commentClickButton;
 
+@property (strong, nonatomic) IBOutlet UIButton *moreButton;
+
 
 -(void)setAppearance;
-/*
-//top View
-@property (strong,nonatomic) UIView *viewTop;
-@property (strong,nonatomic) UIImageView *avatorImageView;
-@property (strong,nonatomic) UILabel *userNameLabel;
-@property (strong,nonatomic) UILabel *userDescriptionLabel;
-@property (strong,nonatomic) UILabel *postTimeLabel;
-
-//center View
-@property (strong,nonatomic) UIView *viewCenter;
-@property (strong,nonatomic) UIImageView *postImageView;
-
-//bottom View
-@property (strong,nonatomic) UIView *viewBottom;
-//location view
-@property (strong,nonatomic) UIView *locationView;
-@property (strong,nonatomic) UIImageView *locationIcon;
-@property (strong,nonatomic) UILabel *locationLabel;
-//description view
-@property (strong,nonatomic) UIView *postDescriptionView;
-@property (strong,nonatomic) UIImageView *postDescriptionIcon;
-@property (strong,nonatomic) UILabel *postDescriptionLabel;
-//comment view
-@property (strong,nonatomic) UIView *commentView;
-@property (strong,nonatomic) UIImageView *commentIcon;
-@property (strong,nonatomic) WPHotspotLabel *commentLabel;
-
-*/
-
-
-
-
-
 @end

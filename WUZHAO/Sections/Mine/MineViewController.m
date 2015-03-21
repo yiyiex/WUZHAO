@@ -12,6 +12,7 @@
 #import "FootPrintTableViewController.h"
 
 #import "UserListTableViewController.h"
+#import "EditPersonalInfoTableViewController.h"
 
 #import "UIImageView+WebCache.h"
 #import "UIImageView+ChangeAppearance.h"
@@ -41,6 +42,9 @@
 @property (nonatomic, strong) NSMutableArray * myPhotosCollectionDatasource;
 @property (nonatomic, strong) NSMutableArray * myAddressListDatasource;
 
+@property (nonatomic)  BOOL shouldRefreshData;
+@property (nonatomic,strong) UIRefreshControl *refreshControl;
+
 
 
 @end
@@ -52,10 +56,16 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+    [self setAppearance];
+    self.refreshControl = [[UIRefreshControl alloc]init];
+    [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
+    [self.scrollView addSubview:self.refreshControl];
     [_mineButton setTitle:@"正在加载" forState:UIControlStateNormal];
-    
-    [self setPersonalInfo];
+    self.shouldRefreshData = true;
+    [self getLatestData];
     [self configGesture];
+   
+
     
     self.selectToShowTabbar.selectedItem = [self.selectToShowTabbar.items objectAtIndex:0];
    
@@ -95,15 +105,25 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     
 }
 
+-(void)setAppearance
+{
+    [self.mineButton setThemeBackGroundAppearance];
+    [self.mineButton setNormalButtonAppearance];
+    [self.avator setRoundConerWithRadius:self.avator.frame.size.width/2];
+
+}
 -(void)setPersonalInfo
 {
-
+    self.shouldRefreshData = false;
+    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
     if (!_userInfo)
     {
         _userInfo = [[User alloc]init];
         _userInfo.UserID = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
         _userInfo.UserName = [[NSUserDefaults standardUserDefaults] objectForKey:@"userName"];
     }
+
     [[QDYHTTPClient sharedInstance]GetPersonalInfoWithUserId:_userInfo.UserID whenComplete:^(NSDictionary *returnData) {
         if ([returnData objectForKey:@"data"])
         {
@@ -112,11 +132,20 @@ static NSString * const minePhotoCell = @"minePhotosCell";
             [self setUserInfo:user];
             [self updateUI];
             [self SetPhotosCollectionData];
+           
         }
         else if ([returnData objectForKey:@"error"])
         {
             [SVProgressHUD showErrorWithStatus:@"获取个人信息失败"];
         }
+         self.shouldRefreshData = true;
+       
+        if ([self.refreshControl isRefreshing])
+        {
+            [self.refreshControl endRefreshing];
+        }
+        
+        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         
         
     }];
@@ -183,6 +212,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         UIButton *myBtn = (UIButton *)sender;
         if ([myBtn.titleLabel.text  isEqualToString:@"编辑个人信息"])
         {
+            
             [self performSegueWithIdentifier:@"editPersonInfo" sender:self];
         }
         else if ([myBtn.titleLabel.text  isEqualToString:@"关注"])
@@ -221,6 +251,11 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     }
 }
 
+-(void)refreshByPullingTable:(id)sender
+{
+    [self getLatestData];
+}
+
 /*
 #pragma mark - Navigation
 
@@ -238,6 +273,12 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         self.containerViewController = segue.destinationViewController;
         self.containerViewController.delegate = self;
         self.containerViewController.ChildrenName = @[SEGUEFIRST,SEGUESECOND,SEGUETHIRD,SEGUEFORTH];
+    }
+    else if ([segue.identifier isEqualToString:@"editPersonInfo"])
+    {
+        EditPersonalInfoTableViewController *editController = (EditPersonalInfoTableViewController *)segue.destinationViewController;
+        editController.userInfo = self.userInfo;
+        
     }
 }
 
@@ -267,6 +308,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         self.myPhotoCollectionViewController = (PhotosCollectionViewController *)childController;
         [self.myPhotoCollectionViewController.collectionView setBackgroundColor:[UIColor whiteColor]];
         [self SetPhotosCollectionData];
+        [self.myPhotoCollectionViewController.collectionView setScrollEnabled:NO];
+        [self.myPhotoCollectionViewController.collectionView setScrollsToTop:NO];
         
     }
     else if( [childController isKindOfClass:[FootPrintTableViewController class]])
@@ -287,7 +330,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.navigationItem setTitle:self.userInfo.UserName];
     
     
-    [self.avator setRoundConerWithRadius:self.avator.frame.size.width/2];
+   
     
     [self.avator sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"default"]];
     
@@ -332,9 +375,10 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         for (NSDictionary *i in self.userInfo.photoList)
         {
             WhatsGoingOn *item = [[WhatsGoingOn alloc]init];
-            item.postId = [(NSNumber *)[i objectForKey:@"post_id"] integerValue];
+            item.postId = [(NSNumber *)[i objectForKey:@"postId"] integerValue];
             item.imageUrlString = [i objectForKey:@"photoUrl"];
             item.postTime = [i objectForKey:@"time"];
+            item.photoUser = self.userInfo;
             [_myPhotosCollectionDatasource addObject:item];
         }
         
@@ -372,6 +416,15 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     _myAddressListDatasource = [[FootPrint newData]mutableCopy];
     [self.myFootPrintViewController setDatasource:_myAddressListDatasource];
     [self.myFootPrintViewController loadData];
+}
+
+-(void)getLatestData
+{
+   
+    if (self.shouldRefreshData)
+    {
+        [self setPersonalInfo];
+    }
 }
 
 -(void)getFollowsList

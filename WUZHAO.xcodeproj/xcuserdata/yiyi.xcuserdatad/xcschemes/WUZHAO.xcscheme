@@ -15,17 +15,17 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7D65E20D1A39701E00F84754"
-               BuildableName = "WUZHAO.app"
+               BuildableName = "Place.app"
                BlueprintName = "WUZHAO"
                ReferencedContainer = "container:WUZHAO.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "YES"
+            buildForRunning = "NO"
             buildForProfiling = "NO"
             buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7D65E2291A39701E00F84754"
@@ -57,7 +57,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7D65E20D1A39701E00F84754"
-            BuildableName = "WUZHAO.app"
+            BuildableName = "Place.app"
             BlueprintName = "WUZHAO"
             ReferencedContainer = "container:WUZHAO.xcodeproj">
          </BuildableReference>
@@ -76,7 +76,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7D65E20D1A39701E00F84754"
-            BuildableName = "WUZHAO.app"
+            BuildableName = "Place.app"
             BlueprintName = "WUZHAO"
             ReferencedContainer = "container:WUZHAO.xcodeproj">
          </BuildableReference>
@@ -94,7 +94,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7D65E20D1A39701E00F84754"
-            BuildableName = "WUZHAO.app"
+            BuildableName = "Place.app"
             BlueprintName = "WUZHAO"
             ReferencedContainer = "container:WUZHAO.xcodeproj">
          </BuildableReference>

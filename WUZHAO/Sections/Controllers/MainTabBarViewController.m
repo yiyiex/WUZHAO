@@ -15,11 +15,12 @@
 #import "SearchViewController.h"
 #import "MineViewController.h"
 #import "SCCaptureCameraController.h"
+#import "RBStoryboardLink.h"
 
 #import "macro.h"
 
 @interface MainTabBarViewController()
-@property (nonatomic) NSInteger tabIndex ;
+@property (nonatomic) NSInteger currentTabIndex ;
 
 @property (nonatomic,strong) HomeTableViewController *homeTableViewCon;
 @property (nonatomic,strong) SearchViewController *searchViewCon;
@@ -41,11 +42,10 @@
     [super viewDidLoad];
     
     self.delegate = self;
-    self.tabIndex =0;
+    self.currentTabIndex =0;
+   
     NSLog(@"%@",[[NSBundle mainBundle]bundleIdentifier]);
-    
-   // [self activeCurrentTab];
-    
+
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(activeCurrentTab) name:@"finishPostImage" object:Nil];
     
@@ -55,7 +55,12 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
 
+    
+}
+- (void)viewDidAppear:(BOOL)animated
+{
     
 }
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -88,49 +93,63 @@
 
 
 #pragma mark =========controllers delegate============
+-(void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
+{
 
+    if ([item.title isEqualToString:@"分享"])
+    {
+        UIStoryboard *shareStorybaord = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
+        SCCaptureCameraController *captureViewController = [shareStorybaord instantiateViewControllerWithIdentifier:@"cameraController"];
+        [self presentViewController:captureViewController animated:YES completion:^{
+            NSLog(@"show camera controller");
+        }];
+    }
+    else
+    {
+        self.currentTabIndex = item.tag;
+    }
+}
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
     NSLog(@"selected controller%@",viewController);
     viewController.navigationItem.hidesBackButton = YES;
+    if ([viewController isKindOfClass:[RBStoryboardLink class]])
+    {
+        RBStoryboardLink *linkViewController = (RBStoryboardLink *)viewController;
+        UIViewController *destinationViewController = linkViewController.scene;
+        if ([destinationViewController isKindOfClass:[MineViewController class]])
+        {
+            MineViewController *mineViewController = (MineViewController *)linkViewController.scene;
+            [mineViewController getLatestData];
+        }
+        if ( [destinationViewController isKindOfClass:[HomeTableViewController class]])
+        {
+            HomeTableViewController *homeTableViewController = (HomeTableViewController *)linkViewController.scene;
+            [homeTableViewController GetLatestDataList];
+            
+        }
+        
+        
+    }
 }
 -(void)activeCurrentTab
 {
-   /* UILabel *l = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 30, 40)];
-    l.text = @"testLable";
-    self.selectedIndex = self.tabIndex ;
-    
-    switch (self.tabIndex) {
+  
+    self.selectedIndex = self.currentTabIndex;
+    switch (self.currentTabIndex)
+    {
         case 0:
-            self.selectedViewController.navigationController.navigationBar.topItem.titleView =l;
-            for (UIView *i in self.selectedViewController.navigationController.navigationBar.items )
-            {
-                NSLog(@"item :%@",i);
-            }
-            self.selectedViewController.navigationItem.title = @"test33333";
             break;
         case 1:
-            self.navigationController.navigationBarHidden = YES;
             break;
         case 2:
-            self.navigationController.navigationBarHidden = NO;
-            self.navigationItem.hidesBackButton = YES;
-            
             break;
         case 3:
-            self.navigationController.navigationBarHidden = NO;
-            self.navigationItem.hidesBackButton = YES;
-            self.navigationController.title = @"个人主页";
+            break;
         default:
-            self.navigationController.navigationBarHidden = NO;
-            self.navigationItem.hidesBackButton = YES;
-            self.navigationController.title = @"动态";
             break;
     }
-    [self setTabBarHidden:NO animated:YES];
-    */
-    self.selectedIndex = self.tabIndex;
-    [self setTabBarHidden:NO animated:YES];
+
 }
 
 -(void)hideTabBar
