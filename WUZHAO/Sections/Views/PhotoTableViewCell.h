@@ -24,16 +24,15 @@
 
 @property (nonatomic, weak) IBOutlet UIView *descriptionLabelView;
 @property (nonatomic, weak) IBOutlet UILabel *descriptionLabel;
-@property (nonatomic, weak) IBOutlet UIImageView *descIcon;
+
+@property (nonatomic, strong) IBOutlet UIView *addressLabelView;
 @property (strong, nonatomic) IBOutlet UILabel *addressLabel;
-@property (nonatomic,weak) IBOutlet UIImageView *addIcon;
 
 @property (nonatomic, weak) IBOutlet UIView *likeLabelView;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *likeLabelHeightConstraint;
 @property (nonatomic, weak) IBOutlet UILabel *likeLabel;
-@property (nonatomic, weak) IBOutlet UIImageView *likeIcon;
 
 @property (nonatomic, weak) IBOutlet UIView *commentLabelView;
-@property (nonatomic, weak) IBOutlet UIImageView *commentIcon;
 @property (nonatomic, weak) IBOutlet WPHotspotLabel *commentLabel;
 
 @property (strong, nonatomic) IBOutlet UIButton *zanClickButton;

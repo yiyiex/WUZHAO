@@ -13,6 +13,7 @@
 
 #import "PIOSearchAPI.h"
 
+#import "macro.h"
 @interface AppDelegate ()
 
 @end
@@ -24,6 +25,9 @@
     
     
     // Override point for customization after application launch.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //NSLog(@"Launch  at %f seconds ",CFAbsoluteTimeGetCurrent()-startTime);
+    });
     [GlobalAppearance setGlobalAppearance];
     NSUserDefaults *userDefaul = [NSUserDefaults standardUserDefaults];
     NSLog(@"userdefault id%@",[userDefaul objectForKey:@"userId"]);
@@ -32,6 +36,8 @@
     NSString *uuid = (NSString *)CFBridgingRelease(CFUUIDCreateString (kCFAllocatorDefault,uuidRef));
     NSLog(@"uuid : %@",uuid);
     
+    NSLog(@"app width %f",WZ_APP_SIZE.width);
+    NSLog(@"app height %f",WZ_APP_SIZE.height);
     /*
     NSString *path = NSHomeDirectory();
     NSLog(@"NSHomeDirectory : %@",path);

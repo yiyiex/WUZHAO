@@ -15,8 +15,18 @@
 
 @interface MineViewController : UIViewController <UITabBarDelegate>
 @property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, strong) IBOutlet UIView *scrollContentView;
+
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *scrollContentViewHeightConstraint;
 
 @property (strong, nonatomic) IBOutlet UIImageView *avator;
+
+@property (strong, nonatomic) IBOutlet UIView *selfDescriptionView;
+
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *descriptionViewHeightConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *descriptionTopConstraint;
+
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *descriptionBottomConstraint;
 
 @property (strong, nonatomic) IBOutlet UILabel *selfDescriptionLabel;
 
@@ -32,7 +42,8 @@
 
 @property (nonatomic, strong ) User *userInfo; //当前页面载入的用户信息
 
-
+@property (nonatomic, strong) NSMutableArray * myPhotosCollectionDatasource;
+@property (nonatomic, strong) NSMutableArray * myAddressListDatasource;
 - (IBAction)MineButtonClick:(id)sender;
 
 -(void)getLatestData;

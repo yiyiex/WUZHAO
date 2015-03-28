@@ -15,6 +15,7 @@
 #import "NSString+SHA1WithSalt.h"
 
 #import "UIButton+ChangeAppearance.h"
+#import "UILabel+ChangeAppearance.h"
 
 #import "macro.h"
 
@@ -98,16 +99,20 @@
 {
     self.UserNameTextField.placeholder = @"用户名";
     self.UserNameTextField.keyboardType = UIKeyboardAppearanceDark;
-    self.UserNameTextField.keyboardType = UIKeyboardTypeAlphabet;
+    self.UserNameTextField.keyboardType = UIKeyboardTypeDefault;
 
     self.PasswordTextField.placeholder = @"密 码";
     self.PasswordTextField.keyboardType = UIKeyboardAppearanceDark;
     self.PasswordTextField.keyboardType = UIKeyboardTypeAlphabet;
-
+    
     [self.LoginButton setTitle:@"登  录" forState:UIControlStateNormal];
     [self.LoginButton setDarkGreyBackGroundAppearance];
     [self.LoginButton setBigButtonAppearance];
     [self.LoginButton setEnabled:NO];
+    
+    [self.forgotPasswordLabel setThemeLabelAppearance];
+    UITapGestureRecognizer *forgotPasswordClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(forgotPasswordLabelClick:)];
+    [self.forgotPasswordLabel addGestureRecognizer:forgotPasswordClick];
     
 }
 #pragma mark - basic method
@@ -243,6 +248,10 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+-(void)forgotPasswordLabelClick:(UITapGestureRecognizer *)gesture
+{
+    [self performSegueWithIdentifier:@"findPassword" sender:nil];
+}
 
 #pragma mark -textview delegate
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
@@ -271,6 +280,7 @@
         [userDefaults setObject:user.userToken forKey:@"token"];
     }
     [userDefaults setObject:self.userName forKey:@"userName"];
+    [userDefaults setObject:@"" forKey:@"avatarUrl"];
     NSLog(@"%lu",(long)[userDefaults integerForKey:@"userId"]);
     [userDefaults synchronize];
 }

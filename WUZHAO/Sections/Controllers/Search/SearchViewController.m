@@ -131,12 +131,6 @@
     return _containerViewController;
 }
 
-#pragma mark --------UISearchBarDelegate-----------
--(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
-{
-    
-    [searchBar resignFirstResponder];
-}
 
 #pragma mark -------UISearchControllerDelegate----------
 
@@ -148,23 +142,25 @@
 // Implement this method if the default presentation is not adequate for your purposes.
 //
 - (void)presentSearchController:(UISearchController *)searchController {
-    
+    NSLog(@"presentSearchController");
+   // [self.searchController.searchResultsController loadView];
+    //self.searchController.searchResultsController
 }
 
 - (void)willPresentSearchController:(UISearchController *)searchController {
-    //NSLog(@"willPresentSearchController");
+    NSLog(@"willPresentSearchController");
 }
 
 - (void)didPresentSearchController:(UISearchController *)searchController {
-    //NSLog(@"didPresentSearchController");
+    NSLog(@"didPresentSearchController");
 }
 
 - (void)willDismissSearchController:(UISearchController *)searchController {
-    //NSLog(@"willDismissSearchController");
+    NSLog(@"willDismissSearchController");
 }
 
 - (void)didDismissSearchController:(UISearchController *)searchController {
-    //NSLog(@"didDismissSearchController");
+    NSLog(@"didDismissSearchController");
 }
 
 #pragma  mark ---------UITableView delegate
@@ -203,7 +199,7 @@
     else if( [childController isKindOfClass:[UserListTableViewController class]])
     {
         self.suggestUserListViewConstroller = (UserListTableViewController *)childController;
-        [self.suggestUserListViewConstroller setUserListStyle:UserListStyle3];
+        [self.suggestUserListViewConstroller setUserListStyle:UserListStyle2];
         [self setSuggestUserListData];
     }
 }

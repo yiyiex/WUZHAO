@@ -78,7 +78,8 @@
 }
 -(void)initView
 {
-    [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"default"]];
+    [self.avatarImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString]];
     [self.avatarImageView setRoundConerWithRadius:self.avatarImageView.frame.size.width/2];
     
     self.nickNameCell.imageView.image = [UIImage imageNamed:@"default"];
@@ -156,6 +157,7 @@
 -(void)savaButtonPressed
 {
     [SVProgressHUD showInfoWithStatus:@"数据提交中....."];
+    
    /* User  *newUserInfo = [[User alloc]init];
     newUserInfo.UserID = self.userInfo.UserID;
     newUserInfo.avatarImageURLString = @"";
@@ -168,6 +170,8 @@
         if (error)
         {
             [SVProgressHUD showErrorWithStatus:@"服务器异常"];
+
+
         }
         else
         {

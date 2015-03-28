@@ -11,34 +11,66 @@
 
 @implementation UILabel (ChangeAppearance)
 
+-(void)setBoldReadOnlyLabelAppearance
+{
+    [self setTextColor:THEME_COLOR_LIGHT_GREY];
+    [self setFont:WZ_FONT_READONLY_BOLD];
+    //[appearance ]
+    
+}
+
 -(void)setReadOnlyLabelAppearance
 {
-    [self setTextColor:[UIColor darkGrayColor]];
-    [self setFont:WZ_FONT__READONLY];
+    [self setTextColor:THEME_COLOR_LIGHT_GREY];
+    [self setFont:WZ_FONT_READONLY];
+    //[appearance ]
+    
+}
+
+-(void)setBoldSmallReadOnlyLabelAppearance
+{
+    [self setTextColor:THEME_COLOR_LIGHT_GREY];
+    [self setFont:WZ_FONT_SMALL_READONLY_BOLD];
+    //[appearance ]
+    
+}
+
+-(void)setSmallReadOnlyLabelAppearance
+{
+    [self setTextColor:THEME_COLOR_LIGHT_GREY];
+    [self setFont:WZ_FONT_SMALL_READONLY];
     //[appearance ]
     
 }
 
 -(void)setBlodBlackLabelAppearance
 {
-    [self setTextColor:[UIColor blackColor]];
-    [self setFont:WZ_FONT_LARGE_SIZE];
+    [self setTextColor:THEME_COLOR_BLACK];
+    [self setFont:WZ_FONT_COMMON_BOLD_SIZE];
     //[appearance ]
 }
 
 -(void)setBlackLabelAppearance
 {
-    [self setTextColor:[UIColor blackColor]];
-    [self setFont:WZ_FONT_LARGE_SIZE];
+    [self setTextColor:THEME_COLOR_BLACK];
+    [self setFont:WZ_FONT_COMMON_BOLD_SIZE];
     //[appearance ]
 }
 
--(void)setLightReadOnlyLabelAppearance
+-(void)setBlodDarkGreyLabelAppearance
 {
-    [self setTextColor:[UIColor lightGrayColor]];
-    [self setFont:WZ_FONT__READONLY];
+    [self setTextColor:THEME_COLOR_DARK_GREY];
+    [self setFont:WZ_FONT_COMMON_BOLD_SIZE];
     //[appearance ]
 }
+
+-(void)setDarkGreyLabelAppearance
+{
+    [self setTextColor:THEME_COLOR_DARK_GREY];
+    [self setFont:WZ_FONT_COMMON_SIZE];
+    //[appearance ]
+}
+
 -(void)setThemeLabelAppearance
 {
     [self setTextColor:THEME_COLOR];
@@ -47,6 +79,7 @@
 
 -(void)setWPHotLabelAppearance
 {
-    [self setFont:WZ_FONT__READONLY];
+    // [self setTintColor:THEME_COLOR_LIGHT_GREY];
+    [self setFont:WZ_FONT_READONLY];
 }
 @end

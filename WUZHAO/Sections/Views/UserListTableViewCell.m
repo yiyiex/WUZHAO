@@ -21,7 +21,7 @@
 #import "QDYHTTPClient.h"
 #import "SVProgressHUD.h"
 
-#define AVATARIMAGEWIDTH 34
+#define AVATARIMAGEWIDTH 36
 @interface UserListTableViewCell()
 @property (nonatomic,strong) User *cellUser;
 @end
@@ -94,13 +94,21 @@
 
 #pragma mark - basic method
 
+-(void)setAppearance
+{
+    [self.avatorImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    [self.userNameLabel setDarkGreyLabelAppearance];
+    [self.userDescriptionLabel setSmallReadOnlyLabelAppearance];
+}
+
 -(void)configWithUser:(User *)user style:(NSString *)style
 {
+    [self setAppearance];
     self.cellUser = user;
     self.userNameLabel.text = user.UserName;
     self.userDescriptionLabel.text = user.selfDescriptions;
     
-    [self.avatorImageView sd_setImageWithURL:[NSURL URLWithString:user.avatarImageURLString]  placeholderImage:[UIImage imageNamed:@"default"]];
+    [self.avatorImageView sd_setImageWithURL:[NSURL URLWithString:user.avatarImageURLString]];
     [self.avatorImageView setRoundConerWithRadius:AVATARIMAGEWIDTH/2];
     
     UITapGestureRecognizer *avatarClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(avatarClick:)];

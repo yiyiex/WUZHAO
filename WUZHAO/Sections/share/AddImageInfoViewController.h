@@ -16,7 +16,7 @@
 @property (strong, nonatomic) IBOutlet UITableView *addressTableView;
 @property (strong, nonatomic) IBOutlet UILabel *addressInfoLabel;
 
-@property (strong, nonatomic) UIButton *postButton;
+
 
 @property (strong,nonatomic) WhatsGoingOn *whatsGoingOnItem;
 

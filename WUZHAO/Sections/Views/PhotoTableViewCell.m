@@ -11,6 +11,7 @@
 #import "UIImageView+ChangeAppearance.h"
 
 #import "UIView+ChangeAppearance.h"
+#import "UILabel+ChangeAppearance.h"
 #import "UIButton+ChangeAppearance.h"
 
 #define AvatorImageWidth 38
@@ -41,10 +42,20 @@
 -(void)setAppearance
 {
     [self.homeCellAvatorImageView setRoundConerWithRadius:18];
+    [self.homeCellAvatorImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+
+    [self.postUserName setDarkGreyLabelAppearance];
+    [self.postUserSelfDescription setSmallReadOnlyLabelAppearance];
+    [self.postTimeLabel setBoldReadOnlyLabelAppearance];
     
-    [self.addressLabel setTextColor:THEME_COLOR_DARK_GREY];
-    [self.descriptionLabel setTextColor:THEME_COLOR_DARK_GREY];
-    [self.commentClickButton setTintColor:THEME_COLOR_DARK_GREY];
+    [self.addressLabelView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    [self.addressLabel setBlodBlackLabelAppearance];
+    
+    [self.homeCellImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    
+    [self.descriptionLabel setTextColor:[UIColor blackColor]];
+    
+    [self.likeLabel setThemeLabelAppearance];
     
     [self.zanClickButton setSmallButtonAppearance];
     [self.zanClickButton setGreyBackGroundAppearance];
@@ -53,13 +64,8 @@
     [self.moreButton setSmallButtonAppearance];
     [self.moreButton setGreyBackGroundAppearance];
     
-    self.backgroundColor = [UIColor clearColor];
-    
-    [self.addIcon setHidden:[self.addressLabel.text isEqualToString:@""]?YES:NO];
-    [self.descIcon setHidden:[self.descriptionLabel.text isEqualToString:@""]?YES:NO];
-    [self.likeIcon setHidden:[self.likeLabel.text isEqualToString:@""]?YES:NO];
-    [self.commentIcon setHidden:[self.commentLabel.text isEqualToString:@""]?YES:NO];
-    
+    //self.backgroundColor = [UIColor clearColor];
+       
 }
 
 -(void) updateConstraints

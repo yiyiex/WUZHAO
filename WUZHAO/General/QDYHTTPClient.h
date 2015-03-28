@@ -33,7 +33,7 @@
 
 #pragma mark ====personal info
 //get personal info with userId
-- (void)GetPersonalInfoWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+- (void)GetPersonalInfoWithUserId:(NSInteger)userId page:(NSInteger)page whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 //edit personal info with userinfo
 - (void)PostPersonalInfoWithUser:(User *)user whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 //get current user photo list
@@ -60,13 +60,16 @@
 - (void) GetQiNiuTokenWithUserId:(NSInteger)userId type:(NSInteger)type whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
 //post the image info to server
-- (void) PostPhotoInfomationWithUserId:(NSInteger)userId method:(NSString *)method photo:(NSString *)photoName thought:(NSString *)thought haspoi:(BOOL)haspoi  provider:(NSInteger)provider uid:(NSString *)uid name:(NSString *)name classify:(NSString *)classify location:(NSString *)location address:(NSString *)address province:(NSString *)province city:(NSString *)city district:(NSString *)district stamp:(NSString *)stamp whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+- (void) PostPhotoInfomationWithUserId:(NSInteger)userId photo:(NSString *)photoName thought:(NSString *)thought haspoi:(BOOL)haspoi  provider:(NSInteger)provider uid:(NSString *)uid name:(NSString *)name classify:(NSString *)classify location:(NSString *)location address:(NSString *)address province:(NSString *)province city:(NSString *)city district:(NSString *)district stamp:(NSString *)stamp whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+
+//delete image by postid and userid
+-(void) deletePhotoWithUserId:(NSInteger)userId postId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
 //get whats going on with userId
--(void) GetWhatsGoingOnWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+-(void) GetWhatsGoingOnWithUserId:(NSInteger)userId page:(NSInteger)page whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
 //get photo info with userId or photo post Id
--(void) GetPhotoInfoWithPostId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+-(void) GetPhotoInfoWithPostId:(NSInteger)postId userId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 //get photo comment list with photo post Id
 -(void) GetPhotoCommentsWithPostId:(NSInteger)postId comment:(NSString *)comment whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 //zan photo with userId and photo post Id

@@ -62,7 +62,6 @@
     UIBarButtonItem *close = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"close_cha"] style:UIBarButtonItemStylePlain target:self action:@selector(returnToLaunch)];
     [self.navigationItem setLeftBarButtonItem:close];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
-    //[[UIApplication sharedApplication]setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 }
 
 
@@ -77,7 +76,7 @@
     
     self.userNameTextField.placeholder = @"用户名";
     self.userNameTextField.keyboardAppearance = UIKeyboardAppearanceDark;
-    self.userNameTextField.keyboardType = UIKeyboardTypeAlphabet;
+    self.userNameTextField.keyboardType = UIKeyboardTypeDefault;
     
     self.passwordTextField.placeholder = @"密 码";
     self.passwordTextField.keyboardAppearance = UIKeyboardAppearanceDark;
@@ -247,13 +246,12 @@
 {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setInteger:user.UserID forKey:@"userId"];
-    NSLog(@"%@",[userDefaults objectForKey:@"userId"]);
     [userDefaults setObject:self.userName forKey:@"userName"];
     if (![user.userToken isEqualToString:@""] && user.userToken)
     {
         [userDefaults setObject:user.userToken forKey:@"token"];
     }
-    NSLog(@"%lu",(long)[userDefaults integerForKey:@"userId"]);
+    [userDefaults setObject:@"" forKey:@"avatarUrl"];
     [userDefaults synchronize];
 }
 @end

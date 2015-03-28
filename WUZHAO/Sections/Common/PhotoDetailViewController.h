@@ -17,13 +17,14 @@
 
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 //展示照片内容的控件
+
 @property (nonatomic, weak) IBOutlet UIImageView * detailPhotoView;
 @property (nonatomic, weak) IBOutlet UILabel *likeLabel;
-@property (nonatomic, weak) IBOutlet UIImageView *likeIcon;
+
 @property (nonatomic, weak) IBOutlet UILabel *addressLabel;
-@property (nonatomic, weak) IBOutlet UIImageView *addressIcon;
+
 @property (nonatomic, weak) IBOutlet UILabel *descriptionLabel;
-@property (nonatomic, weak) IBOutlet UIImageView *descriptionIcon;
+
 //展示评论内容的控件
 @property (nonatomic, weak) IBOutlet UIImageView *commentIcon;
 @property (strong, nonatomic) IBOutlet WPHotspotLabel *commentContentLabel;
@@ -42,6 +43,7 @@
 
 //数据源
 @property (nonatomic, strong) WhatsGoingOn *whatsGoingOnItem;
+@property (nonatomic,strong) NSIndexPath *cellIndexInCollection;
 
 - (void)configureView:(WhatsGoingOn *)whatsGoinOnItem;
 

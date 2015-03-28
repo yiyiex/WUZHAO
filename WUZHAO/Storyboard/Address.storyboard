@@ -21,7 +21,7 @@
                             <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WXp-cu-Ceb" userLabel="header view">
                                 <rect key="frame" x="0.0" y="64" width="600" height="150"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="default" translatesAutoresizingMaskIntoConstraints="NO" id="9dn-ca-cF4" userLabel="avator" customClass="UIRoundedImageView">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9dn-ca-cF4" userLabel="avator" customClass="UIRoundedImageView">
                                         <rect key="frame" x="8" y="8" width="100" height="100"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="9dn-ca-cF4" secondAttribute="height" multiplier="1:1" id="9gW-EW-sAe"/>
@@ -320,7 +320,4 @@
             <point key="canvasLocation" x="1063" y="1488"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="default" width="262" height="232"/>
-    </resources>
 </document>

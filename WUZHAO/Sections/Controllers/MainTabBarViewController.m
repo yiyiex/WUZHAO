@@ -48,6 +48,7 @@
 
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(activeCurrentTab) name:@"finishPostImage" object:Nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(uploadDataSuccess) name:@"uploadDataSuccess" object:nil];
     
 }
 
@@ -119,12 +120,12 @@
         UIViewController *destinationViewController = linkViewController.scene;
         if ([destinationViewController isKindOfClass:[MineViewController class]])
         {
-            MineViewController *mineViewController = (MineViewController *)linkViewController.scene;
+            MineViewController *mineViewController = (MineViewController *)destinationViewController;
             [mineViewController getLatestData];
         }
         if ( [destinationViewController isKindOfClass:[HomeTableViewController class]])
         {
-            HomeTableViewController *homeTableViewController = (HomeTableViewController *)linkViewController.scene;
+            HomeTableViewController *homeTableViewController = (HomeTableViewController *)destinationViewController;;
             [homeTableViewController GetLatestDataList];
             
         }
@@ -136,6 +137,8 @@
 {
   
     self.selectedIndex = self.currentTabIndex;
+    RBStoryboardLink *linkViewController = (RBStoryboardLink *)self.selectedViewController;
+    UIViewController *destinationViewController = linkViewController.scene;
     switch (self.currentTabIndex)
     {
         case 0:
@@ -150,6 +153,35 @@
             break;
     }
 
+}
+
+-(void)uploadDataSuccess
+{
+    RBStoryboardLink *linkViewController = (RBStoryboardLink *)self.selectedViewController;
+    UIViewController *destinationViewController = linkViewController.scene;
+    switch (self.currentTabIndex)
+    {
+        case 0:
+            if ([destinationViewController isKindOfClass:[HomeTableViewController class]])
+            {
+                HomeTableViewController *homeTableViewController = (HomeTableViewController *)destinationViewController;
+                [homeTableViewController GetLatestDataList];
+            }
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            if ([destinationViewController isKindOfClass:[MineViewController class]])
+            {
+                MineViewController *mineViewController = (MineViewController *)destinationViewController;
+                [mineViewController getLatestData];
+            }
+            break;
+        default:
+            break;
+    }
 }
 
 -(void)hideTabBar

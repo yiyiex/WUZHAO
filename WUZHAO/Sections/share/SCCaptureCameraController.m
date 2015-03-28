@@ -14,6 +14,7 @@
 #import "SCNavigationController.h"
 #import "WZFilterUIViewController.h"
 #import "AddImageInfoViewController.h"
+#import "TWPhotoPickerController.h"
 
 #import "CaptureItemContainerUIView.h"
 
@@ -31,10 +32,9 @@
 #define CAMERA_PHOTO_CHOOSE_BUTTON_WIDTH 50//photoChoose Button
 
 //color
-#define bottomContainerView_UP_COLOR     [UIColor colorWithRed:233/255.0f green:233/255.0f blue:233/255.0f alpha:1.f]       //bottomContainerView的上半部分
-#define bottomContainerView_DOWN_COLOR   [UIColor colorWithRed:15/255.0f green:15/255.0f blue:15/255.0f alpha:1.f]       //bottomContainerView的下半部分
-#define DARK_GREEN_COLOR        [UIColor colorWithRed:15/255.0f green:15/255.0f blue:15/255.0f alpha:1.f]    //深绿色
-#define LIGHT_GREEN_COLOR       [UIColor colorWithRed:233/255.0f green:233/255.0f blue:233/255.0f alpha:.8f]    //浅绿色
+#define BOTTOM_CONTAINER_COLOR rgba_WZ(23,24,26,1.0)
+#define MENU_CONTAINER_COLOR rgba_WZ(23,24,26,0.9)
+
 
 
 //对焦
@@ -107,18 +107,18 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChange:) name:kNotificationOrientationChange object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endPostImage) name:@"finishPostImage" object:nil];
     
-    [self initViews];
+
     
     //session manager
     SCCaptureSessionManager *manager = [[SCCaptureSessionManager alloc] init];
     
     if (CGRectEqualToRect(_previewRect, CGRectZero)) {
-        self.previewRect = CGRectMake(0, 0, WZ_APP_SIZE.width + CAMERA_TOPVIEW_HEIGHT + CAMERA_MENU_VIEW_HEIGH, WZ_APP_SIZE.width);
+        self.previewRect = CGRectMake(0, 0, WZ_APP_SIZE.width, WZ_APP_SIZE.width+ CAMERA_TOPVIEW_HEIGHT + CAMERA_MENU_VIEW_HEIGH);
     }
 
     [manager configureWithParentLayer:self.view previewRect:_previewRect];
     self.captureManager = manager;
-
+    [self initViews];
     [self addShotButtons];
     [self addSelectPhotoButtons];
     [self addMenuViewButtons];
@@ -194,14 +194,14 @@
 {
     //[self.view setBackgroundColor:[UIColor clearColor]];
     self.topContainerView = [[CaptureItemContainerUIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, CAMERA_TOPVIEW_HEIGHT)];
-    [self.topContainerView setBackgroundColor:THEME_COLOR_BLACK_PARENT];
+    [self.topContainerView setBackgroundColor:MENU_CONTAINER_COLOR];
     [self.view addSubview:self.topContainerView];
     self.cameraMenuView = [[CaptureItemContainerUIView alloc]initWithFrame:CGRectMake(0, CAMERA_TOPVIEW_HEIGHT + WZ_APP_SIZE.width, WZ_APP_SIZE.width, CAMERA_MENU_VIEW_HEIGH)];
-    [self.cameraMenuView setBackgroundColor:THEME_COLOR_BLACK_PARENT];
+    [self.cameraMenuView setBackgroundColor:MENU_CONTAINER_COLOR];
     [self.view addSubview:self.cameraMenuView];
     float bottomContainerViewY = CAMERA_TOPVIEW_HEIGHT + WZ_APP_SIZE.width + CAMERA_MENU_VIEW_HEIGH;
     self.bottomContainerView = [[CaptureItemContainerUIView alloc]initWithFrame:CGRectMake(0,bottomContainerViewY, WZ_APP_SIZE.width, WZ_DEVICE_SIZE.height - bottomContainerViewY)];
-    [self.bottomContainerView setBackgroundColor:THEME_COLOR_BLACK];
+    [self.bottomContainerView setBackgroundColor:BOTTOM_CONTAINER_COLOR];
     [self.view addSubview:self.bottomContainerView];
     //self.bottomContainerView = [UIView alloc]initWithFrame:
 }
@@ -325,12 +325,12 @@
 
 //拍完照后的遮罩
 - (void)addCameraCover {
-    UIView *upView = [[UIView alloc] initWithFrame:CGRectMake(0, CAMERA_TOPVIEW_HEIGHT, WZ_APP_SIZE.width, 0)];
+    UIView *upView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, 0)];
     upView.backgroundColor = [UIColor blackColor];
     [self.view addSubview:upView];
     self.doneCameraUpView = upView;
     
-    UIView *downView = [[UIView alloc] initWithFrame:CGRectMake(0, _bottomContainerView.frame.origin.y - 44, WZ_APP_SIZE.width, 0)];
+    UIView *downView = [[UIView alloc] initWithFrame:CGRectMake(0, _bottomContainerView.frame.origin.y , WZ_APP_SIZE.width, 0)];
     downView.backgroundColor = [UIColor blackColor];
     [self.view addSubview:downView];
     self.doneCameraDownView = downView;
@@ -526,7 +526,8 @@ void c_slideAlpha() {
         
         AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
         [addImageInfoCon setPostImage:stillImage];
-        [self.navigationController pushViewController:addImageInfoCon animated:YES];
+        [self showViewController:addImageInfoCon sender:self];
+        //[self presentViewController:addImageInfoCon animated:YES completion:nil];
         
         //暂时屏蔽滤镜
        // WZFilterUIViewController *editor = [[WZFilterUIViewController alloc]initWithImage:stillImage delegate:self];
@@ -539,16 +540,28 @@ void c_slideAlpha() {
 
 -(void)selectPhotoFromAlubm:(UITapGestureRecognizer *)gesture
 {
+    /*
     NSLog(@"select photo library");
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary])
     {
         UIImagePickerController *controller = [[UIImagePickerController alloc]init];
         controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         controller.delegate = self;
-        [self presentViewController:controller animated:YES completion:^{
-            NSLog(@"picker view controller  is presented");
-        }];
-    }
+        //[self presentViewController:controller animated:YES completion:^{NSLog(@"picker view controller  is presented");}];
+        [self showViewController:controller sender:self];
+    }*/
+    TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
+    WEAKSELF_WZ
+    photoPicker.cropBlock = ^(UIImage *image) {
+        //do something
+        __strong typeof(weakSelf_WZ)strongSelf = weakSelf_WZ;
+        strongSelf.stillImage = image;
+        VPImageCropperViewController *imgCropperVC = [[VPImageCropperViewController alloc]initWithImage:strongSelf.stillImage cropFrame:CGRectMake(0, 100, WZ_APP_SIZE.width, WZ_APP_SIZE.width) limitScaleRatio:3.0];
+        
+        imgCropperVC.delegate = strongSelf;
+        [strongSelf presentViewController:imgCropperVC animated:YES completion:nil];
+    };
+    [self presentViewController:photoPicker animated:YES completion:NULL];
 }
 - (void)tmpBtnPressed:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
@@ -562,24 +575,21 @@ void c_slideAlpha() {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"finishPostImage" object:nil];
     if (self.navigationController)
     {
-         if (self.navigationController.viewControllers.count ==1)
-         {
-             [self.navigationController dismissViewControllerAnimated:YES completion:^{
-                 
-             }];
-         }
-         else
-         {
-             [self.navigationController popViewControllerAnimated:YES];
-         }
+        if (self.navigationController.viewControllers.count ==1)
+        {
+            [self.navigationController dismissViewControllerAnimated:YES completion:^{
+                
+            }];
+        }
+        else
+        {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
     else
     {
-        [self dismissViewControllerAnimated:YES completion:^{
-       
-        }];
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
-  
    // [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     
 
@@ -645,7 +655,8 @@ void c_slideAlpha() {
         VPImageCropperViewController *imgCropperVC = [[VPImageCropperViewController alloc]initWithImage:self.stillImage cropFrame:CGRectMake(0, 100, self.view.frame.size.width, self.view.frame.size.width) limitScaleRatio:3.0];
         
         imgCropperVC.delegate = self;
-        [self presentViewController:imgCropperVC animated:YES completion:nil];
+        [self showViewController:imgCropperVC sender:self];
+        //[self presentViewController:imgCropperVC animated:YES completion:nil];
 
 
     }];
@@ -733,13 +744,26 @@ void c_slideAlpha() {
 #pragma mark -NSNotificationCenter selector
 -(void)endPostImage
 {
-   // [self.navigationController popToViewController:self animated:YES];
-    NSLog(@"%ld",[[self.navigationController childViewControllers]count]);
-    if ([[self.navigationController childViewControllers]count]>2)
+    if (self.navigationController)
     {
-        [self.navigationController popViewControllerAnimated:NO];
+        if (self.navigationController.viewControllers.count ==1)
+        {
+            [self.navigationController dismissViewControllerAnimated:YES completion:^{
+                
+            }];
+        }
+        else
+        {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
-   // [self.navigationController popViewControllerAnimated:NO];
+    else
+    {
+        [self dismissViewControllerAnimated:NO completion:^{
+            
+        }];
+    }
+
 }
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_6_0

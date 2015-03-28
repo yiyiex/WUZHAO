@@ -10,11 +10,21 @@
 
 @interface UILabel (ChangeAppearance)
 
+-(void)setBoldReadOnlyLabelAppearance;
+
 -(void)setReadOnlyLabelAppearance;
+
+-(void)setBoldSmallReadOnlyLabelAppearance;
+
+-(void)setSmallReadOnlyLabelAppearance;
 
 -(void)setBlodBlackLabelAppearance;
 
 -(void)setBlackLabelAppearance;
+
+-(void)setBlodDarkGreyLabelAppearance;
+
+-(void)setDarkGreyLabelAppearance;
 
 -(void)setLightReadOnlyLabelAppearance;
 

@@ -7,7 +7,7 @@
 //
 
 #import "PhotoDetailViewController.h"
-
+#import "PhotosCollectionViewController.h"
 #import "CommentTableViewCell.h"
 
 #import "UIImageView+WebCache.h"
@@ -31,6 +31,8 @@
 #import "User.h"
 
 @interface PhotoDetailViewController ()
+@property (atomic) BOOL shoudRefreshData;
+@property (nonatomic,strong) UIRefreshControl *refreshControl;
 @end
 
 @implementation PhotoDetailViewController
@@ -40,16 +42,13 @@
     [super viewDidLoad];
     
     [self setTitle:@"照片详情"];
+    self.shoudRefreshData = true;
+    self.refreshControl = [[UIRefreshControl alloc]init];
+    [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
    // [self setAppearance];
     
     [self configureView:self.whatsGoingOnItem];
-    if (!self.whatsGoingOnItem.photoUser.UserID)
-    {
-        [[QDYHTTPClient sharedInstance]GetPhotoInfoWithPostId:self.whatsGoingOnItem.postId whenComplete:^(NSDictionary *returnData) {
-            self.whatsGoingOnItem = [returnData objectForKey:@"data"];
-            [self configureView:self.whatsGoingOnItem];
-        }];
-    }
+    [self getLatestData];
   //  [self loadCommentTableViewData];
     //NSArray * userList = [[User userList]mutableCopy];
    
@@ -78,6 +77,32 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)getLatestData
+{
+    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+    if (self.shoudRefreshData)
+    {
+        self.shoudRefreshData = false;
+        [[QDYHTTPClient sharedInstance]GetPhotoInfoWithPostId:self.whatsGoingOnItem.postId userId:self.whatsGoingOnItem.photoUser.UserID whenComplete:^(NSDictionary *returnData) {
+            self.shoudRefreshData = true;
+            if ([returnData objectForKey:@"data"])
+            {
+                self.whatsGoingOnItem = [returnData objectForKey:@"data"];
+                [self configureView:self.whatsGoingOnItem];
+                
+            }
+            else if ([returnData objectForKey:@"error"])
+            {
+                [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+            }
+            if ([self.refreshControl isRefreshing])
+            {
+                [self.refreshControl endRefreshing];
+            }
+        }];
+    }
+}
+
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -92,18 +117,27 @@
 }
 
 #pragma mark- set the content of the whole view
+-(void)initView
+{
+    
+}
 -(void)setAppearance
 {
     [self.userAvatarImageView setRoundConerWithRadius:self.userAvatarImageView.frame.size.width/2];
+    [self.userAvatarImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    [self.userNameLabel setDarkGreyLabelAppearance];
+    [self.userDescriptionLabel setSmallReadOnlyLabelAppearance];
+    [self.postTimeLabel setBoldReadOnlyLabelAppearance];
     
     [self.addressLabel setTextColor:THEME_COLOR_DARK_GREY];
     [self.descriptionLabel setTextColor:THEME_COLOR_DARK_GREY];
 
+    [self.detailPhotoView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
     
-    [self.addressIcon setHidden:[self.addressLabel.text isEqualToString:@""]? YES:NO];
-    [self.descriptionIcon setHidden:[self.descriptionLabel.text isEqualToString:@""]? YES:NO];
-    [self.likeIcon setHidden:[self.likeLabel.text isEqualToString:@""]? YES:NO];
-    [self.commentIcon setHidden:[self.commentContentLabel.text isEqualToString:@""]? YES:NO];
+    //[self.addressIcon setHidden:[self.addressLabel.text isEqualToString:@""]? YES:NO];
+    //[self.descriptionIcon setHidden:[self.descriptionLabel.text isEqualToString:@""]? YES:NO];
+    //[self.likeIcon setHidden:[self.likeLabel.text isEqualToString:@""]? YES:NO];
+    //[self.commentIcon setHidden:[self.commentContentLabel.text isEqualToString:@""]? YES:NO];
 
     
     [self.commentContentLabel setBackgroundColor:[UIColor clearColor]];
@@ -115,12 +149,14 @@
     [self.moreButton setSmallButtonAppearance];
     [self.moreButton setGreyBackGroundAppearance];
     
+    self.scrollView.contentSize = CGSizeMake(WZ_APP_SIZE.width, 200);
+    
 }
 
 - (void)configureView:(WhatsGoingOn *)whatsGoinOnItem
 {
     _whatsGoingOnItem = whatsGoinOnItem;
-    [self.userAvatarImageView sd_setImageWithURL:[NSURL URLWithString:self.whatsGoingOnItem.photoUser.avatarImageURLString] placeholderImage:[UIImage imageNamed:@"default"]];
+    [self.userAvatarImageView sd_setImageWithURL:[NSURL URLWithString:self.whatsGoingOnItem.photoUser.avatarImageURLString]];
     
     self.userNameLabel.text = self.whatsGoingOnItem.photoUser.UserName;
     self.userDescriptionLabel.text = [self.whatsGoingOnItem.photoUser.selfDescriptions stringByReplacingOccurrencesOfString:@"\\n" withString:@"\n"];
@@ -196,7 +232,7 @@
                 if ([self.zanButton.currentTitle isEqualToString:@"赞"])
                 {
                     self.whatsGoingOnItem.likeCount += 1;
-                    [self.likeIcon setHidden:NO];
+                    //[self.likeIcon setHidden:NO];
                     self.likeLabel.text = [NSString stringWithFormat:@"%lu 次赞",(long)self.whatsGoingOnItem.likeCount];
                     [self.zanButton setTitle:@"已赞" forState:UIControlStateNormal];
                     [self setAppearance];
@@ -219,12 +255,12 @@
                     self.whatsGoingOnItem.likeCount -= 1;
                     if (self.whatsGoingOnItem.likeCount == 0)
                     {
-                        [self.likeIcon setHidden:YES];
+                       // [self.likeIcon setHidden:YES];
                         self.likeLabel.text = @"";
                     }
                     else
                     {
-                        [self.likeIcon setHidden:NO];
+                       // [self.likeIcon setHidden:NO];
                         self.likeLabel.text = [NSString stringWithFormat:@"%lu 次赞",(long)self.whatsGoingOnItem.likeCount];
                     }
                     [self.zanButton setTitle:@"赞" forState:UIControlStateNormal];
@@ -262,7 +298,21 @@
             NSLog(@"delete pressed");
             //TO DO
             //删除该条记录
-            [self.navigationController popViewControllerAnimated:YES];
+            UIAlertController *deleteWarningController = [UIAlertController alertControllerWithTitle:@"提醒" message:@"确定删除照片？" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                
+            }];
+            UIAlertAction *comfirmAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [[QDYHTTPClient sharedInstance]deletePhotoWithUserId:userId postId:self.whatsGoingOnItem.postId
+                  whenComplete:^(NSDictionary *returnData)
+                 {
+                     [self.navigationController popViewControllerAnimated:YES];
+                     [[NSNotificationCenter defaultCenter]postNotificationName:@"deleteMyPhoto" object:self userInfo:@{@"indexPath":self.cellIndexInCollection}];
+                 }];
+            }];
+            [deleteWarningController addAction:cancelAction];
+            [deleteWarningController addAction:comfirmAction];
+            [self presentViewController:deleteWarningController animated:YES completion:nil];
             
         }];
         [alertController addAction:delectAction];
@@ -296,5 +346,14 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+#pragma mark - action
+-(void)refreshByPullingTable:(id)sender
+{
+    if (![self.refreshControl isRefreshing])
+    {
+        [self.refreshControl beginRefreshing];
+    }
+}
 
 @end

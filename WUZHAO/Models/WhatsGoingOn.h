@@ -19,6 +19,7 @@
 @property (nonatomic,copy) NSString *imageDescription;
 //@property (nonatomic,copy) NSString *adddresMark;
 @property (nonatomic) NSInteger likeCount;
+@property (nonatomic,strong) NSMutableArray *likeUserList;
 @property (nonatomic) BOOL isLike;
 @property (nonatomic,copy) NSString *comment;
 @property (nonatomic,copy) NSArray  *commentList;

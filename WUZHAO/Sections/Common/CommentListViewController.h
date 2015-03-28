@@ -12,5 +12,5 @@
 @interface CommentListViewController : UIViewController
 @property (nonatomic,strong) WhatsGoingOn *poiItem;
 
-@property (nonatomic, strong) NSArray *commentList; //存储评论列表
+@property (nonatomic, strong) NSMutableArray *commentList; //存储评论列表
 @end

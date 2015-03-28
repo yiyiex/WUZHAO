@@ -16,11 +16,4 @@
 +(void)setNavigatorAppearance;
 +(void)setTabBarAppearance;
 
-+(void)setLabelsAppearance;
-
-+(void)setReadOnlyLabelAppearance;
-+(void)setBlodBlackLabelAppearance;
-+(void)setBlackLabelAppearance;
-+(void)setLightReadOnlyLabelAppearance;
-+(void)setWPHotLabelAppearance;
 @end

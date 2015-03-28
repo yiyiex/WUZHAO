@@ -20,6 +20,14 @@
     }
     return _photoUser;
 }
+-(NSMutableArray *)likeUserList
+{
+    if (!_likeUserList)
+    {
+        _likeUserList = [[NSMutableArray alloc]init];
+    }
+    return _likeUserList;
+}
 
 + (NSArray *) newDataSource
 {

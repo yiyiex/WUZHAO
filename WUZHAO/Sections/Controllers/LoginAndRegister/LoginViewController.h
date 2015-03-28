@@ -12,6 +12,7 @@
 @property (strong, nonatomic) IBOutlet UITextField *UserNameTextField;
 @property (strong, nonatomic) IBOutlet UITextField *PasswordTextField;
 @property (strong, nonatomic) IBOutlet UIButton *LoginButton;
+@property (strong, nonatomic) IBOutlet UILabel *forgotPasswordLabel;
 
 
 - (IBAction)LoginButtonPressed:(id)sender;

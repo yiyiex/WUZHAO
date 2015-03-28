@@ -55,10 +55,11 @@
 
 #define THEME_COLOR_DARK_GREY rgba_WZ(40,45,50,1.0)
 #define THEME_COLOR_DARK_GREY_PARENT rgba_WZ(40,45,50,0.5)
+
 #define THEME_COLOR_DARKER_GREY rgba_WZ(20,20,25,1.0)
 #define THEME_COLOR_DARKER_GREY_PARENT rgba_WZ(20,20,25,0.5)
 #define THEME_COLOR_BLACK rgba_WZ(0,0,0,1.0)
-#define THEME_COLOR_BLACK_PARENT rgba_WZ(0,0,0,0.2)
+#define THEME_COLOR_BLACK_PARENT rgba_WZ(0,0,0,0.8)
 
 
 //控件相关颜色
@@ -82,6 +83,10 @@
 
 
 // 是否iPad
+#define isIPHONE_6 (WZ_APP_SIZE.width == 375)
+#define isIPHONE_6P (WZ_APP_SIZE.width == 414)
+#define isIPHONE_5 (WZ_APP_SIZE.width == 320)
+
 #define isPad_SC (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)//设备类型改为Universal才能生效
 #define isPad_AllTargetMode_WZ ([[UIDevice currentDevice].model rangeOfString:@"iPad"].location != NSNotFound)//设备类型为任何类型都能生效
 
@@ -133,17 +138,31 @@
 #define WZ_FONT_NAME_BOLD @"Arial-Bold"
 */
 
-#define WZ_FONT_NAME @"Courier"
-#define WZ_FONT_NAME_BOLD @"Courier-Bold"
+#define WZ_FONT_NAME @"Helvetica"
+#define WZ_FONT_NAME_BOLD @"Helvetica-Bold"
+
+
 
 #define WZ_FONT_COMMON_SIZE [UIFont fontWithName:WZ_FONT_NAME size:14]
 #define WZ_FONT_COMMON_BOLD_SIZE [UIFont fontWithName:WZ_FONT_NAME_BOLD size:14]
-#define WZ_FONT_SMALL_SIZE [UIFont fontWithName:WZ_FONT_NAME size:14]
-#define WZ_FONT__READONLY [UIFont fontWithName:WZ_FONT_NAME size:13]
-#define WZ_FONT_LARGE_SIZE [UIFont fontWithName:WZ_FONT_NAME size:15]
-#define WZ_FONT_LARGE_SIZE_BOLD [UIFont fontWithName:WZ_FONT_NAME_BOLD size:16]
-#define WZ_FONT_TITLE [UIFont fontwithName:WZ_FONT_NAME size:25]
 
+#define WZ_FONT_SMALL_SIZE [UIFont fontWithName:WZ_FONT_NAME size:12]
+#define WZ_FONT_SMALL_BOLD_SIZE [UIFont fontWithName:WZ_FONT_NAME_BOLD size:12]
+
+#define WZ_FONT_READONLY [UIFont fontWithName:WZ_FONT_NAME size:14]
+#define WZ_FONT_READONLY_BOLD [UIFont fontWithName:WZ_FONT_NAME_BOLD size:14]
+
+#define WZ_FONT_SMALL_READONLY [UIFont fontWithName:WZ_FONT_NAME size:12]
+#define WZ_FONT_SMALL_READONLY_BOLD [UIFont fontWithName:WZ_FONT_NAME_BOLD size:12]
+
+#define WZ_FONT_LARGE_READONLY [UIFont fontWithName:WZ_FONT_NAME size:16]
+#define WZ_FONT_LARGE_READONLY_BOLD [UIFont fontWithName:WZ_FONT_NAME_BOLD size:16]
+
+#define WZ_FONT_LARGE_SIZE [UIFont fontWithName:WZ_FONT_NAME size:15]
+#define WZ_FONT_LARGE_BOLD_SIZE [UIFont fontWithName:WZ_FONT_NAME_BOLD size:15]
+
+#define WZ_FONT_TITLE [UIFont fontWithName:WZ_FONT_NAME size:17]
+#define WZ_FONT_TITLE_BOLD [UIFont fontWithName:WZ_FONT_NAME_BOLD size:17]
 
 
 //userListTableViewStyle

@@ -78,11 +78,11 @@
                                             <constraint firstAttribute="width" secondItem="UgT-eX-hhA" secondAttribute="height" multiplier="1:1" id="h8P-WH-7mC"/>
                                         </constraints>
                                     </imageView>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X3q-yx-Q7j" userLabel="Say something">
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="X3q-yx-Q7j" userLabel="Say something">
                                         <rect key="frame" x="100" y="19" width="490" height="63"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" keyboardAppearance="alert" enablesReturnKeyAutomatically="YES"/>
                                         <dataDetectorType key="dataDetectorTypes" link="YES"/>
                                         <connections>
                                             <outlet property="delegate" destination="BKh-hg-XYL" id="Pal-Cs-Ygv"/>
@@ -135,7 +135,7 @@
                             <constraint firstItem="cMc-nJ-apL" firstAttribute="top" secondItem="kRW-tf-5uG" secondAttribute="bottom" constant="20" id="kic-oQ-VHx"/>
                             <constraint firstItem="cXp-N2-faP" firstAttribute="top" secondItem="cMc-nJ-apL" secondAttribute="bottom" constant="8" id="oBx-h4-X0N"/>
                             <constraint firstAttribute="trailingMargin" secondItem="kRW-tf-5uG" secondAttribute="trailing" constant="-16" id="ugD-C5-adK"/>
-                            <constraint firstItem="kRW-tf-5uG" firstAttribute="top" secondItem="ghL-Hu-OZI" secondAttribute="bottom" id="zsT-sy-g1t"/>
+                            <constraint firstItem="kRW-tf-5uG" firstAttribute="top" secondItem="ghL-Hu-OZI" secondAttribute="bottom" constant="50" id="zsT-sy-g1t"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="选择地址" id="4fR-6u-1UH">

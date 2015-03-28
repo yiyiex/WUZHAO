@@ -14,6 +14,7 @@
 
 -(NSURLSessionDataTask *)ExecuteRequestWithMethod:(NSString *)method api:(NSString *)api parameters:(NSDictionary *)param complete:(void (^)(NSDictionary *, NSError *))complete
 {
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
     if ( [method isEqualToString:@"GET"])
     {
         return  [self GET:api parameters:param success:^(NSURLSessionDataTask *task, id responseObject) {
@@ -32,11 +33,14 @@
                     
                 }
             }
+            [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
             complete(responseObject,nil);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             NSLog(@"request failed");
             NSLog(@"%@",error);
+            [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
             complete(@{@"msg":@"请求成功，但服务器返回错误"},nil);
+            
         }];
         
     }
@@ -59,10 +63,12 @@
                     
                 }*/
             }
+            [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
             complete(responseObject,nil);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             NSLog(@"request failed");
             NSLog(@"%@",error);
+            [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
             complete(@{@"msg":@"请求成功，但服务器返回错误"},nil);
         }];
     }

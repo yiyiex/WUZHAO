@@ -15,6 +15,10 @@
 #import "QiniuSDK.h"
 #import "macro.h"
 
+#import "UIButton+ChangeAppearance.h"
+#import "UIView+ChangeAppearance.h"
+#import "ImageDetailShowViewController.h"
+
 #import <AMapSearchKit/AMapSearchAPI.h>
 #import <CoreLocation/CoreLocation.h>
 
@@ -27,11 +31,16 @@
 {
     AMapSearchAPI *_search;
     CLLocationManager *_locationManager;
+    CGPoint postImageCenter;
+    UIView *greyMaskView;
 }
 @property (nonatomic ,strong)  NSMutableArray *addressDataSource;
 
 @property (nonatomic) BOOL hasPoi;
 @property (nonatomic ,strong) NSMutableDictionary *poiInfo;
+
+@property (strong, nonatomic) UIButton *postButton;
+@property (strong, nonatomic) UIView *topBarView;
 
 @property (atomic) float progress;
 @end
@@ -41,18 +50,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationController.navigationBarHidden = NO;
-    self.navigationItem.hidesBackButton = NO;
-    self.postImageView.image = self.postImage;
-    self.hasPoi = NO;
-    self.postButton = [[UIButton alloc]initWithFrame:CGRectMake(0, WZ_DEVICE_SIZE.height - 48, WZ_APP_SIZE.width, 48)];
-    [self.postButton setBackgroundColor:THEME_COLOR_DARK];
-    [self.postButton setTitle:@"发表-->" forState:UIControlStateNormal];
-    [self.postButton addTarget:self action:@selector(PostButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.postButton];
-    
-    [self searchAddress];
-
+    [self initView];
 }
 #pragma mark -datas
 - (NSArray *) addressDataSource
@@ -99,11 +97,48 @@
     }
     return _whatsGoingOnItem;
 }
-
-
-
+-(void)initView
+{
+    //self.navigationController.navigationBarHidden = NO;
+    //self.navigationItem.hidesBackButton = NO;
+    [self initPostImageView];
+    self.hasPoi = NO;
+    self.postButton = [[UIButton alloc]initWithFrame:CGRectMake(0, WZ_DEVICE_SIZE.height - 48, WZ_APP_SIZE.width, 48)];
+    [self.postButton setBackgroundColor:THEME_COLOR_DARK];
+    [self.postButton setTitle:@"分享->" forState:UIControlStateNormal];
+    [self.postButton addTarget:self action:@selector(PostButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.postButton];
+    [self initTopBar];
+    [self searchAddress];
+}
+-(void)initPostImageView
+{
+    self.postImageView.image = self.postImage;
+    UITapGestureRecognizer *imageClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showImageDetail:)];
+    [self.postImageView addGestureRecognizer:imageClick];
+    [self.postImageView setUserInteractionEnabled:YES];
+}
+-(void)initTopBar
+{
+    self.topBarView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width,50)];
+    [self.topBarView setBackgroundColor:rgba_WZ(23,24,26,0.9)];
+    UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(13, 13, 24, 24)];
+    [backButton setBackgroundImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+    [backButton addTarget:self action:@selector(backBarButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.topBarView addSubview:backButton];
+    UIButton *postButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width-72, 5, 70, 40)];
+    [postButton setTitle:@"发布" forState:UIControlStateNormal];
+    [postButton setNormalButtonAppearance];
+    [postButton setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
+    [postButton addTarget:self action:@selector(PostButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    //[self.topBarView addSubview:postButton];
+    [self.view addSubview:self.topBarView];
+}
 #pragma mark -buttons
-
+-(void)backBarButtonClick:(UIBarButtonItem *)sender
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 -(void)PostButtonPressed:(UIBarButtonItem *)sender
 {
     
@@ -117,6 +152,8 @@
 
     [self.postImageDescription resignFirstResponder];
     //发布照片信息,上传到七牛;上传成功后提示并转回主页
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"finishPostImage" object:nil];
     [self uploadPhotoToQiNiu];
 
 
@@ -133,6 +170,42 @@
     }
     _locationManager.distanceFilter = 50;
     [_locationManager startUpdatingLocation];
+}
+-(void)showImageDetail:(UITapGestureRecognizer *)gesture
+{
+    /*
+    ImageDetailShowViewController *detailController = [[ImageDetailShowViewController alloc]init];
+    detailController.imageToShow = self.postImage;
+    [self showViewController:detailController sender:self];*/
+    greyMaskView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, WZ_APP_SIZE.height)];
+    [greyMaskView setBackgroundColor:THEME_COLOR_DARK_GREY_PARENT];
+    [greyMaskView setUserInteractionEnabled:NO];
+    [self.view addSubview:greyMaskView];
+    UIImageView *imageView = [UIImageView new];
+    imageView.frame = self.postImageView.frame;
+    imageView.image = self.postImageView.image;
+    postImageCenter  = CGPointMake(self.postImageView.frame.origin.x/2,self.postImageView.frame.origin.y/2);
+    imageView.center = postImageCenter;
+    imageView.transform = CGAffineTransformMakeTranslation(self.postImageView.frame.origin.x, postImageCenter.y);
+    imageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *bigImageClick = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backToSmallImage:)];
+    [imageView addGestureRecognizer:bigImageClick];
+    [self.view addSubview:imageView];
+    [UIView animateWithDuration:0.5 animations:^{
+        imageView.frame = CGRectMake(0, (WZ_APP_SIZE.height-WZ_APP_SIZE.width)/2, WZ_APP_SIZE.width, WZ_APP_SIZE.width);
+    }];
+}
+-(void)backToSmallImage:(UITapGestureRecognizer *)gesture
+{
+    UIView *view = gesture.view;
+    [UIView animateWithDuration:0.5 animations:^{
+        view.bounds = self.postImageView.frame;
+        view.center = postImageCenter;
+    } completion:^(BOOL finished) {
+        [view removeFromSuperview];
+        [greyMaskView removeFromSuperview];
+        
+    }];
 }
 
 -(void)uploadPhotoToQiNiu
@@ -166,11 +239,8 @@
             }
             else
             {
-
-
                 //用户端提示
                [[QDYHTTPClient sharedInstance]PostPhotoInfomationWithUserId:userId
-                                                                       method:@"post"
                                                                         photo:[data objectForKey:@"imageName"]
                                                                     thought:photoDescription
                                                                        haspoi:_hasPoi
@@ -186,19 +256,16 @@
                                                                         stamp:[self.poiInfo valueForKey:@"stamp"]
                                                                  whenComplete:^(NSDictionary *returnData)
                 {
-                    if (returnData)
+                    if ([returnData objectForKey:@"data"])
                     {
                         [SVProgressHUD showSuccessWithStatus:@"上传图片成功"];
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadDataSuccess" object:nil];
                     }
-                    else
+                    else if ([returnData objectForKey:@"error"])
                     {
                         [SVProgressHUD showErrorWithStatus:@"上传图片失败"];
                     }
                     
-                    NSLog(@"%lu",(unsigned long)[self.navigationController.viewControllers count]);
-                    
-                    [[NSNotificationCenter defaultCenter]postNotificationName:@"finishPostImage" object:nil];
-                    [self dismissViewControllerAnimated:YES completion:nil];
                     //通知服务器并补充信息
                     //....
 
@@ -339,7 +406,10 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     self.hasPoi = YES;
-    
+    if ([self.postImageDescription isFirstResponder])
+    {
+        [self.postImageDescription resignFirstResponder];
+    }
     NSDictionary *poiInfo = [self.addressDataSource objectAtIndex:indexPath.row];
    // self.whatsGoingOnItem.imageDescription = @"";
     self.poiInfo = [poiInfo copy];

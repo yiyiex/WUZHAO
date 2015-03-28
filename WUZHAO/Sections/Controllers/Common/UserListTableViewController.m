@@ -25,7 +25,7 @@
 #import "User.h"
 
 #define REUSEIDENTIFIER @"userListCell"
-#define CELL_HEADERHEIGHT 44.0
+#define CELL_HEADERHEIGHT 52.0
 
 @interface UserListTableViewController ()
 
@@ -60,16 +60,16 @@
 {
     if ([self.userListStyle isEqualToString:UserListStyle1])
     {
-        self.tableView.rowHeight = CELL_HEADERHEIGHT + 2.0;
+        self.tableView.rowHeight = CELL_HEADERHEIGHT ;
     }
     else if ([self.userListStyle isEqualToString:UserListStyle2])
     {
-        self.tableView.rowHeight = CELL_HEADERHEIGHT + 2.0;
+        self.tableView.rowHeight = CELL_HEADERHEIGHT ;
         
     }
     else if ([self.userListStyle isEqualToString:UserListStyle3])
     {
-        self.tableView.rowHeight = CELL_HEADERHEIGHT + 10.0 + WZ_DEVICE_SIZE.width/3 ;
+        self.tableView.rowHeight = CELL_HEADERHEIGHT + WZ_DEVICE_SIZE.width/3 ;
         [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     }
 }

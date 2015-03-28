@@ -29,17 +29,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     
     [self.collectionView registerNib:[UINib nibWithNibName:@"PhotosCollectionCell" bundle:nil] forCellWithReuseIdentifier:reuseIdentifier];
     [self.collectionView reloadData];
-    //[self.collectionView setScrollEnabled:false];
-    //self.datasource = [[WhatsGoingOn newDataSource]mutableCopy];
-    
-    
-    // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Register cell classes
-    //[self.collectionView registerClass:[PhotoCollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
-    
-    // Do any additional setup after loading the view.
+
     
 }
 
@@ -57,8 +47,8 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 
 -(void)configureCell:(PhotoCollectionViewCell *)cell forContent:(WhatsGoingOn *)content atIndexPath:(NSIndexPath *)indexPath
 {
-    [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:content.imageUrlString] placeholderImage:[UIImage imageNamed:@"default"] options:indexPath.row ==0?SDWebImageRefreshCached : 0];
-
+    [cell.cellImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:content.imageUrlString]];
     [cell setBackgroundColor:[UIColor whiteColor]];
 }
 
@@ -141,7 +131,8 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     UIStoryboard *detailStoryBoard = [UIStoryboard storyboardWithName:@"photoDetailAndComment" bundle:nil];
     
     PhotoDetailViewController *detailViewController = [detailStoryBoard instantiateViewControllerWithIdentifier:@"photoDetailView"];
-    [detailViewController setWhatsGoingOnItem:item];    
+    [detailViewController setWhatsGoingOnItem:item];
+    detailViewController.cellIndexInCollection = indexPath;
     [self.navigationController pushViewController:detailViewController animated:YES];
     
 }

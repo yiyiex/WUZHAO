@@ -73,6 +73,7 @@
         [_commentListTableView setDelegate:self];
         [_commentListTableView setDataSource:self];
         [self.view addSubview:_commentListTableView];
+
     }
 }
 
@@ -155,25 +156,57 @@
 #pragma mark -------UITableView delegate--------
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *cellData = [self.commentList objectAtIndex:indexPath.row];
-    CommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"commentTableCell" forIndexPath:indexPath];
-    if (!cell)
+    self.commentList = [self.poiItem.commentList mutableCopy];
+    if (self.commentList.count <=4)
     {
-        cell = [[CommentTableViewCell alloc]init];
+        NSDictionary *cellData = [self.commentList objectAtIndex:indexPath.row];
+        CommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"commentTableCell" forIndexPath:indexPath];
+        if (!cell)
+        {
+            cell = [[CommentTableViewCell alloc]init];
+        }
+        
+        [cell.userAvatorView sd_setImageWithURL:[NSURL URLWithString:[cellData objectForKey:@"avatorUrl"]]];
+        cell.userName.text = [NSString stringWithFormat:@"%@",[cellData objectForKey:@"userName"]];
+        cell.commentContent.text = [cellData objectForKey:@"content"];
+        cell.commentTime.text =  [cellData objectForKey:@"time"];
+        [cell setAppearance];
+        return cell;
     }
-
-    [cell.userAvatorView sd_setImageWithURL:[NSURL URLWithString:[cellData objectForKey:@"avatorUrl"]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
-    cell.userName.text = [cellData objectForKey:@"username"];
-    cell.commentContent.text = [cellData objectForKey:@"content"];
-    cell.commentTime.text =  [cellData objectForKey:@"time"];
-    return cell;
+    else
+    {
+        if (indexPath.row == 1)
+        {
+            UITableViewCell *cell = [[UITableViewCell alloc]init];
+            cell.textLabel.text = @"加载更多评论";
+            [cell.textLabel setFont:WZ_FONT_SMALL_READONLY_BOLD];
+            return cell;
+        }
+        else
+        {
+            NSDictionary *cellData;
+            if (indexPath.row == 0)
+            {
+                 cellData = [self.commentList objectAtIndex:indexPath.row];
+            }
+            else
+            {
+                cellData = [self.commentList objectAtIndex:indexPath.row-1];
+            }
+            CommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"commentTableCell" forIndexPath:indexPath];
+            [cell.userAvatorView sd_setImageWithURL:[NSURL URLWithString:[cellData objectForKey:@"avatorUrl"]]];
+           cell.userName.text = [NSString stringWithFormat:@"%@",[cellData objectForKey:@"userName"]];
+            cell.commentContent.text = [cellData objectForKey:@"content"];
+            cell.commentTime.text =  [cellData objectForKey:@"time"];
+            [cell setAppearance];
+            return cell;
+        }
+    }
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSLog(@"%@",self.commentList);
-    NSLog(@"%@",self.commentListTableView);
-    return self.commentList.count;
+    return self.poiItem.commentList.count +1;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

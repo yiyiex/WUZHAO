@@ -8,12 +8,7 @@
 
 #import "GlobalAppearance.h"
 #import "macro.h"
-#import "UIReadOnlyLabel.h"
-#import "UIBoldBlackFontLabel.h"
-#import "UIBlackLabel.h"
-#import "UILightReadOnlyLabel.h"
-#import "UIThemeLabel.h"
-#import "WPHotspotLabel.h"
+
 
 #import "CaptureItemContainerUIView.h"
 
@@ -27,9 +22,8 @@
 {
     [self setNavigationAppearance];
     //[self setTabBarAppearance];
-    [self setLabelsAppearance];
+    //[self setLabelsAppearance];
     [self setButtonAppearance];
-    [self setThemeLabelAppearance];
     [SVProgressHUD setBackgroundColor:[UIColor darkGrayColor]];
     [SVProgressHUD setForegroundColor:[UIColor whiteColor]];
     
@@ -44,12 +38,10 @@
     [appearance setTintColor:THEME_COLOR_DARK_GREY];
     [appearance setTitleTextAttributes:
      @{
-       NSForegroundColorAttributeName:THEME_COLOR_BLACK,
-       NSFontAttributeName:[UIFont boldSystemFontOfSize:18]
-       
+       NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,
+       NSFontAttributeName:WZ_FONT_TITLE,
        }];
     [appearance setBarStyle:UIBarStyleDefault];
-    
     //UIBarButtonItem *barItemAppearance = [UIBarButtonItem appearance];
     //[barItemAppearance setBackgroundImage:[UIImage new] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
@@ -85,58 +77,5 @@
     
 }
 
-#pragma mark    ==========set Labels appearance=============
-+(void)setLabelsAppearance
-{
-    [self setReadOnlyLabelAppearance];
-    [self setBlodBlackLabelAppearance];
-    [self setBlackLabelAppearance];
-    [self setLightReadOnlyLabelAppearance];
-    [self setWPHotLabelAppearance];
-}
 
-+(void)setReadOnlyLabelAppearance
-{
-    UIReadOnlyLabel *appearance = [UIReadOnlyLabel appearance];
-    [appearance setTextColor:THEME_COLOR_DARK_GREY];
-    [appearance setFont:WZ_FONT__READONLY];
-    //[appearance ]
-    
-}
-
-+(void)setBlodBlackLabelAppearance
-{
-    UIBoldBlackFontLabel *appearance = [UIBoldBlackFontLabel appearance];
-    [appearance setTextColor:[UIColor blackColor]];
-    [appearance setFont:WZ_FONT_LARGE_SIZE];
-    //[appearance ]
-}
-
-+(void)setBlackLabelAppearance
-{
-    UIBlackLabel *appearance = [UIBlackLabel appearance];
-    [appearance setTextColor:[UIColor blackColor]];
-    [appearance setFont:WZ_FONT_LARGE_SIZE];
-    //[appearance ]
-}
-
-+(void)setLightReadOnlyLabelAppearance
-{
-    UILightReadOnlyLabel *appearance = [UILightReadOnlyLabel appearance];
-    [appearance setTextColor:THEME_COLOR_LIGHT_GREY];
-    [appearance setFont:WZ_FONT__READONLY];
-    //[appearance ]
-}
-+(void)setThemeLabelAppearance
-{
-    UIThemeLabel *appearance = [UIThemeLabel appearance];
-    [appearance setTextColor:THEME_COLOR_DARK];
-    [appearance setFont:WZ_FONT_COMMON_SIZE];
-}
-
-+(void)setWPHotLabelAppearance
-{
-    WPHotspotLabel *appearance = [WPHotspotLabel appearance];
-    [appearance setFont:WZ_FONT__READONLY];
-}
 @end
