@@ -9,10 +9,15 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "TWPhotoPickerController.h"
 #import "TWPhotoCollectionViewCell.h"
+#import "TWPhotoAlbumListTableViewCell.h"
 #import "TWImageScrollView.h"
+#import "IGLDropDownItem.h"
+#import "IGLDropDownMenu.h"
+#import "PhotoCommon.h"
+#import "macro.h"
 #import <Photos/Photos.h>
 
-@interface TWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate>
+@interface TWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate ,UITableViewDelegate,UITableViewDataSource>
 {
     CGFloat beginOriginY;
 }
@@ -26,6 +31,13 @@
 @property (nonatomic,strong) PHFetchResult *fetchResult;
 
 @property (strong, nonatomic) UICollectionView *collectionView;
+
+@property (strong, nonatomic) UITableView *albumTableView;
+
+@property (strong, nonatomic) NSDictionary *imageInfo;
+
+@property (strong, nonatomic) NSMutableArray *albumMenuItems;
+@property (nonatomic, strong) NSString *currentSelectAlbumName;
 @end
 
 @implementation TWPhotoPickerController
@@ -40,6 +52,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self getAllAlbumList];
     // Do any additional setup after loading the view.
     [self loadPhotos];
 }
@@ -58,11 +71,46 @@
     return _assetsLibrary;
 }
 
+
+-(NSMutableArray *)albumMenuItems
+{
+    if (!_albumMenuItems)
+    {
+        _albumMenuItems = [[NSMutableArray alloc]init];
+    }
+    return _albumMenuItems;
+}
+
+- (void)getAllAlbumList
+{
+    [self.albumMenuItems removeAllObjects];
+    [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+        if ([group numberOfAssets]>0)
+        {
+            __block UIImage *groupLastImage;
+            [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *innerstop) {
+                if (result)
+                {
+                    UIImage *image = [UIImage imageWithCGImage:[result thumbnail]];
+                    groupLastImage = image;
+                    *innerstop = YES;
+                    
+                }
+            }];
+            NSDictionary *album = @{@"albumName":[group valueForProperty:ALAssetsGroupPropertyName],@"albumPersistentID":[group valueForProperty:ALAssetsGroupPropertyPersistentID],@"albumImage":[groupLastImage copy],@"albumType":[group valueForProperty:ALAssetsGroupPropertyType],@"albumPhotoNum":[NSNumber numberWithInteger:[group numberOfAssets]]};
+            [self.albumMenuItems insertObject:album atIndex:0];
+        }
+    } failureBlock:^(NSError *error) {
+        NSLog(@"get album list error");
+    }];
+}
+
 - (void)loadPhotos {
     
     ALAssetsGroupEnumerationResultsBlock assetsEnumerationBlock = ^(ALAsset *result, NSUInteger index, BOOL *stop) {
         
         if (result) {
+
             [self.assets insertObject:result atIndex:0];
         }
         
@@ -74,13 +122,27 @@
         [group setAssetsFilter:onlyPhotosFilter];
         if ([group numberOfAssets] > 0)
         {
-            if ([[group valueForProperty:ALAssetsGroupPropertyType] intValue] == ALAssetsGroupSavedPhotos) {
-                [group enumerateAssetsUsingBlock:assetsEnumerationBlock];
+            if (self.currentSelectAlbumName)
+            {
+                if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:self.currentSelectAlbumName]) {
+                    [self.assets removeAllObjects];
+                    [group enumerateAssetsUsingBlock:assetsEnumerationBlock];
+                }
+            }
+            else
+            {
+                if ([[group valueForProperty:ALAssetsGroupPropertyType]integerValue] == ALAssetsGroupSavedPhotos) {
+                    [self.assets removeAllObjects];
+                    [group enumerateAssetsUsingBlock:assetsEnumerationBlock];
+                    self.currentSelectAlbumName = [group valueForProperty:ALAssetsGroupPropertyName];
+                }
             }
         }
         
-        if (group == nil) {
-            if (self.assets.count) {
+        if (group == nil)
+        {
+            if (self.assets.count)
+            {
                 ALAsset * asset = [self.assets objectAtIndex:0];
                 UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
                 [self.imageScrollView displayImage:image];
@@ -90,12 +152,14 @@
         
         
     };
-    
+
     [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:listGroupBlock failureBlock:^(NSError *error) {
         NSLog(@"Load Photos Error: %@", error);
     }];
+    NSLog(@"Load Photos Error: %u",ALAssetsGroupAll);
     
 }
+
 
 - (BOOL)prefersStatusBarHidden {
     return YES;
@@ -112,7 +176,8 @@
         
         rect = CGRectMake(0, 0, CGRectGetWidth(self.topView.bounds), handleHeight);
         UIView *navView = [[UIView alloc] initWithFrame:rect];//26 29 33
-        navView.backgroundColor = [[UIColor colorWithRed:26.0/255 green:29.0/255 blue:33.0/255 alpha:1] colorWithAlphaComponent:.8f];
+        //navView.backgroundColor = [[UIColor colorWithRed:26.0/255 green:29.0/255 blue:33.0/255 alpha:1] colorWithAlphaComponent:.8f];
+        navView.backgroundColor = [UIColor blackColor];
         [self.topView addSubview:navView];
         
         rect = CGRectMake(0, 0, 60, CGRectGetHeight(navView.bounds));
@@ -124,19 +189,21 @@
         [navView addSubview:backBtn];
         
         rect = CGRectMake((CGRectGetWidth(navView.bounds)-100)/2, 0, 100, CGRectGetHeight(navView.bounds));
+
+        
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:rect];
-        titleLabel.text = @"SELECT";
+        titleLabel.text = @"选择照片";
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.textColor = [UIColor whiteColor];
         titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
         [navView addSubview:titleLabel];
         
-        rect = CGRectMake(CGRectGetWidth(navView.bounds)-80, 0, 80, CGRectGetHeight(navView.bounds));
+        rect = CGRectMake(CGRectGetWidth(navView.bounds)-70, 0, 70, CGRectGetHeight(navView.bounds));
         UIButton *cropBtn = [[UIButton alloc] initWithFrame:rect];
-        [cropBtn setTitle:@"OK" forState:UIControlStateNormal];
-        [cropBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
-        [cropBtn setTitleColor:[UIColor cyanColor] forState:UIControlStateNormal];
+        [cropBtn setTitle:@"继续" forState:UIControlStateNormal];
+        [cropBtn.titleLabel setFont:[UIFont systemFontOfSize:16.0f]];
+        [cropBtn setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
         [cropBtn addTarget:self action:@selector(cropAction) forControlEvents:UIControlEventTouchUpInside];
         [navView addSubview:cropBtn];
         
@@ -146,10 +213,11 @@
         dragView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         [self.topView addSubview:dragView];
         
-        UIImage *img = [UIImage imageNamed:@"cameraroll-picker-grip.png"];
-        rect = CGRectMake((CGRectGetWidth(dragView.bounds)-img.size.width)/2, (CGRectGetHeight(dragView.bounds)-img.size.height)/2, img.size.width, img.size.height);
+        UIImage *img = [UIImage imageNamed:@"menuIcon"];
+        rect = CGRectMake((CGRectGetWidth(dragView.bounds)-44)/2, (CGRectGetHeight(dragView.bounds)-44)/2, 44, 44);
         UIImageView *gripView = [[UIImageView alloc] initWithFrame:rect];
         gripView.image = img;
+        [gripView setContentMode:UIViewContentModeCenter];
         [dragView addSubview:gripView];
         
         UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureAction:)];
@@ -160,17 +228,34 @@
         
         [tapGesture requireGestureRecognizerToFail:panGesture];
         
+        UITapGestureRecognizer *gripViewTapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(gripViewTapAction:)];
+        [gripView addGestureRecognizer:gripViewTapGesture];
+        [gripView setUserInteractionEnabled:YES];
+        
         rect = CGRectMake(0, handleHeight, CGRectGetWidth(self.topView.bounds), CGRectGetHeight(self.topView.bounds)-handleHeight*2);
         self.imageScrollView = [[TWImageScrollView alloc] initWithFrame:rect];
         [self.topView addSubview:self.imageScrollView];
         [self.topView sendSubviewToBack:self.imageScrollView];
         
-        self.maskView = [[UIImageView alloc] initWithFrame:rect];
+        [self drawGridWithFrame:rect inLayer:self.topView.layer];
+       // self.maskView = [[UIImageView alloc] initWithFrame:rect];
         
-        self.maskView.image = [UIImage imageNamed:@"straighten-grid.png"];
-        [self.topView insertSubview:self.maskView aboveSubview:self.imageScrollView];
+       // self.maskView.image = [UIImage imageNamed:@"straighten-grid.png"];
+        //[self.topView insertSubview:self.maskView aboveSubview:self.imageScrollView];
     }
     return _topView;
+}
+
+-(void)drawGridWithFrame:(CGRect)rect inLayer:(CALayer *)layer
+{
+    CGRect rect1 = CGRectMake(rect.origin.x, rect.origin.y+rect.size.width/3, rect.size.width, 0.5);
+    [PhotoCommon drawALineWithFrame:rect1 andColor:THEME_COLOR_LIGHT_GREY_PARENT inLayer:layer];
+    CGRect rect2 = CGRectMake(rect.origin.x, rect.origin.y+rect.size.width/3*2, rect.size.width, 0.5);
+    [PhotoCommon drawALineWithFrame:rect2 andColor:THEME_COLOR_LIGHT_GREY_PARENT inLayer:layer];
+    CGRect rect3 = CGRectMake(rect.origin.x+rect.size.width/3, rect.origin.y, 0.5, rect.size.height);
+    [PhotoCommon drawALineWithFrame:rect3 andColor:THEME_COLOR_LIGHT_GREY_PARENT inLayer:layer];
+    CGRect rect4 = CGRectMake(rect.origin.x+rect.size.width/3*2, rect.origin.y, 0.5, rect.size.height);
+    [PhotoCommon drawALineWithFrame:rect4 andColor:THEME_COLOR_LIGHT_GREY_PARENT inLayer:layer];
 }
 
 - (UICollectionView *)collectionView {
@@ -212,6 +297,37 @@
     return _collectionView;
 }
 
+-(UITableView *)albumTableView
+{
+    if (_albumTableView == nil)
+    {
+        _albumTableView = [[UITableView alloc]init];
+        [_albumTableView registerNib:[UINib nibWithNibName:@"AlbumListTableViewCell" bundle:nil] forCellReuseIdentifier:@"albumTableViewCell"];
+    }
+    _albumTableView.delegate = self;
+    _albumTableView.dataSource = self;
+    [_albumTableView setBackgroundColor:[UIColor blackColor]];
+    [_albumTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    [_albumTableView setSeparatorColor:[UIColor grayColor]];
+   // [_albumTableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
+    [self.view addSubview:_albumTableView];
+  //  _albumTableView.backgroundColor = [UIColor blackColor];
+    return _albumTableView;
+}
+
+-(void)hideAlbumTableView
+{
+
+    if (self.albumTableView.frame.size.height >0)
+    {
+        CGRect topFrame = self.topView.frame;
+        CGFloat dragBarHeight = 44.0f;
+        CGRect newTableFrame = CGRectMake(0,topFrame.size.height + topFrame.origin.y - dragBarHeight, topFrame.size.width, 0);
+        [self.albumTableView setFrame:newTableFrame];
+    }
+}
+
+
 - (void)backAction {
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
@@ -219,7 +335,7 @@
 - (void)cropAction {
     [self backAction];
     if (self.cropBlock) {
-        self.cropBlock(self.imageScrollView.capture);
+        self.cropBlock(self.imageScrollView.capture,self.imageInfo);
     }
    
 }
@@ -239,9 +355,11 @@
                 topFrame.origin.y = (beginOriginY - endOriginY) >= 20 ? -(CGRectGetHeight(self.topView.bounds)-20-44) : 0;
             }
             
+            [self hideAlbumTableView];
             CGRect collectionFrame = self.collectionView.frame;
             collectionFrame.origin.y = CGRectGetMaxY(topFrame);
             collectionFrame.size.height = CGRectGetHeight(self.view.bounds) - CGRectGetMaxY(topFrame);
+
             [UIView animateWithDuration:.3f animations:^{
                 self.topView.frame = topFrame;
                 self.collectionView.frame = collectionFrame;
@@ -262,7 +380,6 @@
             CGRect collectionFrame = self.collectionView.frame;
             collectionFrame.origin.y = CGRectGetMaxY(topFrame);
             collectionFrame.size.height = CGRectGetHeight(self.view.bounds) - CGRectGetMaxY(topFrame);
-            
             if (topFrame.origin.y <= 0 && (topFrame.origin.y >= -(CGRectGetHeight(self.topView.bounds)-20-44))) {
                 self.topView.frame = topFrame;
                 self.collectionView.frame = collectionFrame;
@@ -275,18 +392,61 @@
     }
 }
 
-- (void)tapGestureAction:(UITapGestureRecognizer *)tapGesture {
-    CGRect topFrame = self.topView.frame;
-    topFrame.origin.y = topFrame.origin.y == 0 ? -(CGRectGetHeight(self.topView.bounds)-20-44) : 0;
+- (void)tapGestureAction:(UITapGestureRecognizer *)tapGesture
+{
+
+    [self focusToTopViewOrCollectionView];
+
     
-    CGRect collectionFrame = self.collectionView.frame;
-    collectionFrame.origin.y = CGRectGetMaxY(topFrame);
-    collectionFrame.size.height = CGRectGetHeight(self.view.bounds) - CGRectGetMaxY(topFrame);
-    [UIView animateWithDuration:.3f animations:^{
-        self.topView.frame = topFrame;
-        self.collectionView.frame = collectionFrame;
-    }];
 }
+-(void)gripViewTapAction:(UIGestureRecognizer *)tapGesture
+{
+    if (self.topView.frame.origin.y == 0)
+    {
+        [self focusToTopViewOrCollectionView];
+    }
+    CGRect topFrame = self.topView.frame;
+    CGFloat dragBarHeight = 44.0f;
+    if (self.albumTableView.frame.size.height >0)
+    {
+        CGRect newTableFrame = CGRectMake(0, 20 +dragBarHeight, topFrame.size.width, 0);
+        [UIView animateWithDuration:.3f animations:^{
+            self.albumTableView.frame = newTableFrame;
+        }];
+    }
+    else
+    {
+        CGRect oldTableFrame = CGRectMake(0, 20 + dragBarHeight, topFrame.size.width, 0);
+        [self.albumTableView setFrame:oldTableFrame];
+        [self.albumTableView reloadData];
+        
+        
+        CGRect newTableFrame = CGRectMake(0, 20 + dragBarHeight, self.view.bounds.size.width,300);
+       // [UIView animateWithDuration:.3f animations:^{
+       //     self.albumTableView.frame = newTableFrame;
+       // }];
+        [UIView animateWithDuration:.3f delay:.2f usingSpringWithDamping:3.0f initialSpringVelocity:2.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            self.albumTableView.frame = newTableFrame;
+        } completion:nil];
+    }
+    
+    
+}
+-(void)focusToTopViewOrCollectionView
+{
+    [self hideAlbumTableView];
+     CGRect topFrame = self.topView.frame;
+     topFrame.origin.y = topFrame.origin.y == 0 ? -(CGRectGetHeight(self.topView.bounds)-20-44) : 0;
+     
+     CGRect collectionFrame = self.collectionView.frame;
+     collectionFrame.origin.y = CGRectGetMaxY(topFrame);
+     collectionFrame.size.height = CGRectGetHeight(self.view.bounds) - CGRectGetMaxY(topFrame);
+     [UIView animateWithDuration:.3f animations:^{
+     self.topView.frame = topFrame;
+     self.collectionView.frame = collectionFrame;
+     }];
+}
+
 
 #pragma mark - Collection View Data Source
 
@@ -318,8 +478,11 @@
     ALAsset * asset = [self.assets objectAtIndex:indexPath.row];
     UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
     [self.imageScrollView displayImage:image];
+    ALAssetRepresentation *rep = [[self.assets objectAtIndex:indexPath.row]defaultRepresentation];
+    self.imageInfo = rep.metadata;
     if (self.topView.frame.origin.y != 0) {
-        [self tapGestureAction:nil];
+        [self focusToTopViewOrCollectionView];
+
     }
 }
 
@@ -331,8 +494,62 @@
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     NSLog(@"velocity:%f", velocity.y);
     if (velocity.y >= 2.0 && self.topView.frame.origin.y == 0) {
-        [self tapGestureAction:nil];
+        [self focusToTopViewOrCollectionView];
     }
 }
+
+#pragma mark - TableView Delegate
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    TWPhotoAlbumListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"albumTableViewCell" forIndexPath:indexPath];
+    NSDictionary *data = [self.albumMenuItems objectAtIndex:indexPath.row];
+    cell.albumLastImageView.image = data[@"albumImage"];
+    [cell.albumLastImageView.layer setCornerRadius:2.0f];
+    [cell.albumLastImageView.layer setMasksToBounds:YES];
+    cell.albumNameLabel.text = data[@"albumName"];
+    cell.albumPhotoNumLabel.text = [data[@"albumPhotoNum"] stringValue];
+    if ([cell.albumNameLabel.text isEqualToString:self.currentSelectAlbumName])
+    {
+        [cell.albumNameLabel setTextColor:THEME_COLOR_DARK];
+        [cell.albumNameLabel setFont:WZ_FONT_LARGE_BOLD_SIZE];
+    }
+    else
+    {
+        [cell.albumNameLabel setTextColor:[UIColor whiteColor]];
+        [cell.albumNameLabel setFont:WZ_FONT_LARGE_SIZE];
+    }
+    [cell.albumPhotoNumLabel setFont:WZ_FONT_COMMON_SIZE];
+    [cell.albumPhotoNumLabel setTextColor:[UIColor whiteColor]];
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    [cell setBackgroundColor:[UIColor blackColor]];
+    return cell;
+}
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    TWPhotoAlbumListTableViewCell *cell = (TWPhotoAlbumListTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    cell.albumNameLabel.textColor = THEME_COLOR_DARK;
+    [cell.albumNameLabel setFont:WZ_FONT_LARGE_BOLD_SIZE];
+    NSLog(@"select %@",[self.albumMenuItems objectAtIndex:indexPath.row]);
+    self.currentSelectAlbumName = [[self.albumMenuItems objectAtIndex:indexPath.row] valueForKey:@"albumName"];
+    [self gripViewTapAction:nil];
+    [self loadPhotos];
+
+}
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.albumMenuItems.count;
+}
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 58;
+}
+
+
 
 @end

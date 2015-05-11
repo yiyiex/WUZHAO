@@ -38,11 +38,13 @@
 
 //字体颜色
 //#define THEME_COLOR rgba_WZ(120, 194, 196, 1.0)
-#define THEME_COLOR rgba_WZ(153,224,253,1.0)
-#define THEME_COLOR_DARK rgba_WZ(49,175,223,1.0)
+//#define THEME_COLOR rgba_WZ(153,224,253,1.0)
+//#define THEME_COLOR_DARK rgba_WZ(49,175,223,1.0)
+#define THEME_COLOR rgba_WZ(90,187,149,1.0)
+#define THEME_COLOR_DARK rgba_WZ(88,152,125,1.0)
 
-#define THEME_COLOR_PARENT rgba_WZ(153,224,253, 0.5)
-#define THEME_COLOR_DARK_PARENT rgba_WZ(49,175,223,0.5)
+#define THEME_COLOR_PARENT rgba_WZ(90,187,149, 0.5)
+#define THEME_COLOR_DARK_PARENT rgba_WZ(88,152,125,0.5)
 
 #define THEME_COLOR_DARKER rgba_WZ(49,120,175, 1)
 #define THEME_COLOR_DARKER_PARENT rgba_WZ(49,120,175,0.5)
@@ -52,8 +54,10 @@
 
 #define THEME_COLOR_LIGHT_GREY rgba_WZ(160,160,160,1.0)
 #define THEME_COLOR_LIGHT_GREY_PARENT rgba_WZ(200,200,200,0.5)
+#define THEME_COLOR_LIGHT_GREY_MORE_PARENT rgba_WZ(200,200,200,0.3)
 
 #define THEME_COLOR_DARK_GREY rgba_WZ(40,45,50,1.0)
+#define THEME_COLOR_DARK_GREY_BIT_PARENT rgba_WZ(40,45,50,0.9)
 #define THEME_COLOR_DARK_GREY_PARENT rgba_WZ(40,45,50,0.5)
 
 #define THEME_COLOR_DARKER_GREY rgba_WZ(20,20,25,1.0)
@@ -83,16 +87,25 @@
 
 
 // 是否iPad
-#define isIPHONE_6 (WZ_APP_SIZE.width == 375)
-#define isIPHONE_6P (WZ_APP_SIZE.width == 414)
-#define isIPHONE_5 (WZ_APP_SIZE.width == 320)
+#define isIPHONE_6 (WZ_DEVICE_SIZE.width == 375)
+#define isIPHONE_6P (WZ_DEVICE_SIZE.width == 414)
+#define isIPHONE_5 (WZ_DEVICE_SIZE.width == 320)
+#define isIPHONE_4s (WZ_DEVICE_SIZE.height == 480)
 
 #define isPad_SC (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)//设备类型改为Universal才能生效
 #define isPad_AllTargetMode_WZ ([[UIDevice currentDevice].model rangeOfString:@"iPad"].location != NSNotFound)//设备类型为任何类型都能生效
 
+//系统版本
+#define IOS_VERSION [[[UIDevice currentDevice] systemVersion] floatValue] 
+#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
+#define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
+
 //iPhone5及以上设备，按钮的位置放在下面。iPhone5以下的按钮放上面。
 #define isHigherThaniPhone4_WZ ((isPad_AllTargetMode_WZ && [[UIScreen mainScreen] applicationFrame].size.height <= 960 ? NO : ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? ([[UIScreen mainScreen] currentMode].size.height > 960 ? YES : NO) : NO)))
-//#define isHigherThaniPhone4_SC (isPad_SC ? YES : ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? ([[UIScreen mainScreen] currentMode].size.height > 960 ? YES : NO) : NO))
+
 
 
 
@@ -125,19 +138,6 @@
 #endif
 
 
-
-/*
- Font Family: Courier
- Font: Courier
- Font: Courier-BoldOblique
- Font: Courier-Oblique
- Font: Courier-Bold
- */
-/*
-#define WZ_FONT_NAME @"Arial"
-#define WZ_FONT_NAME_BOLD @"Arial-Bold"
-*/
-
 #define WZ_FONT_NAME @"Helvetica"
 #define WZ_FONT_NAME_BOLD @"Helvetica-Bold"
 
@@ -146,14 +146,24 @@
 #define WZ_FONT_COMMON_SIZE [UIFont fontWithName:WZ_FONT_NAME size:14]
 #define WZ_FONT_COMMON_BOLD_SIZE [UIFont fontWithName:WZ_FONT_NAME_BOLD size:14]
 
+
+#define WZ_FONT_SMALLER_SIZE [UIFont fontWithName:WZ_FONT_NAME size:13]
+#define WZ_FONT_SMALLER_BOLD_SIZE [UIFont fontWithName:WZ_FONT_NAME_BOLD size:13]
+
 #define WZ_FONT_SMALL_SIZE [UIFont fontWithName:WZ_FONT_NAME size:12]
 #define WZ_FONT_SMALL_BOLD_SIZE [UIFont fontWithName:WZ_FONT_NAME_BOLD size:12]
+
+#define WZ_FONT_SMALLP_SIZE [UIFont fontWithName:WZ_FONT_NAME size:13]
+#define WZ_FONT_SMALLP_BOLD_SIZE [UIFont fontWithName:WZ_FONT_NAME_BOLD size:13]
 
 #define WZ_FONT_READONLY [UIFont fontWithName:WZ_FONT_NAME size:14]
 #define WZ_FONT_READONLY_BOLD [UIFont fontWithName:WZ_FONT_NAME_BOLD size:14]
 
 #define WZ_FONT_SMALL_READONLY [UIFont fontWithName:WZ_FONT_NAME size:12]
 #define WZ_FONT_SMALL_READONLY_BOLD [UIFont fontWithName:WZ_FONT_NAME_BOLD size:12]
+
+#define WZ_FONT_SMALLP_READONLY [UIFont fontWithName:WZ_FONT_NAME size:13]
+#define WZ_FONT_SMALLP_READONLY_BOLD [UIFont fontWithName:WZ_FONT_NAME_BOLD size:13]
 
 #define WZ_FONT_LARGE_READONLY [UIFont fontWithName:WZ_FONT_NAME size:16]
 #define WZ_FONT_LARGE_READONLY_BOLD [UIFont fontWithName:WZ_FONT_NAME_BOLD size:16]
@@ -169,4 +179,9 @@
 #define UserListStyle1 @"UserListTableViewCellSimple"
 #define UserListStyle2 @"UserListTableViewCellWithFollowButton"
 #define UserListStyle3 @"UserListTableViewCellWithBigPhotoAndFollowButton"
+
+
+//homeTableViewStyle
+#define homeTableViewStyle1 @"myTimeLine"
+#define homeTableViewStyle2 @"photoDetail"
 #endif

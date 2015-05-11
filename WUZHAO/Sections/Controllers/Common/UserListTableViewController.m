@@ -38,9 +38,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     //self.userListStyle = UserListStyle3;
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.backBarButtonItem = backBarItem;
+    
     self.tableView.estimatedRowHeight = 150.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
+    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)])
+    {
+        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+    }
     [self configCellWithStyle];
+    if (self.setUserList)
+    {
+        [self setUserList];
+        NSLog(@"SET USERLIST IN USER LIST OUT OF THE BLOCK");
+    }
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -60,11 +72,11 @@
 {
     if ([self.userListStyle isEqualToString:UserListStyle1])
     {
-        self.tableView.rowHeight = CELL_HEADERHEIGHT ;
+        self.tableView.rowHeight = CELL_HEADERHEIGHT;
     }
     else if ([self.userListStyle isEqualToString:UserListStyle2])
     {
-        self.tableView.rowHeight = CELL_HEADERHEIGHT ;
+        self.tableView.rowHeight = CELL_HEADERHEIGHT;
         
     }
     else if ([self.userListStyle isEqualToString:UserListStyle3])
@@ -123,7 +135,7 @@
 -(void)avatarClick:(UITapGestureRecognizer *)gesture
 {
     
-    NSIndexPath *indexpath = [self.tableView indexPathForCell:(UserListTableViewCell *)[gesture.view superview]];
+    NSIndexPath *indexpath = [self.tableView indexPathForCell:(UserListTableViewCell *)[[gesture.view superview]superview]];
     UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
     MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
     [personalViewCon setUserInfo:[self.datasource objectAtIndex:indexpath.row]];

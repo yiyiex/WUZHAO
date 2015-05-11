@@ -10,7 +10,6 @@
 #import "MineViewController.h"
 
 #import "PhotosCollectionViewController.h"
-#import "PhotoDetailViewController.h"
 #import "FootPrintTableViewController.h"
 
 #import "UserListTableViewController.h"
@@ -36,6 +35,9 @@
 #define SEGUEFORTH @"segueForForth"
 
 @interface MineViewController () <CommonContainerViewControllerDelegate,UIScrollViewDelegate>
+{
+    CGPoint scrollViewInitContentOffset;
+}
 
 @property (nonatomic, strong) CommonContainerViewController *containerViewController;
 
@@ -50,10 +52,6 @@
 @property (nonatomic) BOOL shouldReloadData;
 @property (nonatomic) BOOL  shouldLoadMore;
 
-@property (nonatomic) float scrollContentViewHeight;
-
-
-
 
 @end
 
@@ -64,22 +62,25 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+    [_mineButton setTitle:@"正在加载..." forState:UIControlStateNormal];
     [self setAppearance];
     self.refreshControl = [[UIRefreshControl alloc]init];
     [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
     [self.scrollView addSubview:self.refreshControl];
-    [_mineButton setTitle:@"正在加载" forState:UIControlStateNormal];
     self.shouldRefreshData = true;
     self.shouldReloadData = false;
     self.shouldLoadMore = true;
+    self.shouldBackToTop = false;
+
     self.scrollView.delegate = self;
     [self getLatestData];
     [self configGesture];
     
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(deleteMyPhotos:) name:@"deleteMyPhoto" object:nil];
-   
-
     
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.backBarButtonItem = backBarItem;
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(deleteMyPhotos:) name:@"deleteMyPhoto" object:nil];
     self.selectToShowTabbar.selectedItem = [self.selectToShowTabbar.items objectAtIndex:0];
    
     // Do any additional setup after loading the view.
@@ -88,17 +89,9 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    self.tabBarController.navigationItem.backBarButtonItem.title = @"";
     self.tabBarController.navigationController.navigationBarHidden = NO;
-    if ([self.userInfo.UserName isEqualToString:@""])
-    {
-        self.tabBarController.navigationItem.title = @"个人主页";
-    }
-    else
-    {
-        self.tabBarController.navigationItem.title = self.userInfo.UserName;
-    }
-
-    [self.tabBarController.navigationItem.backBarButtonItem setTitle:@"tes"];
+    [self updateMyInfomationUI];
     [self SetPhotosCollectionData];
     
 }
@@ -110,7 +103,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         [self.myPhotoCollectionViewController.collectionView reloadData];
         self.shouldReloadData = false;
     }
-
+    NSLog(@"view frame : %f %f %f %f",self.view.frame.origin.x,self.view.frame.origin.y,self.view.frame.size.width,self.view.frame.size.height);
+    NSLog(@"scrollview frame : %f %f %f %f",self.scrollView.frame.origin.x,self.scrollView.frame.origin.y,self.scrollView.frame.size.width,self.scrollView.frame.size.height);
 }
 
 - (void)dealloc {
@@ -128,22 +122,13 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     }
     _userInfo = [userInfo mutableCopy];
     //同步本地保存用户数据
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setInteger:userInfo.UserID forKey:@"userId"];
-    NSLog(@"%@",[userDefaults objectForKey:@"userId"]);
-    [userDefaults setObject:userInfo.UserName forKey:@"userName"];
-    [userDefaults setObject:userInfo.avatarImageURLString forKey:@"avatarUrl"];
-    NSLog(@"%lu",(long)[userDefaults integerForKey:@"userId"]);
-    [userDefaults synchronize];
-    
-    
 }
 
 -(float)scrollContentViewHeight
 {
     float topHeight = _avator.frame.size.height + self.descriptionTopConstraint.constant + self.descriptionViewHeightConstraint.constant + self.descriptionBottomConstraint.constant + _selectToShowTabbar.frame.size.height ;
     float bottomHeight;
-    if (self.myPhotosCollectionDatasource.count >12)
+    if (self.myPhotosCollectionDatasource.count >9)
     {
          bottomHeight = (ceil ((float)self.myPhotosCollectionDatasource.count/3)) * WZ_APP_SIZE.width/3 +44;
     }
@@ -161,9 +146,19 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.avator setBackgroundColor:THEME_COLOR_LIGHT_GREY];
     [self.avator setRoundConerWithRadius:self.avator.frame.size.width/2];
     
-    [self.mineButton setThemeBackGroundAppearance];
+    if([self.mineButton.titleLabel.text isEqualToString:@"已关注"]|| [self.mineButton.titleLabel.text isEqualToString:@"互相关注"])
+    {
+        [self.mineButton setThemeFrameAppearence];
+    }
+    else if([self.mineButton.titleLabel.text isEqualToString:@"关注"]||[self.mineButton.titleLabel.text isEqualToString:@"编辑个人信息"])
+    {
+        [self.mineButton setThemeBackGroundAppearance];
+    }
+    else
+    {
+        [self.mineButton setThemeBackGroundAppearance];
+    }
     [self.mineButton setNormalButtonAppearance];
-    
     [self.selfDescriptionLabel setReadOnlyLabelAppearance];
     
  
@@ -171,6 +166,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 }
 -(void)setPersonalInfo
 {
+
+    [_mineButton setTitle:@"正在加载..." forState:UIControlStateNormal];
     self.shouldRefreshData = false;
     if (!_userInfo)
     {
@@ -179,36 +176,41 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         _userInfo.UserName = [[NSUserDefaults standardUserDefaults] objectForKey:@"userName"];
     }
     self.photoCollectionCurrentPage = 1;
-    [[QDYHTTPClient sharedInstance]GetPersonalInfoWithUserId:_userInfo.UserID page:self.photoCollectionCurrentPage whenComplete:^(NSDictionary *returnData) {
-        if ([returnData objectForKey:@"data"])
-        {
-            User *user = [returnData objectForKey:@"data"];
-            NSLog(@"userinfo %@",user);
-            [self setUserInfo:user];
-            [self updateMyInfomationUI];
-            [self SetPhotosCollectionData];
-            NSLog(@"collection view height%f",self.containerViewController.currentViewController.view.frame.size.height);
-            [self.scrollContentViewHeightConstraint setConstant:self.scrollContentViewHeight];
-            [self.scrollContentView setNeedsLayout];
-            [self.scrollContentView layoutIfNeeded];
-            [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
-        }
-        else if ([returnData objectForKey:@"error"])
-        {
-            [SVProgressHUD showErrorWithStatus:@"获取个人信息失败"];
-        }
-        self.shouldRefreshData = true;
-       
-        if ([self.refreshControl isRefreshing])
-        {
-            [self.refreshControl endRefreshing];
-        }
-       
-        
-        //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-        
-        
-    }];
+    NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [[QDYHTTPClient sharedInstance]GetPersonalInfoWithUserId:_userInfo.UserID currentUserId:myUserId page:self.photoCollectionCurrentPage whenComplete:^(NSDictionary *returnData) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([returnData objectForKey:@"data"])
+                {
+                    User *user = [returnData objectForKey:@"data"];
+                    NSLog(@"userinfo %@",user);
+                    [self setUserInfo:user];
+                    [self updateMyInfomationUI];
+                    [self SetPhotosCollectionData];
+                    NSLog(@"collection view height%f",self.containerViewController.currentViewController.view.frame.size.height);
+                    [self.scrollContentViewHeightConstraint setConstant:self.scrollContentViewHeight];
+                    [self.scrollContentView setNeedsLayout];
+                    [self.scrollContentView layoutIfNeeded];
+                    if (self.shouldBackToTop)
+                    {
+                        [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+                    }
+                }
+                else if ([returnData objectForKey:@"error"])
+                {
+                    [SVProgressHUD showErrorWithStatus:@"获取个人信息失败"];
+                }
+                self.shouldRefreshData = true;
+                
+                if ([self.refreshControl isRefreshing])
+                {
+                    [self.refreshControl endRefreshing];
+                }
+            });
+        }];
+
+    });
+
 
 }
 
@@ -224,7 +226,6 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.followsNumLabel addGestureRecognizer:followsCilck];
     //[self.followsLabel addGestureRecognizer:followsCilck];
     UITapGestureRecognizer *followersClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(followersShow:)];
-    NSLog(@"add gesture");
     [self.followersNumLabel addGestureRecognizer:followersClick];
     
 }
@@ -236,17 +237,38 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 
 -(void)followsShow:(UITapGestureRecognizer *)gesture
 {
-    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-    [[QDYHTTPClient sharedInstance]GetPersonalFollowsListWithUserId:userId whenComplete:^(NSDictionary *returnData) {
-        NSLog(@"%@",[returnData objectForKey:@"data"]);
-        
-        UIStoryboard *userListStoryBoard = [UIStoryboard storyboardWithName:@"UserList" bundle:nil];
-        UserListTableViewController *followsList = [userListStoryBoard instantiateViewControllerWithIdentifier:@"userListTableView"];
-        [followsList setUserListStyle:UserListStyle2];
-        [followsList setDatasource:[returnData objectForKey:@"data"]];
-        [followsList setTitle:@"我关注的"];
-        [self.navigationController showViewController:followsList sender:self];
-    }];
+    
+    NSInteger userId = self.userInfo.UserID;
+    NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [[QDYHTTPClient sharedInstance]GetPersonalFollowsListWithUserId:userId currentUserId:myUserId whenComplete:^(NSDictionary *returnData) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([returnData objectForKey:@"data"])
+                {
+                    UIStoryboard *userListStoryBoard = [UIStoryboard storyboardWithName:@"UserList" bundle:nil];
+                    UserListTableViewController *followsList = [userListStoryBoard instantiateViewControllerWithIdentifier:@"userListTableView"];
+                    [followsList setUserListStyle:UserListStyle2];
+                    [followsList setDatasource:[returnData objectForKey:@"data"]];
+                    if (userId == myUserId)
+                    {
+                        [followsList setTitle:@"我关注的"];
+                    }
+                    else
+                    {
+                        [followsList setTitle:[NSString stringWithFormat:@"%@关注的",self.userInfo.UserName]];
+                    }
+                    [self.navigationController pushViewController:followsList animated:YES];
+                }
+                else if ([returnData objectForKey:@"error"])
+                {
+                    [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                    
+                }
+            });
+
+        }];
+    });
+
 
     
 }
@@ -254,16 +276,38 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 -(void)followersShow:(UITapGestureRecognizer *)gesture
 
 {
-    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-    [[QDYHTTPClient sharedInstance]GetPersonalFollowersListWithUserId:userId whenComplete:^(NSDictionary *returnData) {
-        NSLog(@"%@",[returnData objectForKey:@"data"]);
-        UIStoryboard *userListStoryBoard = [UIStoryboard storyboardWithName:@"UserList" bundle:nil];
-        UserListTableViewController *followsList = [userListStoryBoard instantiateViewControllerWithIdentifier:@"userListTableView"];
-        [followsList setUserListStyle:UserListStyle2];
-        [followsList setDatasource:[returnData objectForKey:@"data"]];
-        [followsList setTitle:@"关注我的"];
-        [self.navigationController showViewController:followsList sender:self];
-    }];
+    
+    NSInteger userId = self.userInfo.UserID;
+    NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [[QDYHTTPClient sharedInstance]GetPersonalFollowersListWithUserId:userId currentUserId:myUserId whenComplete:^(NSDictionary *returnData) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([returnData objectForKey:@"data"])
+                {
+                    UIStoryboard *userListStoryBoard = [UIStoryboard storyboardWithName:@"UserList" bundle:nil];
+                    UserListTableViewController *followersList = [userListStoryBoard instantiateViewControllerWithIdentifier:@"userListTableView"];
+                    [followersList setUserListStyle:UserListStyle2];
+                    [followersList setDatasource:[returnData objectForKey:@"data"]];
+                    if (userId == myUserId)
+                    {
+                        [followersList setTitle:@"关注我的"];
+                    }
+                    else
+                    {
+                        [followersList setTitle:[NSString stringWithFormat:@"关注%@的",self.userInfo.UserName]];
+                    }
+                    [self.navigationController pushViewController:followersList animated:YES];
+                }
+                else if ([returnData objectForKey:@"error"])
+                {
+                    [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                    
+                }
+            });
+
+        }];
+    });
+
     
 }
 - (IBAction)MineButtonClick:(id)sender {
@@ -272,29 +316,42 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         UIButton *myBtn = (UIButton *)sender;
         if ([myBtn.titleLabel.text  isEqualToString:@"编辑个人信息"])
         {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
             
-            [self performSegueWithIdentifier:@"editPersonInfo" sender:self];
+            EditPersonalInfoTableViewController *editViewController = [storyboard instantiateViewControllerWithIdentifier:@"editPersonalInfo"];
+            editViewController.userInfo = self.userInfo;
+            [self.navigationController pushViewController:editViewController animated:YES];
+            
+           // [self performSegueWithIdentifier:@"editPersonInfo" sender:self];
         }
         else if ([myBtn.titleLabel.text  isEqualToString:@"关注"])
         {
             NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-            [[QDYHTTPClient sharedInstance]followUser:self.userInfo.UserID withUserId:myUserId whenComplete:^(NSDictionary *result) {
-                if ([result objectForKey:@"data"])
-                {
-                    //[SVProgressHUD showInfoWithStatus:@"关注成功"];
-                    [myBtn setTitle:@"已关注" forState:UIControlStateNormal];
-                    
-                }
-                else if ([result objectForKey:@"error"])
-                {
-                    [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
-                }
-            }];
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                [[QDYHTTPClient sharedInstance]followUser:self.userInfo.UserID withUserId:myUserId whenComplete:^(NSDictionary *result) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if ([result objectForKey:@"data"])
+                        {
+                            //[SVProgressHUD showInfoWithStatus:@"关注成功"];
+                            [myBtn setTitle:@"已关注" forState:UIControlStateNormal];
+                            
+                        }
+                        else if ([result objectForKey:@"error"])
+                        {
+                            [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+                        }
+                    });
+
+                }];
+            });
+
         }
         else if ([myBtn.titleLabel.text  isEqualToString:@"已关注"])
         {
             NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
             [[QDYHTTPClient sharedInstance]unFollowUser:self.userInfo.UserID withUserId:myUserId whenComplete:^(NSDictionary *result) {
+                 dispatch_async(dispatch_get_main_queue(), ^{
                 if ([result objectForKey:@"data"])
                 {
                     //[SVProgressHUD showInfoWithStatus:@"关注成功"];
@@ -305,7 +362,9 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                 {
                     [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
                 }
+                 });
             }];
+            });
         }
         
     }
@@ -385,9 +444,16 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 
 -(void) updateMyInfomationUI
 {
-    //set navigation title
-    [self.tabBarController.navigationItem setTitle:self.userInfo.UserName];
-    [self.navigationItem setTitle:self.userInfo.UserName];
+    if ([self.userInfo.UserName isEqualToString:@""])
+    {
+        self.tabBarController.navigationItem.title = @"个人主页";
+        self.navigationItem.title = @"个人主页";
+    }
+    else
+    {
+        self.tabBarController.navigationItem.title = self.userInfo.UserName;
+        self.navigationItem.title = self.userInfo.UserName;
+    }
     [self.avator sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString]];
 
     self.photosNumLabel.text =[NSString stringWithFormat:@"%lu", self.userInfo.photosNumber ? (unsigned long)self.userInfo.photosNumber:0];
@@ -410,17 +476,26 @@ static NSString * const minePhotoCell = @"minePhotosCell";
        // self.descriptionViewHeightConstraint = [self.selfDescriptionView autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:self.selfDescriptionLabel];
     }
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    if ([ud objectForKey:@"userId"])
+    NSInteger myUserId = [ud integerForKey:@"userId"];
+    if (myUserId == self.userInfo.UserID)
     {
-        NSInteger uid = [ud integerForKey:@"userId"];
-        if (uid == self.userInfo.UserID)
-        {
-            [self.mineButton setTitle:@"编辑个人信息" forState:UIControlStateNormal];
-        }
-        else
-        {
-            [self.mineButton setTitle:@"关注" forState:UIControlStateNormal];
-        }
+        [self.mineButton setTitle:@"编辑个人信息" forState:UIControlStateNormal];
+        [self.mineButton setThemeFrameAppearence];
+    }
+    else if (self.userInfo.followType == UNFOLLOW)
+    {
+        [self.mineButton setTitle:@"关注" forState:UIControlStateNormal];
+        [self.mineButton setThemeFrameAppearence];
+    }
+    else if (self.userInfo.followType == FOLLOWED)
+    {
+        [self.mineButton setTitle:@"已关注" forState:UIControlStateNormal];
+        [self.mineButton setThemeBackGroundAppearance];
+    }
+    else if (self.userInfo.followType == FOLLOWEACH)
+    {
+        [self.mineButton setTitle:@"互相关注" forState:UIControlStateNormal];
+        [self.mineButton setThemeBackGroundAppearance];
     }
     else
     {
@@ -486,44 +561,48 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     {
         self.shouldLoadMore = false;
         self.shouldRefreshData = false;
-        [[QDYHTTPClient sharedInstance]GetPersonalInfoWithUserId:_userInfo.UserID page:self.photoCollectionCurrentPage+1 whenComplete:^(NSDictionary *returnData) {
-            if ([returnData objectForKey:@"data"])
-            {
+        NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [[QDYHTTPClient sharedInstance]GetPersonalInfoWithUserId:_userInfo.UserID currentUserId:myUserId page:self.photoCollectionCurrentPage+1 whenComplete:^(NSDictionary *returnData) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([returnData objectForKey:@"data"])
+                    {
+                        
+                        User *user = [returnData objectForKey:@"data"];
+                        NSLog(@"userinfo %@",user);
+                        if (user.photoList.count >0)
+                        {
+                            
+                            [self addMorePhotoCollectionDataWith:user.photoList];
+                            self.photoCollectionCurrentPage ++;
+                            
+                            [self.scrollContentViewHeightConstraint setConstant:self.scrollContentViewHeight];
+                            [self.view setNeedsLayout];
+                            [self.view layoutIfNeeded];
+                        }
+                        else
+                        {
+                            NSLog(@"no more data");
+                            //TO DO
+                        }
+                        NSLog(@"collection view height%f",self.containerViewController.currentViewController.view.frame.size.height);
+                    }
+                    else if ([returnData objectForKey:@"error"])
+                    {
+                        [SVProgressHUD showErrorWithStatus:@"获取信息失败"];
+                    }
+                    self.shouldRefreshData = true;
+                    self.shouldLoadMore = true;
+                    
+                    if ([self.refreshControl isRefreshing])
+                    {
+                        [self.refreshControl endRefreshing];
+                    }
+                });
                 
-                User *user = [returnData objectForKey:@"data"];
-                NSLog(@"userinfo %@",user);
-                if (user.photoList.count >0)
-                {
-                   
-                    [self addMorePhotoCollectionDataWith:user.photoList];
-                    self.photoCollectionCurrentPage ++;
-
-                    [self.scrollContentViewHeightConstraint setConstant:self.scrollContentViewHeight];
-                    [self.view setNeedsLayout];
-                    [self.view layoutIfNeeded];
-                }
-                else
-                {
-                    NSLog(@"no more data");
-                    //TO DO
-                }
-                NSLog(@"collection view height%f",self.containerViewController.currentViewController.view.frame.size.height);
-            }
-            else if ([returnData objectForKey:@"error"])
-            {
-                [SVProgressHUD showErrorWithStatus:@"获取信息失败"];
-            }
-            self.shouldRefreshData = true;
-            self.shouldLoadMore = true;
-            
-            if ([self.refreshControl isRefreshing])
-            {
-                [self.refreshControl endRefreshing];
-            }
-            
-        }];
+            }];
+        });
     }
-
     
 }
 
@@ -571,7 +650,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 -(void)deleteMyPhotos:(NSNotification *)notification
 {
     NSLog(@"%@",notification);
-    NSIndexPath *deleteIndexPath = [[notification userInfo]objectForKey:@"indexPath"];
+   // NSIndexPath *deleteIndexPath = [[notification userInfo]objectForKey:@"indexPath"];
     //[_myPhotosCollectionDatasource removeObjectAtIndex:deleteIndexPath.row];
     NSLog(@"%@",self.myPhotosCollectionDatasource);
     self.shouldReloadData = true;
@@ -598,6 +677,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 {
     
 }
+
 
 
 @end

@@ -19,14 +19,23 @@
 #import "CaptureItemContainerUIView.h"
 
 #import "VPImageCropperViewController.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 #import <Photos/Photos.h>
+#import <CoreLocation/CoreLocation.h>
 
 #define SWITCH_SHOW_FOCUSVIEW_UNTIL_FOCUS_DONE      0   //对焦框是否一直闪到对焦完成
 
 #define SWITCH_SHOW_DEFAULT_IMAGE_FOR_NONE_CAMERA   1   //没有拍照功能的设备，是否给一张默认图片体验一下
 
 //height
-#define CAMERA_TOPVIEW_HEIGHT   50  //title
+
+#if __isIPHONE_4s
+#define CAMERA_TOPVIEW_HEIGHT   0
+#else
+#define CAMERA_TOPVIEW_HEIGHT   50
+#endif
+
+
 #define CAMERA_MENU_VIEW_HEIGH  50  //menu
 #define CAMERA_BUTTON_WIDTH  70 //cameraButton
 #define CAMERA_PHOTO_CHOOSE_BUTTON_WIDTH 50//photoChoose Button
@@ -60,7 +69,7 @@
 @property (nonatomic, strong) IBOutlet CaptureItemContainerUIView *bottomContainerView;//除了顶部标题、拍照区域剩下的所有区域
 @property (nonatomic, strong) IBOutlet CaptureItemContainerUIView *cameraMenuView;//网格、闪光灯、前后摄像头等按钮
 
-@property (nonatomic, strong) IBOutlet UIImageView *selectPhotoImageView;
+@property (nonatomic, strong)  UIImageView *selectPhotoImageView;
 @property (nonatomic, strong) NSMutableSet *cameraBtnSet;
 
 @property (nonatomic, strong) IBOutlet UIView *doneCameraUpView;
@@ -75,6 +84,7 @@
 //@property (nonatomic) BOOL lockInterfaceRotation;
 
 @property (nonatomic, strong) UIImage *stillImage;
+@property (nonatomic, strong) NSDictionary *imageInfo;
 
 @end
 
@@ -115,6 +125,8 @@
     if (CGRectEqualToRect(_previewRect, CGRectZero)) {
         self.previewRect = CGRectMake(0, 0, WZ_APP_SIZE.width, WZ_APP_SIZE.width+ CAMERA_TOPVIEW_HEIGHT + CAMERA_MENU_VIEW_HEIGH);
     }
+    NSLog(@"app height %f",WZ_APP_SIZE.height);
+    NSLog(@"top height %d",CAMERA_TOPVIEW_HEIGHT);
 
     [manager configureWithParentLayer:self.view previewRect:_previewRect];
     self.captureManager = manager;
@@ -192,14 +204,20 @@
 #pragma mark - views
 -(void)initViews
 {
+    float topViewHeight ;
+    if isIPHONE_4s
+        topViewHeight = 0;
+    else
+        topViewHeight = 50;
     //[self.view setBackgroundColor:[UIColor clearColor]];
-    self.topContainerView = [[CaptureItemContainerUIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, CAMERA_TOPVIEW_HEIGHT)];
+   // NSLog(@"topview height:%f",CAMERA_TOPVIEW_HEIGHT);
+    self.topContainerView = [[CaptureItemContainerUIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, topViewHeight)];
     [self.topContainerView setBackgroundColor:MENU_CONTAINER_COLOR];
     [self.view addSubview:self.topContainerView];
-    self.cameraMenuView = [[CaptureItemContainerUIView alloc]initWithFrame:CGRectMake(0, CAMERA_TOPVIEW_HEIGHT + WZ_APP_SIZE.width, WZ_APP_SIZE.width, CAMERA_MENU_VIEW_HEIGH)];
+    self.cameraMenuView = [[CaptureItemContainerUIView alloc]initWithFrame:CGRectMake(0, topViewHeight + WZ_APP_SIZE.width, WZ_APP_SIZE.width, CAMERA_MENU_VIEW_HEIGH)];
     [self.cameraMenuView setBackgroundColor:MENU_CONTAINER_COLOR];
     [self.view addSubview:self.cameraMenuView];
-    float bottomContainerViewY = CAMERA_TOPVIEW_HEIGHT + WZ_APP_SIZE.width + CAMERA_MENU_VIEW_HEIGH;
+    float bottomContainerViewY = topViewHeight + WZ_APP_SIZE.width + CAMERA_MENU_VIEW_HEIGH;
     self.bottomContainerView = [[CaptureItemContainerUIView alloc]initWithFrame:CGRectMake(0,bottomContainerViewY, WZ_APP_SIZE.width, WZ_DEVICE_SIZE.height - bottomContainerViewY)];
     [self.bottomContainerView setBackgroundColor:BOTTOM_CONTAINER_COLOR];
     [self.view addSubview:self.bottomContainerView];
@@ -223,34 +241,94 @@
 
 -(void)addSelectPhotoButtons
 {
-    CGFloat buttonLength = CAMERA_PHOTO_CHOOSE_BUTTON_WIDTH;
-    CGFloat x = ((WZ_APP_SIZE.width - CAMERA_BUTTON_WIDTH)/2 -buttonLength)/2;
-    self.selectPhotoImageView = [[UIImageView alloc]initWithFrame:CGRectMake(x, (_bottomContainerView.frame.size.height -buttonLength)/2, buttonLength, buttonLength)];
-    [self getLatestPhotosInAlubm];
-    [self.selectPhotoImageView.layer setMasksToBounds:YES];
-    self.selectPhotoImageView.layer.cornerRadius = 2.0;
-    UITapGestureRecognizer *selectPhotoImageViewClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(selectPhotoFromAlubm:)];
-    [self.selectPhotoImageView setUserInteractionEnabled:YES];
-    [self.selectPhotoImageView addGestureRecognizer:selectPhotoImageViewClick];
-    //[self.bottomContainerView addSubview:self.selectPhotoImageView];
+
+        CGFloat buttonLength = CAMERA_PHOTO_CHOOSE_BUTTON_WIDTH;
+        CGFloat x = ((WZ_APP_SIZE.width - CAMERA_BUTTON_WIDTH)/2 -buttonLength)/2;
+        self.selectPhotoImageView = [[UIImageView alloc]initWithFrame:CGRectMake(x, (_bottomContainerView.frame.size.height -buttonLength)/2, buttonLength, buttonLength)];
+        [self.selectPhotoImageView.layer setMasksToBounds:YES];
+        self.selectPhotoImageView.layer.cornerRadius = 2.0;
+        UITapGestureRecognizer *selectPhotoImageViewClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(selectPhotoFromAlubm:)];
+        [self.selectPhotoImageView setUserInteractionEnabled:YES];
+        [self.selectPhotoImageView addGestureRecognizer:selectPhotoImageViewClick];
+        [self.selectPhotoImageView setImage:nil];
+        [self.selectPhotoImageView setBackgroundColor:[UIColor blackColor]];
+        [self.bottomContainerView addSubview:self.selectPhotoImageView];
+        [self getLatestPhotosInAlubm];
     
 }
+
 -(void)getLatestPhotosInAlubm
 {
-    PHFetchOptions *options = [[PHFetchOptions alloc]init];
-    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-    PHFetchResult *fetchResult = [PHAsset fetchAssetsWithOptions:options];
-    NSLog(@"%lu",(unsigned long)fetchResult.count);
-    if (fetchResult.count >0)
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
     {
-        PHAsset *asset = [fetchResult objectAtIndex:0];
-        [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(40, 40) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage *result, NSDictionary *info) {
-            [self.selectPhotoImageView setImage:result];
-            [self.bottomContainerView addSubview:self.selectPhotoImageView];
+        PHFetchOptions *options = [[PHFetchOptions alloc]init];
+        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+        PHFetchResult *fetchResult = [PHAsset fetchAssetsWithOptions:options];
+        NSLog(@"%lu",(unsigned long)fetchResult.count);
+        if (fetchResult.count >0)
+        {
+            PHAsset *asset = [fetchResult objectAtIndex:0];
+            [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(40, 40) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage *result, NSDictionary *info) {
+                [self.selectPhotoImageView setImage:result];
+                
+            }];
+        }
+    }
+    else if (SYSTEM_VERSION_LESS_THAN(@"8"))
+    {
+        ALAssetsLibrary* library = [[ALAssetsLibrary alloc] init];
+        __block UIImage *imageLast;
+        [library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+            [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+            [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *innerstop) {
+                if (result)
+                {
+                    UIImage *image = [UIImage imageWithCGImage:[result thumbnail]];
+                    *stop = YES;
+                    *innerstop = YES;
+                    imageLast = image;
+                    [self.selectPhotoImageView setImage:imageLast];
+                    
+                }
+            }];
+        } failureBlock:^(NSError *error) {
+            NSLog(@"no last image");
         }];
+        
+
     }
     
 }
+/*
+-(NSDictionary *)getLatestPhotoAndPhotoInfoInAlubm
+{
+    NSMutableDictionary *returnData;
+    __block NSMutableDictionary *imageDictionary = [[NSMutableDictionary alloc]init];
+    ALAssetsLibrary* library = [[ALAssetsLibrary alloc] init];
+    [library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+        [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+        [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *innerstop) {
+            if (result)
+            {
+                UIImage *thumbNailImage = [UIImage imageWithCGImage:[result aspectRatioThumbnail]];
+                ALAssetRepresentation *rep = [result defaultRepresentation];
+                UIImage *fullResolutionImage = [UIImage imageWithCGImage:[rep fullResolutionImage]];
+                NSDictionary *imageInfo = rep.metadata;
+                *stop = YES;
+                *innerstop = YES;
+                [imageDictionary setObject:thumbNailImage forKey:@"thumbNail"];
+                [imageDictionary setObject:fullResolutionImage forKey:@"fullResolution"];
+                [imageDictionary setObject:imageInfo forKey:@"imageInfo"];
+                
+            }
+        }];
+    } failureBlock:^(NSError *error) {
+        NSLog(@"no last image");
+        imageDictionary = nil;
+    }];
+    returnData = [imageDictionary mutableCopy];
+    
+}*/
 //拍照菜单栏上的按钮
 //设置各状态显示以及响应方法 actionArr
 - (void)addMenuViewButtons {
@@ -378,7 +456,7 @@
     
     [self.view addSubview:slider];
     
-    self.scSlider = slider;
+    self.scSlider = slider;//became the retain cycle if not weak self
 }
 
 void c_slideAlpha() {
@@ -489,26 +567,36 @@ void c_slideAlpha() {
     [self showCameraCover:YES];
     
     __block UIActivityIndicatorView *actiView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    actiView.center = CGPointMake(self.view.center.x, self.view.center.y - CAMERA_TOPVIEW_HEIGHT);
+    actiView.center = CGPointMake(self.view.center.x, WZ_APP_SIZE.width/2+CAMERA_TOPVIEW_HEIGHT);
     [actiView startAnimating];
     [self.view addSubview:actiView];
     
     
     WEAKSELF_WZ
+    
     [_captureManager takePicture:^(UIImage *stillImage) {
+        
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [PhotoCommon saveImageToPhotoAlbum:stillImage];//存至本机
+            
+            //写入地址信息
+            
+            
         });
-        
-        [actiView stopAnimating];
-        [actiView removeFromSuperview];
-        actiView = nil;
-        
-        double delayInSeconds = 2.f;
+        double delayInSeconds = 0.8f;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [actiView stopAnimating];
+            [actiView removeFromSuperview];
+            actiView = nil;
             sender.userInteractionEnabled = YES;
             [weakSelf_WZ showCameraCover:NO];
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
+            
+            AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
+            [addImageInfoCon setPostImage:stillImage];
+            [weakSelf_WZ presentViewController:addImageInfoCon animated:YES completion:nil];
+            
             //[[NSNotificationCenter defaultCenter] postNotificationName:@"hideBar" object:nil];
         });
         /*
@@ -522,11 +610,7 @@ void c_slideAlpha() {
          */
         
         //直接进入发布页面
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
-        
-        AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
-        [addImageInfoCon setPostImage:stillImage];
-        [self showViewController:addImageInfoCon sender:self];
+        //[self showViewController:addImageInfoCon sender:self];
         //[self presentViewController:addImageInfoCon animated:YES completion:nil];
         
         //暂时屏蔽滤镜
@@ -550,16 +634,34 @@ void c_slideAlpha() {
         //[self presentViewController:controller animated:YES completion:^{NSLog(@"picker view controller  is presented");}];
         [self showViewController:controller sender:self];
     }*/
+    if (!self.selectPhotoImageView.image)
+    {
+        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"您已设置拒绝Place访问照片，请到设置中心设置允许Place访问照片。" delegate:self cancelButtonTitle:@"好的" otherButtonTitles:nil];
+        [alertView show];
+        return;
+    }
+        
     TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
+    
+    //********my first retain cycle!!!!!!!!
     WEAKSELF_WZ
-    photoPicker.cropBlock = ^(UIImage *image) {
+    photoPicker.cropBlock = ^(UIImage *image,NSDictionary *imageInfo) {
         //do something
         __strong typeof(weakSelf_WZ)strongSelf = weakSelf_WZ;
-        strongSelf.stillImage = image;
-        VPImageCropperViewController *imgCropperVC = [[VPImageCropperViewController alloc]initWithImage:strongSelf.stillImage cropFrame:CGRectMake(0, 100, WZ_APP_SIZE.width, WZ_APP_SIZE.width) limitScaleRatio:3.0];
+        strongSelf.stillImage = [_captureManager cropAndResizeImage:image withHead:0];
+        strongSelf.imageInfo = [imageInfo mutableCopy];
+        NSLog(@"image info %@",strongSelf.imageInfo);
+         NSLog(@"image gps %@",[strongSelf.imageInfo objectForKey:@"{GPS}"]);
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];        
+        AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
+        [addImageInfoCon setPostImage:strongSelf.stillImage];
+        [addImageInfoCon setPostImageInfo:strongSelf.imageInfo];
         
-        imgCropperVC.delegate = strongSelf;
-        [strongSelf presentViewController:imgCropperVC animated:YES completion:nil];
+        [strongSelf presentViewController:addImageInfoCon animated:YES completion:nil];
+        //VPImageCropperViewController *imgCropperVC = [[VPImageCropperViewController alloc]initWithImage:strongSelf.stillImage cropFrame:CGRectMake(0, 100, WZ_APP_SIZE.width, WZ_APP_SIZE.width) limitScaleRatio:3.0];
+        
+        //imgCropperVC.delegate = strongSelf;
+        //[strongSelf presentViewController:imgCropperVC animated:YES completion:nil];
     };
     [self presentViewController:photoPicker animated:YES completion:NULL];
 }
@@ -572,7 +674,7 @@ void c_slideAlpha() {
 //拍照页面，"X"按钮
 - (void)dismissBtnPressed:(id)sender {
     NSLog(@"dismissButton Pressed");
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"finishPostImage" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"cancelShare" object:nil];
     if (self.navigationController)
     {
         if (self.navigationController.viewControllers.count ==1)
@@ -655,8 +757,8 @@ void c_slideAlpha() {
         VPImageCropperViewController *imgCropperVC = [[VPImageCropperViewController alloc]initWithImage:self.stillImage cropFrame:CGRectMake(0, 100, self.view.frame.size.width, self.view.frame.size.width) limitScaleRatio:3.0];
         
         imgCropperVC.delegate = self;
-        [self showViewController:imgCropperVC sender:self];
-        //[self presentViewController:imgCropperVC animated:YES completion:nil];
+       // [self showViewController:imgCropperVC sender:self];
+        [self presentViewController:imgCropperVC animated:YES completion:nil];
 
 
     }];

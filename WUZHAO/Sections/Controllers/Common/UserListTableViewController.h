@@ -11,4 +11,6 @@
 @interface UserListTableViewController : UITableViewController
 @property (nonatomic,strong) NSString *userListStyle;
 @property (nonatomic,strong) NSArray *datasource;
+
+@property (nonatomic,strong) void(^setUserList)(void);
 @end

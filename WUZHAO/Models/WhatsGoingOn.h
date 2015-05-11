@@ -22,11 +22,16 @@
 @property (nonatomic,strong) NSMutableArray *likeUserList;
 @property (nonatomic) BOOL isLike;
 @property (nonatomic,copy) NSString *comment;
-@property (nonatomic,copy) NSArray  *commentList;
+@property (nonatomic,copy) NSMutableArray  *commentList;
+@property (nonatomic,copy) NSMutableArray  *commentStringList;
 @property (nonatomic,copy) NSAttributedString *attributedComment;
 @property (nonatomic) BOOL hasMoreComments;
 @property (nonatomic) NSInteger poiId;
 @property (nonatomic,strong) NSString *poiName;
 + (NSArray *) newDataSource;
+
+-(instancetype)initWithAttributes:(NSDictionary *)data;
+-(void)configureWithCommentList:(NSArray *)commentListInData;
+-(void)configureIWithLikeList:(NSArray *)likeList;
 
 @end

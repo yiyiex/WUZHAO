@@ -16,7 +16,7 @@
 @property (strong ,nonatomic) NSArray *ChildrenName;
 @property (nonatomic,strong) NSString * currentSegueIdentifier;
 @property (nonatomic,strong) UIViewController *currentViewController;
-@property (nonatomic,strong) id<CommonContainerViewControllerDelegate> delegate;
+@property (nonatomic,weak) id<CommonContainerViewControllerDelegate> delegate;
 
 -(instancetype)initWithChildren:(NSArray *)childrenName;
 -(void)swapViewControllersWithIdentifier:(NSString *)identifier;

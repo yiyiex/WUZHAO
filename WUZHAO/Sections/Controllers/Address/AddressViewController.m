@@ -8,12 +8,18 @@
 
 #import "AddressViewController.h"
 #import "CommonContainerViewController.h"
+#import "PhotosCollectionViewController.h"
+
+#import "QDYHTTPClient.h"
 
 #define SEGUEFIRST @"photoCollectionViewSegue"
 #define SEGUESECOND @"sharedPeopleTableViewSegue"
 
-@interface AddressViewController ()
+@interface AddressViewController () <CommonContainerViewControllerDelegate>
 @property (nonatomic, strong) CommonContainerViewController *containerViewController;
+@property (nonatomic,strong) PhotosCollectionViewController *photoCollectionViewCon;
+@property (nonatomic,strong) NSMutableArray *photoCollectionDatasource;
+@property (nonatomic) BOOL shouldRefresh;
 @end
 
 @implementation AddressViewController
@@ -21,7 +27,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBarHidden = NO;
-    self.selectControllerToShowTabBar.selectedItem = [self.selectControllerToShowTabBar.items objectAtIndex:0];
+    if ([self.view respondsToSelector:@selector(setLayoutMargins:)])
+    {
+        [self.view setLayoutMargins:UIEdgeInsetsZero];
+    }
+    self.shouldRefresh = true;
+    [self.containerViewController swapViewControllersWithIdentifier:SEGUEFIRST];
+    [self getLatestAddressPhoto];
     // Do any additional setup after loading the view.
 }
 
@@ -36,6 +48,7 @@
     {
         
         self.containerViewController = (CommonContainerViewController *)segue.destinationViewController;
+        self.containerViewController.delegate = self;
         self.containerViewController.ChildrenName = @[SEGUEFIRST,SEGUESECOND];
         
     }
@@ -46,11 +59,27 @@
     if (!_containerViewController)
     {
         _containerViewController = [[CommonContainerViewController alloc]initWithChildren:@[SEGUEFIRST,SEGUESECOND]];
+        _containerViewController.delegate = self;
     }
     return _containerViewController;
 }
 
+-(void)finishLoadChildController:(UIViewController *)childController
+{
+    if ([childController isKindOfClass: [PhotosCollectionViewController class]])
+    {
+        self.photoCollectionViewCon = (PhotosCollectionViewController *)childController;
+        [self.photoCollectionViewCon.collectionView setBackgroundColor:[UIColor whiteColor]];
+        [self setPhotoCollectionData];
+        
+    }
+}
 
+-(void)setPhotoCollectionData
+{
+    [self.photoCollectionViewCon setDatasource:self.photoCollectionDatasource];
+    [self.photoCollectionViewCon.collectionView reloadData];
+}
 
 /*
 #pragma mark - Navigation
@@ -62,20 +91,35 @@
 }
 */
 
-#pragma mark -----tapbar----------
--(void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
+-(void)getLatestAddressPhoto
 {
-    NSString *segueIdentifier = SEGUEFIRST;
-    if (item.tag == 1)
+    if (self.poiId <=0)
+        return;
+    if (self.poiName)
     {
-        segueIdentifier = SEGUEFIRST;
+        [self.navigationItem setTitle:self.poiName];
     }
-    else if (item.tag == 2)
-    {
-        segueIdentifier = SEGUESECOND;
-    }
-    [self.containerViewController swapViewControllersWithIdentifier:segueIdentifier];
-}
+    self.shouldRefresh = false;
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [[QDYHTTPClient sharedInstance]GetPOIInfoWithPoiId:self.poiId whenComplete:^(NSDictionary *returnData) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([returnData objectForKey:@"data"])
+                {
+                    self.photoCollectionDatasource = [[returnData objectForKey:@"data"]mutableCopy];
+                    [self setPhotoCollectionData];
+                    //[self.photoCollectionViewCon loadData];
+                }
+                else if ([returnData objectForKey:@"error"])
+                {
+                    
+                    
+                }
+                self.shouldRefresh = true;
+            });
 
+        }];
+    });
+
+}
 
 @end

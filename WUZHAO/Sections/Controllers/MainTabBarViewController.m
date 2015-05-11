@@ -9,15 +9,29 @@
 #import "MainTabBarViewController.h"
 #import "HomeTableViewController.h"
 #import "UITabBarController+HideTabBar.h"
+#import "LaunchViewController.h"
 
 //items of  viewcontrollers
 #import "HomeTableViewController.h"
 #import "SearchViewController.h"
 #import "MineViewController.h"
+#import "NoticeViewController.h"
 #import "SCCaptureCameraController.h"
 #import "RBStoryboardLink.h"
+#import "SVProgressHUD.h"
+
+#import "QDYHTTPClient.h"
 
 #import "macro.h"
+
+typedef NS_ENUM(NSInteger, WZ_TABTAG) {
+    WZ_HOME_TAB   = 0,
+    WZ_SEARCH_TAB = 1,
+    WZ_SHARE_TAB  = 2,
+    WZ_NOTICE_TAB = 3,
+    WZ_MINE_TAB   = 4
+
+};
 
 @interface MainTabBarViewController()
 @property (nonatomic) NSInteger currentTabIndex ;
@@ -40,15 +54,27 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    if (SYSTEM_VERSION_EQUAL_TO(@"7"))
+    {
+        self.navigationController.navigationBar.translucent = NO;
+    }
     
     self.delegate = self;
     self.currentTabIndex =0;
-   
-    NSLog(@"%@",[[NSBundle mainBundle]bundleIdentifier]);
-
-    
+    [self activeCurrentTab];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(activeCurrentTab) name:@"finishPostImage" object:Nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(uploadDataSuccess) name:@"uploadDataSuccess" object:nil];
+      [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(activeTargetTab:) name:@"activeTargetTab" object:Nil];
+      [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(cancelShare) name:@"cancelShare" object:Nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(refreshTabContent) name:@"uploadDataSuccess" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logoutCauseIllegalToken) name:@"tokenIllegal" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logOut) name:@"logOut" object:nil];
+    
+    
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.backBarButtonItem = backBarItem;
+    
+    [self getNoticeNumber];
+   // [self performSelectorInBackground:@selector(updateNoticeInfo) withObject:nil];
     
 }
 
@@ -60,16 +86,17 @@
 
     
 }
-- (void)viewDidAppear:(BOOL)animated
-{
-    
-}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@""])
     {
         
     }
+}
+-(UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
 }
 
 -(BOOL)prefersStatusBarHidden
@@ -93,17 +120,19 @@
 
 
 
-#pragma mark =========controllers delegate============
+#pragma mark =controllers delegate
 -(void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
 
-    if ([item.title isEqualToString:@"分享"])
+    if (item.tag == WZ_SHARE_TAB)
     {
         UIStoryboard *shareStorybaord = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
         SCCaptureCameraController *captureViewController = [shareStorybaord instantiateViewControllerWithIdentifier:@"cameraController"];
         [self presentViewController:captureViewController animated:YES completion:^{
             NSLog(@"show camera controller");
+            
         }];
+        
     }
     else
     {
@@ -114,6 +143,7 @@
 {
     NSLog(@"selected controller%@",viewController);
     viewController.navigationItem.hidesBackButton = YES;
+    NSLog(@"rbstorybaord viewController frame %f %f %f %f ",viewController.view.frame.origin.x,viewController.view.frame.origin.y,viewController.view.frame.size.width,viewController.view.frame.size.height);
     if ([viewController isKindOfClass:[RBStoryboardLink class]])
     {
         RBStoryboardLink *linkViewController = (RBStoryboardLink *)viewController;
@@ -121,13 +151,33 @@
         if ([destinationViewController isKindOfClass:[MineViewController class]])
         {
             MineViewController *mineViewController = (MineViewController *)destinationViewController;
+            NSLog(@"mine viewController frame %f %f %f %f ",mineViewController.view.frame.origin.x,mineViewController.view.frame.origin.y,mineViewController.view.frame.size.width,mineViewController.view.frame.size.height);
+            mineViewController.shouldBackToTop = YES;
             [mineViewController getLatestData];
         }
         if ( [destinationViewController isKindOfClass:[HomeTableViewController class]])
         {
-            HomeTableViewController *homeTableViewController = (HomeTableViewController *)destinationViewController;;
+            HomeTableViewController *homeTableViewController = (HomeTableViewController *)destinationViewController;
+            [homeTableViewController setTableStyle:WZ_TABLEVIEWSTYLEHOME];
             [homeTableViewController GetLatestDataList];
+            [homeTableViewController.tableView setContentOffset:CGPointMake(0,0) animated:YES];
             
+            
+        }
+        if ( [destinationViewController isKindOfClass:[SearchViewController class]])
+        {
+            SearchViewController *searchViewController = (SearchViewController *)destinationViewController;
+            [searchViewController getLatestData];            
+        }
+        if ([destinationViewController isKindOfClass:[NoticeViewController class]])
+        {
+            NoticeViewController *noticeViewController = (NoticeViewController *)destinationViewController;
+            [noticeViewController getLatestData];
+            //清空提示数量
+            //给服务器发送已读信息
+            //TO DO
+            [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
+            [self setApplicationIconBadgeWithNum:0];
         }
         
         
@@ -137,46 +187,78 @@
 {
   
     self.selectedIndex = self.currentTabIndex;
-    RBStoryboardLink *linkViewController = (RBStoryboardLink *)self.selectedViewController;
-    UIViewController *destinationViewController = linkViewController.scene;
-    switch (self.currentTabIndex)
-    {
-        case 0:
-            break;
-        case 1:
-            break;
-        case 2:
-            break;
-        case 3:
-            break;
-        default:
-            break;
-    }
+    [self refreshTabContent];
 
 }
-
--(void)uploadDataSuccess
+-(void)activeTargetTab:(NSNotification *)notification
 {
+    NSNumber *index =(NSNumber *) [[notification userInfo]objectForKey:@"index"];
+    [self activeTabbarAtIndex:[index integerValue]];
+}
+-(void)activeTabbarAtIndex:(NSInteger)index
+{
+    if (index != WZ_SHARE_TAB)
+    {
+        self.currentTabIndex = index;
+        [self activeCurrentTab];
+    }
+    else
+    {
+        UIStoryboard *shareStorybaord = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
+        SCCaptureCameraController *captureViewController = [shareStorybaord instantiateViewControllerWithIdentifier:@"cameraController"];
+        [self presentViewController:captureViewController animated:YES completion:^{
+            NSLog(@"show camera controller");
+        }];
+    }
+   
+}
+
+-(void)cancelShare
+{
+    self.selectedIndex = self.currentTabIndex;
+}
+
+-(void)refreshTabContent
+{
+    if (![self.selectedViewController isKindOfClass:[RBStoryboardLink class]])
+    {
+        return;
+    }
     RBStoryboardLink *linkViewController = (RBStoryboardLink *)self.selectedViewController;
     UIViewController *destinationViewController = linkViewController.scene;
     switch (self.currentTabIndex)
     {
-        case 0:
+        case WZ_HOME_TAB:
             if ([destinationViewController isKindOfClass:[HomeTableViewController class]])
             {
                 HomeTableViewController *homeTableViewController = (HomeTableViewController *)destinationViewController;
+                [homeTableViewController setTableStyle:WZ_TABLEVIEWSTYLEHOME];
                 [homeTableViewController GetLatestDataList];
+                [homeTableViewController.tableView setContentOffset:CGPointMake(0,0) animated:YES];
             }
             break;
-        case 1:
+        case WZ_SEARCH_TAB:
             break;
-        case 2:
+        case WZ_SHARE_TAB:
             break;
-        case 3:
+        case WZ_MINE_TAB:
             if ([destinationViewController isKindOfClass:[MineViewController class]])
             {
                 MineViewController *mineViewController = (MineViewController *)destinationViewController;
+                mineViewController.shouldBackToTop = YES;
                 [mineViewController getLatestData];
+            }
+            break;
+        case WZ_NOTICE_TAB:
+            if ([destinationViewController isKindOfClass:[NoticeViewController class]])
+            {
+                NoticeViewController *noticeViewController = (NoticeViewController *)destinationViewController;
+                [noticeViewController getLatestData];
+                //清空 提示数量
+                //TO DO
+                [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
+                [self setApplicationIconBadgeWithNum:0];
+                
             }
             break;
         default:
@@ -184,30 +266,134 @@
     }
 }
 
--(void)hideTabBar
+
+-(void)getNoticeNumber
 {
-    //[self setTabBarHidden:YES animated:YES];
+    //向服务器请求新通知数量
+    //TO DO
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    
+        NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+        [[QDYHTTPClient sharedInstance]getNoticeNumWithUserId:userId whenComplete:^(NSDictionary *returnData) {
+            if ([returnData objectForKey:@"data"])
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([[returnData valueForKey:@"data"]integerValue]>0)
+                    {
+                        
+                        NSNumber *num = [returnData valueForKey:@"data"];
+                        
+                        [self setTabarBadgeWithData:[NSString stringWithFormat:@"%@",num] atIndex:3];
+                        [self setApplicationIconBadgeWithNum:[num integerValue]] ;
+                        
+                    }
+                    else
+                    {
+                        [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
+                        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+                    }
+                });
+
+                
+            }
+            else
+            {
+                NSLog(@"get the notice nummber failed");
+            }
+        }];
+    });
+}
+-(void)updateNoticeInfo
+{
+    @autoreleasepool {
+    while (true) {
+        [NSThread sleepForTimeInterval:10.0f];
+        NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+        [[QDYHTTPClient sharedInstance]getNoticeNumWithUserId:userId whenComplete:^(NSDictionary *returnData) {
+            if ([returnData objectForKey:@"data"])
+            {
+                    if ([[returnData valueForKey:@"data"]integerValue]>0)
+                    {
+                        
+                        NSNumber *num = [returnData valueForKey:@"data"];
+                        
+                        [self setTabarBadgeWithData:[NSString stringWithFormat:@"%@",num] atIndex:3];
+                        [self setApplicationIconBadgeWithNum:[num integerValue]] ;
+                        
+                    }
+                    else
+                    {
+                        [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
+                        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+                    }
+            }
+            else
+            {
+                NSLog(@"get the notice nummber failed");
+            }
+        }];
+    }
+    }
 }
 
--(void)showTabBar
+-(void)setTabarBadgeWithData:(NSString *)data atIndex:(NSInteger)tabBarItemIndex
 {
-    //[self setTabBarHidden:NO animated:YES];
+    [[self.tabBar.items objectAtIndex:tabBarItemIndex] setBadgeValue:data];
+    
+}
+-(void)setApplicationIconBadgeWithNum:(NSInteger)number
+{
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
+    {
+        UIUserNotificationType myType = UIUserNotificationTypeBadge | UIUserNotificationTypeAlert | UIUserNotificationTypeSound;
+        UIUserNotificationSettings *mySetting = [UIUserNotificationSettings settingsForTypes:myType categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:mySetting];
+    }else{
+        UIRemoteNotificationType myType = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:myType];
+    }
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:number];
 }
 
 
-
-
-#pragma mar ------------------test appearence----------------
-
--(void)setNavigatorAppearance
+- (void)logoutCauseIllegalToken
 {
-    [[UINavigationBar appearance] setTintColor:THEME_COLOR_PARENT];
+    //[SVProgressHUD showInfoWithStatus:@"登录态失效，请重新登录"];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:@"userId"];
+    [defaults removeObjectForKey:@"userName"];
+    [defaults removeObjectForKey:@"token"];
+    [defaults removeObjectForKey:@"avatarUrl"];
+    [defaults synchronize];
+    [self.navigationController popToRootViewControllerAnimated:YES];
+
+    
+}
+- (void)logOut
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSInteger userId = [defaults integerForKey:@"userId"];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [[QDYHTTPClient sharedInstance]logOutWithUserId:userId whenComplete:^(NSDictionary *returnData) {
+            if ([returnData objectForKey:@"data"])
+            {
+                NSLog(@"注销成功");
+            }
+            else
+            {
+                NSLog(@"注销失败");
+            }
+        }];
+    });
+    [defaults removeObjectForKey:@"userId"];
+    [defaults removeObjectForKey:@"userName"];
+    [defaults removeObjectForKey:@"token"];
+    [defaults removeObjectForKey:@"avatarUrl"];
+    [defaults synchronize];
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    
 }
 
--(UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
-}
 
 
 @end

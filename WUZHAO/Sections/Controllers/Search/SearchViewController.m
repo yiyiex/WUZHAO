@@ -10,6 +10,11 @@
 #import "CommonContainerViewController.h"
 #import "PhotosCollectionViewController.h"
 #import "UserListTableViewController.h"
+#import "SearchResultViewController.h"
+#import "SearchResultTableViewController2.h"
+#import "QDYHTTPClient.h"
+
+#import "SVProgressHUD.h"
 
 #import "User.h"
 #import "WhatsGoingOn.h"
@@ -19,15 +24,21 @@
 #define SEGUESECOND @"segueForSuggestAddress"
 #define SEGUETHIRD @"segueForSuggestUsers"
 
-@interface SearchViewController () <UISearchBarDelegate,UISearchControllerDelegate,UISearchResultsUpdating,UITableViewDataSource,UITableViewDataSource ,CommonContainerViewControllerDelegate>
+@interface SearchViewController () <UISearchBarDelegate,UISearchControllerDelegate,UISearchResultsUpdating,CommonContainerViewControllerDelegate>
 @property (nonatomic, strong) CommonContainerViewController *containerViewController;
 @property (nonatomic, strong) PhotosCollectionViewController *suggestPhotoCollectionViewController;
 @property (nonatomic, strong) UserListTableViewController *suggestUserListViewConstroller;
 @property (nonatomic,strong) NSMutableArray *suggestPhotoData;
 @property (nonatomic,strong) NSMutableArray *suggestUserListData;
 
-@property (nonatomic, strong) UITableViewController *searchResultTableView;
+@property (nonatomic, strong) SearchResultViewController *searchResultTableView;
+@property (nonatomic, strong) NSMutableArray *searchResult;
+
 @property (nonatomic, strong) UISearchController *searchController;
+
+@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) UIBarButtonItem *searchButton;
+
 
 //for state restoration
 @property BOOL searchControllerWasActive;
@@ -39,48 +50,20 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    _segmentControl.sectionTitles = @[@"照片",@"地点",@"用户"];
-    _segmentControl.selectedSegmentIndex = 0;
-    _segmentControl.backgroundColor = [UIColor whiteColor];
-    _segmentControl.titleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
-     _segmentControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE};
-    [_segmentControl setSelectionIndicatorColor:THEME_COLOR_DARK_GREY];
-    _segmentControl.selectionIndicatorHeight = 2.0f;
     
-    _segmentControl.selectionStyle = HMSegmentedControlSelectionStyleFullWidthStripe;
-    _segmentControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationUp;
-    [_segmentControl addTarget:self action:@selector(segmentValueChanged) forControlEvents:UIControlEventValueChanged];
-
-    _searchResultTableView = [[UITableViewController alloc]init];
-    [_searchResultTableView.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"tableCell"];
-    _searchController = [[UISearchController alloc]initWithSearchResultsController:_searchResultTableView];
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.backBarButtonItem = backBarItem;
     
-    self.searchController.searchResultsUpdater = self;
-    
-    self.searchController.hidesNavigationBarDuringPresentation = NO;
-    self.searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
-    
-    [self.searchController.searchBar sizeToFit];
-    //self.navigationItem.titleView = self.searchController.searchBar;
-    self.definesPresentationContext = YES;
-    
-    self.searchResultTableView.tableView.delegate = self;
-    self.searchResultTableView.tableView.dataSource = self;
-    
-    self.searchController.delegate = self;
-    
-    self.searchController.dimsBackgroundDuringPresentation = YES;
-    self.searchController.searchBar.delegate = self;
-     
-    
+   // [self initSwipGesture];
+    [self initSearchControllerAndSegmentController];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    self.tabBarController.navigationItem.title = @"发现";
     self.tabBarController.navigationController.navigationBarHidden = NO;
-    self.tabBarController.navigationItem.titleView = self.searchController.searchBar;
+    self.tabBarController.navigationItem.rightBarButtonItem = self.searchButton;
     self.tabBarController.navigationItem.hidesBackButton = YES;
 
     self.navigationItem.hidesBackButton = YES;
@@ -100,16 +83,121 @@
     }
 }
 
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    self.tabBarController.navigationItem.titleView = nil;
+    self.tabBarController.navigationItem.rightBarButtonItem = nil;
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
     // Dispose of any resources that can be recreated.
+}
+
+-(void)initSearchControllerAndSegmentController
+{
+    /*
+    _segmentControl.sectionTitles = @[@"照片",@"地点",@"用户"];
+    _segmentControl.selectedSegmentIndex = 0;
+    _segmentControl.backgroundColor = [UIColor whiteColor];
+    _segmentControl.titleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
+    _segmentControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE};
+    [_segmentControl setSelectionIndicatorColor:THEME_COLOR_DARK_GREY];
+    _segmentControl.selectionIndicatorHeight = 2.0f;
+    
+    _segmentControl.selectionStyle = HMSegmentedControlSelectionStyleFullWidthStripe;
+    _segmentControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationUp;
+    [_segmentControl addTarget:self action:@selector(segmentValueChanged) forControlEvents:UIControlEventValueChanged];
+
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Search" bundle:nil];
+    _searchResultTableView = [storyboard instantiateViewControllerWithIdentifier:@"SearchResult"];
+    
+    _searchController = [[UISearchController alloc]initWithSearchResultsController:_searchResultTableView];
+    
+    self.searchController.searchResultsUpdater = self;
+    
+    self.searchController.hidesNavigationBarDuringPresentation = NO;
+    self.searchController.searchBar.searchBarStyle = UISearchBarStyleDefault;
+    
+    [self.searchController.searchBar sizeToFit];
+    //self.navigationItem.titleView = self.searchController.searchBar;
+    self.definesPresentationContext = YES;
+    
+    self.searchController.delegate = self;
+    
+    self.searchController.dimsBackgroundDuringPresentation = NO;
+    self.searchController.searchBar.delegate = self;
+     */
+    self.searchButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchResultView)];
+    
+    //[self.navigationItem setTitle:@"发现"];
+    self.tabBarController.navigationItem.title = @"发现";
+    self.tabBarController.navigationItem.rightBarButtonItem = self.searchButton;
+    
+}
+-(void)showSearchResultView
+{
+    /*
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Search" bundle:nil];
+    
+    SearchResultViewController *searchResult = [storyboard instantiateViewControllerWithIdentifier:@"SearchResult"]; 
+     */
+    SearchResultTableViewController2 *searchResult = [[SearchResultTableViewController2 alloc]init];
+    [self.navigationController pushViewController:searchResult animated:YES];
+}
+-(void)initSwipGesture
+{
+    UISwipeGestureRecognizer *recognizer;
+    recognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipToRight:)];
+    [recognizer setDirection:UISwipeGestureRecognizerDirectionRight];
+    [self.view addGestureRecognizer:recognizer];
+    recognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipToLeft:)];
+    [recognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
+    [self.view addGestureRecognizer:recognizer];
+}
+-(void)swipToRight:(UISwipeGestureRecognizer *)gesture
+{
+    if (self.containerViewController.currentSegueIdentifier == [self.containerViewController.ChildrenName firstObject])
+    {
+        return;
+    }
+    else
+    {
+        // NSLog(@"swip to right");
+        for (int i = 1;i <self.containerViewController.ChildrenName.count;i++)
+        {
+            if ([self.containerViewController.ChildrenName[i] isEqualToString:self.containerViewController.currentSegueIdentifier])
+            {
+                self.containerViewController.currentSegueIdentifier = self.containerViewController.ChildrenName[i-1];
+                [self.containerViewController performSegueWithIdentifier:self.containerViewController.currentSegueIdentifier sender:nil];
+                                [self.segmentControl setSelectedSegmentIndex:self.segmentControl.selectedSegmentIndex-1 animated:YES];
+                break;
+            }
+        }
+    }
+}
+-(void)swipToLeft:(UISwipeGestureRecognizer *)gesture
+{
+    if (self.containerViewController.currentSegueIdentifier == [self.containerViewController.ChildrenName lastObject])
+    {
+        return;
+    }
+    else
+    {
+        // NSLog(@"swip to left");
+        for (int i = 0;i <self.containerViewController.ChildrenName.count-1;i++)
+        {
+            if ([self.containerViewController.ChildrenName[i] isEqualToString:self.containerViewController.currentSegueIdentifier])
+            {
+                self.containerViewController.currentSegueIdentifier = self.containerViewController.ChildrenName[i+1];
+                [self.containerViewController performSegueWithIdentifier:self.containerViewController.currentSegueIdentifier sender:nil];
+                [self.segmentControl setSelectedSegmentIndex:self.segmentControl.selectedSegmentIndex+1 animated:YES];
+                break;
+            }
+        }
+    }
 }
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -120,6 +208,7 @@
         self.containerViewController.ChildrenName = @[SEGUEFIRST,SEGUESECOND,SEGUETHIRD];
     }
 }
+
 
 -(CommonContainerViewController *)containerViewController
 {
@@ -132,57 +221,15 @@
 }
 
 
-#pragma mark -------UISearchControllerDelegate----------
 
-// Called after the search controller's search bar has agreed to begin editing or when
-// 'active' is set to YES.
-// If you choose not to present the controller yourself or do not implement this method,
-// a default presentation is performed on your behalf.
-//
-// Implement this method if the default presentation is not adequate for your purposes.
-//
-- (void)presentSearchController:(UISearchController *)searchController {
-    NSLog(@"presentSearchController");
-   // [self.searchController.searchResultsController loadView];
-    //self.searchController.searchResultsController
-}
-
-- (void)willPresentSearchController:(UISearchController *)searchController {
-    NSLog(@"willPresentSearchController");
-}
-
-- (void)didPresentSearchController:(UISearchController *)searchController {
-    NSLog(@"didPresentSearchController");
-}
-
-- (void)willDismissSearchController:(UISearchController *)searchController {
-    NSLog(@"willDismissSearchController");
-}
-
-- (void)didDismissSearchController:(UISearchController *)searchController {
-    NSLog(@"didDismissSearchController");
-}
-
-#pragma  mark ---------UITableView delegate
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return 10;
-}
-
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tableCell"];
-    
-    cell.textLabel.text = @"test";
-    cell.detailTextLabel.text =@"已有多少张照片";
-    
-    return cell;
-}
+#pragma mark- searchbar delegate
 
 #pragma mark -------UISearchResultsUpdating----------------
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
-    
+    self.searchResultTableView.searchUserListData = [[User userList]mutableCopy];
+    self.searchResultTableView.searchType = 0;
+    [self.searchResultTableView.searchUserListTableView reloadData];
 }
 
 #pragma mark - commonContainerViewController delegate
@@ -199,22 +246,43 @@
     else if( [childController isKindOfClass:[UserListTableViewController class]])
     {
         self.suggestUserListViewConstroller = (UserListTableViewController *)childController;
-        [self.suggestUserListViewConstroller setUserListStyle:UserListStyle2];
+        [self.suggestUserListViewConstroller setUserListStyle:UserListStyle3];
         [self setSuggestUserListData];
     }
 }
 
 -(void)setSuggestPhotoCollectionData
 {
-    self.suggestPhotoData = [[WhatsGoingOn newDataSource]mutableCopy];
-    [self.suggestPhotoCollectionViewController setDatasource:self.suggestPhotoData];
-    [self.suggestPhotoCollectionViewController loadData];
+    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [[QDYHTTPClient sharedInstance]explorephotoWithUserId:userId whenComplete:^(NSDictionary *returnData) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([returnData objectForKey:@"data"])
+                {
+                    self.suggestPhotoData = [[returnData objectForKey:@"data"]mutableCopy];
+                    [self.suggestPhotoCollectionViewController setDatasource:self.suggestPhotoData];
+                    [self.suggestPhotoCollectionViewController.collectionView reloadData];
+                }
+                else if ([returnData objectForKey:@"error"])
+                {
+                    [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                }
+            });
+
+        }];
+    });
+
+
 }
 -(void)setSuggestUserListData
 {
     self.suggestUserListData = [[User userList]mutableCopy];
     [self.suggestUserListViewConstroller setDatasource:self.suggestUserListData];
     [self.suggestUserListViewConstroller.tableView reloadData];
+}
+-(void)getLatestData
+{
+    [self setSuggestPhotoCollectionData];
 }
 /*
 #pragma mark - Navigation
@@ -226,6 +294,7 @@
 }
 */
 #pragma mark -HMSegment action
+/*
 - (void)segmentValueChanged
 {
     NSString *swapIdentifier ;
@@ -246,6 +315,16 @@
     [self.containerViewController swapViewControllersWithIdentifier:swapIdentifier];
 }
 
+-(void)searchWithType:(NSString *)searchType keyWord:(NSString *)keyword
+{
+    [[QDYHTTPClient sharedInstance]searchWithType:searchType keyword:keyword whenComplete:^(NSDictionary *returnData) {
+        if (returnData)
+        {
+            [self.searchResultTableView updateSearchResultWithData:returnData];
+        }
+    }];
+    
+}*/
 
 
 @end

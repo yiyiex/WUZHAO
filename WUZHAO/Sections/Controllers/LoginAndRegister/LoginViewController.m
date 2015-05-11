@@ -22,9 +22,13 @@
 #import "PhotoCommon.h"
 
 @interface LoginViewController ()
+{
+    BOOL cancelLogin;
+}
 @property (nonatomic,strong) NSString *userName;
 @property (nonatomic,strong) NSString *password;
 @property (nonatomic,strong) NSString *sPassword;
+
 
 @end
 
@@ -35,6 +39,8 @@
     
     [self initView];
     [self drawLoginViewAppearance];
+    
+    cancelLogin = false;
     
 
 
@@ -55,6 +61,7 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+
 
    // [self.navigationItem setHidesBackButton:YES];
     
@@ -97,16 +104,16 @@
 }
 -(void)initView
 {
-    self.UserNameTextField.placeholder = @"用户名";
-    self.UserNameTextField.keyboardType = UIKeyboardAppearanceDark;
+    self.UserNameTextField.placeholder = @"用户名/邮箱";
+    self.UserNameTextField.keyboardType = UIKeyboardAppearanceDefault;
     self.UserNameTextField.keyboardType = UIKeyboardTypeDefault;
 
     self.PasswordTextField.placeholder = @"密 码";
-    self.PasswordTextField.keyboardType = UIKeyboardAppearanceDark;
-    self.PasswordTextField.keyboardType = UIKeyboardTypeAlphabet;
+    self.PasswordTextField.keyboardType = UIKeyboardAppearanceDefault;
+    self.PasswordTextField.keyboardType = UIKeyboardTypeDefault;
     
     [self.LoginButton setTitle:@"登  录" forState:UIControlStateNormal];
-    [self.LoginButton setDarkGreyBackGroundAppearance];
+    [self.LoginButton setThemeFrameAppearence];
     [self.LoginButton setBigButtonAppearance];
     [self.LoginButton setEnabled:NO];
     
@@ -119,8 +126,19 @@
 
 -(void)login
 {
-    NSURLSessionDataTask *loginTask = [[QDYHTTPClient sharedInstance]LoginWithUserName:self.userName password:self.password complete:^(NSDictionary *result,NSError *error)
+    NSString *loginType = @"nick";
+    if ( [self.userName rangeOfString:@"@"].location != NSNotFound)
+    {
+        loginType = @"email";
+    }
+    
+    NSURLSessionDataTask *loginTask = [[QDYHTTPClient sharedInstance]LoginWithUserName:self.userName password:self.sPassword loginType:loginType complete:^(NSDictionary *result,NSError *error)
                                        {
+                                           if (cancelLogin)
+                                           {
+                                               [SVProgressHUD dismiss];
+                                               return ;
+                                           }
                                            // NSLog(@"got the result :***** %@ \nand the error %@",result,error);
                                            if (error)
                                            {
@@ -145,13 +163,12 @@
                                                    
                                                    if ([[QDYHTTPClient sharedInstance] IsAuthenticated])
                                                    {
-                                                       User *userInfo = [[QDYHTTPClient sharedInstance] currentUser];
-                                                       [self setDefaultUserInfoWithUser:userInfo];
+                                                      // User *userInfo = [[QDYHTTPClient sharedInstance] currentUser];
                                                        
                                                        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                                                        MainTabBarViewController *main = [mainStoryboard instantiateViewControllerWithIdentifier:@"mainTabBarController"];
-                                                       [self showViewController:main sender:nil];
-                                                      // [self performSegueWithIdentifier:@"HasLogin" sender:nil];
+                                                       [self.navigationController pushViewController:main animated:YES];
+                                                    
                                                        self.LoginButton.enabled = YES;
                                                       
                                                        
@@ -186,14 +203,13 @@
         [self.LoginButton setEnabled:NO];
         return false;
     }
+    [self.LoginButton setEnabled:YES];
     
     //检查输入是否合法
     
     
     //密码加密
     self.sPassword = [self.password SHA1];
-    
-    [self.LoginButton setEnabled:YES];
     return true;
 }
 
@@ -217,16 +233,10 @@
         return;
     }
     self.LoginButton.enabled = NO;
+    self.PasswordTextField.text = @"";
     [self login];
    // [self performSegueWithIdentifier:@"HasLogin" sender:self];
     
-}
-
-
-
-- (IBAction)registerBtnPressed:(id)sender
-{
-        //[self performSegueWithIdentifier:@"register" sender:sender];
 }
 
 - (IBAction)userNameInputEnd:(id)sender {
@@ -238,13 +248,23 @@
 - (IBAction)passWordInputEnd:(id)sender {
 
     [self checkInput];
-    [self.LoginButton setEnabled:YES];
-    [self login];
     [self.LoginButton setEnabled:NO];
+    [self performSelectorOnMainThread:@selector(login) withObject:nil waitUntilDone:YES];
+  
 }
 
 -(void)returnToLaunch
 {
+    cancelLogin = true;
+    if ([self.UserNameTextField isFirstResponder])
+    {
+        [self.UserNameTextField resignFirstResponder];
+    }
+    if ([self.PasswordTextField isFirstResponder])
+    {
+        [self.PasswordTextField resignFirstResponder];
+    }
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -270,19 +290,26 @@
 }
 
 #pragma mark -set userDefaultData
--(void)setDefaultUserInfoWithUser:(User *)user
+
+-(void)updateLocalUserInfo
 {
+    
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setInteger:user.UserID forKey:@"userId"];
-    NSLog(@"%@",[userDefaults objectForKey:@"userId"]);
-    if (![user.userToken isEqualToString:@""] && user.userToken)
-    {
-        [userDefaults setObject:user.userToken forKey:@"token"];
-    }
-    [userDefaults setObject:self.userName forKey:@"userName"];
-    [userDefaults setObject:@"" forKey:@"avatarUrl"];
-    NSLog(@"%lu",(long)[userDefaults integerForKey:@"userId"]);
-    [userDefaults synchronize];
+    NSInteger userId = [userDefaults integerForKey:@"userId"];
+    [[QDYHTTPClient sharedInstance]GetPersonalSimpleInfoWithUserId:userId whenComplete:^(NSDictionary *returnData) {
+        if ([returnData objectForKey:@"data"])
+        {
+            User *user = [returnData objectForKey:@"data"];
+            [userDefaults setObject:user.UserName forKey:@"userName"];
+            [userDefaults setObject:user.avatarImageURLString forKey:@"avatarUrl"];
+        }
+        else
+        {
+            NSLog(@"更新个人信息失败");
+            [userDefaults removeObjectForKey:@"avatarUrl"];
+            
+        }
+    }];
 }
 
 

@@ -14,7 +14,7 @@
 @end
 @implementation User
 @synthesize UserID,UserName,userToken,avatarImageURLString;
-@synthesize numFollowers,numFollows,photosNumber,selfDescriptions,isFollowed;
+@synthesize numFollowers,numFollows,photosNumber,selfDescriptions,followType;
 @synthesize photoList;
 
 -(NSMutableArray *)photoList
@@ -34,24 +34,47 @@
         return  nil;
     }
     
-    self.UserID = (NSUInteger)[[attributes valueForKeyPath:@"id"] integerValue];
-    self.UserName = [attributes valueForKeyPath:@"UserName"];
-    self.avatarImageURLString = [attributes valueForKeyPath:@"avator_imageUrl"];
-    self.numFollowers = (NSUInteger)[[attributes valueForKey:@"follwers"] integerValue];
-    self.numFollows = (NSUInteger)[[attributes valueForKey:@"follows"] integerValue];
-    self.photosNumber = (NSUInteger)[[attributes valueForKey:@"photoNumber"] integerValue];
-    self.selfDescriptions = [attributes valueForKey:@"selfDescriptions"];
-    if ([[attributes objectForKey:@"isFollow"] isEqualToString:@"true"])
+    self.UserID = [(NSNumber *)[attributes objectForKey:@"user_id"] integerValue];
+    if ([attributes objectForKey:@"nick"])
     {
-        self.isFollowed = true;
+        self.UserName = [attributes objectForKey:@"nick"];
     }
-    else
+    if ([attributes objectForKey:@"avatar"])
     {
-        self.isFollowed = false;
+        self.avatarImageURLString = [attributes objectForKey:@"avatar"];
+    }
+    if ([attributes objectForKey:@"follower_num"])
+    {
+        self.numFollowers = [(NSNumber *)[attributes objectForKey:@"follower_num"] integerValue];
+    }
+    if ([attributes objectForKey:@"followed_num"])
+    {
+        self.numFollows = [(NSNumber *)[attributes objectForKey:@"followed_num"] integerValue];
+    }
+    if ([attributes objectForKey:@"post_num"])
+    {
+        self.photosNumber = [(NSNumber *)[attributes objectForKey:@"post_num"] integerValue];
+    }
+    if ([attributes objectForKey:@"description"])
+    {
+        self.selfDescriptions = [attributes objectForKey:@"description"];
+    }
+    if ([attributes objectForKey:@"followType"])
+    {
+        self.followType =[(NSNumber *)[attributes objectForKey:@"followType"] integerValue];
     }
    // self.photoList = [[NSMutableArray alloc]init];
-    self.photoList = [attributes objectForKey:@"photoList"];
-
+    if ([attributes objectForKey:@"simplepost_list"])
+    {
+        for (NSDictionary *item in [attributes objectForKey:@"simplepost_list"])
+        {
+            NSMutableDictionary *photoItem = [[NSMutableDictionary alloc]init];
+            [photoItem setObject:[item objectForKey:@"post_id"] forKey:@"postId"];
+            [photoItem setObject:[item objectForKey:@"create_time"] forKey:@"time"];
+            [photoItem setObject:[item objectForKey:@"photo"] forKey:@"photoUrl"];
+            [self.photoList addObject:photoItem];
+        }
+    }
     return self;
 
 }
@@ -69,6 +92,7 @@
     copy->numFollowers = numFollowers;
     copy->numFollows = numFollows;
     copy->photosNumber = photosNumber;
+    copy->followType = followType;
     
     copy->photoList = [photoList copy];
     return copy;
@@ -87,6 +111,7 @@
     copy->numFollowers = numFollowers;
     copy->numFollows = numFollows;
     copy->photosNumber = photosNumber;
+    copy->followType = followType;
     
     copy->photoList = [photoList mutableCopy];
     
@@ -106,12 +131,8 @@
                                             @"follows":@100,
                                             @"photoNumber":@100,
                                             @"selfDescriptions":@"生活不只是裆下，还有诗和远方",
-                                            @"isFollow":@"true",
-                                            @"photoList":@[
-                                                    @"http://img3.douban.com/view/photo/photo/public/p2206858462.jpg",
-                                                    @"http://img3.douban.com/view/photo/photo/public/p2206860902.jpg",
-                                                    @"http://img3.douban.com/view/photo/photo/public/p2206861122.jpg"
-                                                    ]
+                                            @"isFollow":@1,
+                                            @"photoList":@[]
                                             }];
     [userList addObject:user];
     User *user2 = [[User alloc]initWithAttributes:@{
@@ -122,12 +143,8 @@
                                                    @"follows":@100,
                                                    @"photoNumber":@100,
                                                    @"selfDescriptions":@"",
-                                                   @"isFollow":@"false",
-                                                   @"photoList":@[
-                                                           @"http://img3.douban.com/view/photo/photo/public/p2206858462.jpg",
-                                                           @"http://img3.douban.com/view/photo/photo/public/p2206860902.jpg",
-                                                           @"http://img3.douban.com/view/photo/photo/public/p2206861122.jpg"
-                                                       ]
+                                                   @"isFollow":@2,
+                                                   @"photoList":@[]
                                                    }];
     [userList addObject:user2];
     return userList;

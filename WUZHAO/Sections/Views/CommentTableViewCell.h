@@ -12,9 +12,9 @@
 
 @interface CommentTableViewCell : UITableViewCell
 
-@property (strong, nonatomic)  UIImageView *userAvatorView;
-@property (strong, nonatomic)  UILabel *userName;
-@property (strong, nonatomic)  UILabel *commentContent;
-@property (strong, nonatomic)  UILabel *commentTime;
+@property (strong, nonatomic) IBOutlet UIImageView *userAvatorView;
+@property (strong, nonatomic) IBOutlet UILabel *userName;
+@property (strong, nonatomic) IBOutlet UILabel *commentContent;
+@property (strong, nonatomic) IBOutlet UILabel *commentTime;
 -(void)setAppearance;
 @end

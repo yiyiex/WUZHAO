@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="addressInfoCell" rowHeight="68" id="AVZ-Gd-FtC" customClass="AddressTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="68"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="AVZ-Gd-FtC" id="3c0-VZ-pAl">
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PkJ-pB-cDY" userLabel="textLabel">
+                        <rect key="frame" x="14" y="4" width="314" height="39"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ynM-CL-DAU" userLabel="detailLabel">
+                        <rect key="frame" x="14" y="43" width="298" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="ynM-CL-DAU" secondAttribute="trailing" constant="8" id="7bH-IM-ksJ"/>
+                    <constraint firstItem="PkJ-pB-cDY" firstAttribute="leading" secondItem="3c0-VZ-pAl" secondAttribute="leading" constant="14" id="APn-3k-FlF"/>
+                    <constraint firstItem="PkJ-pB-cDY" firstAttribute="trailing" secondItem="3c0-VZ-pAl" secondAttribute="trailing" constant="8" id="Xpy-UR-6Yb"/>
+                    <constraint firstItem="PkJ-pB-cDY" firstAttribute="top" secondItem="3c0-VZ-pAl" secondAttribute="top" constant="4" id="doe-4N-zFH"/>
+                    <constraint firstAttribute="bottom" secondItem="ynM-CL-DAU" secondAttribute="bottom" constant="4" id="nee-IF-EfY"/>
+                    <constraint firstItem="ynM-CL-DAU" firstAttribute="top" secondItem="PkJ-pB-cDY" secondAttribute="bottom" constant="4" id="uSi-Gh-OMU"/>
+                    <constraint firstItem="ynM-CL-DAU" firstAttribute="leading" secondItem="3c0-VZ-pAl" secondAttribute="leading" constant="14" id="ydv-yT-ezP"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="addressLabel" destination="PkJ-pB-cDY" id="ckQ-N5-Ga0"/>
+                <outlet property="detailAddressLabel" destination="ynM-CL-DAU" id="hKF-NX-oYH"/>
+            </connections>
+            <point key="canvasLocation" x="416" y="313"/>
+        </tableViewCell>
+    </objects>
+</document>

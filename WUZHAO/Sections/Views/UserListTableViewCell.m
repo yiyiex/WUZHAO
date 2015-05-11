@@ -21,7 +21,6 @@
 #import "QDYHTTPClient.h"
 #import "SVProgressHUD.h"
 
-#define AVATARIMAGEWIDTH 36
 @interface UserListTableViewCell()
 @property (nonatomic,strong) User *cellUser;
 @end
@@ -59,34 +58,46 @@
     NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
     if ([sender.titleLabel.text  isEqualToString:@"关注"])
     {
-        [[QDYHTTPClient sharedInstance]followUser:self.cellUser.UserID withUserId:myUserId whenComplete:^(NSDictionary *result) {
-            if ([result objectForKey:@"data"])
-            {
-                //[SVProgressHUD showInfoWithStatus:@"关注成功"];
-                [sender setTitle:@"已关注" forState:UIControlStateNormal];
-                
-            }
-            else if ([result objectForKey:@"error"])
-            {
-                [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
-            }
-        }];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [[QDYHTTPClient sharedInstance]followUser:self.cellUser.UserID withUserId:myUserId whenComplete:^(NSDictionary *result) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([result objectForKey:@"data"])
+                    {
+                        //[SVProgressHUD showInfoWithStatus:@"关注成功"];
+                        [sender setTitle:@"已关注" forState:UIControlStateNormal];
+                        [sender setThemeBackGroundAppearance];
+                        
+                    }
+                    else if ([result objectForKey:@"error"])
+                    {
+                        [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+                    }
+                });
+
+            }];
+        });
+
     }
-    else if ([sender.titleLabel.text  isEqualToString:@"已关注"])
+    else if ([sender.titleLabel.text  isEqualToString:@"已关注"]||[sender.titleLabel.text  isEqualToString:@"互相关注"])
     {
         NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-        [[QDYHTTPClient sharedInstance]unFollowUser:self.cellUser.UserID withUserId:myUserId whenComplete:^(NSDictionary *result) {
-            if ([result objectForKey:@"data"])
-            {
-                //[SVProgressHUD showInfoWithStatus:@"关注成功"];
-                [sender setTitle:@"关注" forState:UIControlStateNormal];
-                
-            }
-            else if ([result objectForKey:@"error"])
-            {
-                [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
-            }
-        }];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [[QDYHTTPClient sharedInstance]unFollowUser:self.cellUser.UserID withUserId:myUserId whenComplete:^(NSDictionary *result) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([result objectForKey:@"data"])
+                {
+                    //[SVProgressHUD showInfoWithStatus:@"关注成功"];
+                    [sender setTitle:@"关注" forState:UIControlStateNormal];
+                    [sender setThemeFrameAppearence];
+                    
+                }
+                else if ([result objectForKey:@"error"])
+                {
+                    [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+                }
+            });
+            }];
+        });
     }
 }
 
@@ -99,34 +110,54 @@
     [self.avatorImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
     [self.userNameLabel setDarkGreyLabelAppearance];
     [self.userDescriptionLabel setSmallReadOnlyLabelAppearance];
+    if ([self.userDescriptionLabel.text isEqualToString:@""])
+    {
+        [self.userNameLabelTopAlignment setConstant:10.0f];
+    }
+    else
+    {
+        [self.userNameLabelTopAlignment setConstant:2.0f];
+    }
 }
 
 -(void)configWithUser:(User *)user style:(NSString *)style
 {
-    [self setAppearance];
+
     self.cellUser = user;
     self.userNameLabel.text = user.UserName;
     self.userDescriptionLabel.text = user.selfDescriptions;
     
-    [self.avatorImageView sd_setImageWithURL:[NSURL URLWithString:user.avatarImageURLString]];
-    [self.avatorImageView setRoundConerWithRadius:AVATARIMAGEWIDTH/2];
+    NSInteger myUserId =  [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
     
-    UITapGestureRecognizer *avatarClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(avatarClick:)];
-    [self.avatorImageView setUserInteractionEnabled:YES];
-    [self.avatorImageView addGestureRecognizer:avatarClick];
+    [self.avatorImageView sd_setImageWithURL:[NSURL URLWithString:user.avatarImageURLString]];
+    [self.avatorImageView setRoundConerWithRadius:self.avatorImageView.frame.size.width/2];
     if ([style isEqualToString:UserListStyle2 ]|| [style isEqualToString:UserListStyle3])
     {
         [self.followButton setNormalButtonAppearance];
-        if (user.isFollowed)
+        if (user.UserID == myUserId)
         {
-            [self.followButton setTitle:@"已关注" forState:UIControlStateNormal];
-            [self.followButton setThemeBackGroundAppearance];
+            [self.followButton setHidden:YES];
         }
         else
         {
-            [self.followButton setTitle:@"关注" forState:UIControlStateNormal];
-            [self.followButton setThemeFrameAppearence];
+            [self.followButton setHidden:NO];
+            if (user.followType == FOLLOWED)
+            {
+                [self.followButton setTitle:@"已关注" forState:UIControlStateNormal];
+                [self.followButton setThemeBackGroundAppearance];
+            }
+            else if (user.followType == FOLLOWEACH)
+            {
+                [self.followButton setTitle:@"互相关注" forState:UIControlStateNormal];
+                [self.followButton setThemeBackGroundAppearance];
+            }
+            else if (user.followType == UNFOLLOW)
+            {
+                [self.followButton setTitle:@"关注" forState:UIControlStateNormal];
+                [self.followButton setThemeFrameAppearence];
+            }
         }
+
     }
     if ([style isEqualToString:UserListStyle3])
         
@@ -144,7 +175,7 @@
             [self.photo3 sd_setImageWithURL:user.photoList[2] placeholderImage:[UIImage imageNamed:@"空白图片"]];
         }
     }
-    
+    [self setAppearance];
 }
 
 @end

@@ -10,6 +10,7 @@
 
 @interface AddressViewController : UIViewController <UITabBarDelegate>
 
-@property (strong, nonatomic) IBOutlet UITabBar *selectControllerToShowTabBar;
+@property (nonatomic) NSInteger poiId;
+@property (nonatomic, strong) NSString *poiName;
 
 @end

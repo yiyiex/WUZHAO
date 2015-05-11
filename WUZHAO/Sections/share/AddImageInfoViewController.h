@@ -7,20 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PlaceholderTextView.h"
 #import "WhatsGoingOn.h"
+#import "POI.h"
 
 @interface AddImageInfoViewController : UIViewController <UITableViewDataSource,UITableViewDelegate ,UITextViewDelegate ,UIAlertViewDelegate>
-
-@property (strong, nonatomic) IBOutlet UIImageView *postImageView;
-@property (strong, nonatomic) IBOutlet UITextView *postImageDescription;
-@property (strong, nonatomic) IBOutlet UITableView *addressTableView;
-@property (strong, nonatomic) IBOutlet UILabel *addressInfoLabel;
-
-
-
 @property (strong,nonatomic) WhatsGoingOn *whatsGoingOnItem;
 
 @property (nonatomic,strong) UIImage *postImage;
+@property (nonatomic,strong) NSDictionary *postImageInfo;
 - (IBAction)PostButtonPressed:(UIBarButtonItem *)sender;
 @end
 

@@ -26,6 +26,12 @@
     self.layer.masksToBounds = YES;
     [self.titleLabel setFont:WZ_FONT_SMALL_SIZE];
 }
+-(void)setNormalButtonWithBoldFontAppearance
+{
+    [self.layer setCornerRadius:2.0f];
+    self.layer.masksToBounds = YES;
+    [self.titleLabel setFont:WZ_FONT_SMALLER_BOLD_SIZE];
+}
 
 -(void)setSmallButtonAppearance
 {
@@ -46,15 +52,26 @@
 
 -(void)setGreyBackGroundAppearance
 {
-    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_LIGHT_GREY_PARENT] forState:UIControlStateNormal];
-    [self setTintColor:THEME_COLOR_DARK_GREY_PARENT];
+    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_LIGHT_GREY_MORE_PARENT] forState:UIControlStateNormal];
+    [self setTitleColor:THEME_COLOR_LIGHT_GREY forState:UIControlStateNormal];
+    [self setTitleColor:THEME_COLOR_LIGHT_GREY forState:UIControlStateHighlighted];
+}
+-(void)setDarkGreyParentBackGroundAppearance
+{
+    
+    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARK_GREY_PARENT] forState:UIControlStateNormal];
+    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARK_GREY_PARENT] forState:UIControlStateHighlighted];
+    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARK_GREY_PARENT] forState:UIControlStateDisabled];
+    [self setTitleColor:THEME_COLOR_WHITE forState:UIControlStateNormal];
+    [self setTitleColor:THEME_COLOR_WHITE forState:UIControlStateHighlighted];
+    
 }
 -(void)setDarkGreyBackGroundAppearance
 {
 
     [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARK_GREY] forState:UIControlStateNormal];
-    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARKER_GREY] forState:UIControlStateHighlighted];
-    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_LIGHT_GREY] forState:UIControlStateDisabled];
+    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARK_GREY] forState:UIControlStateHighlighted];
+    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARK_GREY] forState:UIControlStateDisabled];
     [self setTitleColor:THEME_COLOR_WHITE forState:UIControlStateNormal];
     [self setTitleColor:THEME_COLOR_WHITE forState:UIControlStateHighlighted];
     
@@ -65,14 +82,16 @@
 {
     self.layer.borderWidth = 1.0;
     self.layer.borderColor = [THEME_COLOR_DARK CGColor];
+    [self setBackgroundColor:[UIColor whiteColor]];
     [self setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
-    [self setTitleColor:THEME_COLOR_DARKER forState:UIControlStateNormal];
+    [self setTitleColor:THEME_COLOR_DARKER forState:UIControlStateHighlighted];
 }
 
 -(void)setThemeBackGroundAppearance
 {
-    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARK] forState:UIControlStateNormal];
-    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARKER] forState:UIControlStateHighlighted];
+    [self setBackgroundColor:THEME_COLOR_DARK];
+   // [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARK] forState:UIControlStateNormal];
+   // [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARKER] forState:UIControlStateHighlighted];
     [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_LIGHT_GREY] forState:UIControlStateDisabled];
     
     [self setTitleColor:THEME_COLOR_WHITE forState:UIControlStateNormal];

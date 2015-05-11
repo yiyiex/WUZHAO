@@ -8,6 +8,7 @@
 
 #import "RegistViewController.h"
 #import "MainTabBarViewController.h"
+#import "SetAvatarIntroductionViewController.h"
 
 #import "User.h"
 
@@ -17,14 +18,20 @@
 #import "PhotoCommon.h"
 
 #import "UIButton+ChangeAppearance.h"
+#import "NSString+SHA1WithSalt.h"
+#import "NSString+Verify.h"
 
 #import "macro.h"
 
 @interface RegistViewController()
+{
+    BOOL cancelRegist;
+}
 @property (nonatomic,strong) NSString *userName;
 @property (nonatomic,strong) NSString *phoneNumber;
 @property (nonatomic,strong) NSString *email;
 @property (nonatomic,strong) NSString *password;
+@property (nonatomic,strong) NSString *sPassword;
 
 @end
 
@@ -39,6 +46,8 @@
     [self setNavigationAppearance];
     [self drawRegisterViewAppearance];
     [self initView];
+    
+    cancelRegist = false;
     
 }
 
@@ -71,22 +80,29 @@
     
     
     self.emailTextField.placeholder = @"邮 箱";
-    self.emailTextField.keyboardAppearance = UIKeyboardAppearanceDark;
+    self.emailTextField.keyboardAppearance = UIKeyboardAppearanceDefault;
     self.emailTextField.keyboardType = UIKeyboardTypeAlphabet;
     
     self.userNameTextField.placeholder = @"用户名";
-    self.userNameTextField.keyboardAppearance = UIKeyboardAppearanceDark;
+    self.userNameTextField.keyboardAppearance = UIKeyboardAppearanceDefault;
     self.userNameTextField.keyboardType = UIKeyboardTypeDefault;
     
     self.passwordTextField.placeholder = @"密 码";
-    self.passwordTextField.keyboardAppearance = UIKeyboardAppearanceDark;
+    self.passwordTextField.keyboardAppearance = UIKeyboardAppearanceDefault;
     self.passwordTextField.keyboardType = UIKeyboardTypeAlphabet;
     
     
     [self.registerButton setTitle:@"注  册" forState:UIControlStateNormal];
-    [self.registerButton setDarkGreyBackGroundAppearance];
+    [self.registerButton setThemeBackGroundAppearance];
     [self.registerButton setBigButtonAppearance];
     [self.registerButton setEnabled:NO];
+    
+    
+    UIButton *testbutton = [[UIButton alloc]initWithFrame:CGRectMake(20, 300, 200, 30)];
+    [testbutton setThemeBackGroundAppearance];
+    [testbutton setTitle:@"test" forState:UIControlStateNormal];
+    [testbutton addTarget:self action:@selector(testButtonClick) forControlEvents:UIControlEventTouchUpInside];
+       // [self.view addSubview:testbutton];
     
 }
 -(void)drawRegisterViewAppearance
@@ -130,11 +146,14 @@
 
 -(IBAction)passwordTextFieldEditEnd:(id)sender
 {
-
-    [self checkInput];
-    [self.registerButton setEnabled:YES];
+    if (![self checkInput])
+    {
+        return;
+    }
+    
     [self registerNewUser];
     [self.registerButton setEnabled:NO];
+    self.passwordTextField.text = @"";
 }
 
 - (IBAction)dismisButtonPressed:(id)sender {
@@ -142,6 +161,19 @@
 }
 -(void)returnToLaunch
 {
+    cancelRegist = true;
+    if ([self.emailTextField isFirstResponder])
+    {
+        [self.emailTextField resignFirstResponder];
+    }
+    if ([self.userNameTextField isFirstResponder])
+    {
+        [self.userNameTextField resignFirstResponder];
+    }
+    if ([self.passwordTextField isFirstResponder])
+    {
+        [self.passwordTextField resignFirstResponder];
+    }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -150,7 +182,12 @@
 
 -(void)registerNewUser
 {
-    NSURLSessionDataTask *registerTask = [[QDYHTTPClient sharedInstance]RegisterWithUserName:self.userName email:self.email password:self.password complete:^(NSDictionary *result, NSError *error) {
+    [[QDYHTTPClient sharedInstance]RegisterWithUserName:self.userName email:self.email password:self.sPassword complete:^(NSDictionary *result, NSError *error) {
+        if (cancelRegist)
+        {
+            [SVProgressHUD dismiss];
+            return ;
+        }
         if (error)
         {
             [SVProgressHUD showErrorWithStatus:@"服务器访问失败"];
@@ -169,20 +206,17 @@
             else
             {
                 [SVProgressHUD dismiss];
-                NSLog(@"register success info %@",result);
-                NSDictionary *data = [result objectForKey:@"data"];
-                User *user = [[User alloc]init];
-                
-                user.UserID = [(NSNumber *)[data objectForKey:@"user_id"] integerValue];
-                user.userToken = [data objectForKey:@"token"];
-                
-                [self setDefaultUserInfoWithUser:user];
                 if ( [[QDYHTTPClient sharedInstance] IsAuthenticated])
                 {
+                    /*
                     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                     MainTabBarViewController *main = [mainStoryboard instantiateViewControllerWithIdentifier:@"mainTabBarController"];
-                    [self showViewController:main sender:nil];
+                    [self.navigationController pushViewController:main animated:YES];
                     return ;
+                     */
+                    UIStoryboard *introductionStoryboard = [UIStoryboard storyboardWithName:@"Introduction" bundle:nil];
+                    SetAvatarIntroductionViewController *introductionController = [introductionStoryboard instantiateViewControllerWithIdentifier:@"introduction"];
+                    [self.navigationController pushViewController:introductionController animated:YES];
                 }
                 
             }
@@ -216,12 +250,31 @@
         return false;
     }
     [self.registerButton setEnabled:YES];
+    if (![self.emailTextField.text isVaildEmail])
+    {
+        [SVProgressHUD showInfoWithStatus:@"请输入正确的邮箱"];
+        return false;
+    }
+    if (![self.userNameTextField.text isValidUsername])
+    {
+        [SVProgressHUD showInfoWithStatus:@"请输入规范的用户名，可以包含汉子、字母、数字以及下划线"];
+        return false;
+    }
+    
+    if (![self.passwordTextField.text isValidPassword])
+    {
+        [SVProgressHUD showInfoWithStatus:@"密码至少6位"];
+        return false;
+    }
+    [self.registerButton setEnabled:YES];
+    self.sPassword = [self.password SHA1];
     return true;
 }
 
 #pragma mark - textView Delegate
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    [[[QDYHTTPClient sharedInstance]operationQueue]cancelAllOperations];
     if (![self.userNameTextField isExclusiveTouch])
     {
         [self.userNameTextField resignFirstResponder];
@@ -241,17 +294,12 @@
         
     }
 }
-#pragma mark -set userDefaultData
--(void)setDefaultUserInfoWithUser:(User *)user
+
+-(void)testButtonClick
 {
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setInteger:user.UserID forKey:@"userId"];
-    [userDefaults setObject:self.userName forKey:@"userName"];
-    if (![user.userToken isEqualToString:@""] && user.userToken)
-    {
-        [userDefaults setObject:user.userToken forKey:@"token"];
-    }
-    [userDefaults setObject:@"" forKey:@"avatarUrl"];
-    [userDefaults synchronize];
+    UIStoryboard *introductionStoryboard = [UIStoryboard storyboardWithName:@"Introduction" bundle:nil];
+    SetAvatarIntroductionViewController *introductionController = [introductionStoryboard instantiateViewControllerWithIdentifier:@"introduction"];
+    [self.navigationController pushViewController:introductionController animated:YES];
 }
+
 @end

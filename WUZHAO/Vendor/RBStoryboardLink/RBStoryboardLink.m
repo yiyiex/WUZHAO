@@ -25,6 +25,8 @@
 #import "RBStoryboardLink.h"
 #import "RBStoryboardLinkSource.h"
 
+#import "macro.h"
+
 
 @interface RBStoryboardLink ()
 
@@ -111,13 +113,7 @@
      navItem.leftBarButtonItem = linkedNavItem.leftBarButtonItem;
      navItem.leftBarButtonItems = linkedNavItem.leftBarButtonItems;
      navItem.leftItemsSupplementBackButton = linkedNavItem.leftItemsSupplementBackButton;
-
-    
-    
-    
-    
-
-    
+   
     // Grabs the UITabBarItem
     // The link overrides the contained view's tab bar item.
     if (self.tabBarController)
@@ -187,7 +183,15 @@
     if (needsTopLayoutGuide && needsBottomLayoutGuide)
         return @"V:[topGuide][view][bottomGuide]";
     else if (needsTopLayoutGuide)
+    {
+        if (SYSTEM_VERSION_EQUAL_TO(@"7"))
+        {
+            return @"V:[topGuide]-64[view]|";
+        }
         return @"V:[topGuide][view]|";
+        
+    }
+    
     else if (needsBottomLayoutGuide)
         return @"V:|[view][bottomGuide]";
     else

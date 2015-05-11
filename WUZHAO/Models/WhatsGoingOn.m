@@ -28,7 +28,108 @@
     }
     return _likeUserList;
 }
+-(instancetype)initWithAttributes:(NSDictionary *)data
+{
+    self = [super init];
+    if (!self)
+    {
+        return  nil;
+    }
+    self.postId =[(NSNumber *)[data objectForKey:@"post_id"] integerValue];
+    self.photoUser.UserID = [(NSNumber *)[data objectForKey:@"user_id"]integerValue];
+    self.photoUser.UserName = [data objectForKey:@"nick"];
+    if ([data objectForKey:@"avatar"])
+    {
+        self.photoUser.avatarImageURLString = [data objectForKey:@"avatar"];
+    }
+    if ([data objectForKey:@"description"])
+    {
+        self.photoUser.selfDescriptions = [data objectForKey:@"description"];
+    }
+    
+    
+    self.postTime = [data objectForKey:@"create_time"];
+    self.imageUrlString = [data objectForKey:@"photo"];
+    if ([data objectForKey:@"thought"])
+    {
+        self.imageDescription = [data objectForKey:@"thought"];
+    }
+    self.isLike = [(NSNumber *)[data objectForKey:@"isliked"] integerValue] == 1?true:false;
+    self.likeCount = [(NSNumber *)[data objectForKey:@"like_num"] integerValue];
+    
+    self.commentNum = [(NSNumber *)[data objectForKey:@"comment_num"]integerValue];
+    
+    if ([data objectForKey:@"poi_id"])
+    {
+        self.poiId = [(NSNumber *)[data objectForKey:@"poi_id"] integerValue];
+    }
+    if ([data objectForKey:@"poi_name"])
+    {
+        self.poiName = [data objectForKey:@"poi_name"];
+    }
+    
+    
+    if ([[data objectForKey:@"more_comments"] isEqualToString:@"false"])
+    {
+        self.hasMoreComments =  NO;
+    }
+    else
+    {
+        self.hasMoreComments = YES;
+    }
+    if ([data objectForKey:@"comment_list"])
+    {
+        NSArray *commentListInData = [data objectForKey:@"comment_list"];
+        [self configureWithCommentList:commentListInData];
+    }
+    if ([data objectForKey:@"likeUserList"])
+    {
+        NSArray *likeList = [data objectForKey:@"likeUserList"];
+        [self configureIWithLikeList:likeList];
+    }
+    
+    return self;
+}
 
+-(void)configureWithCommentList:(NSArray *)commentListInData
+{
+    NSMutableArray *commentStringList = [[NSMutableArray alloc]init];
+    NSMutableArray *commentList = [[NSMutableArray alloc]init];
+    for (NSDictionary *comment in commentListInData)
+    {
+        NSMutableDictionary *commentItem = [[NSMutableDictionary alloc]init];
+        NSString *commentString ;
+        [commentItem setObject:[comment objectForKey:@"comment"] forKey:@"content"];
+        [commentItem setObject:[comment objectForKey:@"comment_id"] forKey:@"commentId"];
+        [commentItem setObject:[comment objectForKey:@"create_time"] forKey:@"time"];
+        [commentItem setObject:[comment objectForKey:@"post_id"] forKey:@"postId"];
+        [commentItem setObject:[comment objectForKey:@"nick"] forKey:@"userName"];
+        [commentItem setObject:[comment objectForKey:@"user_id"] forKey:@"userId"];
+        [commentItem setObject:[comment objectForKey:@"avatar"] forKey:@"avatarUrl"];
+        [commentList addObject:commentItem];
+        commentString =[NSString stringWithFormat:@"%@: %@",[commentItem objectForKey:@"userName"],[commentItem objectForKey:@"content"]];
+        [commentStringList addObject:commentString];
+        
+        
+    }
+    self.commentList = commentList;
+    self.commentStringList = commentStringList;
+    
+}
+
+-(void)configureIWithLikeList:(NSArray *)likeList
+{
+    
+    if ([likeList count]>0)
+    {
+        for (NSDictionary *likeUserData in likeList)
+        {
+            User *likeUser = [[User alloc]initWithAttributes:likeUserData];
+            [self.likeUserList addObject:likeUser];
+        }
+        
+    }
+}
 + (NSArray *) newDataSource
 {
     NSMutableArray *dataSource = [[NSMutableArray alloc] init];

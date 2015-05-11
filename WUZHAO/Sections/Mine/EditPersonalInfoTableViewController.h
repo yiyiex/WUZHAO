@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "User.h"
 
-
+#import "PlaceholderTextView.h"
 
 @interface EditPersonalInfoTableViewController : UITableViewController
 
@@ -17,11 +17,14 @@
 @property (strong, nonatomic) IBOutlet UIImageView *avatarImageView;
 
 @property (strong, nonatomic) IBOutlet UITableViewCell *nickNameCell;
-@property (strong, nonatomic) IBOutlet UITextField *nickNameTextField;
+@property (strong, nonatomic)  UITextField *nickNameTextField;
+@property (strong, nonatomic)  PlaceholderTextView *nickNameTextView;
 @property (strong, nonatomic) IBOutlet UITableViewCell *webSiteCell;
-@property (strong, nonatomic) IBOutlet UITextField *webSiteTextField;
+@property (strong, nonatomic)  UITextField *webSiteTextField;
 @property (strong, nonatomic) IBOutlet UITableViewCell *selfDescriptionCell;
-@property (strong, nonatomic) IBOutlet UITextField *selfDescriptionTextField;
+@property (strong, nonatomic)  UITextField *selfDescriptionTextField;
+@property (strong, nonatomic)  PlaceholderTextView *selfDescriptionTextView;
+@property (strong, nonatomic) IBOutlet UITableViewCell *feedBackCell;
 
 @property (strong, nonatomic) IBOutlet UITableViewCell *changePwdCell;
 /*

@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NoticeViewController : UIViewController
+@interface NoticeViewController : UITableViewController
 
+
+-(void)getLatestData;
 @end

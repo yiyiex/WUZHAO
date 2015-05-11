@@ -8,8 +8,9 @@
 
 #import "QDYHTTPClient.h"
 
-#define KAPIHOST @"http://qiudaoyu.sinaapp.com/"
-//#define KAPIHOST @"http://192.168.1.103/wuzhao/"
+
+#define KAPIHOST @"http://placeapp.cn/"
+
 
 @implementation QDYHTTPClient
 +(QDYHTTPClient*)sharedInstance
@@ -19,6 +20,8 @@
     dispatch_once(&oncePredicate,^{
         
         sharedInstance = [[self alloc] initWithBaseURL:[NSURL URLWithString:KAPIHOST]];
+        sharedInstance.responseSerializer = [AFJSONResponseSerializer serializer];
+        [sharedInstance.responseSerializer setAcceptableContentTypes:[NSSet setWithObject:@"application/json"]];
         sharedInstance.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
         
     });
@@ -38,7 +41,7 @@
 
 -(BOOL)IsAuthenticated
 {
-    if (self.currentUser.UserID)
+    if (self.currentUser.UserID && self.currentUser.userToken)
     {
         return true;
     }
@@ -46,9 +49,17 @@
 }
 
 //login and register
--(NSURLSessionDataTask *)LoginWithUserName:(NSString *)UserName password:(NSString *)Password complete:(void (^)(NSDictionary  *result, NSError *error))complete
+-(NSURLSessionDataTask *)LoginWithUserName:(NSString *)UserName password:(NSString *)Password loginType:(NSString *)type complete:(void (^)(NSDictionary  *result, NSError *error))complete
 {
-    NSDictionary *userDic = @{@"username":UserName,@"pwd":Password};
+    NSDictionary *userDic;
+    if ([type isEqualToString:@"nick"])
+    {
+        userDic = @{@"username":UserName,@"pwd":Password,@"type":type};
+    }
+    else if ([type isEqualToString:@"email"])
+    {
+        userDic = @{@"email":UserName,@"pwd":Password,@"type":type};
+    }
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
 
     return [[QDYHTTPClient sharedInstance] POST:@"api/login" parameters:userDic success:^(NSURLSessionDataTask *task, id responseObject)
@@ -70,7 +81,12 @@
                         self.currentUser.UserID =[[data objectForKey:@"user_id"] intValue];
                         self.currentUser.UserName = [data objectForKey:@"nick"];
                         self.currentUser.userToken = [data objectForKey:@"token"];
+                        //self.currentUser.userToken = @"";
+                        [self setDefaultUserInfoWithUser:self.currentUser];
+                        [self updateLocalUserInfo];
+                        NSLog(@"^---^ user id%ld",(long)self.currentUser.UserID);
                         NSLog(@"^---^ user token%@",self.currentUser.userToken);
+                        
                         NSLog(@"%@",data);
                         NSLog(@"\n user info ***********************%@",self.currentUser);
                     }
@@ -114,11 +130,13 @@
                     }
                     else
                     {
-                        NSLog(@"register success!");
-                        self.currentUser.UserID =(NSInteger) [[responseObject objectForKey:@"data"]objectForKey:@"user_id"];
-                        self.currentUser.UserName = userDic[@"nick"];
-                        self.currentUser.userToken = [responseObject objectForKey:@"token"];
+                        NSDictionary *data = [responseObject objectForKey:@"data"];
+                        self.currentUser.UserID =[[data objectForKey:@"user_id"] intValue];
+                        self.currentUser.UserName = [data objectForKey:@"nick"];
+                        self.currentUser.userToken = [data objectForKey:@"token"];
                         NSLog(@"\n user info ***********************%@",self.currentUser);
+                        [self setDefaultUserInfoWithUser:self.currentUser];
+                        [self updateLocalUserInfo];
                         
                         
                     }
@@ -141,23 +159,29 @@
             }];
 }
 
-//change pwd
-
--(void)UpdatePwdWithUserId:(NSInteger)userId password:(NSString *)password newpassword:(NSString *)newPwd whenComplete:(void (^)(NSDictionary *returnData))whenComplete
+//log out
+-(void)logOutWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"api/uploadauth/",(long)userId];
-    NSDictionary *param = @{@"pwd":password,@"newPwd":newPwd};
+    NSString *api = @"api/logout";
+    NSDictionary *param = @{@"userId":[NSNumber numberWithInteger:userId]};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
         if (result) {
-            NSDictionary *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                
+                NSDictionary *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    [returnData setValue:@"退出成功" forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
         }
         else if (error)
@@ -168,28 +192,96 @@
     }];
 }
 
+//change pwd
+
+-(void)UpdatePwdWithUserId:(NSInteger)userId password:(NSString *)password newpassword:(NSString *)newPwd whenComplete:(void (^)(NSDictionary *returnData))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/updatepwd"];
+    NSDictionary *param = @{@"userId":[NSNumber numberWithInteger:userId],@"oldPwd":password,@"newPwd":newPwd};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result) {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                [returnData setValue:@"密码更新成功" forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                //[returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+                [returnData setValue:@"旧密码输入错误" forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器异常" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
+//update personal infomation
+-(void)UpdatePersonalInfoWithUser:(User *)user oldNick:(NSString *)oldNick whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/updateuser"];
+
+    NSDictionary *param = @{@"userId":[NSNumber numberWithInteger:user.UserID],@"oldNick":oldNick,@"newNick":user.UserName,@"description":user.selfDescriptions};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                [returnData setValue:@"更新个人信息成功" forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器异常" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
 //post one photo
-- (void) GetQiNiuTokenWithUserId:(NSInteger)userId type:(NSInteger)type whenComplete:(void (^)(NSDictionary *))whenComplete
+- (void) GetQiNiuTokenWithUserId:(NSInteger)userId type:(NSInteger)requestType whenComplete:(void (^)(NSDictionary *))whenComplete
 {
     NSString *api = [NSString stringWithFormat:@"api/uploadauth"];
     //NSDictionary *userDic = @{@"nick":@"",@"mobile":@"",@"pwd":@""};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
-    NSDictionary *param = @{@"userid":[NSNumber numberWithInt:userId],@"type":[NSNumber numberWithInt:type]};
+    NSDictionary *param = @{@"userid":[NSNumber numberWithInteger:userId],@"type":[NSNumber numberWithInteger:requestType]};
     [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
         if (result)
         {
-            NSDictionary *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                NSMutableDictionary *tokenData = [[NSMutableDictionary alloc]init];
-                [tokenData setValue:[data objectForKey:@"upload_token"] forKey:@"uploadToken"];
-                [tokenData setValue:[data objectForKey:@"file_name"] forKey:@"imageName"];
-                [returnData setValue:tokenData forKey:@"data"];
-                
+                NSDictionary *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    NSMutableDictionary *tokenData = [[NSMutableDictionary alloc]init];
+                    [tokenData setValue:[data objectForKey:@"upload_token"] forKey:@"uploadToken"];
+                    [tokenData setValue:[data objectForKey:@"file_name"] forKey:@"imageName"];
+                    [returnData setValue:tokenData forKey:@"data"];
+                    
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
         }
         else if (error)
@@ -206,7 +298,8 @@
                                 @"thought":thought,
                                 @"haspoi":haspoi?@"true":@"false",
                                 @"provider":[NSNumber numberWithInteger:provider],
-                                @"uid":uid,@"name":name,
+                                @"uid":uid,
+                                @"name":name,
                                 @"classify":classify,
                                 @"location":location,
                                 @"address":address,
@@ -217,14 +310,21 @@
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"POST" api:api parameters:photoInfo complete:^(NSDictionary *result, NSError *error) {
         if (result) {
-            NSDictionary *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                [returnData setValue:data forKey:@"data"];
+                NSDictionary *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    [returnData setValue:data forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
         }
         else if (error)
@@ -245,13 +345,20 @@
     [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
         if (result)
         {
-            if ([result objectForKey:@"data"])
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                [returnData setValue:@"删除成功" forKey:@"data"];
+                if ([result objectForKey:@"data"])
+                {
+                    [returnData setValue:@"删除成功" forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"删除失败" forKey:@"error"];
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
         }
         else
@@ -262,48 +369,39 @@
         
     }];
 }
-
-//personal info
-
-- (void)GetPersonalInfoWithUserId:(NSInteger)userId page:(NSInteger)page whenComplete:(void (^)(NSDictionary *))whenComplete
+//address info
+-(void)GetPOIInfoWithPoiId:(NSInteger)poiId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"api/user/%ld?page=%ld",(long)userId,(long)page];
-    //NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
+    NSString *api = [NSString stringWithFormat:@"api/poiphotos/%ld",(long)poiId];
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
-    
+    NSMutableArray *poiInfo = [[NSMutableArray alloc]init];
     [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
         if (result)
         {
-            NSDictionary *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                User *user = [[User alloc]init];
-                user.UserID = [(NSNumber *)[data objectForKey:@"user_id"] integerValue];
-                user.UserName = [data objectForKey:@"nick"];
-                user.avatarImageURLString = [data objectForKey:@"avatar"];
-                user.selfDescriptions = [data objectForKey:@"description"];
-                user.photosNumber = [(NSNumber *)[data objectForKey:@"post_num"] integerValue];;
-                user.email = [data objectForKey:@"email"];
-                
-                user.numFollows = [(NSNumber *)[data objectForKey:@"followed_num"] integerValue];
-                user.numFollowers =[(NSNumber *)[data objectForKey:@"follower_num"] integerValue];
-                NSArray *photoList = [data objectForKey:@"simplepost_list"];
-                
-                for (NSDictionary *item in photoList)
+                NSDictionary *data = [result objectForKey:@"data"];
+                if (data)
                 {
-                    NSMutableDictionary *photoItem = [[NSMutableDictionary alloc]init];
-                    [photoItem setObject:[item objectForKey:@"post_id"] forKey:@"postId"];
-                    [photoItem setObject:[item objectForKey:@"create_time"] forKey:@"time"];
-                    [photoItem setObject:[item objectForKey:@"photo"] forKey:@"photoUrl"];
-                    [user.photoList addObject:photoItem];
+                    for (NSDictionary *d in data)
+                    {
+                        WhatsGoingOn *item  = [[WhatsGoingOn alloc]init];
+                        item.postId = [(NSNumber *)[d objectForKey:@"post_id"]integerValue];
+                        item.postTime = [d objectForKey:@"create_time"];
+                        item.imageUrlString = [d objectForKey:@"photo"];
+                        [poiInfo addObject:item];
+                    }
+                    [returnData setObject:poiInfo forKey:@"data"];
                     
                 }
-                [returnData setObject:user forKey:@"data"];
-                // [returnData setValue:user forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setObject:@"接口请求失败" forKey:@"error"];
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
         }
         
@@ -312,56 +410,115 @@
             [returnData setObject:@"服务器异常" forKey:@"error"];
         }
         whenComplete(returnData);
+    }];
+}
+
+
+//personal info
+-(void)GetPersonalSimpleInfoWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/personalinfo/%ld",(long)userId];
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSDictionary *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    User *user = [[User alloc]initWithAttributes:data];
+                    [returnData setObject:user forKey:@"data"];
+                    // [returnData setValue:user forKey:@"data"];
+                }
+                
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
         
+        else if (error)
+        {
+            [returnData setObject:@"服务器异常" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+-(void)GetPersonalInfoWithUserId:(NSInteger)userId currentUserId:(NSInteger)currentUserId page:(NSInteger)page whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/user/%ld?page=%ld&currentUserId=%ld",(long)userId,(long)page,(long)currentUserId];
+    //NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSDictionary *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    User *user = [[User alloc]initWithAttributes:data];
+                    [returnData setObject:user forKey:@"data"];
+                    // [returnData setValue:user forKey:@"data"];
+                }
+                
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        
+        else if (error)
+        {
+            [returnData setObject:@"服务器异常" forKey:@"error"];
+        }
+        whenComplete(returnData);
     }];
     
 }
 
-- (void)GetPersonalPhotosListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
-{
-    //NSString *api = [NSString stringWithFormat:@"api/*******%ld",(long)userId];
-    //NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
-    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
-    whenComplete(returnData);
-}
 
--(void)GetPersonalAddressListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
+-(void)GetPersonalFollowersListWithUserId:(NSInteger)userId currentUserId:(NSInteger)currentUserId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    //NSString *api = [NSString stringWithFormat:@"api/*******%ld",(long)userId];
-    //NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
-    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
-    whenComplete(returnData);
-}
-
--(void )GetPersonalFollowersListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
-{
-    NSString *api = [NSString stringWithFormat:@"/api/guanzhuzhe/%ld",(long)userId];
+    NSString *api = [NSString stringWithFormat:@"/api/guanzhuzhe/%ld?currentUserId=%ld",(long)userId,(long)currentUserId];
     //NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
         NSMutableArray *userList = [[NSMutableArray alloc]init];
-        if ([result objectForKey:@"success"])
+        if (result)
         {
-            NSArray *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                for (NSDictionary *item in data)
+                NSArray *data = [result objectForKey:@"data"];
+                if (data)
                 {
-                    User *user = [[User alloc]init];
-                    user.UserID = [(NSNumber *)[item objectForKey:@"user_id"] integerValue];
-                    user.UserName = [item objectForKey:@"nick"];
-                    user.selfDescriptions = [item objectForKey:@"description"];
-                    user.avatarImageURLString = [item objectForKey:@"avatar"];
-                    
-                    [userList addObject:user];
+                    for (NSDictionary *item in data)
+                    {
+                        User *user = [[User alloc]initWithAttributes:item];
+                        [userList addObject:user];
+                    }
+                    [returnData setValue:userList forKey:@"data"];
                 }
-                [returnData setValue:userList forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
-            
         }
         else
         {
@@ -373,33 +530,36 @@
     
 }
 
--(void )GetPersonalFollowsListWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
+-(void)GetPersonalFollowsListWithUserId:(NSInteger)userId currentUserId:(NSInteger)currentUserId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"api/guanzhule/%ld",(long)userId];
+    NSString *api = [NSString stringWithFormat:@"api/guanzhule/%ld?currentUserId=%ld",(long)userId,(long)currentUserId];
     //NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId]};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
         NSMutableArray *userList = [[NSMutableArray alloc]init];
-        if ([result objectForKey:@"success"])
+        if (result)
         {
-            NSArray *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                for (NSDictionary *item in data)
+                NSArray *data = [result objectForKey:@"data"];
+                if (data)
                 {
-                    User *user = [[User alloc]init];
-                    user.UserID = [(NSNumber *)[item objectForKey:@"user_id"] integerValue];
-                    user.UserName = [item objectForKey:@"nick"];
-                    user.selfDescriptions = [item objectForKey:@"description"];
-                    user.avatarImageURLString = [item objectForKey:@"avatar"];
-                    
-                    [userList addObject:user];
+                    for (NSDictionary *item in data)
+                    {
+                        User *user = [[User alloc]initWithAttributes:item];
+                        
+                        [userList addObject:user];
+                    }
+                    [returnData setValue:userList forKey:@"data"];
                 }
-                [returnData setValue:userList forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
             
         }
@@ -420,14 +580,21 @@
     [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
      if (result)
      {
-        if ([result objectForKey:@"data"])
-        {
-            [returnData setValue:@"上传头像成功" forKey:@"data"];
-        }
-        else
-        {
-            [returnData setValue:@"接口请求失败" forKey:@"error"];
-        }
+         if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+         {
+            if ([result objectForKey:@"data"])
+            {
+                [returnData setValue:@"上传头像成功" forKey:@"data"];
+            }
+         }
+         else if ([result objectForKey:@"msg"])
+         {
+             [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+         }
+         else
+         {
+             [returnData setValue:@"服务器错误" forKey:@"error"];
+         }
     }
      else if (error)
      {
@@ -446,96 +613,32 @@
     //NSDictionary *param = @{@"user_id":nsint};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
-        if ([result objectForKey:@"success"])
+        if (result)
         {
-            NSArray *data = [result objectForKey:@"data"];
-            NSMutableArray *postData = [[NSMutableArray alloc]init];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                NSInteger dataCount = [data count];
-                
-                // item.photoUser = [[User alloc]init];
-                for (NSInteger i = 0;i <dataCount;i++)
+                NSArray *data = [result objectForKey:@"data"];
+                NSMutableArray *postData = [[NSMutableArray alloc]init];
+                if (data)
                 {
-                    WhatsGoingOn *item = [[WhatsGoingOn alloc]init];
+                    NSInteger dataCount = [data count];
                     
-                    item.postId =[(NSNumber *)[[data objectAtIndex:i] objectForKey:@"post_id"] integerValue];
-                    
-                    
-                    item.photoUser.UserID = [(NSNumber *)[[data objectAtIndex:i] objectForKey:@"user_id"]integerValue];
-                    item.photoUser.UserName = [data[i] objectForKey:@"nick"];
-                    item.photoUser.avatarImageURLString = [data[i] objectForKey:@"avatar"];
-                    item.photoUser.selfDescriptions = [data[i] objectForKey:@"description"];
-                    item.postTime = [data[i] objectForKey:@"create_time"];
-                    item.imageUrlString = [data[i] objectForKey:@"photo"];
-                    item.imageDescription = [data[i] objectForKey:@"thought"];
-                    item.poiId = [(NSNumber *)[data[i] objectForKey:@"poi_id"] integerValue];
-                    item.poiName = [data[i] objectForKey:@"poi_name"];
-                    item.isLike = [(NSNumber *)[data[i] objectForKey:@"isliked"]integerValue]==1?true:false;
-                    
-                    //评论相关内容
-                    item.commentNum = [(NSNumber *)[data[i] objectForKey:@"comment_num"]integerValue];
-
-                    if ([[data[i] objectForKey:@"more_comments"] isEqualToString:@"false"])
+                    // item.photoUser = [[User alloc]init];
+                    for (NSInteger i = 0;i <dataCount;i++)
                     {
-                        item.hasMoreComments =  NO;
+                        WhatsGoingOn *item = [[WhatsGoingOn alloc]initWithAttributes:data[i]];
+                        [postData addObject:item];
                     }
-                    else
-                    {
-                        item.hasMoreComments = YES;
-                    }
-                    
-                    NSMutableString *commentString = [[NSMutableString alloc]init];
-                    NSMutableArray *commentList = [[NSMutableArray alloc]init];
-                    NSArray *commentListInData = [data[i] objectForKey:@"comment_list"];
-                   
-                    for (NSDictionary *comment in commentListInData)
-                    {
-                        NSMutableDictionary *commentItem = [[NSMutableDictionary alloc]init];
-                        [commentItem setValue:[comment objectForKey:@"comment"] forKey:@"content"];
-                        [commentItem setValue:[comment objectForKey:@"comment_id"] forKey:@"comment_id"];
-                        [commentItem setValue:[comment objectForKey:@"create_time"] forKey:@"time"];
-                        [commentItem setValue:[comment objectForKey:@"post_id"] forKey:@"postId"];
-                        [commentItem setValue:[comment objectForKey:@"user_id"] forKey:@"userName"];
-                        [commentItem setValue:[comment objectForKey:@"user_name"] forKey:@"userId"];
-                        [commentList addObject:commentItem];
-                        [commentString appendString:[NSString stringWithFormat:@"<userName>%@</userName>%@\n",[commentItem objectForKey:@"userName"],[commentItem objectForKey:@"content"]]];
-                        if (commentList.count == 4)
-                        {
-                            [commentString appendString:[NSString stringWithFormat:@"<seeMore>查看更多</seeMore>\n"]];
-                        }
-                        
-                        
-                    }
-                    item.comment = [commentString mutableCopy];
-                    item.commentList = [commentList mutableCopy];
-                    
-                    //赞相关内容
-                    item.likeCount = [(NSNumber *)[data[i] objectForKey:@"like_num"] integerValue];
-                    if ([[data[i] objectForKey:@"likeUserList"] count]>0)
-                    {
-                        for (NSDictionary *likeUserData in [data[i] objectForKey:@"likeUserList"])
-                        {
-                            User *likeUser = [[User alloc]init];
-                            likeUser.UserID =[(NSNumber *) [likeUserData objectForKey:@"user_id"] integerValue];
-                            likeUser.UserName = [likeUserData objectForKey:@"avatar"];
-                            likeUser.avatarImageURLString = [likeUserData objectForKey:@"avatar"];
-                            likeUser.selfDescriptions = [likeUserData objectForKey:@"description"];
-                            [item.likeUserList addObject:likeUser];
-                        }
-                    }
-
-                    [postData addObject:item];
-                    
-                    
-                    
+                    [returnData setValue:postData forKey:@"data"];
                 }
-                [returnData setValue:postData forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
-                
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
         }
         else if (error)
@@ -553,17 +656,23 @@
     //NSDictionary *param = @{@"user_id":@"2",@"post_id":@"1"};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
-        if ([result objectForKey:@"success"])
+        if (result)
         {
-            NSArray *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                [returnData setValue:@"点赞成功" forKey:@"data"];
+                NSArray *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    [returnData setValue:@"点赞成功" forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
-                
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
         }
         else if (error)
@@ -582,17 +691,23 @@
     //NSDictionary *param = @{@"user_id":@"2",@"post_id":@"1"};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
-        if ([result objectForKey:@"success"])
+        if (result)
         {
-            NSArray *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                [returnData setValue:@"点赞成功" forKey:@"data"];
+                NSArray *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    [returnData setValue:@"点赞成功" forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
-                
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
         }
         else if (error)
@@ -611,26 +726,34 @@
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
         NSMutableArray *userList = [[NSMutableArray alloc]init];
-        if ([result objectForKey:@"success"])
+        if (result)
         {
-            NSArray *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                for (NSDictionary *item in data)
+                NSArray *data = [result objectForKey:@"data"];
+                if (data)
                 {
-                    User *user = [[User alloc]init];
-                    user.UserID = [(NSNumber *)[item objectForKey:@"user_id"] integerValue];
-                    user.UserName = [item objectForKey:@"nick"];
-                    user.selfDescriptions = [item objectForKey:@"description"];
-                    user.avatarImageURLString = [item objectForKey:@"avatar"];
-                    
-                    [userList addObject:user];
+                    for (NSDictionary *item in data)
+                    {
+                        User *user = [[User alloc]init];
+                        user.UserID = [(NSNumber *)[item objectForKey:@"user_id"] integerValue];
+                        user.UserName = [item objectForKey:@"nick"];
+                        user.selfDescriptions = [item objectForKey:@"description"];
+                        user.avatarImageURLString = [item objectForKey:@"avatar"];
+                        
+                        [userList addObject:user];
+                    }
+                  
+                    [returnData setValue:userList forKey:@"data"];
                 }
-                [returnData setValue:userList forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
             
         }
@@ -643,12 +766,109 @@
     }];
 }
 
+-(void)GetCommentListWithPostId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"/api/comment/%ld",(long)postId];
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSArray *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    WhatsGoingOn *item = [[WhatsGoingOn alloc]init];
+                    item.postId = postId;
+                    [item configureWithCommentList:data];
+                    [returnData setValue:item forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+            
+        }
+        else
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
 -(void)CommentPhotoWithUserId:(NSInteger)userId postId:(NSInteger)postId comment:(NSString *)comment whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    // NSString *api = [NSString stringWithFormat:@"api/comment/%ld",(long)postId];
-    //NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:self.currentUser.UserID],@"post_id":[NSNumber numberWithInteger:postId],@"comment":comment};
+     NSString *api = [NSString stringWithFormat:@"/api/putcomment"];
+    NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId],@"post_id":[NSNumber numberWithInteger:postId],@"comment":comment};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
-    whenComplete(returnData);
+    [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSNumber *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    [returnData setValue:data forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+            
+        }
+        else
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+         whenComplete(returnData);
+    }];
+   
+}
+
+-(void)DeleteCommentPhotoWithCommentId:(NSInteger)commentId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"/api/deletecomment"];
+    NSDictionary *param = @{@"comment_id":[NSNumber numberWithInteger:commentId]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSNumber *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    [returnData setValue:data forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+            
+        }
+        else
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
 }
 
 -(void)GetPhotoInfoWithPostId:(NSInteger)postId userId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
@@ -656,67 +876,27 @@
     NSString *api = [NSString stringWithFormat:@"/api/post/%ld?user_id=%ld",(long)postId,(long)userId];
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
-    if ([result objectForKey:@"success"])
+        if (result)
         {
-            WhatsGoingOn *postItem = [[WhatsGoingOn alloc]init];
-            NSDictionary *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                postItem.postId =[(NSNumber *)[data objectForKey:@"post_id"] integerValue];
                 
-                
-                postItem.photoUser.UserID = [(NSNumber *)[data objectForKey:@"user_id"]integerValue];
-                postItem.photoUser.UserName = [data objectForKey:@"nick"];
-                postItem.photoUser.avatarImageURLString = [data objectForKey:@"avatar"];
-                postItem.photoUser.selfDescriptions = [data objectForKey:@"description"];
-                
-                
-                postItem.postTime = [data objectForKey:@"create_time"];
-                postItem.imageUrlString = [data objectForKey:@"photo"];
-                postItem.imageDescription = [data objectForKey:@"thought"];
-                postItem.likeCount = [(NSNumber *)[data objectForKey:@"like_num"] integerValue];
-                
-                postItem.commentNum = [(NSNumber *)[data objectForKey:@"comment_num"]integerValue];
-                
-                postItem.poiId = [(NSNumber *)[data objectForKey:@"poi_id"] integerValue];
-                postItem.poiName = [data objectForKey:@"poi_name"];
-                
-                
-                if ([[data objectForKey:@"more_comments"] isEqualToString:@"false"])
+                NSDictionary *data = [result objectForKey:@"data"];
+                if (data)
                 {
-                    postItem.hasMoreComments =  NO;
-                }
-                else
-                {
-                    postItem.hasMoreComments = YES;
-                }
-                NSMutableString *commentString = [[NSMutableString alloc]init];
-                NSMutableArray *commentList = [[NSMutableArray alloc]init];
-                NSArray *commentListInData = [data objectForKey:@"comment_list"];
-                NSMutableDictionary *commentItem = [[NSMutableDictionary alloc]init];
-                for (NSDictionary *comment in commentListInData)
-                {
-                    [commentItem setValue:[comment objectForKey:@"comment"] forKey:@"content"];
-                    [commentItem setValue:[comment objectForKey:@"comment_id"] forKey:@"comment_id"];
-                    [commentItem setValue:[comment objectForKey:@"create_time"] forKey:@"time"];
-                    [commentItem setValue:[comment objectForKey:@"post_id"] forKey:@"postId"];
-                    [commentItem setValue:[comment objectForKey:@"user_id"] forKey:@"userName"];
-                    [commentItem setValue:[comment objectForKey:@"user_name"] forKey:@"userId"];
-                    [commentList addObject:commentItem];
-                    [commentString appendString:[NSString stringWithFormat:@"<userName>%@</userName>%@\n",[commentItem objectForKey:@"userName"],[commentItem objectForKey:@"content"]]];
-                    
+                   // postItem.photoUser
+                    WhatsGoingOn *postItem = [[WhatsGoingOn alloc]initWithAttributes:data];
+                    [returnData setValue:postItem forKey:@"data"];
                     
                 }
-                postItem.comment = [commentString mutableCopy];
-                postItem.commentList = [commentList mutableCopy];
-                
-               // postItem.photoUser
-                [returnData setValue:postItem forKey:@"data"];
-                
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
             
         }
@@ -728,23 +908,29 @@
     }];
     
 }
-
 -(void)followUser:(NSInteger)userIdToFollow withUserId:(NSInteger)myUserId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
     NSString *api = [NSString stringWithFormat:@"api/follow/%ld",(long)myUserId];
     NSDictionary *param = @{@"followed_id":[NSNumber numberWithInteger:userIdToFollow]};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
-        if ([result objectForKey:@"success"])
+        if (result)
         {
-            NSArray *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                [returnData setValue:@"关注成功" forKey:@"data"];
+                NSArray *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    [returnData setValue:@"关注成功" forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
             
         }
@@ -762,16 +948,23 @@
     NSDictionary *param = @{@"followed_id":[NSNumber numberWithInteger:userIdToUnFollow]};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
-        if ([result objectForKey:@"success"])
+        if (result)
         {
-            NSArray *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                [returnData setValue:@"关注成功" forKey:@"data"];
+                NSArray *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    [returnData setValue:@"关注成功" forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
             
         }
@@ -782,22 +975,36 @@
         whenComplete(returnData);
     }];
 }
-
+#pragma mark- search with type [poi,user]
 -(void)searchWithType:(NSString *)type keyword:(NSString *)keyword whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"/api/search?type=%@&keyword=%@",type,keyword];
+    NSString *api = [NSString stringWithFormat:@"api/search?type=%@&keyword=%@",type,keyword];
+    NSString *encodeApi = [api stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
-    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
-        if ([result objectForKey:@"success"])
+    [self ExecuteRequestWithMethod:@"GET" api:encodeApi parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
         {
-            NSArray *data = [result objectForKey:@"data"];
-            if (data)
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                [returnData setValue:data forKey:@"data"];
+                NSMutableArray *userList = [[NSMutableArray alloc]init];
+                NSArray *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    for (NSDictionary *item in data)
+                    {
+                        User *user = [[User alloc]initWithAttributes:item];
+                        [userList addObject:user];
+                    }
+                    [returnData setValue:userList forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
             }
             else
             {
-                [returnData setValue:@"接口请求失败" forKey:@"error"];
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
             
         }
@@ -809,4 +1016,205 @@
     }];
 }
 
+-(void)explorephotoWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/explorephoto/%ld",(long)userId];
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSArray *data = [result objectForKey:@"data"];
+                NSMutableArray *poiInfo = [[NSMutableArray alloc]init];
+                if (data)
+                {
+                    for (NSDictionary *d in data)
+                    {
+                        WhatsGoingOn *item  = [[WhatsGoingOn alloc]init];
+                        item.postId = [(NSNumber *)[d objectForKey:@"post_id"]integerValue];
+                        item.postTime = [d objectForKey:@"create_time"];
+                        item.imageUrlString = [d objectForKey:@"photo"];
+                        [poiInfo addObject:item];
+                    }
+                    [returnData setObject:poiInfo forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+            
+        }
+        else
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
+-(void)feedBackWithUserId:(NSInteger)userId content:(NSString *)content contact:(NSString *)contact whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/feedback"];
+    NSDictionary *param = @{@"userId":[NSNumber numberWithInteger:userId],@"content":content,@"contact":contact};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([result objectForKey:@"success"])
+            {
+                [returnData setValue:@"反馈成功" forKey:@"data"];
+                
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"网络请求失败" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
+-(void)getNoticeNumWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/noticeunreadnum/%ld",(long)userId];
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([result objectForKey:@"success"])
+            {
+                [returnData setValue:(NSNumber *)[result objectForKey:@"unreadNum"] forKey:@"data"];
+                
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"网络请求失败" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+-(void)getNoticeWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/notice/%ld",(long)userId];
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([result objectForKey:@"success"])
+            {
+                NSArray *data = [result objectForKey:@"data"];
+                NSMutableArray *feeds = [[NSMutableArray alloc]init];
+                for (NSDictionary *notice in data)
+                {
+                    /*
+                    {
+                        
+                        "noticeId": 3,
+                        "operatorId": 6,
+                        "noticeType": 3,
+                        "operatorNick": "哈利小球",
+                        "operatorAvatar": "http://7u2ibb.com1.z0.glb.clouddn.com/qdy_avatar_6_1426923010351.jpg/am",
+                        "content": null,
+                        "photo": "",
+                        "postId": null,
+                        "createTime": "14小时"
+                    },*/
+                    Feeds *feed = [[Feeds alloc]init];
+                    feed.feedsId = [(NSNumber *)[notice objectForKey:@"noticeId"] integerValue];
+                    feed.type = [(NSNumber *)[notice objectForKey:@"noticeType"] integerValue];
+                    feed.feedsUser.UserID =[(NSNumber *)[notice objectForKey:@"operatorId"] integerValue];
+                    feed.feedsUser.UserName = [notice objectForKey:@"operatorNick"];
+                    feed.feedsUser.avatarImageURLString = [notice objectForKey:@"operatorAvatar"];
+                    if (! [[notice objectForKey:@"content"]isKindOfClass:[NSNull class]])
+                    {
+                        feed.content = [notice objectForKey:@"content"];
+                    }
+                    if (! [[notice objectForKey:@"postId"] isKindOfClass:[NSNull class]])
+                    {
+                        feed.feedsPhoto.postId = [(NSNumber *)[notice objectForKey:@"postId"]integerValue];
+                        feed.feedsPhoto.imageUrlString = [notice objectForKey:@"photo"];
+                    }
+                    feed.time = [notice objectForKey:@"createTime"];
+                    [feeds addObject:feed];
+                    
+                }
+                [returnData setObject:feeds forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+            
+        }
+        else if (error)
+        {
+            [returnData setValue:@"网络请求失败" forKey:@"error"];
+        }
+   
+        whenComplete(returnData);
+    }];
+}
+
+#pragma mark - basic method
+-(void)setDefaultUserInfoWithUser:(User *)user
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setInteger:user.UserID forKey:@"userId"];
+    NSLog(@"%@",[userDefaults objectForKey:@"userId"]);
+    if (![user.userToken isEqualToString:@""] && user.userToken)
+    {
+        [userDefaults setObject:user.userToken forKey:@"token"];
+    }
+    [userDefaults setObject:user.UserName forKey:@"userName"];
+    [userDefaults setObject:@"" forKey:@"avatarUrl"];
+    NSLog(@"%lu",(long)[userDefaults integerForKey:@"userId"]);
+    [userDefaults synchronize];
+}
+-(void)updateLocalUserInfo
+{
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSInteger userId = [userDefaults integerForKey:@"userId"];
+    [[QDYHTTPClient sharedInstance]GetPersonalSimpleInfoWithUserId:userId whenComplete:^(NSDictionary *returnData) {
+        if ([returnData objectForKey:@"data"])
+        {
+            User *user = [returnData objectForKey:@"data"];
+            [userDefaults setObject:user.UserName forKey:@"userName"];
+            [userDefaults setObject:user.avatarImageURLString forKey:@"avatarUrl"];
+        }
+        else
+        {
+            NSLog(@"更新个人信息失败");
+            [userDefaults removeObjectForKey:@"avatarUrl"];
+            
+        }
+    }];
+}
 @end

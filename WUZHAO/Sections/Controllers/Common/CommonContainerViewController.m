@@ -56,6 +56,7 @@
     return _currentSegueIdentifier;
 }
 
+
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if([segue.identifier isEqualToString:[self.ChildrenName objectAtIndex:0]])
@@ -90,8 +91,7 @@
     toViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     [fromViewController willMoveToParentViewController:nil];
     [self addChildViewController:toViewController];
-    
-    [self transitionFromViewController:fromViewController toViewController:toViewController duration:0.3 options:UIViewAnimationOptionTransitionCrossDissolve animations:nil completion:^(BOOL finished){
+    [self transitionFromViewController:fromViewController toViewController:toViewController duration:0.3 options:UIViewAnimationOptionTransitionCrossDissolve animations:UIViewAnimationTransitionNone completion:^(BOOL finished){
         if (finished)
         {
             [fromViewController removeFromParentViewController];
@@ -129,5 +129,6 @@
     // Pass the selected object to the new view controller.
 }
 */
+
 
 @end

@@ -9,9 +9,3 @@
 #ifndef WUZHAO_Code_h
 #define WUZHAO_Code_h
 
-
-#define ERRORCODE(code) 
-
-
-
-#endif

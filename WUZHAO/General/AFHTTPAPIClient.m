@@ -14,6 +14,10 @@
 
 -(NSURLSessionDataTask *)ExecuteRequestWithMethod:(NSString *)method api:(NSString *)api parameters:(NSDictionary *)param complete:(void (^)(NSDictionary *, NSError *))complete
 {
+    NSString *token = [[NSUserDefaults standardUserDefaults]objectForKey:@"token"];
+    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    [self.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+    [self.requestSerializer setValue:[NSString stringWithFormat:@"%ld",(long)userId] forHTTPHeaderField:@"userId"];
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
     if ( [method isEqualToString:@"GET"])
     {
@@ -24,22 +28,33 @@
                 if ( [[responseObject objectForKey:@"success"] isEqualToString:@"false"])
                 {
                     NSLog(@"get infomation failed:");
-                    //NSLog(@"%@",responseObject);
+                    if ([(NSNumber *)[responseObject objectForKey:@"code"]integerValue] ==110)
+                    {
+                        NSLog(@"token校验失败");
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"tokenIllegal" object:nil];
+                        complete(@{@"msg":@"登录态失效，请重新登录"},nil);
+                    }
+                    else
+                    {
+                        complete(@{@"msg":[responseObject objectForKey:@"msg"]},nil);
+                    }
                 }
                 else
                 {
-                     NSLog(@"get infomation seccuess!");
-                     //NSLog(@"%@",responseObject);
-                    
+                     complete(responseObject,nil);   
                 }
             }
+            else
+            {
+                complete(@{@"msg":@"您请求的服务不存在或者服务器错误"},nil);
+            }
             [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-            complete(responseObject,nil);
+            
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             NSLog(@"request failed");
             NSLog(@"%@",error);
             [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-            complete(@{@"msg":@"请求成功，但服务器返回错误"},nil);
+            complete(@{@"msg":@"请求成功，但服务器返回错误"},error);
             
         }];
         

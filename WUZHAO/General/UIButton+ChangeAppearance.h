@@ -10,11 +10,13 @@
 
 @interface UIButton (ChangeAppearance)
 -(void)setNormalButtonAppearance;
+-(void)setNormalButtonWithBoldFontAppearance;
 -(void)setBigButtonAppearance;
 -(void)setSmallButtonAppearance;
 
 -(void)setWhiteBackGroundAppearance;
 -(void)setDarkGreyBackGroundAppearance;
+-(void)setDarkGreyParentBackGroundAppearance;
 -(void)setGreyBackGroundAppearance;
 
 -(void)setThemeFrameAppearence;

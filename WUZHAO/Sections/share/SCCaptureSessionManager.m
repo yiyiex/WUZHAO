@@ -213,7 +213,7 @@
         NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
         UIImage *image = [[UIImage alloc] initWithData:imageData];
         NSLog(@"originImage:%@", [NSValue valueWithCGSize:image.size]);
-        UIImage *croppedImage = [self cropAndResizeImage:image withHead:44.0f];
+        UIImage *croppedImage = [self cropAndResizeImage:image withHead:0.0f];
 
         /*
         CGFloat squareLength = WZ_APP_SIZE.width;
@@ -561,9 +561,8 @@
             }
         }
         return;
-    }
-    
-    CGFloat headHeight = _previewLayer.bounds.size.height - WZ_APP_SIZE.width;
+    }   
+    CGFloat headHeight = isIPHONE_4s?0:50;
     CGFloat squareLength = WZ_APP_SIZE.width;
     CGFloat eachAreaLength = squareLength / 3;
     

@@ -7,6 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+typedef NS_ENUM(NSInteger, USERFOLLOW_TYPE)
+{
+    UNFOLLOW = 1,
+    FOLLOWED = 2,
+    FOLLOWEACH = 3
+};
 
 @interface User : NSObject <NSCopying, NSMutableCopying>
 
@@ -21,7 +27,7 @@
 @property (readwrite,nonatomic) NSString *email;
 @property (readwrite,nonatomic) NSString *selfDescriptions;
 
-@property (readwrite,nonatomic) BOOL isFollowed;
+@property (readwrite,nonatomic) USERFOLLOW_TYPE followType;
 
 @property (readwrite,nonatomic,strong) NSString *userToken;
 

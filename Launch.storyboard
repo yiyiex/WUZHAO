@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xia-HI-813">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xia-HI-813">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -17,8 +18,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Place" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XHa-2e-Fjb">
-                                <rect key="frame" x="235" y="185" width="129" height="59"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Place" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XHa-2e-Fjb">
+                                <rect key="frame" x="246" y="185" width="108" height="59"/>
                                 <fontDescription key="fontDescription" name="IowanOldStyle-Bold" family="Iowan Old Style" pointSize="43"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -29,8 +30,8 @@
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F5a-ke-Y58">
-                                <rect key="frame" x="486" y="523" width="100" height="60"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F5a-ke-Y58">
+                                <rect key="frame" x="307" y="517" width="275.5" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="120" id="ewS-8f-IZF"/>
                                     <constraint firstAttribute="height" constant="48" id="iKm-CY-E3N"/>
@@ -49,8 +50,8 @@
                                     <segue destination="RXc-Ia-2Hl" kind="presentation" id="4lk-bS-09B"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rhZ-W3-7aJ">
-                                <rect key="frame" x="96" y="520" width="100" height="60"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rhZ-W3-7aJ">
+                                <rect key="frame" x="17" y="517" width="275.5" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="PuM-gZ-U0a"/>
                                     <constraint firstAttribute="width" constant="120" id="fEi-8m-ip9"/>
@@ -113,13 +114,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="UserName" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IoY-YJ-Rmm">
-                                <rect key="frame" x="36" y="114" width="528" height="30"/>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="UserName" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IoY-YJ-Rmm">
+                                <rect key="frame" x="36" y="114" width="528" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="xds-Ay-Dgb"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="next" enablesReturnKeyAutomatically="YES"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="next" enablesReturnKeyAutomatically="YES"/>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="xds-Ay-Dgb"/>
@@ -129,8 +130,8 @@
                                     <action selector="userNameInputEnd:" destination="ue8-o7-uce" eventType="editingDidEndOnExit" id="4Mw-Cq-jSu"/>
                                 </connections>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VMp-0b-5zV">
-                                <rect key="frame" x="36" y="254" width="528" height="50"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VMp-0b-5zV">
+                                <rect key="frame" x="36" y="234" width="528" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="GcX-At-fWl"/>
                                     <constraint firstAttribute="width" constant="200" id="xdS-vk-eS6"/>
@@ -148,13 +149,13 @@
                                     <action selector="LoginButtonPressed:" destination="ue8-o7-uce" eventType="touchUpInside" id="pkj-9d-964"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="RgN-yi-r5J">
-                                <rect key="frame" x="36" y="174" width="528" height="30"/>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="RgN-yi-r5J">
+                                <rect key="frame" x="36" y="164" width="528" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="zv3-9p-WHq"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="done" enablesReturnKeyAutomatically="YES" secureTextEntry="YES"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="done" enablesReturnKeyAutomatically="YES" secureTextEntry="YES"/>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="zv3-9p-WHq"/>
@@ -164,12 +165,6 @@
                                     <action selector="passWordInputEnd:" destination="ue8-o7-uce" eventType="editingDidEndOnExit" id="y8x-VX-mSr"/>
                                 </connections>
                             </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="忘记密码?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yH9-Lb-QY2" customClass="UIThemeLabel">
-                                <rect key="frame" x="496" y="224" width="68" height="20.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -179,12 +174,10 @@
                             <constraint firstItem="IoY-YJ-Rmm" firstAttribute="leading" secondItem="RgN-yi-r5J" secondAttribute="leading" id="3E6-QA-B2I"/>
                             <constraint firstItem="IoY-YJ-Rmm" firstAttribute="leading" secondItem="Vk7-Oh-wNI" secondAttribute="leadingMargin" constant="20" id="3zL-Sk-PvU"/>
                             <constraint firstAttribute="trailingMargin" secondItem="IoY-YJ-Rmm" secondAttribute="trailing" constant="20" id="BbP-J4-tUd"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="yH9-Lb-QY2" secondAttribute="trailing" constant="20" id="OLz-M8-ma4"/>
                             <constraint firstItem="RgN-yi-r5J" firstAttribute="leading" secondItem="VMp-0b-5zV" secondAttribute="leading" id="RDE-W6-eVn"/>
                             <constraint firstAttribute="centerX" secondItem="IoY-YJ-Rmm" secondAttribute="centerX" id="fl1-p9-Y1h"/>
                             <constraint firstAttribute="centerX" secondItem="IoY-YJ-Rmm" secondAttribute="centerX" id="iCA-AG-eeR"/>
                             <constraint firstItem="IoY-YJ-Rmm" firstAttribute="trailing" secondItem="RgN-yi-r5J" secondAttribute="trailing" id="iW5-kg-cTv"/>
-                            <constraint firstItem="yH9-Lb-QY2" firstAttribute="top" secondItem="RgN-yi-r5J" secondAttribute="bottom" constant="20" id="jum-J3-Ihh"/>
                             <constraint firstItem="RgN-yi-r5J" firstAttribute="top" secondItem="IoY-YJ-Rmm" secondAttribute="bottom" constant="30" id="knF-ks-hRW"/>
                         </constraints>
                         <variation key="default">

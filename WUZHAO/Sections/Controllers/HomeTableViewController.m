@@ -7,22 +7,18 @@
 //
 
 #import "HomeTableViewController.h"
-
-#import "PhotoDetailViewController.h"
 #import "MineViewController.h"
 #import "AddressViewController.h"
-#import "PhotoDetailViewController.h"
 #import "CommentListViewController.h"
 #import "UserListTableViewController.h"
 
-#import "WPAttributedStyleAction.h"
-#import "NSString+WPAttributedMarkup.h"
 #import "UIImageView+WebCache.h"
 #import "UIImageView+ChangeAppearance.h"
+#import "UIButton+ChangeAppearance.h"
 #import "UILabel+ChangeAppearance.h"
+#import "PhotoCommon.h"
 
-
-#import "CBStoreHouseRefreshControl.h"
+#import "PureLayout.h"
 
 #import "SVProgressHUD.h"
 
@@ -30,36 +26,50 @@
 #import "macro.h"
 
 #define ONEPAGEITEMS 10
-@interface HomeTableViewController ()
-@property (nonatomic ,strong) NSMutableArray *dataSource;
-@property (nonatomic ,strong) User *currentUser;
 
-@property (atomic)  BOOL shouldRefreshData;
+
+@interface HomeTableViewController ()<UIActionSheetDelegate,UIAlertViewDelegate>
 @property (nonatomic,strong) UIRefreshControl *refreshControl;
 @property (nonatomic,strong) UIButton *loadMoreButton;
 @property (nonatomic,strong) UIActivityIndicatorView *aiv;
 //current page
 @property (nonatomic,assign) NSInteger currentPage;
 
+
 @property (nonatomic) float tableViewOffset;
+@property (nonatomic)  BOOL shouldRefreshData;
+@property (nonatomic,strong) NSIndexPath *currentZanIndexPath;
+
+@property (nonatomic,strong) NSIndexPath *currentCommentIndexPath;
+@property (nonatomic,strong) NSIndexPath *currentDeleteIndexPath;
+
+@property (nonatomic,strong) PhotoTableViewCell *prototypeCell;
+@property (nonatomic,strong) UIView *introductionView;
+
 @end
 
 @implementation HomeTableViewController
-@synthesize currentPage = _currentPage;
 static NSString *reuseIdentifier = @"HomeTableCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.tableView.estimatedRowHeight = 700.0;
-    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    if (SYSTEM_VERSION_EQUAL_TO(@"7"))
+    {
+         self.edgesForExtendedLayout = UIRectEdgeNone;
+    }
     self.tableView.alwaysBounceVertical = YES;
-
+    [self initNavigationItem];
+    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)])
+    {
+        self.tableView.layoutMargins = UIEdgeInsetsMake(0, 0, 0, 0);
+    }
     //refresh control
     self.refreshControl = [[UIRefreshControl alloc]init];
     [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
     self.shouldRefreshData = true;
     self.tableViewOffset = 0.0;
     [self loadData];
+    
 
 }
 
@@ -67,31 +77,57 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    NSLog(@"offset to show :%f",self.tableViewOffset);
-    NSLog(@"offset accturaly :%f",self.tableView.contentOffset.y);
     [super viewWillAppear:animated];
-    self.tabBarController.navigationController.navigationBarHidden = NO;
-    self.tabBarController.navigationItem.title = @"Place";
-    self.tabBarController.navigationItem.hidesBackButton = YES;
-    [self.tableView setContentOffset:CGPointMake(0,self.tableViewOffset) animated:YES];
+    [self initNavigationItem];
+    //从评论页面返回
+    if (self.currentCommentIndexPath)
+    {
+        [self.tableView beginUpdates];
+        PhotoTableViewCell *commentCell = (PhotoTableViewCell *) [self.tableView cellForRowAtIndexPath:self.currentCommentIndexPath];
+        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.currentCommentIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+        [commentCell configureComment];
+        [commentCell reloadInputViews];
+        [self.tableView endUpdates];
+    }
 
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    NSLog(@"offset set %f",self.tableViewOffset);
-    NSLog(@"tableViewContent Offset:%f",self.tableView.contentOffset.y);
-   // self.tableViewOffset = self.tableView.contentOffset.y;
+    [self.tableView reloadData];
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+
 -(UIStatusBarStyle)preferredStatusBarStyle
 {
     return UIStatusBarStyleLightContent;
+}
+
+
+-(void)initNavigationItem
+{
+    self.tabBarController.navigationController.navigationBarHidden = NO;
+    if (self.tableStyle == WZ_TABLEVIEWSTYLEHOME)
+    {
+        self.tabBarController.navigationItem.title = @"Place";
+    }
+    else
+    {
+        self.tabBarController.navigationItem.title = @"照片详情";
+        self.navigationItem.title = @"照片详情";
+    }
+    self.tabBarController.navigationItem.hidesBackButton = YES;
+    
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.backBarButtonItem = backBarItem;
+    
+    //[self.navigationItem.backBarButtonItem setTitle:@""];
 }
 
 -(NSMutableArray *)dataSource
@@ -113,15 +149,17 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     return _currentUser;
 }
 
+
 -(void)addFooterLoadMore
 {
+    NSString *footButonTitle = @"加载更多" ;
     UIView *tableFooterView = [[UIView alloc]init];
     tableFooterView.frame = CGRectMake(0, 0, WZ_APP_SIZE.width, 44);
     self.tableView.tableFooterView = tableFooterView;
     
     _loadMoreButton = [[UIButton alloc]init];
     _loadMoreButton.frame = CGRectMake(0, 0, WZ_APP_SIZE.width, 44);
-    [_loadMoreButton setTitle:@"加载更多" forState:UIControlStateNormal];
+    [_loadMoreButton setTitle:footButonTitle forState:UIControlStateNormal];
     [_loadMoreButton.titleLabel setFont:WZ_FONT_SMALL_READONLY];
     [_loadMoreButton setTitleColor:THEME_COLOR_LIGHT_GREY forState:UIControlStateNormal];
     [_loadMoreButton addTarget:self action:@selector(loadMore:) forControlEvents:UIControlEventTouchUpInside];
@@ -130,6 +168,48 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     _aiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     _aiv.center = _loadMoreButton.center;
     [self.tableView.tableFooterView addSubview:_aiv];
+    NSLog(@"tableview frame:x %f y %f  w %f  h %f",self.tableView.frame.origin.x,self.tableView.frame.origin.y,self.tableView.frame.size.width,self.tableView.frame.size.height);
+}
+-(void)addIntroductionButton
+{
+    if (![self.introductionView superview])
+    {
+        self.introductionView = [[UIView alloc]initWithFrame:self.view.frame];
+        UILabel *huoLabel = [[UILabel alloc]init];
+        huoLabel.text = @"或";
+        [huoLabel setSmallReadOnlyLabelAppearance];
+        [huoLabel sizeToFit];
+        huoLabel.center = CGPointMake(self.introductionView.frame.size.width/2,self.introductionView.frame.size.height/2-64);
+        [self.introductionView addSubview:huoLabel];
+        
+        [PhotoCommon drawALineWithFrame:CGRectMake(60, huoLabel.center.y, WZ_APP_SIZE.width/2-huoLabel.frame.size.width-60, 0.5) andColor:THEME_COLOR_LIGHT_GREY_PARENT inLayer:self.introductionView.layer];
+        [PhotoCommon drawALineWithFrame:CGRectMake(huoLabel.center.x+huoLabel.frame.size.width, huoLabel.center.y, WZ_APP_SIZE.width/2-huoLabel.frame.size.width-60, 0.5) andColor:THEME_COLOR_LIGHT_GREY_PARENT inLayer:self.introductionView.layer];
+        
+        UIButton *searchAndAddButton = [[UIButton alloc]initWithFrame:CGRectMake(30, huoLabel.center.y+38, WZ_APP_SIZE.width-60, 42)];
+        [searchAndAddButton setTitle:@"浏览照片并关注" forState:UIControlStateNormal];
+        [searchAndAddButton setThemeBackGroundAppearance];
+        [searchAndAddButton setBigButtonAppearance];
+        [searchAndAddButton addTarget:self action:@selector(searchAndAddButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [self.introductionView addSubview:searchAndAddButton];
+        
+        UIButton *postMyFirstPhotoButton = [[UIButton alloc]initWithFrame:CGRectMake(30, huoLabel.center.y-80, WZ_APP_SIZE.width-60, 42)];
+        [postMyFirstPhotoButton setTitle:@"发布第一张照片" forState:UIControlStateNormal];
+        [postMyFirstPhotoButton setThemeBackGroundAppearance];
+        [postMyFirstPhotoButton setBigButtonAppearance];
+        [postMyFirstPhotoButton addTarget:self action:@selector(postMyFirstPhotoButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [self.introductionView addSubview:postMyFirstPhotoButton];
+        
+        [self.view addSubview:self.introductionView];
+        NSLog(@"introductionview frame:x %f y %f  w %f  h %f",self.introductionView.frame.origin.x,self.introductionView.frame.origin.y,self.introductionView.frame.size.width,self.introductionView.frame.size.height);
+        NSLog(@"introductionview center %f  %f",self.introductionView.center.x,self.introductionView.center.y);
+        NSLog(@"label center %f  %f",huoLabel.center.x,huoLabel.center.y);
+        
+        if (self.tableView.tableFooterView)
+        {
+            [self.tableView.tableFooterView removeFromSuperview];
+        }
+    }
+    
 }
 
 -(void)loadData
@@ -149,32 +229,35 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     //get the new page data
     [_aiv startAnimating];
     [sender setHidden:YES];
-   // dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [[QDYHTTPClient sharedInstance]GetWhatsGoingOnWithUserId:self.currentUser.UserID page:self.currentPage+1 whenComplete:^(NSDictionary *result) {
             //sleep(5);
-            if ([result objectForKey:@"data"])
-            {
-                NSMutableArray *newData = [result objectForKey:@"data"];
-                if (newData.count ==0)
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([result objectForKey:@"data"])
                 {
-                    [self.loadMoreButton setTitle:@"没有更多数据了" forState:UIControlStateNormal];
+                    NSMutableArray *newData = [result objectForKey:@"data"];
+                    if (newData.count ==0)
+                    {
+                        [self.loadMoreButton setTitle:@"没有更多数据了" forState:UIControlStateNormal];
+                    }
+                    else
+                    {
+                        [self.dataSource addObjectsFromArray:newData];
+                        [self.tableView reloadData];
+                        self.currentPage +=1;
+                    }
+                    
                 }
-                else
+                else if ([result objectForKey:@"error"])
                 {
-                    [self.dataSource addObjectsFromArray:newData];
-                    [self.tableView reloadData];
-                    self.currentPage +=1;
+                    [self.loadMoreButton setTitle:@"加载失败" forState:UIControlStateNormal];
                 }
-                
-            }
-            else if ([result objectForKey:@"error"])
-            {
-                [self.loadMoreButton setTitle:@"加载失败" forState:UIControlStateNormal];
-            }
-            [_aiv stopAnimating];
-            [sender setHidden:NO];
+                [_aiv stopAnimating];
+                [sender setHidden:NO];
+            });
+
         }];
-   // });
+    });
     
     
 }
@@ -185,180 +268,87 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 {
   
     //配置评论样式
-    [self configureCommentViewOf:cell with:content];
-    //配置图片相关基本信息
-    [self configureBasicInfoOf:cell with:content];
-    //配置点赞内容
-    [self configureLikeLabelViewOf:cell with:content];
-    //配置cell被点击效果
-    [self configureGestureOf:cell];
+    [cell configureCellWithData:content parentController:self];
     
     [cell setAppearance];
     [cell setNeedsLayout];
     [cell layoutIfNeeded];
     
 }
--(void)configureCommentViewOf :(PhotoTableViewCell *)cell with:(WhatsGoingOn *)content
+- (PhotoTableViewCell *)prototypeCell
 {
-    //评论内容显示样式
-    
-    NSDictionary *nameStyle = @{@"userName":[WPAttributedStyleAction styledActionWithAction:^{
-        
-        //get personal info  and config the personal view
-        //...userName 和 userId关联
-        UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
-        MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
-        [personalViewCon setUserInfo:content.photoUser];
-        [self.navigationController pushViewController:personalViewCon animated:YES];
-    }],
-                                @"address":[WPAttributedStyleAction styledActionWithAction:^{
-                                    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Address" bundle:nil];
-                                    AddressViewController *addressViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"addressPage"];
-                                    //get the addressView info and config it
-                                    //....
-                                    
-                                    [self.navigationController pushViewController:addressViewCon animated:YES];
-                                }],
-                                @"seeMore":[WPAttributedStyleAction styledActionWithAction:^{
-                                    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"photoDetailAndComment" bundle:nil];
-                                    CommentListViewController *commentListView = [storyboard instantiateViewControllerWithIdentifier:@"commentListView"];
-                                    [commentListView setCommentList:content.commentList];
-                                    [self.navigationController pushViewController:commentListView animated:YES];
-                                }],
-                                @"link": THEME_COLOR_DARK};
-
-    content.attributedComment = [content.comment attributedStringWithStyleBook:nameStyle];
-}
--(void)configureLikeLabelViewOf :(PhotoTableViewCell*)cell with:(WhatsGoingOn *)content
-{
-    
-    //点赞用户头像展示区
-    for (UIView *likeViewSub in cell.likeLabelView.subviews)
-    {
-        if( [likeViewSub isKindOfClass:[UIImageView class]])
-        {
-            [likeViewSub removeFromSuperview];
-        }
+    if (!_prototypeCell) {
+        _prototypeCell = [self.tableView dequeueReusableCellWithIdentifier:NSStringFromClass([PhotoTableViewCell class])];
     }
-    if (content.likeCount >0)
+    
+    return _prototypeCell;
+}
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        return UITableViewAutomaticDimension;
+    }
+    return 600;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    WhatsGoingOn *item = [self.dataSource objectAtIndex:indexPath.row];
+    /*
+    [self.prototypeCell configureCellWithData:item parentController:nil];
+    CGSize size =  [self.prototypeCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+    float height = size.height;*/
+    
+    //NSDictionary *addressTextAttribute = @{NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE};
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    NSDictionary *descriptionTextAttribute = @{NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle.copy};
+    NSDictionary *commentTextAttribute = @{NSFontAttributeName:WZ_FONT_SMALL_SIZE,NSParagraphStyleAttributeName:paragraphStyle.copy};
+    float labelWidth = WZ_APP_SIZE.width -16;
+    //head view + image view + address view + description view + zan avatar view + comment view
+    float baseHeight =  48 + WZ_APP_SIZE.width ; //head view + image View
+    float descriptionViewHeight,ZanViewHeight,CommentViewHeight,buttonHeight;
+    if ([item.imageDescription isEqualToString:@""])
     {
+        descriptionViewHeight = 8.0f;
+    }
+    else
+    {
+        descriptionViewHeight = 10.0f + [item.imageDescription boundingRectWithSize:CGSizeMake(labelWidth, 0) options:NSStringDrawingUsesLineFragmentOrigin |NSStringDrawingUsesFontLeading|NSStringDrawingTruncatesLastVisibleLine  attributes:descriptionTextAttribute context:nil].size.height + 8.0f +0.2f;
         
-        NSInteger avatorNum = 0;
-        BOOL isLikeCountShow = true;
-        NSInteger likeUserCount = content.likeUserList.count;
-        if (isIPHONE_6P)
+    }
+    NSLog(@"descriptionViewHeight caculate :=====>%f",descriptionViewHeight);
+    ZanViewHeight = item.likeUserList.count<=0?0:32;
+    if (item.commentStringList.count == 0)
+    {
+        CommentViewHeight = 0;
+    }
+    else
+    {
+        for (NSString *commentString in item.commentStringList)
         {
-            avatorNum = likeUserCount>11?11:likeUserCount;
-            isLikeCountShow = likeUserCount>11?true:false;
-        }
-        if (isIPHONE_6)
-        {
-            avatorNum = likeUserCount>10?10:likeUserCount;
-            isLikeCountShow = likeUserCount>10?true:false;
-        }
-        if (isIPHONE_5)
-        {
-            avatorNum = likeUserCount>8?8:likeUserCount;
-            isLikeCountShow = likeUserCount>8?true:false;
-        }
-        //[cell.likeLabel setHidden:NO];
-        //cell.likeLabel.text = [NSString stringWithFormat:@"%lu赞", (long)content.likeCount];
-        if (isLikeCountShow)
-        {
-            cell.likeLabel.text = [NSString stringWithFormat:@"%lu赞", (long)content.likeCount];
-        }
-        else
-        {
-            [cell.likeLabel setHidden:YES];
-        }
-        for (NSInteger i = 0 ; i< avatorNum ; i++)
-        {
-            UIImageView *zanAvatar = [[UIImageView alloc]init];
-            [zanAvatar setFrame:CGRectMake( 8 + 34*i +2 , 2, 30, 30)];
-            [zanAvatar setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
-            [zanAvatar setOpaque:YES];
-            [zanAvatar setRoundConerWithRadius:15];
-            User *userInfo = [content.likeUserList objectAtIndex:i];
             
-            [zanAvatar sd_setImageWithURL:[NSURL URLWithString:userInfo.avatarImageURLString]];
-            [cell.likeLabelView addSubview:zanAvatar];
-            
-            UITapGestureRecognizer *zanUserAvatarClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(zanUserAvatarClick:)];
-            [zanAvatar setUserInteractionEnabled:YES];
-            [zanAvatar addGestureRecognizer:zanUserAvatarClick];
-            [cell.likeLabelHeightConstraint setConstant:34];
+            float commentLabelHeight = [commentString boundingRectWithSize:CGSizeMake(labelWidth, 0) options:NSStringDrawingUsesLineFragmentOrigin |NSStringDrawingUsesFontLeading|NSStringDrawingTruncatesLastVisibleLine attributes:commentTextAttribute context:nil].size.height;
+            float offset = 6.7f + commentLabelHeight/13.8f*0.2f;
+            //offset = 7.0f;
+            CommentViewHeight += commentLabelHeight + offset;
+            NSLog(@"comment Height caculate :=====>%f",commentLabelHeight);
         }
-      
+        if (item.commentStringList.count>4)
+        {
+            float moreLabelHeight = 24.0f;
+            
+            //float moreLabelHeight = [@"查看更多评论" boundingRectWithSize:CGSizeMake(labelWidth, 0) options:NSStringDrawingUsesLineFragmentOrigin |NSStringDrawingUsesFontLeading|NSStringDrawingTruncatesLastVisibleLine  attributes:commentTextAttribute context:nil].size.height;
+            CommentViewHeight += moreLabelHeight;
+            NSLog(@"lookmore comment Height caculate :=====>%f",moreLabelHeight);
+        }
+        CommentViewHeight += 4;
     }
-    else
-    {
-        cell.likeLabel.text = @"";
-        [cell.likeLabelHeightConstraint setConstant:0];
-    }
-
+    buttonHeight = 44;//8 +24 +12
+    float height = baseHeight  + descriptionViewHeight + ZanViewHeight + CommentViewHeight + buttonHeight  ;
+    NSLog(@"caculate height at index :%ld----- %f",(long)indexPath.row,height);
+    return height;
 }
--(void)configureBasicInfoOf:(PhotoTableViewCell *)cell with:(WhatsGoingOn *)content
-{
-    cell.postTimeLabel.text = content.postTime;
-    cell.postUserName.text = content.photoUser.UserName;
-    cell.postUserSelfDescription.text = [content.photoUser.selfDescriptions stringByReplacingOccurrencesOfString:@"\\n" withString:@"\n"];
-    [cell.homeCellAvatorImageView sd_setImageWithURL:[NSURL URLWithString:content.photoUser.avatarImageURLString]];
-    
-    
-    cell.addressLabel.text = content.poiName;
-    cell.descriptionLabel.text = content.imageDescription;
-    if (content.attributedComment)
-    {
-        cell.commentLabel.attributedText = content.attributedComment;
-        
-    }
-    else
-    {
-        cell.commentLabel.attributedText = [cell.commentLabel filterLinkWithContent:content.comment];
-    }
-    
-    [cell.homeCellImageView sd_setImageWithURL:[NSURL URLWithString:content.imageUrlString]
-                              placeholderImage:[UIImage imageNamed:@"placeholder"]];
-    cell.homeCellImageView.backgroundColor = [UIColor blackColor];
-    
-    if (content.isLike)
-    {
-        [cell.zanClickButton setTitle:@"已赞" forState:UIControlStateNormal];
-    }
-    else
-    {
-        [cell.zanClickButton setTitle:@"赞" forState:UIControlStateNormal];
-    }
-}
--(void)configureGestureOf:(PhotoTableViewCell *)cell
-{
-    UITapGestureRecognizer *avatarClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(avatarClick:)];
-    [cell.homeCellAvatorImageView addGestureRecognizer:avatarClick];
-    //点击照片描述，跳转照片详情页面
-    UITapGestureRecognizer *thoughtClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(thoughtClick:)];
-    [cell.descriptionLabel setUserInteractionEnabled:YES];
-    [cell.descriptionLabel addGestureRecognizer:thoughtClick];
-    
-    //点击 “赞的数量” 跳转赞的用户列表
-    UITapGestureRecognizer *likeLabelClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(likeLabelClick:)];
-    [cell.likeLabel addGestureRecognizer:likeLabelClick];
-    //点击 ”赞“，添加”赞“数量
-    [cell.zanClickButton addTarget:self action:@selector(zanButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    //点击评论，跳转评论页面
-    [cell.commentClickButton addTarget:self action:@selector(commentButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [cell.moreButton addTarget:self action:@selector(moreButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    //点击地址，跳转地址页面
-    UITapGestureRecognizer *addressClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addressLabelClick:)];
-    
-    [cell.addressLabel addGestureRecognizer:addressClick];
-    
-}
-
-
-
-#pragma mark - Table view data source
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
     return 1;
@@ -371,44 +361,100 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-        PhotoTableViewCell *cell;
-        WhatsGoingOn *item = self.dataSource[indexPath.row];
-        cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
-        if (cell == nil)
-        {
-            cell = [[PhotoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
-        }
+    PhotoTableViewCell *cell;
+    WhatsGoingOn *item = self.dataSource[indexPath.row];
+    cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
 
-        //各控件单击效果
-        //点击头像，跳转个人主页
-        [self configureCell:cell forContent:item atIndexPath:indexPath];
-        [cell setAppearance];
-        return cell;
+    //各控件单击效果
+    //点击头像，跳转个人主页
+    [self configureCell:cell forContent:item atIndexPath:indexPath];
+
+    return cell;
 }
 
+
 #pragma mark - gesture action
+-(void)searchAndAddButtonClick:(UIButton *)sender
+{
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"activeTargetTab" object:self userInfo:@{@"index":@1}];
+}
+-(void)postMyFirstPhotoButtonClick:(UIButton *)sender
+{
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"activeTargetTab" object:self userInfo:@{@"index":@2}];
+}
+
+-(void)moreCommentClick:(UITapGestureRecognizer *)gesture
+{
+    PhotoTableViewCell * cell ;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
+    {
+        cell = (PhotoTableViewCell *)[[[gesture.view superview]superview]superview];
+    }
+    else
+    {
+        cell = (PhotoTableViewCell *)[[[[gesture.view superview]superview]superview]superview];
+    }
+    NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
+    self.currentCommentIndexPath = selectItemIndexPath;
+     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
+    CommentListViewController *commentListView = [[CommentListViewController alloc]init];
+    [commentListView setPoiItem:item];
+    [commentListView setCommentList:[item.commentList mutableCopy]];
+     [self.navigationController pushViewController:commentListView animated:YES];
+}
+-(void)commentLabelClick:(UITapGestureRecognizer *)gesture
+{
+    PhotoTableViewCell * cell ;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
+    {
+        cell = (PhotoTableViewCell *)[[[gesture.view superview]superview]superview];
+    }
+    else
+    {
+        cell = (PhotoTableViewCell *)[[[[gesture.view superview]superview]superview]superview];
+    }
+    NSInteger indexOfComment = 0;
+    for (NSInteger i = 0;i<[gesture.view superview].subviews.count;i++)
+    {
+        if ([gesture.view isEqual:gesture.view.superview.subviews[i]])
+        {
+            indexOfComment = i;
+            break;
+        }
+            
+    }
+    NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
+    self.currentCommentIndexPath = selectItemIndexPath;
+    WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
+    User *user = [[User alloc]init];
+    NSDictionary *commentInfo = item.commentList[indexOfComment];
+    user.UserID = [(NSNumber *)[commentInfo objectForKey:@"userId"] integerValue];
+    user.UserName = [commentInfo objectForKey:@"nick"];
+    [self goToPersonalPageWithUserInfo:user];
+}
+
 - (void)avatarClick:(UITapGestureRecognizer *)gesture
 {
     //我们获取gesture关联的view,并将view的类名打印出来
     //NSString *className = NSStringFromClass([gesture.view class]);
-    self.tableViewOffset = self.tableView.contentOffset.y;
-    PhotoTableViewCell * cell = (PhotoTableViewCell *)[[[gesture.view superview]superview]superview];
+    PhotoTableViewCell * cell;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
+    {
+        cell = (PhotoTableViewCell *)[[[gesture.view superview]superview]superview];
+    }
+    else
+    {
+        cell = (PhotoTableViewCell *)[[[[gesture.view superview]superview]superview]superview];
+    }
     NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
 
-
     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
-    
-    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
-    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
-
-    [personalViewCon setUserInfo:item.photoUser];
-    [personalViewCon.navigationController setNavigationBarHidden:YES];
-    [self.navigationController pushViewController:personalViewCon animated:YES];
+    [self goToPersonalPageWithUserInfo:item.photoUser];
 }
 
 -(void)zanUserAvatarClick:(UITapGestureRecognizer *)gesture
 {
-    self.tableViewOffset = self.tableView.contentOffset.y;
     UIView *likeView = (UIView *)[gesture.view superview];
     NSInteger likeUserIndex = 0;
     for (NSInteger i = 1;i <likeView.subviews.count;i++)
@@ -420,74 +466,168 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         }
             
     }
-    PhotoTableViewCell * cell = (PhotoTableViewCell *)[[[gesture.view superview]superview]superview];
+    PhotoTableViewCell * cell ;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
+    {
+        cell = (PhotoTableViewCell *)[[[gesture.view superview]superview]superview];
+    }
+    else
+    {
+        cell = (PhotoTableViewCell *)[[[[gesture.view superview]superview]superview]superview];
+    }
     NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
-    
-    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
-    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
-    
-    [personalViewCon setUserInfo:item.likeUserList[likeUserIndex]];
-    [personalViewCon.navigationController setNavigationBarHidden:YES];
-    [self.navigationController pushViewController:personalViewCon animated:YES];
+    [self goToPersonalPageWithUserInfo:item.likeUserList[likeUserIndex]];
+   // [[NSNotificationCenter defaultCenter]postNotificationName:@"hideTabBar" object:nil];
 }
 -(void)moreButtonClick:(UIButton *)sender
 {
     //NSInteger userId = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
-    PhotoTableViewCell *cell = (PhotoTableViewCell *)[[sender superview]superview];
-    NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
-    WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
-    
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-    }];
-    [alertController addAction:cancelAction];
-    
-    if (self.currentUser.UserID == item.photoUser.UserID)
+    PhotoTableViewCell *cell ;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
     {
-        UIAlertAction *delectAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action)
-            {
-            //TO DO
-            //删除该条记录
-                UIAlertController *deleteWarningController = [UIAlertController alertControllerWithTitle:@"提醒" message:@"确定删除照片？" preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                
-                }];
-                UIAlertAction *comfirmAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                    [[QDYHTTPClient sharedInstance]deletePhotoWithUserId:self.currentUser.UserID postId:item
-                     .postId whenComplete:^(NSDictionary *returnData)
-                    {
-                        [self.dataSource removeObjectAtIndex:selectItemIndexPath.row];
-                        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject: selectItemIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
-                     }];
-                }];
-                [deleteWarningController addAction:cancelAction];
-                [deleteWarningController addAction:comfirmAction];
-                [self presentViewController:deleteWarningController animated:YES completion:nil];
-
-        }];
-        [alertController addAction:delectAction];
+        cell = (PhotoTableViewCell *)[[sender superview]superview];
     }
     else
     {
-        UIAlertAction *delectAction = [UIAlertAction actionWithTitle:@"举报不良内容" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-        }];
-        [alertController addAction:delectAction];
+        cell = (PhotoTableViewCell *)[[[sender superview]superview]superview];
     }
-    /*
-    UIAlertAction *shareAction = [UIAlertAction actionWithTitle:@"复制共享网址" style:nil handler:^(UIAlertAction *action) {
-        NSLog(@"share pressed");
-    }];
-    [alertController addAction:shareAction];
-     */
-    [self presentViewController:alertController animated:YES completion:^{
-        
-        
-    }];
+    NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
+    WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
+    if (SYSTEM_VERSION_GREATER_THAN(@"8"))
+    {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        }];
+        [alertController addAction:cancelAction];
+        if (self.currentUser.UserID == item.photoUser.UserID)
+        {
+            UIAlertAction *delectAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action)
+                {
+                //TO DO
+                //删除该条记录
+                    UIAlertController *deleteWarningController = [UIAlertController alertControllerWithTitle:@"提醒" message:@"确定删除照片？" preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                    
+                    }];
+                    UIAlertAction *comfirmAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                            [[QDYHTTPClient sharedInstance]deletePhotoWithUserId:self.currentUser.UserID postId:item
+                             .postId whenComplete:^(NSDictionary *returnData)
+                             {
+                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                     if ([returnData objectForKey:@"data"])
+                                     {
+                                         [self.tableView beginUpdates];
+                                         [self.dataSource removeObjectAtIndex:selectItemIndexPath.row];
+                                         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject: selectItemIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                         [self.tableView endUpdates];
+                                     }
+                                     else
+                                     {
+                                         [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                                     }
+                                 });
+
+                                 
+                             }];
+                        });
+
+                    }];
+                    [deleteWarningController addAction:cancelAction];
+                    [deleteWarningController addAction:comfirmAction];
+                    [self presentViewController:deleteWarningController animated:YES completion:nil];
+
+            }];
+            [alertController addAction:delectAction];
+        }
+        else
+        {
+            UIAlertAction *delectAction = [UIAlertAction actionWithTitle:@"举报不良内容" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+                [SVProgressHUD showInfoWithStatus:@"已举报"];
+            }];
+            [alertController addAction:delectAction];
+        }
+        /*
+        UIAlertAction *shareAction = [UIAlertAction actionWithTitle:@"复制共享网址" style:nil handler:^(UIAlertAction *action) {
+            NSLog(@"share pressed");
+        }];
+        [alertController addAction:shareAction];
+         */
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
+    else if (SYSTEM_VERSION_LESS_THAN(@"8"))
+    {
+        NSString *destructiveButtonTitle;
+        self.currentDeleteIndexPath = selectItemIndexPath;
+        if (self.currentUser.UserID == item.photoUser.UserID)
+        {
+            destructiveButtonTitle = @"删除";
+        }
+        else
+        {
+            destructiveButtonTitle = @"举报不良内容";
+        }
+        UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:nil];
+        [actionSheet showInView:self.view];
+    }
     
 
 }
 
+-(void)goToPersonalPageWithUserInfo:(User *)user
+{
+    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
+    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
+    [personalViewCon setUserInfo:user];
+    [self.navigationController pushViewController:personalViewCon animated:YES];
+}
+
+#pragma mark - actionSheet delegate
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"删除"])
+    {
+        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提醒" message:@"确定删除照片？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        [alertView show];
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"举报不良内容"])
+    {
+        [SVProgressHUD showInfoWithStatus:@"已举报"];
+    }
+}
+
+#pragma mark - alertView Delegate
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"确定"])
+    {
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            WhatsGoingOn *item = [self.dataSource objectAtIndex:self.currentDeleteIndexPath];
+            [[QDYHTTPClient sharedInstance]deletePhotoWithUserId:self.currentUser.UserID postId:item
+             .postId whenComplete:^(NSDictionary *returnData)
+             {
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     if ([returnData objectForKey:@"data"])
+                     {
+                         [self.tableView beginUpdates];
+                         [self.dataSource removeObjectAtIndex:self.currentDeleteIndexPath.row];
+                         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:self.currentDeleteIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                         [self.tableView endUpdates];
+                     }
+                     else
+                     {
+                         [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                     }
+                 });
+                 
+                 
+             }];
+        });
+
+    }
+}
+/*
 -(void)thoughtClick:(UITapGestureRecognizer *)gesture
 {
     PhotoTableViewCell *cell = (PhotoTableViewCell *)[[[gesture.view superview]superview]superview];
@@ -496,80 +636,100 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     
     UIStoryboard *detailStoryBoard = [UIStoryboard storyboardWithName:@"photoDetailAndComment" bundle:nil];
     
-    PhotoDetailViewController *detailViewController = [detailStoryBoard instantiateViewControllerWithIdentifier:@"photoDetailView"];
+    HomeTableViewController *detailViewController = [detailStoryBoard instantiateViewControllerWithIdentifier:@"photoDetailView"];
     [detailViewController setWhatsGoingOnItem:item];
     detailViewController.cellIndexInCollection = selectIndexPath;
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
+ */
 -(void)zanButtonClick:(id)sender
 {
-    PhotoTableViewCell *cell = (PhotoTableViewCell *)[[sender superview]superview];
+    PhotoTableViewCell *cell;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
+    {
+         cell = (PhotoTableViewCell *)[[sender superview]superview];
+    }
+    else
+    {
+        cell = (PhotoTableViewCell *)[[[sender superview]superview]superview];
+    }
     NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
     
     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
     if (!item.isLike)
     {
-        [[QDYHTTPClient sharedInstance]ZanPhotoWithUserId:self.currentUser.UserID postId:item.postId whenComplete:^(NSDictionary *returnData) {
-            if ([returnData objectForKey:@"data"])
-            {
-                if ([cell.zanClickButton.currentTitle isEqualToString:@"赞"])
-                {
-                    //item.likeCount += 1;
-                    [self addMeToZanData:item];
-                    [self configureLikeLabelViewOf:cell with:item];
-                    if (item.likeCount == 1)
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [[QDYHTTPClient sharedInstance]ZanPhotoWithUserId:self.currentUser.UserID postId:item.postId whenComplete:^(NSDictionary *returnData) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([returnData objectForKey:@"data"])
                     {
-                        //to do
-                        //如何改变世界！
-                        [self.tableView beginUpdates];
-                        [self.tableView endUpdates];
-                        
+                        if ([cell.zanClickButton.currentTitle isEqualToString:@"赞"])
+                        {
+                            //item.likeCount += 1;
+                            [self addMeToZanData:item];
+                            [cell configureCellWithData:item parentController:self];
+                            if (item.likeCount == 1)
+                            {
+                                //to do
+                                //如何改变世界！
+                                self.currentZanIndexPath = selectItemIndexPath;
+                                [self.tableView beginUpdates];
+                                [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:selectItemIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+                                [self.tableView endUpdates];
+                                //[self.tableView beginUpdates];
+                                //[self.tableView endUpdates];
+                                
+                            }
+                            
+                            // [cell.zanClickButton setTitle:@"已赞" forState:UIControlStateNormal];
+                            
+                        }
                     }
-                
-                    [cell.zanClickButton setTitle:@"已赞" forState:UIControlStateNormal];
+                    else
+                    {
+                        [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                    }
 
-                }
-            }
-            else
-            {
-                [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-            }
-        }];
+                });
+            }];
+        });
+
         
     }
     else
     {
-        [[QDYHTTPClient sharedInstance]CancelZanPhotoWithUserId:self.currentUser.UserID postId:item.postId whenComplete:^(NSDictionary *returnData) {
-            if ([returnData objectForKey:@"data"])
-            {
-                if ([cell.zanClickButton.currentTitle isEqualToString:@"已赞"])
-                {
-                   // item.likeCount -= 1;
-                    [self deleteMeFromZanData:item];
-                    [self configureLikeLabelViewOf:cell with:item];
-                    if (item.likeCount ==0)
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [[QDYHTTPClient sharedInstance]CancelZanPhotoWithUserId:self.currentUser.UserID postId:item.postId whenComplete:^(NSDictionary *returnData) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([returnData objectForKey:@"data"])
                     {
-                        
-                        [self.tableView beginUpdates];
-                        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:selectItemIndexPath] withRowAnimation:UITableViewRowAnimationNone];
-                        [self.tableView endUpdates];
-                        
- 
+                        if ([cell.zanClickButton.currentTitle isEqualToString:@"赞了"])
+                        {
+                            // item.likeCount -= 1;
+                            [self deleteMeFromZanData:item];
+                            [cell configureCellWithData:item parentController:self];
+                            if (item.likeCount ==0)
+                            {
+                                self.currentZanIndexPath = selectItemIndexPath;
+                                [self.tableView beginUpdates];
+                                [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:selectItemIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+                                [self.tableView endUpdates];
+                                // [self.tableView beginUpdates];
+                                //[self.tableView endUpdates];
+                            }
+                            //  [cell.zanClickButton setTitle:@"赞" forState:UIControlStateNormal];
+                        }
                     }
-                    [cell.zanClickButton setTitle:@"赞" forState:UIControlStateNormal];
-                }
-            }
-            else
-            {
-                [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-            }
-        }];
+                    else
+                    {
+                        [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                    }
+                });
+
+            }];
+        });
+
     }
-    [cell setAppearance];
-    NSLog(@"table view offset before reload the cell : %f",self.tableView.contentOffset.y);
-    self.tableViewOffset = self.tableView.contentOffset.y;
-   // [cell setNeedsLayout];
-   // [cell layoutIfNeeded];
 
 }
 -(void)addMeToZanData:(WhatsGoingOn *)data
@@ -578,7 +738,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     me.UserID = [ud integerForKey:@"userId"];
     me.UserName = [ud valueForKey:@"userName"];
-    //me.avatarImageURLString = @"http://pic1.zhimg.com/9e2cf566532ec4cd24ce0f18b5282c79_l.jpg";
     me.avatarImageURLString = [ud valueForKey:@"avatarUrl"];
     NSMutableArray *newLikeUserList = [[NSMutableArray alloc]initWithObjects:me, nil];
     [newLikeUserList addObjectsFromArray:data.likeUserList];
@@ -606,46 +765,78 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 
 -(void)commentButtonClick:(id)sender
 {
-    self.tableViewOffset = self.tableView.contentOffset.y;
-    PhotoTableViewCell *cell = (PhotoTableViewCell *)[[sender superview]superview];
+    PhotoTableViewCell *cell;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
+    {
+        cell = (PhotoTableViewCell *)[[sender superview]superview];
+    }
+    else
+    {
+        cell = (PhotoTableViewCell *)[[[sender superview]superview]superview];
+    }
     NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
+    self.currentCommentIndexPath = selectItemIndexPath;
     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"photoDetailAndComment" bundle:nil];
-    CommentListViewController *commentListView = [storyboard instantiateViewControllerWithIdentifier:@"commentListView"];
+    CommentListViewController *commentListView = [[CommentListViewController alloc]init];
     commentListView.poiItem = item;
     [self.navigationController pushViewController:commentListView animated:YES];
 }
 
 -(void)likeLabelClick:(UITapGestureRecognizer *)gesture
 {
-    PhotoTableViewCell *cell = (PhotoTableViewCell *)[[[gesture.view superview]superview]superview];
+    PhotoTableViewCell *cell;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
+    {
+        cell = (PhotoTableViewCell *)[[[gesture.view superview]superview]superview];
+    }
+    else
+    {
+        cell = (PhotoTableViewCell *)[[[[gesture.view superview]superview]superview]superview];
+    }
     NSIndexPath *selectIndexPath = [self.tableView indexPathForCell:cell];
-    WhatsGoingOn *item = [self.dataSource objectAtIndex:selectIndexPath.row];
-    [[QDYHTTPClient sharedInstance]GetPhotoZanUserListWithPostId:item.postId whenComplete:^(NSDictionary *returnData) {
-        if ([returnData objectForKey:@"data"])
-        {
-            
-            UIStoryboard *userListStoryBoard = [UIStoryboard storyboardWithName:@"UserList" bundle:nil];
-            UserListTableViewController *followsList = [userListStoryBoard instantiateViewControllerWithIdentifier:@"userListTableView"];
-            [followsList setUserListStyle:UserListStyle1];
-            [followsList setDatasource:[returnData objectForKey:@"data"]];
-            [followsList setTitle:@"点赞的用户"];
-            [self.navigationController showViewController:followsList sender:self];
-            
-        }
-        else
-        {
-            [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-        }
-    }];
+     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectIndexPath.row];
+
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [[QDYHTTPClient sharedInstance]GetPhotoZanUserListWithPostId:item.postId whenComplete:^(NSDictionary *returnData) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([returnData objectForKey:@"data"])
+                {
+                    UIStoryboard *userListStoryBoard = [UIStoryboard storyboardWithName:@"UserList" bundle:nil];
+                    UserListTableViewController *followsList = [userListStoryBoard instantiateViewControllerWithIdentifier:@"userListTableView"];
+                    [followsList setUserListStyle:UserListStyle1];
+                    [followsList setDatasource:[returnData objectForKey:@"data"]];
+                    [followsList setTitle:@"点赞的用户"];
+                    [self.navigationController pushViewController:followsList animated:YES];
+                }
+                else
+                {
+                    [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                }
+            });
+
+        }];
+    });
+
 }
 
 -(void)addressLabelClick:(UITapGestureRecognizer *)gesture
 {
+    PhotoTableViewCell *cell;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
+    {
+        cell = (PhotoTableViewCell *)[[[gesture.view superview]superview]superview];
+    }
+    else
+    {
+        cell = (PhotoTableViewCell *)[[[[gesture.view superview]superview]superview]superview];
+    }
+    NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
+    WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
     UIStoryboard *addressStoryboard = [UIStoryboard storyboardWithName:@"Address" bundle:nil];
     AddressViewController *addressViewCon = [addressStoryboard instantiateViewControllerWithIdentifier:@"addressPage"];
     //[self hidesBottomBarWhenPushed];
-    
+    addressViewCon.poiId = item.poiId;
+    addressViewCon.poiName = item.poiName;
     [self.navigationController pushViewController:addressViewCon animated:YES];
 }
 
@@ -664,13 +855,15 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 -(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
 {
     
-    CGPoint loadMorePoint = CGPointMake(0, self.tableView.contentSize.height);
-    CGPoint targetPoint = *targetContentOffset;
-    if (targetPoint.y > loadMorePoint.y - WZ_APP_SIZE.height + 90.0)
+    if (self.tableStyle == WZ_TABLEVIEWSTYLEHOME)
     {
-        //[self loadMore:self.loadMoreButton];
-        //[self performSelector:@selector(loadMore:) withObject:self.tableView.tableFooterView];
-        [self performSelectorOnMainThread:@selector(loadMore:) withObject:self.loadMoreButton waitUntilDone:NO];
+        CGPoint loadMorePoint = CGPointMake(0, self.tableView.contentSize.height);
+        CGPoint targetPoint = *targetContentOffset;
+        float almostToBottomOffset = 90.0f;
+        if (targetPoint.y > loadMorePoint.y - WZ_APP_SIZE.height + almostToBottomOffset)
+        {
+            [self performSelectorOnMainThread:@selector(loadMore:) withObject:self.loadMoreButton waitUntilDone:NO];
+        }
     }
     
 }
@@ -679,11 +872,20 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 
 -(void)refreshByPullingTable:(id)sender
 {
-    
-    if (self.shouldRefreshData)
+    if (self.dataSource.count>0)
     {
-        [self.refreshControl beginRefreshing];
-        [self GetLatestDataList];
+        if (self.shouldRefreshData)
+        {
+            [self.refreshControl beginRefreshing];
+            [self GetLatestDataList];
+        }
+    }
+    else
+    {
+        if ([self.refreshControl isRefreshing])
+        {
+            [self.refreshControl endRefreshing];
+        }
     }
     /*
     double delayInseconds = 2.0;
@@ -702,70 +904,107 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 {
     if(self.shouldRefreshData)
     {
-        
-        [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
-        self.tableViewOffset = 0.0;
         //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
         self.shouldRefreshData = false;
-        self.currentPage = 1;
-        [[QDYHTTPClient sharedInstance]GetWhatsGoingOnWithUserId:self.currentUser.UserID page:self.currentPage whenComplete:^(NSDictionary *result) {
-            
-            if ([result objectForKey:@"data"])
+        if (self.tableStyle == WZ_TABLEVIEWSTYLEHOME)
+        {
+            self.currentPage = 1;
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                [[QDYHTTPClient sharedInstance]GetWhatsGoingOnWithUserId:self.currentUser.UserID page:self.currentPage whenComplete:^(NSDictionary *result) {
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     if ([result objectForKey:@"data"])
+                     {
+                         
+                         self.dataSource = [result objectForKey:@"data"];
+                         [self.tableView reloadData];
+                         if (self.dataSource.count == 0)
+                         {
+                             [self addIntroductionButton];
+                         }
+                         else
+                         {
+                             if (self.introductionView)
+                             {
+                                 [self.introductionView removeFromSuperview];
+                             }
+                             [self addFooterLoadMore];
+                         }
+                         if (self.refreshControl.isRefreshing)
+                         {
+                             double delayInseconds = 0.2;
+                             dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
+                             dispatch_after(popTime, dispatch_get_main_queue(), ^{
+                                 [self.refreshControl endRefreshing];
+                                 
+                             });
+                         }
+                         
+                         
+                         
+                     }
+                     else if ([result objectForKey:@"error"])
+                     {
+                         [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+                     }
+                     
+                     self.shouldRefreshData = true;
+                     //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+                 });
+
+                    
+                }];
+            });
+
+        }
+        else if (self.tableStyle == WZ_TABLEVIEWSTYLEDETAIL)
+        {
+            self.currentPage = 1;
+            WhatsGoingOn *item = [self.dataSource objectAtIndex:0];
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                [[QDYHTTPClient sharedInstance ]GetPhotoInfoWithPostId:item.postId userId:self.currentUser.UserID whenComplete:^(NSDictionary *result) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if ([result objectForKey:@"data"])
+                        {
+                            WhatsGoingOn *newItem = [result objectForKey:@"data"];
+                            //[self.dataSource addObject:newItem];
+                            self.dataSource = [NSMutableArray arrayWithObject:newItem];
+                            [self.tableView reloadData];
+                            //[self addFooterLoadMore];
+                            if (self.refreshControl.isRefreshing)
+                            {
+                                double delayInseconds = 0.2;
+                                dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
+                                dispatch_after(popTime, dispatch_get_main_queue(), ^{
+                                    [self.refreshControl endRefreshing];
+                                    
+                                });
+                            }
+                          
+                        }
+                        else if ([result objectForKey:@"error"])
+                        {
+                            [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+                        }
+                        
+                        self.shouldRefreshData = true;
+                    });
+                    
+                }];
+            });
+
+        }
+        else
+        {
+            if (self.refreshControl.isRefreshing)
             {
-                
-                self.dataSource = [result objectForKey:@"data"];
-                [self.tableView reloadData];
-                [self addFooterLoadMore];
-                if (self.refreshControl.isRefreshing)
-                {
-                    double delayInseconds = 0.2;
-                    dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
-                    dispatch_after(popTime, dispatch_get_main_queue(), ^{
+                double delayInseconds = 0.2;
+                dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^{
                     [self.refreshControl endRefreshing];
                     
-                    });
-                }
-                
-                
-                
+                });
             }
-            else if ([result objectForKey:@"error"])
-            {
-                [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
-            }
-            
-            self.shouldRefreshData = true;
-            //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-            
-        }];
+        }
     }
 }
-
--(void)GetNewPageData
-{
-    
-}
-
-
-#pragma mark - http request
-
--(void)CommentPhotoWithItem:(WhatsGoingOn *)item
-{
-    /*
-    [[AFHTTPAPIClient sharedInstance]CommentPhotoWithUserId:self.currentUser.UserID postId:item.postId complete:^(NSDictionary *result, NSError *error) {
-        if (result)
-        {
-            //self.dataSource = [result mutableCopy];
-        }
-        else if (error)
-        {
-            [SVProgressHUD showErrorWithStatus:@"请求失败,请检查连接"];
-            
-        }
-    }];*/
-    
-}
-
-
-
 @end

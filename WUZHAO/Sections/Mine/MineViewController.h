@@ -40,10 +40,14 @@
 
 @property (strong, nonatomic) IBOutlet UITabBar *selectToShowTabbar;
 
+
 @property (nonatomic, strong ) User *userInfo; //当前页面载入的用户信息
 
 @property (nonatomic, strong) NSMutableArray * myPhotosCollectionDatasource;
 @property (nonatomic, strong) NSMutableArray * myAddressListDatasource;
+
+@property (nonatomic) BOOL shouldBackToTop;
+
 - (IBAction)MineButtonClick:(id)sender;
 
 -(void)getLatestData;

@@ -10,7 +10,6 @@
 #import "WhatsGoingOn.h"
 
 #import "WPHotspotLabel.h"
-#import "JTImageLabel.h"
 #import "UIRoundedImageView.h"
 
 @interface PhotoDetailViewController : UIViewController <UIScrollViewDelegate>

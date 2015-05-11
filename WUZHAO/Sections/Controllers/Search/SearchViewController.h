@@ -18,5 +18,5 @@
 
 - (void)segmentValueChanged;
 
-
+-(void)getLatestData;
 @end

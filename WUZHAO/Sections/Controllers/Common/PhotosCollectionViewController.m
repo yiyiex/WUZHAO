@@ -8,15 +8,20 @@
 
 #import "PhotosCollectionViewController.h"
 #import "PhotoCollectionViewCell.h"
+#import "HomeTableViewController.h"
 
-#import "PhotoDetailViewController.h"
+#import "PhotoDetailTableViewController.h"
+
 
 #import "UIImageView+WebCache.h"
-
+#import "UIViewController+BackBarItem.h"
+#import "UILabel+ChangeAppearance.h"
+#import "PhotoCommon.h"
+#import "macro.h"
 #import "QDYHTTPClient.h"
 
 @interface PhotosCollectionViewController ()
-
+@property (nonatomic,strong) UIView *infoView;
 
 @end
 
@@ -27,10 +32,13 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.collectionView registerNib:[UINib nibWithNibName:@"PhotosCollectionCell" bundle:nil] forCellWithReuseIdentifier:reuseIdentifier];
-    [self.collectionView reloadData];
-
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.backBarButtonItem = backBarItem;
     
+    [self.collectionView registerNib:[UINib nibWithNibName:@"PhotosCollectionCell" bundle:nil] forCellWithReuseIdentifier:reuseIdentifier];
+    [self.collectionView.layer setBorderWidth:0.5f];
+    [self.collectionView.layer setBorderColor: [THEME_COLOR_LIGHT_GREY_PARENT CGColor]];
+   // [self loadData];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -65,7 +73,29 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 -(void)loadData
 {
     [self.collectionView reloadData];
+    if (self.datasource.count == 0)
+    {
+        if (![self.infoView superview])
+        {
+            self.infoView = [[UIView alloc]initWithFrame:self.view.frame];
+            UILabel *infoLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, WZ_APP_SIZE.width-20, 30)];
+            infoLabel.text = @"还没有照片哦";
+            infoLabel.textAlignment = NSTextAlignmentCenter;
+            [infoLabel setReadOnlyLabelAppearance];
+            [self.infoView addSubview:infoLabel];
+            
+            [self.view addSubview:self.infoView];
+        }
+    }
+    else
+    {
+        if (self.infoView)
+        {
+            [self.infoView removeFromSuperview];
+        }
+    }
 }
+
 /*
 #pragma mark - Navigation
 
@@ -126,14 +156,17 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     //[self performSegueWithIdentifier:@"showDetail" sender:self];
+
     WhatsGoingOn *item = [self.datasource objectAtIndex:indexPath.row];
-    
-    UIStoryboard *detailStoryBoard = [UIStoryboard storyboardWithName:@"photoDetailAndComment" bundle:nil];
-    
-    PhotoDetailViewController *detailViewController = [detailStoryBoard instantiateViewControllerWithIdentifier:@"photoDetailView"];
-    [detailViewController setWhatsGoingOnItem:item];
-    detailViewController.cellIndexInCollection = indexPath;
-    [self.navigationController pushViewController:detailViewController animated:YES];
+    UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
+    HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
+    [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];
+    [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLEDETAIL];
+    [self.navigationController pushViewController:detailPhotoController animated:YES];
+    //PhotoDetailViewController *detailViewController = [detailStoryBoard instantiateViewControllerWithIdentifier:@"photoDetailView"];
+    //[detailViewController setWhatsGoingOnItem:item];
+    //detailViewController.cellIndexInCollection = indexPath;
+    //[self.navigationController pushViewController:detailViewController animated:YES];
     
 }
 

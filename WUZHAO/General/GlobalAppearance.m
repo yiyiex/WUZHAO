@@ -21,7 +21,7 @@
 +(void)setGlobalAppearance
 {
     [self setNavigationAppearance];
-    //[self setTabBarAppearance];
+    [self setTabBarAppearance];
     //[self setLabelsAppearance];
     [self setButtonAppearance];
     [SVProgressHUD setBackgroundColor:[UIColor darkGrayColor]];
@@ -54,8 +54,8 @@
 +(void)setTabBarAppearance
 {
     UITabBar *appearance = [UITabBar appearance];
-    [appearance setBarTintColor:VIEW_COLOR_DRAKGREY];
-    [appearance setTintColor:[UIColor whiteColor]];
+    [appearance setBarTintColor:[UIColor whiteColor]];
+    [appearance setTintColor:THEME_COLOR_DARK];
 }
 
 

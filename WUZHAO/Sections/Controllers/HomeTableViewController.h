@@ -8,14 +8,20 @@
 
 #import <UIKit/UIKit.h>
 #import "PhotoTableViewCell.h"
+typedef NS_ENUM(NSInteger, WZ_TABLEVIEWSTYLE) {
+    WZ_TABLEVIEWSTYLEHOME = 0,
+    WZ_TABLEVIEWSTYLEDETAIL
+};
+
 
 @class WhatsGoingOn;
 @class User;
 
 
 @interface HomeTableViewController : UITableViewController
-
-
+@property (nonatomic ,strong) User *currentUser;
+@property (nonatomic ,strong) NSMutableArray *dataSource;
+@property (nonatomic) NSInteger tableStyle;
 - (void)configureCell:(PhotoTableViewCell *)cell forContent:(WhatsGoingOn *)content atIndexPath:(NSIndexPath *)indexPath;
 
 - (void)GetLatestDataList;

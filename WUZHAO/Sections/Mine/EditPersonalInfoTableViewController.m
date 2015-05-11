@@ -11,12 +11,20 @@
 
 #import "VPImageCropperViewController.h"
 
+#import "SetPasswordTableViewController.h"
+#import "FeedbackViewController.h"
+
 #import "UIImage+Resize.h"
+#import "PhotoCommon.h"
+#import "CameraUtility.h"
 
 #import "UIImageView+WebCache.h"
 #import "UIImageView+ChangeAppearance.h"
+#import "UILabel+ChangeAppearance.h"
 #import "UIButton+ChangeAppearance.h"
 #import "SVProgressHUD.h"
+
+#import "NSString+Verify.h"
 
 #import "QDYHTTPClient.h"
 #import "QiniuSDK.h"
@@ -54,6 +62,10 @@
     {
         
     }
+    else if ([segue.identifier isEqualToString:@"feedback"])
+    {
+        
+    }
 }
 
 -(void)setUserInfo:(User *)userInfo
@@ -75,39 +87,55 @@
     save.titleLabel.text = @"完成";
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(savaButtonPressed)];
     self.navigationItem.rightBarButtonItem = saveButton;
+    
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.backBarButtonItem = backBarItem;
 }
 -(void)initView
 {
+    //头像区
     [self.avatarImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
     [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString]];
     [self.avatarImageView setRoundConerWithRadius:self.avatarImageView.frame.size.width/2];
     
-    self.nickNameCell.imageView.image = [UIImage imageNamed:@"default"];
-    self.nickNameTextField = [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
-    [self.nickNameTextField setFont:WZ_FONT_COMMON_SIZE];
+    //基本信息区
+   // self.nickNameCell.imageView.image = [UIImage imageNamed:@"default"];
+    UILabel *name = [[UILabel alloc]initWithFrame:CGRectMake(12, 10, 40, 30)];
+    name.text = @"名字";
+    [name setDarkGreyLabelAppearance];
+    [self.nickNameCell addSubview:name];
+    self.nickNameTextField = [[UITextField alloc]initWithFrame:CGRectMake(60, 10, WZ_APP_SIZE.width-68, 30)];
+    //[self.nickNameTextField setFont:WZ_FONT_COMMON_SIZE];
     [self.nickNameCell addSubview:self.nickNameTextField];
+    //self.nickNameTextView = [[UITextView alloc]initWithFrame:CGRectMake(80,10, WZ_APP_SIZE.width-90, 28)];
     if ([self.userInfo.UserName isEqualToString:@""])
     {
-        self.nickNameTextField.placeholder = @"昵称";
+        self.nickNameTextField.placeholder = @"输入名字";
     }
     else
     {
         self.nickNameTextField.text = self.userInfo.UserName;
     }
 
-
-    self.selfDescriptionCell.imageView.image = [UIImage imageNamed:@"default"];
-    self.selfDescriptionTextField = [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
-    [self.selfDescriptionTextField setFont:WZ_FONT_COMMON_SIZE];
-    [self.selfDescriptionCell addSubview:self.selfDescriptionTextField];
+    UILabel *jianjie = [[UILabel alloc]initWithFrame:CGRectMake(12, 10, 40, 30)];
+    jianjie.text = @"简介";
+    [jianjie setDarkGreyLabelAppearance];
+    [self.selfDescriptionCell addSubview:jianjie];
+    //self.selfDescriptionCell.imageView.image = [UIImage imageNamed:@"default"];
+    self.selfDescriptionTextView = [[PlaceholderTextView alloc]initWithFrame:CGRectMake(60, 8, WZ_APP_SIZE.width-68, 70)];
+    [self.selfDescriptionTextView setFont:WZ_FONT_COMMON_SIZE];
+    [self.selfDescriptionCell addSubview:self.selfDescriptionTextView];
+    [self.selfDescriptionCell sizeToFit];
     if ([self.userInfo.selfDescriptions isEqualToString:@""])
     {
-        self.selfDescriptionTextField.placeholder = @"个人简介";
+        self.selfDescriptionTextView.placeholder = @"输入个人简介";
+       // self.selfDescriptionTextView.placeholder = @"个人简介";
     }
     else
     {
-        self.selfDescriptionTextField.text = self.userInfo.selfDescriptions;
+        self.selfDescriptionTextView.text = self.userInfo.selfDescriptions;
     }
+    
     
     // [self.selfDescriptionTextField sizeToFit];
     /*
@@ -136,11 +164,20 @@
         self.phoneNumTextField.placeholder = @"手机";
     }*/
     
+    //修改密码区
     [self.changePwdCell.textLabel setFont:WZ_FONT_COMMON_SIZE];
     self.changePwdCell.textLabel.text = @"修改密码";
+    
+    //吐槽区
+    [self.feedBackCell.textLabel setFont:WZ_FONT_COMMON_SIZE];
+    self.feedBackCell.textLabel.text = @"我要吐槽";
+    
+    
+    //退出区
     [self.logoutCell setBackgroundColor:[UIColor whiteColor]];
-    self.logoutCell.textLabel.text = @"退出";
-    [self.logoutCell.textLabel setFont:WZ_FONT_COMMON_BOLD_SIZE];
+    self.logoutCell.textLabel.text = @"退 出";
+    self.logoutCell.textLabel.textAlignment = NSTextAlignmentCenter;
+    [self.logoutCell.textLabel setFont:WZ_FONT_LARGE_BOLD_SIZE];
     [self.logoutCell.textLabel setTextColor:THEME_COLOR_DARK];
     
 
@@ -156,37 +193,44 @@
 }
 -(void)savaButtonPressed
 {
-    [SVProgressHUD showInfoWithStatus:@"数据提交中....."];
+    if ([self.nickNameTextField.text isEqualToString:@""])
+    {
+        [SVProgressHUD showInfoWithStatus:@"请输入名字"];
+        return;
+    }
+    if (![self.nickNameTextField.text isValidUsername])
+    {
+        [SVProgressHUD showInfoWithStatus:@"名字只可包含字母、汉子以及下划线"];
+        return;
+    }
     
-   /* User  *newUserInfo = [[User alloc]init];
+    [SVProgressHUD showWithStatus:@"数据提交中..."];
+    
+    User  *newUserInfo = [[User alloc]init];
     newUserInfo.UserID = self.userInfo.UserID;
     newUserInfo.avatarImageURLString = @"";
-    newUserInfo.selfDescriptions = self.selfDescriptionTextField.text;
+    newUserInfo.selfDescriptions = self.selfDescriptionTextView.text;
     newUserInfo.UserName = self.nickNameTextField.text;
-    newUserInfo.email = self.emailTextField.text;
-    newUserInfo.phoneNum = self.phoneNumTextField.text;
+    [[QDYHTTPClient sharedInstance]UpdatePersonalInfoWithUser:newUserInfo oldNick:self.userInfo.UserName whenComplete:^(NSDictionary *returnData) {
+        if ([returnData objectForKey:@"data"])
+        {
+            [SVProgressHUD showSuccessWithStatus:@"更新个人信息成功"];
+            self.userInfo.UserName = newUserInfo.UserName;
+            self.userInfo.selfDescriptions = newUserInfo.selfDescriptions;
+        }
+        else if ([returnData objectForKey:@"error"])
+        {
+            [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+        }
+    }];
     
-    [[AFHTTPAPIClient sharedInstance]PostPersonalInfoWithUser:newUserInfo complete:^(NSDictionary * result, NSError *error) {
-        if (error)
-        {
-            [SVProgressHUD showErrorWithStatus:@"服务器异常"];
-
-
-        }
-        else
-        {
-            [SVProgressHUD showInfoWithStatus:@"保存成功"];
-        }
-    }];*/
+   
 
 }
 - (void)logout
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults removeObjectForKey:@"token"];
-    UIStoryboard *loginStoryboard = [UIStoryboard storyboardWithName:@"Launch" bundle:nil];
-    LaunchViewController *launchViewController = [loginStoryboard instantiateViewControllerWithIdentifier:@"launchView"];
-    [self showViewController:launchViewController sender:nil];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"logOut" object:nil];
+
 }
 
 -(void)editAvator
@@ -196,6 +240,7 @@
     
 }
 #pragma mark - Table view data source
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
@@ -205,121 +250,105 @@
         [self editAvator];
     
     }
+
     if (indexPath.section == 2)
     {
-        //go to set password
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
+        SetPasswordTableViewController *setPasswordController = [storyboard instantiateViewControllerWithIdentifier:@"setPassword"];
+        [self.navigationController pushViewController:setPasswordController animated:YES];
     }
     if (indexPath.section == 3)
     {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
+        FeedbackViewController *feedbackController = [storyboard instantiateViewControllerWithIdentifier:@"feedback"];
+        [self.navigationController pushViewController:feedbackController animated:YES];
+    }
+    
+    else if (indexPath.section == 4)
+    {
         [self logout];
     }
-}
-
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: forIndexPath:indexPath];
     
-    // Configure the cell...
-    
-    return cell;
 }
-*/
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 #pragma mark ---VPImageCropperDelegate
 -(void)imageCropper:(VPImageCropperViewController *)cropperViewController didFinished:(UIImage *)editedImage
 {
-    UIImage *newAvatorImage = [self imageByScalingToMaxSize:editedImage];
+    UIImage *newAvatorImage = [PhotoCommon imageByScalingToMaxSize:editedImage];
     self.avatarImageView.image = newAvatorImage;
     [cropperViewController dismissViewControllerAnimated:YES completion:^{
-        
-        //TO DO
-        //upload avator to the server
-        //
-        
-        
-        [[QDYHTTPClient sharedInstance]GetQiNiuTokenWithUserId:self.userInfo.UserID type:2 whenComplete:^(NSDictionary *returnData) {
-            NSDictionary *data;
-            if ([returnData objectForKey:@"data"])
-            {
-                data = [returnData objectForKey:@"data"];
-                NSLog(@"%@",data);
-            }
-            else
-            {
-                [SVProgressHUD showErrorWithStatus:@"获取token失败"];
-                return ;
-            }
-            QNUploadManager *upLoadManager = [[QNUploadManager alloc]init];
-            NSData *imageData = UIImageJPEGRepresentation(newAvatorImage, 0.6f);
-            [upLoadManager putData:imageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
-             {
-                 NSLog(@"%@",info);
-                 if (info.error)
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[QDYHTTPClient sharedInstance]GetQiNiuTokenWithUserId:self.userInfo.UserID type:2 whenComplete:^(NSDictionary *returnData) {
+                NSDictionary *data;
+                if ([returnData objectForKey:@"data"])
+                {
+                    data = [returnData objectForKey:@"data"];
+                    NSLog(@"%@",data);
+                }
+                else
+                {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [SVProgressHUD showErrorWithStatus:@"获取token失败"];
+                        return ;
+                    });
+
+                }
+                QNUploadManager *upLoadManager = [[QNUploadManager alloc]init];
+                NSData *imageData = UIImageJPEGRepresentation(newAvatorImage, 0.6f);
+                [upLoadManager putData:imageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
                  {
-                     [SVProgressHUD showErrorWithStatus:@"上传图片失败"];
-                 }
-                 else
-                 {
-                     [[QDYHTTPClient sharedInstance]PostAvatorWithUserId:self.userInfo.UserID avatorName:[data objectForKey:@"imageName"] whenComplete:^(NSDictionary *returnData) {
-                         if ([returnData objectForKey:@"data"])
+                     NSLog(@"%@",info);
+                     if (info.error)
+                     {
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                         [SVProgressHUD showErrorWithStatus:@"上传图片失败"];
+                         });
+                     }
+                     else
+                     {
+                         [[QDYHTTPClient sharedInstance]PostAvatorWithUserId:self.userInfo.UserID avatorName:[data objectForKey:@"imageName"] whenComplete:^(NSDictionary *returnData)
                          {
-                             //上传图片成功
-                             [SVProgressHUD showInfoWithStatus:@"上传头像成功"];
-                         }
-                         else if ([returnData objectForKey:@"error"])
-                         {
-                             [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-                         }
-                     }];
+                             
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                                 if ([returnData objectForKey:@"data"])
+                                 {
+                                     //上传图片成功
+                                         [SVProgressHUD showInfoWithStatus:@"上传头像成功"];
+                                         
+                                         [[QDYHTTPClient sharedInstance]GetPersonalSimpleInfoWithUserId:self.userInfo.UserID whenComplete:^(NSDictionary *returnData) {
+                                             NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                                             if ([returnData objectForKey:@"data"])
+                                             {
+                                                 User *user = [returnData objectForKey:@"data"];
+                                                 
+                                                 [userDefaults setObject:user.UserName forKey:@"userName"];
+                                                 [userDefaults setObject:user.avatarImageURLString forKey:@"avatarUrl"];
+                                             }
+                                             else
+                                             {
+                                                 NSLog(@"更新个人信息失败");
+                                             }
+                                         }];
+                                     
+                                 }
+                                 else if ([returnData objectForKey:@"error"])
+                                 {
+                                     [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                                 }
+                                 
+                             });
+                            
+                 
+                         }];
+                         
+                     }
                      
-                 }
-                 
-                 
-             } option:nil];
-        }];
+                     
+                 } option:nil];
+            }];
+        });
+ 
     
         
     }];
@@ -339,11 +368,11 @@
     if (buttonIndex ==0)
     {
         NSLog(@"select camera");
-        if ([self isCameraAvailable] && [self doesCameraSupportTakingPhotos])
+        if ([CameraUtility isCameraAvailable] && [CameraUtility doesCameraSupportTakingPhotos])
         {
             UIImagePickerController *controller = [[UIImagePickerController alloc]init];
             controller.sourceType = UIImagePickerControllerSourceTypeCamera;
-            if ( [self isFrontCameraAvailable])
+            if ( [CameraUtility isFrontCameraAvailable])
             {
                 controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
             }
@@ -357,7 +386,7 @@
     else if (buttonIndex == 1)
     {
         NSLog(@"select photo library");
-        if ([self isPhotoLibraryAvailable])
+        if ([CameraUtility isPhotoLibraryAvailable])
         {
             UIImagePickerController *controller = [[UIImagePickerController alloc]init];
             controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
@@ -379,7 +408,7 @@
 {
     [picker dismissViewControllerAnimated:YES completion:^{
         UIImage *avatorImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-        avatorImage = [self imageByScalingToMaxSize:avatorImage];
+        avatorImage = [PhotoCommon imageByScalingToMaxSize:avatorImage];
         VPImageCropperViewController *imgCropperVC = [[VPImageCropperViewController alloc]initWithImage:avatorImage cropFrame:CGRectMake(0, 100, self.view.frame.size.width, self.view.frame.size.width) limitScaleRatio:3.0];
         imgCropperVC.delegate = self;
         [self presentViewController:imgCropperVC animated:YES completion:^{
@@ -398,124 +427,11 @@
     }];
 }
 
-#pragma mark ----camera utility 
--(BOOL) isCameraAvailable
-{
-    return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
-    
-}
--(BOOL) isRearCameraAvailable
-{
-    return [UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear];
-}
--(BOOL) isFrontCameraAvailable
-{
-    return [UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront];
-}
--(BOOL) doesCameraSupportTakingPhotos
-{
-    return [self cameraSupportsMedia:(__bridge NSString *)kUTTypeImage sourceType:
-            UIImagePickerControllerSourceTypeCamera];
-}
--(BOOL) isPhotoLibraryAvailable
-{
-    return  [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
-}
--(BOOL) canUserPickPhotosFromPhotoLibrary
-{
-    return  [self cameraSupportsMedia:(__bridge NSString *)kUTTypeImage sourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-}
--(BOOL) canUserPickMovieFromPhotoLibrary
-{
-    return [self cameraSupportsMedia:(__bridge NSString *)kUTTypeVideo sourceType:UIImagePickerControllerSourceTypePhotoLibrary ];
-}
-
--(BOOL) cameraSupportsMedia:(NSString *)paramMediaType sourceType:(UIImagePickerControllerSourceType)paramSourceType
-{
-    __block BOOL result = NO;
-    if ( [paramMediaType length]==0)
-    {
-        return  NO;
-    }
-    NSArray *availableMediaTypes = [UIImagePickerController availableMediaTypesForSourceType:paramSourceType];
-    [availableMediaTypes enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSString *mediaType = (NSString *)obj;
-        if ( [mediaType isEqualToString:paramMediaType])
-        {
-            result = YES;
-            *stop  = YES;
-        }
-    }];
-    return result;
-}
 
 
 
-#pragma mark image scale utility
-- (UIImage *)imageByScalingToMaxSize:(UIImage *)sourceImage {
-    if (sourceImage.size.width < ORIGINAL_MAX_WIDTH) return sourceImage;
-    CGFloat btWidth = 0.0f;
-    CGFloat btHeight = 0.0f;
-    if (sourceImage.size.width > sourceImage.size.height) {
-        btHeight = ORIGINAL_MAX_WIDTH;
-        btWidth = sourceImage.size.width * (ORIGINAL_MAX_WIDTH / sourceImage.size.height);
-    } else {
-        btWidth = ORIGINAL_MAX_WIDTH;
-        btHeight = sourceImage.size.height * (ORIGINAL_MAX_WIDTH / sourceImage.size.width);
-    }
-    CGSize targetSize = CGSizeMake(btWidth, btHeight);
-    return [self imageByScalingAndCroppingForSourceImage:sourceImage targetSize:targetSize];
-}
 
-- (UIImage *)imageByScalingAndCroppingForSourceImage:(UIImage *)sourceImage targetSize:(CGSize)targetSize {
-    UIImage *newImage = nil;
-    CGSize imageSize = sourceImage.size;
-    CGFloat width = imageSize.width;
-    CGFloat height = imageSize.height;
-    CGFloat targetWidth = targetSize.width;
-    CGFloat targetHeight = targetSize.height;
-    CGFloat scaleFactor = 0.0;
-    CGFloat scaledWidth = targetWidth;
-    CGFloat scaledHeight = targetHeight;
-    CGPoint thumbnailPoint = CGPointMake(0.0,0.0);
-    if (CGSizeEqualToSize(imageSize, targetSize) == NO)
-    {
-        CGFloat widthFactor = targetWidth / width;
-        CGFloat heightFactor = targetHeight / height;
-        
-        if (widthFactor > heightFactor)
-            scaleFactor = widthFactor; // scale to fit height
-        else
-            scaleFactor = heightFactor; // scale to fit width
-        scaledWidth  = width * scaleFactor;
-        scaledHeight = height * scaleFactor;
-        
-        // center the image
-        if (widthFactor > heightFactor)
-        {
-            thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
-        }
-        else
-            if (widthFactor < heightFactor)
-            {
-                thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
-            }
-    }
-    UIGraphicsBeginImageContext(targetSize); // this will crop
-    CGRect thumbnailRect = CGRectZero;
-    thumbnailRect.origin = thumbnailPoint;
-    thumbnailRect.size.width  = scaledWidth;
-    thumbnailRect.size.height = scaledHeight;
-    
-    [sourceImage drawInRect:thumbnailRect];
-    
-    newImage = UIGraphicsGetImageFromCurrentImageContext();
-    if(newImage == nil) NSLog(@"could not scale image");
-        
-        //pop the context to get back to the default
-        UIGraphicsEndImageContext();
-        return newImage;
-}
+
 
 
 @end

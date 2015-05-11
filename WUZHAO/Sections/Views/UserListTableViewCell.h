@@ -12,6 +12,7 @@
 
 @property (nonatomic,strong) IBOutlet UIImageView *avatorImageView;
 @property (nonatomic,strong) IBOutlet UILabel *userNameLabel;
+@property (nonatomic,strong) IBOutlet NSLayoutConstraint *userNameLabelTopAlignment;
 @property (nonatomic,strong) IBOutlet UILabel *userDescriptionLabel;
 
 @property (nonatomic,strong) IBOutlet UIButton *followButton;

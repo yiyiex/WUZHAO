@@ -289,7 +289,7 @@
             BOOL selectionStyleNotBox = (self.selectionStyle != HMSegmentedControlSelectionStyleBox);
 
             CGFloat y = roundf((CGRectGetHeight(self.frame) - selectionStyleNotBox * self.selectionIndicatorHeight) / 2 - stringHeight / 2 + self.selectionIndicatorHeight * locationUp);
-            CGRect rect;
+            CGRect rect = CGRectZero;
             if (self.segmentWidthStyle == HMSegmentedControlSegmentWidthStyleFixed) {
                 rect = CGRectMake((self.segmentWidth * idx) + (self.segmentWidth - stringWidth) / 2, y, stringWidth, stringHeight);
                 rectDiv = CGRectMake((self.segmentWidth * idx) - (self.verticalDividerWidth / 2), self.selectionIndicatorHeight * 2, self.verticalDividerWidth, self.frame.size.height - (self.selectionIndicatorHeight * 4));
@@ -312,10 +312,9 @@
             }
             
             // Fix rect position/size to avoid blurry labels
-            rect = CGRectMake(ceilf(rect.origin.x), ceilf(rect.origin.y), ceilf(rect.size.width), ceilf(rect.size.height));
-            
+            CGRect newRect = CGRectMake(ceilf(rect.origin.x), ceilf(rect.origin.y), ceilf(rect.size.width), ceilf(rect.size.height));
             CATextLayer *titleLayer = [CATextLayer layer];
-            titleLayer.frame = rect;
+            titleLayer.frame = newRect;
             titleLayer.alignmentMode = kCAAlignmentCenter;
             titleLayer.truncationMode = kCATruncationEnd;
             titleLayer.string = [self attributedTitleAtIndex:idx];

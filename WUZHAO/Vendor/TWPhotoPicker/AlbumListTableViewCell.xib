@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="albumTableViewCell" rowHeight="76" id="ksP-em-HSe" customClass="TWPhotoAlbumListTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="441" height="76"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ksP-em-HSe" id="kav-wt-Eeo">
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ko4-9n-hlk">
+                        <rect key="frame" x="8" y="13" width="50" height="50"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="50" id="LSB-Im-ket"/>
+                            <constraint firstAttribute="width" constant="50" id="sGQ-wL-X7o"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hwk-Qx-tn7">
+                        <rect key="frame" x="74" y="27" width="42" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cf3-Pt-lX4">
+                        <rect key="frame" x="391" y="27" width="42" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="centerY" secondItem="hwk-Qx-tn7" secondAttribute="centerY" id="1n3-SQ-aAE"/>
+                    <constraint firstItem="cf3-Pt-lX4" firstAttribute="leading" secondItem="hwk-Qx-tn7" secondAttribute="trailing" constant="8" id="3sY-nZ-9UF"/>
+                    <constraint firstAttribute="centerY" secondItem="Ko4-9n-hlk" secondAttribute="centerY" constant="-0.5" id="Ciu-GB-LCU"/>
+                    <constraint firstAttribute="centerY" secondItem="cf3-Pt-lX4" secondAttribute="centerY" id="IEe-GT-BDD"/>
+                    <constraint firstItem="cf3-Pt-lX4" firstAttribute="trailing" secondItem="kav-wt-Eeo" secondAttribute="trailingMargin" id="huf-xy-qts"/>
+                    <constraint firstItem="hwk-Qx-tn7" firstAttribute="leading" secondItem="Ko4-9n-hlk" secondAttribute="trailing" constant="16" id="qz4-v3-Lz0"/>
+                    <constraint firstItem="Ko4-9n-hlk" firstAttribute="leading" secondItem="kav-wt-Eeo" secondAttribute="leadingMargin" id="yDY-I6-Dkc"/>
+                </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="3sY-nZ-9UF"/>
+                    </mask>
+                </variation>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="albumLastImageView" destination="Ko4-9n-hlk" id="kEt-he-8cu"/>
+                <outlet property="albumNameLabel" destination="hwk-Qx-tn7" id="6eB-bZ-0tp"/>
+                <outlet property="albumPhotoNumLabel" destination="cf3-Pt-lX4" id="bTX-hq-Qeo"/>
+            </connections>
+            <point key="canvasLocation" x="484.5" y="248"/>
+        </tableViewCell>
+    </objects>
+</document>

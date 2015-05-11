@@ -17,4 +17,7 @@
 
 + (void)drawALineWithFrame:(CGRect)frame andColor:(UIColor*)color inLayer:(CALayer*)parentLayer;
 
++ (UIImage *)imageByScalingToMaxSize:(UIImage *)sourceImage;
+
++ (UIImage *)imageByScalingAndCroppingForSourceImage:(UIImage *)sourceImage targetSize:(CGSize)targetSize;
 @end

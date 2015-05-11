@@ -15,11 +15,13 @@
 #import "MainTabBarViewController.h"
 
 #import "macro.h"
+#import "QDYHTTPClient.h"
 
 @implementation LaunchViewController
 
 -(void)viewDidLoad
 {
+    [super viewDidLoad];
     [self setNavigationAppearance];
 }
 
@@ -55,10 +57,10 @@
     {
         NSLog(@"user defaults in launch%@",[userDefaults objectForKey:@"token"]);
         sleep(1);
+        [[QDYHTTPClient sharedInstance]updateLocalUserInfo];
         UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         MainTabBarViewController *main = [mainStoryboard instantiateViewControllerWithIdentifier:@"mainTabBarController"];
-        [self showViewController:main sender:nil];
-        sleep(1);
+        [self.navigationController pushViewController:main animated:YES];
         
     }
     else
@@ -66,11 +68,14 @@
         [self.LoginButton setHidden:NO];
         [self.RegisterButton setHidden:NO];
         [self.LoginButton setBigButtonAppearance];
-        [self.LoginButton setWhiteBackGroundAppearance];
+        [self.LoginButton setThemeFrameAppearence];
         [self.RegisterButton setBigButtonAppearance];
-        [self.RegisterButton setDarkGreyBackGroundAppearance];
+        [self.RegisterButton setThemeBackGroundAppearance];
     }
+    
 }
+
+
 
 
 @end

@@ -7,8 +7,10 @@
 //
 
 #import "SetPasswordTableViewController.h"
-#import "AFHTTPAPIClient.h"
-#import  "SVProgressHUD.h"
+#import "QDYHTTPClient.h"
+#import "SVProgressHUD.h"
+#import "NSString+SHA1WithSalt.h"
+#import "NSString+Verify.h"
 #import "macro.h"
 
 @interface SetPasswordTableViewController ()
@@ -49,24 +51,20 @@
 }
 -(void)setTablePerform
 {
-    self.myOldPwdCell.imageView.image = [UIImage imageNamed:@"defaultAvator"];
-    self.myOldPwdTextField =  [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
-
+    self.myOldPwdTextField =  [[UITextField alloc]initWithFrame:CGRectMake(60, 10, WZ_APP_SIZE.width-68, 30)];
+    [self.myOldPwdTextField setSecureTextEntry:YES];
     self.myOldPwdTextField.placeholder = @"当前密码";
-    [self.myNewPwdTextField setFont:WZ_FONT_COMMON_SIZE];
+    [self.myOldPwdTextField setFont:WZ_FONT_COMMON_SIZE];
     [self.myOldPwdCell addSubview:self.myOldPwdTextField];
     
-    self.myNewPwdCell.imageView.image = [UIImage imageNamed:@"defaultAvator"];
-    self.myNewPwdTextField =  [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
-
+    self.myNewPwdTextField =  [[UITextField alloc]initWithFrame:CGRectMake(60, 10, WZ_APP_SIZE.width-68, 30)];
+    [self.myNewPwdTextField setSecureTextEntry:YES];
     self.myNewPwdTextField.placeholder = @"新密码";
-    
+    [self.myNewPwdTextField setFont:WZ_FONT_COMMON_SIZE];
     [self.myNewPwdCell addSubview:self.myNewPwdTextField];
     
-    self.comfirmPwdCell.imageView.image = [UIImage imageNamed:@"defaultAvator"];
-    self.comfirmPwdTextField =  [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 250, 30)];
-    [self.myNewPwdTextField setFont:WZ_FONT_COMMON_SIZE];
-
+    self.comfirmPwdTextField =  [[UITextField alloc]initWithFrame:CGRectMake(60, 10, WZ_APP_SIZE.width-68, 30)];
+    [self.comfirmPwdTextField setSecureTextEntry:YES];
     self.comfirmPwdTextField.placeholder = @"再次输入新密码";
     [self.comfirmPwdTextField setFont:WZ_FONT_COMMON_SIZE];
     [self.comfirmPwdCell addSubview:self.comfirmPwdTextField];
@@ -78,12 +76,51 @@
 }
 -(void)saveButtonPressed
 {
-    NSInteger userId = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
-   // NSDictionary *result = [[AFHTTPAPIClient sharedInstance ]UpdatePwdWithUserId:(NSInteger)userId password:self.myOldPwdTextField.text newpassword:self.myNewPwdTextField.text];
-    //if ([result objectForKey:@"data"])
-   // {
 
-   // }
+    if ([self.myOldPwdTextField.text isEqualToString:@""])
+    {
+        [SVProgressHUD showErrorWithStatus:@"请输入旧密码"];
+        return;
+    }
+    if ([self.myNewPwdTextField.text isEqualToString:@""])
+    {
+        [SVProgressHUD showErrorWithStatus:@"请输入新密码"];
+        return;
+    }
+    if ([self.comfirmPwdTextField.text isEqualToString:@""])
+    {
+        [SVProgressHUD showErrorWithStatus:@"请输入确认密码"];
+        return;
+    }
+    if (![self.myNewPwdTextField.text isEqualToString:self.comfirmPwdTextField.text])
+    {
+        [SVProgressHUD showErrorWithStatus:@"两次输入的新密码不匹配"];
+        return;
+    }
+    NSInteger userId = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
+    NSString *oldPwd = self.myOldPwdTextField.text;
+    NSString *newPwd = self.myNewPwdTextField.text;
+    if (! [newPwd isValidPassword])
+    {
+        [SVProgressHUD showInfoWithStatus:@"新密码位数至少为6位"];
+        return;
+    }
+    NSString *oldSPwd = [oldPwd SHA1];
+    NSString *newSPwd = [newPwd SHA1];
+    [[QDYHTTPClient sharedInstance]UpdatePwdWithUserId:userId password:oldSPwd newpassword:newSPwd whenComplete:^(NSDictionary *returnData) {
+        if ([returnData objectForKey:@"data"])
+        {
+            [SVProgressHUD showSuccessWithStatus:@"更新密码成功"];
+            sleep(1);
+            [self.navigationController popViewControllerAnimated:YES];
+            //[[NSNotificationCenter defaultCenter]postNotificationName:@"setPassword" object:nil];
+        }
+        else if ([returnData objectForKey:@"error"])
+        {
+            [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+        }
+    }];
+
  
 }
 #pragma mark - Table view data source

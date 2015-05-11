@@ -70,11 +70,35 @@
     [self setFont:WZ_FONT_COMMON_SIZE];
     //[appearance ]
 }
+-(void)setDarkGreyBitParentLabelAppearance
+{
+    [self setTextColor:THEME_COLOR_DARK_GREY_BIT_PARENT];
+    [self setFont:WZ_FONT_COMMON_SIZE];
+    //[appearance ]
+}
+-(void)setBlodWhiteLabelAppearance
+{
+    [self setTextColor:[UIColor whiteColor]];
+    [self setFont:WZ_FONT_COMMON_BOLD_SIZE];
+    //[appearance ]
+}
+
+-(void)setWhiteLabelAppearance
+{
+    [self setTextColor:[UIColor whiteColor]];
+    [self setFont:WZ_FONT_COMMON_SIZE];
+    //[appearance ]
+}
 
 -(void)setThemeLabelAppearance
 {
-    [self setTextColor:THEME_COLOR];
+    [self setTextColor:THEME_COLOR_DARK];
     [self setFont:WZ_FONT_COMMON_SIZE];
+}
+-(void)setThemeBoldLabelAppearance
+{
+    [self setTextColor:THEME_COLOR];
+    [self setFont:WZ_FONT_COMMON_BOLD_SIZE];
 }
 
 -(void)setWPHotLabelAppearance

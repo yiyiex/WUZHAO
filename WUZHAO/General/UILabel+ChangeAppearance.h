@@ -26,10 +26,17 @@
 
 -(void)setDarkGreyLabelAppearance;
 
+-(void)setDarkGreyBitParentLabelAppearance;
+
 -(void)setLightReadOnlyLabelAppearance;
 
 -(void)setThemeLabelAppearance;
 
+-(void)setThemeBoldLabelAppearance;
+
 -(void)setWPHotLabelAppearance;
 
+-(void)setBlodWhiteLabelAppearance;
+
+-(void)setWhiteLabelAppearance;
 @end
