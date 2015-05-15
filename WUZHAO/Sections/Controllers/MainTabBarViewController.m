@@ -22,6 +22,8 @@
 
 #import "QDYHTTPClient.h"
 
+#import "ApplicationUtility.h"
+
 #import "macro.h"
 
 typedef NS_ENUM(NSInteger, WZ_TABTAG) {
@@ -68,12 +70,14 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(refreshTabContent) name:@"uploadDataSuccess" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logoutCauseIllegalToken) name:@"tokenIllegal" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logOut) name:@"logOut" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNoticeInfo:) name:@"updateNotificationNum" object:nil];
     
     
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
     
-    [self getNoticeNumber];
+   // [[QDYHTTPClient sharedInstance]updateLocalUserInfo];
+    //[self getNoticeNumber];
    // [self performSelectorInBackground:@selector(updateNoticeInfo) withObject:nil];
     
 }
@@ -83,7 +87,7 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
 {
     [super viewWillAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
-
+    [self getNoticeNumber];
     
 }
 
@@ -128,6 +132,7 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
     {
         UIStoryboard *shareStorybaord = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
         SCCaptureCameraController *captureViewController = [shareStorybaord instantiateViewControllerWithIdentifier:@"cameraController"];
+        captureViewController.isStatusBarHiddenBeforeShowCamera = NO;
         [self presentViewController:captureViewController animated:YES completion:^{
             NSLog(@"show camera controller");
             
@@ -177,7 +182,7 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
             //给服务器发送已读信息
             //TO DO
             [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
-            [self setApplicationIconBadgeWithNum:0];
+            [ApplicationUtility setApplicationIconBadgeWithNum:0];
         }
         
         
@@ -257,7 +262,7 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
                 //清空 提示数量
                 //TO DO
                 [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
-                [self setApplicationIconBadgeWithNum:0];
+                [ApplicationUtility setApplicationIconBadgeWithNum:0];
                 
             }
             break;
@@ -271,69 +276,12 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
 {
     //向服务器请求新通知数量
     //TO DO
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-    
-        NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-        [[QDYHTTPClient sharedInstance]getNoticeNumWithUserId:userId whenComplete:^(NSDictionary *returnData) {
-            if ([returnData objectForKey:@"data"])
-            {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if ([[returnData valueForKey:@"data"]integerValue]>0)
-                    {
-                        
-                        NSNumber *num = [returnData valueForKey:@"data"];
-                        
-                        [self setTabarBadgeWithData:[NSString stringWithFormat:@"%@",num] atIndex:3];
-                        [self setApplicationIconBadgeWithNum:[num integerValue]] ;
-                        
-                    }
-                    else
-                    {
-                        [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
-                        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-                    }
-                });
 
-                
-            }
-            else
-            {
-                NSLog(@"get the notice nummber failed");
-            }
-        }];
-    });
 }
--(void)updateNoticeInfo
+-(void)updateNoticeInfo:(NSNotification *)notification
 {
-    @autoreleasepool {
-    while (true) {
-        [NSThread sleepForTimeInterval:10.0f];
-        NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-        [[QDYHTTPClient sharedInstance]getNoticeNumWithUserId:userId whenComplete:^(NSDictionary *returnData) {
-            if ([returnData objectForKey:@"data"])
-            {
-                    if ([[returnData valueForKey:@"data"]integerValue]>0)
-                    {
-                        
-                        NSNumber *num = [returnData valueForKey:@"data"];
-                        
-                        [self setTabarBadgeWithData:[NSString stringWithFormat:@"%@",num] atIndex:3];
-                        [self setApplicationIconBadgeWithNum:[num integerValue]] ;
-                        
-                    }
-                    else
-                    {
-                        [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
-                        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-                    }
-            }
-            else
-            {
-                NSLog(@"get the notice nummber failed");
-            }
-        }];
-    }
-    }
+    NSNumber *index =(NSNumber *) [[notification userInfo]objectForKey:@"notificationNum"];
+    [self setTabarBadgeWithData:index.stringValue atIndex:3];
 }
 
 -(void)setTabarBadgeWithData:(NSString *)data atIndex:(NSInteger)tabBarItemIndex
@@ -341,19 +289,7 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
     [[self.tabBar.items objectAtIndex:tabBarItemIndex] setBadgeValue:data];
     
 }
--(void)setApplicationIconBadgeWithNum:(NSInteger)number
-{
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
-    {
-        UIUserNotificationType myType = UIUserNotificationTypeBadge | UIUserNotificationTypeAlert | UIUserNotificationTypeSound;
-        UIUserNotificationSettings *mySetting = [UIUserNotificationSettings settingsForTypes:myType categories:nil];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:mySetting];
-    }else{
-        UIRemoteNotificationType myType = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:myType];
-    }
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:number];
-}
+
 
 
 - (void)logoutCauseIllegalToken

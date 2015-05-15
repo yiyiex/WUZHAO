@@ -64,7 +64,10 @@
     else
     {
         _PlaceholderLabel.text=placeholder;
-        _PlaceholderLabel.hidden = NO;
+        if ([self.text isEqualToString:@""])
+        {
+            _PlaceholderLabel.hidden = NO;
+        }
     }
     _placeholder=placeholder;
 

@@ -802,10 +802,20 @@
     }];
 }
 
--(void)CommentPhotoWithUserId:(NSInteger)userId postId:(NSInteger)postId comment:(NSString *)comment whenComplete:(void (^)(NSDictionary *))whenComplete
+-(void)CommentPhotoWithUserId:(NSInteger)userId postId:(NSInteger)postId comment:(NSString *)comment replyUserId:(NSInteger)replyUserId  whenComplete:(void (^)(NSDictionary *))whenComplete
 {
      NSString *api = [NSString stringWithFormat:@"/api/putcomment"];
-    NSDictionary *param = @{@"user_id":[NSNumber numberWithInteger:userId],@"post_id":[NSNumber numberWithInteger:postId],@"comment":comment};
+    NSDictionary *param;
+    if (replyUserId >0)
+    {
+         param = @{@"user_id":[NSNumber numberWithInteger:userId],@"post_id":[NSNumber numberWithInteger:postId],@"comment":comment,@"replyUserId":[NSNumber numberWithInteger:replyUserId]};
+     
+    }
+    else
+    {
+           param = @{@"user_id":[NSNumber numberWithInteger:userId],@"post_id":[NSNumber numberWithInteger:postId],@"comment":comment};
+       
+    }
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
         if (result)
@@ -1212,7 +1222,7 @@
         else
         {
             NSLog(@"更新个人信息失败");
-            [userDefaults removeObjectForKey:@"avatarUrl"];
+            [userDefaults setObject:@"" forKey:@"avatarUrl"];
             
         }
     }];

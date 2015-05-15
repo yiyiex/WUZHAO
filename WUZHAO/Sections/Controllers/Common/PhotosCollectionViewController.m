@@ -158,6 +158,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     //[self performSegueWithIdentifier:@"showDetail" sender:self];
 
     WhatsGoingOn *item = [self.datasource objectAtIndex:indexPath.row];
+    
     UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
     HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
     [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];

@@ -16,6 +16,8 @@
 
 #import "PIOSearchAPI.h"
 
+#import "ApplicationUtility.h"
+
 #import "macro.h"
 @interface AppDelegate ()<BPushDelegate>
 
@@ -27,6 +29,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
     [GlobalAppearance setGlobalAppearance];
+    [self getLatestNoticeNumber];
 
 
     
@@ -66,11 +69,13 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+    [self getLatestNoticeNumber];
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
+    [self getLatestNoticeNumber];
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
@@ -86,6 +91,16 @@
     [BPush registerDeviceToken:deviceToken]; // 必须
     
     [BPush bindChannel]; // 必须。可以在其它时机调用，只有在该方法返回（通过onMethod:response:回调）绑定成功时，app才能接收到Push消息。一个app绑定成功至少一次即可（如果access token变更请重新绑定）。
+}
+
+-(void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void (^)())completionHandler
+{
+    
+}
+
+-(void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void (^)())completionHandler
+{
+    
 }
 
 // 必须，如果正确调用了setDelegate，在bindChannel之后，结果在这个回调中返回。
@@ -106,6 +121,40 @@
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     //处理接受的消息
+    [BPush handleNotification:userInfo];
 }
+
+#pragma mark - get latest notice number
+-(void)getLatestNoticeNumber
+{
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    
+        NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+        [[QDYHTTPClient sharedInstance]getNoticeNumWithUserId:userId whenComplete:^(NSDictionary *returnData) {
+            if ([returnData objectForKey:@"data"])
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([[returnData valueForKey:@"data"]integerValue]>0)
+                    {
+                        
+                        NSNumber *num = [returnData valueForKey:@"data"];
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"updateNotificationNum" object:nil userInfo:@{@"notificationNum":num}];
+                        [ApplicationUtility setApplicationIconBadgeWithNum:num.integerValue];
+                        
+                    }
+
+                });
+                
+                
+            }
+            else
+            {
+                NSLog(@"get the notice nummber failed");
+            }
+        }];
+    });
+}
+
+
 
 @end

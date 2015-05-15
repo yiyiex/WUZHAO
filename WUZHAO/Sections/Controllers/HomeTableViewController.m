@@ -12,10 +12,13 @@
 #import "CommentListViewController.h"
 #import "UserListTableViewController.h"
 
+#import "CommentTextView.h"
+
 #import "UIImageView+WebCache.h"
 #import "UIImageView+ChangeAppearance.h"
 #import "UIButton+ChangeAppearance.h"
 #import "UILabel+ChangeAppearance.h"
+
 #import "PhotoCommon.h"
 
 #import "PureLayout.h"
@@ -28,7 +31,7 @@
 #define ONEPAGEITEMS 10
 
 
-@interface HomeTableViewController ()<UIActionSheetDelegate,UIAlertViewDelegate>
+@interface HomeTableViewController ()<UIActionSheetDelegate,UIAlertViewDelegate,CommentTextViewDelegate>
 @property (nonatomic,strong) UIRefreshControl *refreshControl;
 @property (nonatomic,strong) UIButton *loadMoreButton;
 @property (nonatomic,strong) UIActivityIndicatorView *aiv;
@@ -53,16 +56,8 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if (SYSTEM_VERSION_EQUAL_TO(@"7"))
-    {
-         self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
     self.tableView.alwaysBounceVertical = YES;
     [self initNavigationItem];
-    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)])
-    {
-        self.tableView.layoutMargins = UIEdgeInsetsMake(0, 0, 0, 0);
-    }
     //refresh control
     self.refreshControl = [[UIRefreshControl alloc]init];
     [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
@@ -269,85 +264,77 @@ static NSString *reuseIdentifier = @"HomeTableCell";
   
     //配置评论样式
     [cell configureCellWithData:content parentController:self];
-    
     [cell setAppearance];
-    [cell setNeedsLayout];
-    [cell layoutIfNeeded];
     
 }
 - (PhotoTableViewCell *)prototypeCell
 {
     if (!_prototypeCell) {
-        _prototypeCell = [self.tableView dequeueReusableCellWithIdentifier:NSStringFromClass([PhotoTableViewCell class])];
+        _prototypeCell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
     }
     
     return _prototypeCell;
 }
+
+-(float)caculateProtoCellHeightWithData:(WhatsGoingOn *)dataItem
+{
+
+    [self.prototypeCell configureCellWithData:dataItem parentController:self];
+    float descriptionHieght;
+    CGSize descriptionSize = self.prototypeCell.descriptionTextView.frame.size;
+    // NSLog(@"description content  at index %ld:%@",(long)indexPath.row,self.prototypeCell.descriptionTextView.text);
+    NSLog(@"description content height %f widht %f",descriptionSize.height,descriptionSize.width);
+    
+    if (descriptionSize.height>0)
+    {
+        descriptionHieght = descriptionSize.height + 10.0f;
+    }
+    float commentViewHeight = 0;
+    
+    CGSize commentViewSize = self.prototypeCell.commentView.frame.size;
+    // NSLog(@"comment content  at index %ld :%@",(long)indexPath.row,self.prototypeCell.commentView.text);
+    NSLog(@"comment content height %f  %f",commentViewSize.height,commentViewSize.width);
+    if (commentViewSize.height>0)
+    {
+        commentViewHeight = commentViewSize.height;
+    }
+    float likeViewHeight = 0;
+    if (dataItem.likeCount >0)
+    {
+        likeViewHeight = 32;
+    }
+    float basicheight = 48 + WZ_APP_SIZE.width + (12+24+12);
+    float height = basicheight + descriptionHieght+ commentViewHeight+likeViewHeight ;
+    //NSLog(@"heihgt ************************* at index path %ld :%f",(long)indexPath.row,height);
+    return height;
+}
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    float height;
+   /*
+    NSLog(@"estimate  height for row at index path$$$$$$$$$$$$$$$$");
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
         return UITableViewAutomaticDimension;
     }
-    return 600;
+    return 600;*/
+    NSLog(@"estimate  height for row at index path %ld",(long)indexPath.row);
+    // return UITableViewAutomaticDimension;
+    WhatsGoingOn *item = [self.dataSource objectAtIndex:indexPath.row];
+    height = [self caculateProtoCellHeightWithData:item];
+    return height;
+   
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"caculate  height for row at index path %ld",(long)indexPath.row);
+    float height;
+   // return UITableViewAutomaticDimension;
     WhatsGoingOn *item = [self.dataSource objectAtIndex:indexPath.row];
-    /*
-    [self.prototypeCell configureCellWithData:item parentController:nil];
-    CGSize size =  [self.prototypeCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-    float height = size.height;*/
-    
-    //NSDictionary *addressTextAttribute = @{NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE};
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
-    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-    NSDictionary *descriptionTextAttribute = @{NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle.copy};
-    NSDictionary *commentTextAttribute = @{NSFontAttributeName:WZ_FONT_SMALL_SIZE,NSParagraphStyleAttributeName:paragraphStyle.copy};
-    float labelWidth = WZ_APP_SIZE.width -16;
-    //head view + image view + address view + description view + zan avatar view + comment view
-    float baseHeight =  48 + WZ_APP_SIZE.width ; //head view + image View
-    float descriptionViewHeight,ZanViewHeight,CommentViewHeight,buttonHeight;
-    if ([item.imageDescription isEqualToString:@""])
-    {
-        descriptionViewHeight = 8.0f;
-    }
-    else
-    {
-        descriptionViewHeight = 10.0f + [item.imageDescription boundingRectWithSize:CGSizeMake(labelWidth, 0) options:NSStringDrawingUsesLineFragmentOrigin |NSStringDrawingUsesFontLeading|NSStringDrawingTruncatesLastVisibleLine  attributes:descriptionTextAttribute context:nil].size.height + 8.0f +0.2f;
-        
-    }
-    NSLog(@"descriptionViewHeight caculate :=====>%f",descriptionViewHeight);
-    ZanViewHeight = item.likeUserList.count<=0?0:32;
-    if (item.commentStringList.count == 0)
-    {
-        CommentViewHeight = 0;
-    }
-    else
-    {
-        for (NSString *commentString in item.commentStringList)
-        {
-            
-            float commentLabelHeight = [commentString boundingRectWithSize:CGSizeMake(labelWidth, 0) options:NSStringDrawingUsesLineFragmentOrigin |NSStringDrawingUsesFontLeading|NSStringDrawingTruncatesLastVisibleLine attributes:commentTextAttribute context:nil].size.height;
-            float offset = 6.7f + commentLabelHeight/13.8f*0.2f;
-            //offset = 7.0f;
-            CommentViewHeight += commentLabelHeight + offset;
-            NSLog(@"comment Height caculate :=====>%f",commentLabelHeight);
-        }
-        if (item.commentStringList.count>4)
-        {
-            float moreLabelHeight = 24.0f;
-            
-            //float moreLabelHeight = [@"查看更多评论" boundingRectWithSize:CGSizeMake(labelWidth, 0) options:NSStringDrawingUsesLineFragmentOrigin |NSStringDrawingUsesFontLeading|NSStringDrawingTruncatesLastVisibleLine  attributes:commentTextAttribute context:nil].size.height;
-            CommentViewHeight += moreLabelHeight;
-            NSLog(@"lookmore comment Height caculate :=====>%f",moreLabelHeight);
-        }
-        CommentViewHeight += 4;
-    }
-    buttonHeight = 44;//8 +24 +12
-    float height = baseHeight  + descriptionViewHeight + ZanViewHeight + CommentViewHeight + buttonHeight  ;
-    NSLog(@"caculate height at index :%ld----- %f",(long)indexPath.row,height);
+    height = [self caculateProtoCellHeightWithData:item];
     return height;
+    
+  
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
@@ -368,7 +355,10 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     //各控件单击效果
     //点击头像，跳转个人主页
     [self configureCell:cell forContent:item atIndexPath:indexPath];
-
+    
+    NSLog(@"cell height at indexpath:%ld ---- %f",(long)indexPath.row,cell.contentView.frame.size.height);
+    NSLog(@"cell headview height at indexpath:%ld ---- %f",(long)indexPath.row,cell.headView.frame.size.height);
+     NSLog(@"cell imageview  at indexpath:%ld ---- (%f , %f)",(long)indexPath.row,cell.homeCellImageView.frame.size.width,cell.homeCellImageView.frame.size.height);
     return cell;
 }
 
@@ -654,8 +644,47 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         cell = (PhotoTableViewCell *)[[[sender superview]superview]superview];
     }
     NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
-    
     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
+    
+    if ([cell.zanClickButton.currentTitle isEqualToString:@"赞"])
+    {
+        //item.likeCount += 1;
+        [self addMeToZanData:item];
+        [cell configureCellWithData:item parentController:self];
+        if (item.likeCount == 1)
+        {
+            //to do
+            //如何改变世界！
+            self.currentZanIndexPath = selectItemIndexPath;
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:selectItemIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
+            //[self.tableView beginUpdates];
+            //[self.tableView endUpdates];
+            
+        }
+        
+        // [cell.zanClickButton setTitle:@"已赞" forState:UIControlStateNormal];
+        
+    }
+    else if ([cell.zanClickButton.currentTitle isEqualToString:@"赞了"])
+    {
+        // item.likeCount -= 1;
+        [self deleteMeFromZanData:item];
+        [cell configureCellWithData:item parentController:self];
+        if (item.likeCount ==0)
+        {
+            self.currentZanIndexPath = selectItemIndexPath;
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:selectItemIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
+            // [self.tableView beginUpdates];
+            //[self.tableView endUpdates];
+        }
+        //  [cell.zanClickButton setTitle:@"赞" forState:UIControlStateNormal];
+    }
+
+
     if (!item.isLike)
     {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -663,31 +692,12 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if ([returnData objectForKey:@"data"])
                     {
-                        if ([cell.zanClickButton.currentTitle isEqualToString:@"赞"])
-                        {
-                            //item.likeCount += 1;
-                            [self addMeToZanData:item];
-                            [cell configureCellWithData:item parentController:self];
-                            if (item.likeCount == 1)
-                            {
-                                //to do
-                                //如何改变世界！
-                                self.currentZanIndexPath = selectItemIndexPath;
-                                [self.tableView beginUpdates];
-                                [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:selectItemIndexPath] withRowAnimation:UITableViewRowAnimationNone];
-                                [self.tableView endUpdates];
-                                //[self.tableView beginUpdates];
-                                //[self.tableView endUpdates];
-                                
-                            }
-                            
-                            // [cell.zanClickButton setTitle:@"已赞" forState:UIControlStateNormal];
-                            
-                        }
+                        NSLog(@"zan success");
                     }
                     else
                     {
-                        [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                        NSLog(@"zan failed");
+                       // [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
                     }
 
                 });
@@ -703,26 +713,12 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if ([returnData objectForKey:@"data"])
                     {
-                        if ([cell.zanClickButton.currentTitle isEqualToString:@"赞了"])
-                        {
-                            // item.likeCount -= 1;
-                            [self deleteMeFromZanData:item];
-                            [cell configureCellWithData:item parentController:self];
-                            if (item.likeCount ==0)
-                            {
-                                self.currentZanIndexPath = selectItemIndexPath;
-                                [self.tableView beginUpdates];
-                                [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:selectItemIndexPath] withRowAnimation:UITableViewRowAnimationNone];
-                                [self.tableView endUpdates];
-                                // [self.tableView beginUpdates];
-                                //[self.tableView endUpdates];
-                            }
-                            //  [cell.zanClickButton setTitle:@"赞" forState:UIControlStateNormal];
-                        }
+                        NSLog(@"cancel zan success");
                     }
                     else
                     {
-                        [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                         NSLog(@"cancel zan failed");
+                        //[SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
                     }
                 });
 
@@ -779,6 +775,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
     CommentListViewController *commentListView = [[CommentListViewController alloc]init];
     commentListView.poiItem = item;
+    commentListView.isKeyboardShow = YES;
     [self.navigationController pushViewController:commentListView animated:YES];
 }
 
@@ -1006,5 +1003,11 @@ static NSString *reuseIdentifier = @"HomeTableCell";
             }
         }
     }
+}
+
+#pragma mark - commentTextView Delegate
+-(void)commentTextView:(CommentTextView *)commentTextView didClickLinkUser:(User *)user
+{
+    [self goToPersonalPageWithUserInfo:user];
 }
 @end

@@ -21,7 +21,7 @@
     {
        [self setChildrenName:childrenName];
     }
-    self.CurrentSegueIdentifier = [self.ChildrenName firstObject];
+    self.currentSegueIdentifier = [self.ChildrenName firstObject];
     return  self;
 }
 - (void)viewDidLoad {

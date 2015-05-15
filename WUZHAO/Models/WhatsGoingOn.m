@@ -106,8 +106,21 @@
         [commentItem setObject:[comment objectForKey:@"nick"] forKey:@"userName"];
         [commentItem setObject:[comment objectForKey:@"user_id"] forKey:@"userId"];
         [commentItem setObject:[comment objectForKey:@"avatar"] forKey:@"avatarUrl"];
+       // NSString *isWriterString = [[comment objectForKey:@"user_id"]integerValue] == self.photoUser.UserID?@"(作者)":@"" ;
+        if ([[comment objectForKey:@"replyUserNick"]isEqualToString:@""])
+        {
+            commentString =[NSString stringWithFormat:@"%@: %@",[commentItem objectForKey:@"userName"],[commentItem objectForKey:@"content"]];
+  
+        }
+        else
+        {
+            [commentItem setObject:[comment objectForKey:@"replyUserNick"] forKey:@"replyUserName"];
+            [commentItem setObject:[comment objectForKey:@"replyUserId"] forKey:@"replyUserId"];
+            commentString =[NSString stringWithFormat:@"%@ 回复 %@: %@",[commentItem objectForKey:@"userName"],[commentItem objectForKey:@"replyUserName"],[commentItem objectForKey:@"content"]];
+        }
+        
         [commentList addObject:commentItem];
-        commentString =[NSString stringWithFormat:@"%@: %@",[commentItem objectForKey:@"userName"],[commentItem objectForKey:@"content"]];
+      
         [commentStringList addObject:commentString];
         
         

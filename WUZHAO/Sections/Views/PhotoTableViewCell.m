@@ -55,17 +55,8 @@
     self.contentView.frame = self.bounds;
 }
 
--(void)layoutSubviews
-{
-    [super layoutSubviews];
-    [self.contentView updateConstraintsIfNeeded];
-    [self.contentView layoutIfNeeded];
-}
-
 -(void)setAppearance
 {
-    [self.contentView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
-    
     self.backgroundColor = [UIColor clearColor];
     
     
@@ -84,8 +75,10 @@
     //[self.addressLabel setThemeBoldLabelAppearance];
     
     [self.homeCellImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
-    [self.descriptionLabel setDarkGreyBitParentLabelAppearance];
-   // [self.descriptionLabel setTextColor:[UIColor blackColor]];
+    [self.descriptionTextView setTextColor:THEME_COLOR_DARK_GREY_BIT_PARENT];
+    [self.descriptionTextView setFont:WZ_FONT_COMMON_SIZE];
+    [self.descriptionTextView setScrollEnabled:NO];
+    [self.descriptionTextView setEditable:NO];
 
     [self.likeLabel setThemeLabelAppearance];
     [self.likeLabel setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
@@ -106,78 +99,45 @@
 }
 -(void)configureCellWithData:(WhatsGoingOn *)content parentController:(UIViewController *)parentController
 {
+    [self setAppearance];
     self.content = content;
     self.parentViewController = parentController;
     [self configureBasicInfo];
     [self configureLikeView];
     [self configureComment];
     [self configureGesture];
-    [self setAppearance];
+    
+}
+
+
+
+-(void)configureCommentWithData:(WhatsGoingOn *)content parentController:(UIViewController *)parentController
+{
+    //评论内容显示样式
+    self.content = content;
+    self.parentViewController = parentController;
+    [self configureComment];
+    
 }
 
 -(void)configureComment
 {
     //评论内容显示样式
-    if (self.commentLabelView.subviews.count>0)
+    [self.commentView reset];
+    [self.commentView setFont:WZ_FONT_COMMON_SIZE];
+    [self.commentView setTextColor:THEME_COLOR_DARK_GREY_PARENT];
+    self.commentView.delegate = (id<CommentTextViewDelegate>)self.parentViewController;
+   
+    [self.commentView setTextWithCommentStringList:self.content.commentStringList CommentList:self.content.commentList];
+    [self updateFrameOfTextView:self.commentView heightConstraint:self.commentViewHeightConstraint];
+    if (self.commentView.frame.size.height>0)
     {
-        for (UILabel *subView in self.commentLabelView.subviews)
-        {
-            [subView removeFromSuperview];
-        }
+        [self.commentViewVerticalSpaceToUpView setConstant:0.0f];
     }
-    [self.commentViewHeightConstraint setConstant:0];
-    if (self.content.commentList.count ==0)
+    else
     {
-        return;
+        [self.commentViewVerticalSpaceToUpView setConstant:0.0f];
     }
-    float commentViewHeight = 4;
-    for (NSInteger i = 0;i<self.content.commentList.count;i++)
-    {
-        NSString *commentString = self.content.commentStringList[i];
-        NSMutableAttributedString *commentAttributeString = [[NSMutableAttributedString alloc]initWithString:self.content.commentStringList[i]];
-        NSRange commentRange = [commentString rangeOfString:(NSString *)[self.content.commentList[i] objectForKey:@"content"]];
-        NSRange userNameRange = [commentString rangeOfString:[NSString stringWithFormat:@"%@:",[self.content.commentList[i] objectForKey:@"userName"]]];
-        [commentAttributeString setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY_BIT_PARENT,NSFontAttributeName:WZ_FONT_SMALLP_SIZE} range:userNameRange];
-        [commentAttributeString setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_SMALLP_READONLY} range:commentRange];
-        UILabel *commentLabel = [[UILabel alloc]initWithFrame:CGRectMake(8, commentViewHeight, WZ_APP_SIZE.width-16, 24)];
-        [commentLabel setNumberOfLines:0];
-        [commentLabel setLineBreakMode:NSLineBreakByTruncatingTail];
-        commentLabel.attributedText = commentAttributeString;
-        [commentLabel sizeToFit];
-        
-        if ([self.parentViewController respondsToSelector:@selector(commentLabelClick:)])
-        {
-            UITapGestureRecognizer *commentLabelClick = [[UITapGestureRecognizer alloc]initWithTarget:self.parentViewController action:@selector(commentLabelClick:)];
-            [commentLabel addGestureRecognizer:commentLabelClick];
-            [commentLabel setUserInteractionEnabled:YES];
-        }
-        [self.commentLabelView addSubview:commentLabel];
-        commentViewHeight += commentLabel.frame.size.height;
-        
-        
-    }
-    [self.commentViewHeightConstraint setConstant:commentViewHeight];
-    if (self.content.hasMoreComments && self.content.commentNum >5 )
-    {
-        UILabel *moreCommentLabel = [[UILabel alloc]initWithFrame:CGRectMake(8, commentViewHeight, WZ_APP_SIZE.width-16, 24)];
-        moreCommentLabel.text =[NSString stringWithFormat:@"查看全部%lu条评论",(long)self.content.commentNum];
-        if ([self.parentViewController respondsToSelector:@selector(moreCommentClick:)])
-        {
-            UITapGestureRecognizer *moreCommentClick = [[UITapGestureRecognizer alloc]initWithTarget:self.parentViewController action:@selector(moreCommentClick:)];
-            [moreCommentLabel addGestureRecognizer:moreCommentClick];
-            [moreCommentLabel setUserInteractionEnabled:YES];
-        }
-
-        //[moreCommentLabel setDarkGreyLabelAppearance];
-        [moreCommentLabel setFont:WZ_FONT_SMALL_SIZE];
-        [moreCommentLabel setTextColor:THEME_COLOR_DARK_GREY_BIT_PARENT];
-        [moreCommentLabel sizeToFit];
-        [self.commentLabelView addSubview:moreCommentLabel];
-        commentViewHeight += moreCommentLabel.frame.size.height;
-        [self.commentViewHeightConstraint setConstant:commentViewHeight];
-        
-    }
-    
 }
 
 -(void)configureLikeViewWithData:(WhatsGoingOn *)content parentController:(UIViewController *)parentController
@@ -190,7 +150,7 @@
 -(void)configureLikeView
 {
     //点赞用户头像展示区
-    for (UIView *likeViewSub in self.likeLabelView.subviews)
+    for (UIView *likeViewSub in self.likeView.subviews)
     {
         if( [likeViewSub isKindOfClass:[UIImageView class]])
         {
@@ -250,7 +210,7 @@
             User *userInfo = [self.content.likeUserList objectAtIndex:i];
             
             [zanAvatar sd_setImageWithURL:[NSURL URLWithString:userInfo.avatarImageURLString]];
-            [self.likeLabelView addSubview:zanAvatar];
+            [self.likeView addSubview:zanAvatar];
             if ([self.parentViewController respondsToSelector:@selector(zanUserAvatarClick:)])
             {
                 UITapGestureRecognizer *zanUserAvatarClick = [[UITapGestureRecognizer alloc]initWithTarget:self.parentViewController action:@selector(zanUserAvatarClick:)];
@@ -286,46 +246,34 @@
     }
     [self.homeCellAvatorImageView sd_setImageWithURL:[NSURL URLWithString:self.content.photoUser.avatarImageURLString]];
     
-    //[self.zanClikeButtonVerticalSpaceToCommentViewConstraint setConstant:8.0f];
-    //address label
+    [self.homeCellImageView setFrame:CGRectMake(0, 48, WZ_APP_SIZE.width, WZ_APP_SIZE.width)];
+
     if ([self.content.poiName isEqualToString:@""])
     {
         self.addressLabel.text = @"";
-        [self.addressViewHeightConstraint setConstant:0];
         [self.addressIcon setHidden:YES];
         [self.addressLabelView setHidden:YES];
         [self.addressLabel setHidden:YES];
-        
-      //  [self.addressViewVerticalSpaceToImageView setConstant:0.0f];
     }
     else
     {
         self.addressLabel.text = self.content.poiName;
-        [self.addressViewHeightConstraint setConstant:28];
-       // [self.addressViewHeightConstraint setConstant:self.addressLabel.frame.size.height];
         [self.addressIcon setHidden:NO];
         [self.addressLabel setHidden:NO];
         [self.addressLabelView setHidden:NO];
-        NSLog(@"addressView Height %f",self.addressViewHeightConstraint.constant);
-       // [self.addressViewVerticalSpaceToImageView setConstant:12.0f];
         
        
     }
     //description label
+    self.descriptionTextView.text = self.content.imageDescription;
+    [self updateFrameOfTextView:self.descriptionTextView heightConstraint:self.descriptionViewHeightConstraint];
     if ([self.content.imageDescription isEqualToString:@""])
     {
-        [self.descriptionViewHeightConstraint setConstant:0.0];
-        [self.descriptionViewVerticalSpaceToAddressView setConstant:0.0f];
-        self.descriptionLabel.text = @"";
+         [self.descriptionViewVerticalSpaceToUpView setConstant:0.0f];
     }
     else
     {
-        [self.descriptionLabel setFrame:CGRectMake(8, 0, WZ_APP_SIZE.width-16, 20)];
-        self.descriptionLabel.text = self.content.imageDescription;
-
-        [self.descriptionViewHeightConstraint setConstant:self.descriptionLabel.frame.size.height];
-         NSLog(@"description Height %f",self.descriptionViewHeightConstraint.constant);
-        [self.descriptionViewVerticalSpaceToAddressView setConstant:10.0f];
+        [self.descriptionViewVerticalSpaceToUpView setConstant:10.0f];
     }
    // if (imageUrl)
     [self.homeCellImageView sd_setImageWithURL:[NSURL URLWithString:self.content.imageUrlString]
@@ -445,4 +393,34 @@
             [self.addressLabel setHidden:YES];
     }
 }
+
+#pragma mark - textview utility
+-(void)updateFrameOfTextView:(UITextView *)textView heightConstraint:(NSLayoutConstraint *)heightConstraint
+{
+    if ([textView.text isEqualToString:@""])
+    {
+        CGRect frame = textView.frame;
+        frame.size.height = 0;
+        textView.frame = frame;
+        if (heightConstraint)
+        {
+            [heightConstraint setConstant:0.0f];
+        }
+    }
+    else
+    {
+        CGRect frame = textView.frame;
+        CGSize maxSize = CGSizeMake( WZ_APP_SIZE.width -16.0f, FLT_MAX);
+        CGSize newSize = [textView sizeThatFits:maxSize];
+        frame.size = newSize;
+        textView.frame = frame;
+        if (heightConstraint)
+        {
+            [heightConstraint setConstant:newSize.height];
+        }
+    }
+    
+
+}
+
 @end

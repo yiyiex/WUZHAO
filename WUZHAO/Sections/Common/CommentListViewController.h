@@ -13,4 +13,7 @@
 @property (nonatomic,strong) WhatsGoingOn *poiItem;
 
 @property (nonatomic, strong) NSMutableArray *commentList; //存储评论列表
+@property (nonatomic) BOOL isKeyboardShow;
+
+-(void)avatarClick:(UITapGestureRecognizer *)gesture;
 @end

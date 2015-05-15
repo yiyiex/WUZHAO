@@ -28,7 +28,6 @@
 #import "QDYHTTPClient.h"
 #import "macro.h"
 
-
 #define SEGUEFIRST @"segueForPhotosColletion"
 #define SEGUESECOND @"segueForAddressTable"
 #define SEGUETHIRD @"segueForThird"
@@ -62,7 +61,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [_mineButton setTitle:@"正在加载..." forState:UIControlStateNormal];
+
     [self setAppearance];
     self.refreshControl = [[UIRefreshControl alloc]init];
     [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
@@ -143,7 +142,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 
 -(void)setAppearance
 {
-    [self.avator setBackgroundColor:THEME_COLOR_LIGHT_GREY];
+    [self.avator setBackgroundColor:THEME_COLOR_LIGHT_GREY_MORE_PARENT];
     [self.avator setRoundConerWithRadius:self.avator.frame.size.width/2];
     
     if([self.mineButton.titleLabel.text isEqualToString:@"已关注"]|| [self.mineButton.titleLabel.text isEqualToString:@"互相关注"])
@@ -156,7 +155,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     }
     else
     {
-        [self.mineButton setThemeBackGroundAppearance];
+        [_mineButton setTitle:@"正在加载..." forState:UIControlStateNormal];
+        [self.mineButton setDarkGreyParentBackGroundAppearance];
     }
     [self.mineButton setNormalButtonAppearance];
     [self.selfDescriptionLabel setReadOnlyLabelAppearance];
@@ -164,6 +164,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
  
 
 }
+
 -(void)setPersonalInfo
 {
 

@@ -81,7 +81,7 @@
 //get comment list with postId
 -(void) GetCommentListWithPostId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 //comment with userId and photo PostId
--(void) CommentPhotoWithUserId:(NSInteger )userId postId:(NSInteger)postId comment:(NSString *)comment whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+-(void) CommentPhotoWithUserId:(NSInteger )userId postId:(NSInteger)postId comment:(NSString *)comment replyUserId:(NSInteger)replyUserId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 //delete comment with commentId
 -(void) DeleteCommentPhotoWithCommentId:(NSInteger)commentId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
@@ -102,4 +102,6 @@
 
 //feed back
 -(void)feedBackWithUserId:(NSInteger)userId content:(NSString *)content contact:(NSString *)contact whenComplete:(void (^)(NSDictionary *))whenComplete;
+
+-(void)updateLocalUserInfo;
 @end

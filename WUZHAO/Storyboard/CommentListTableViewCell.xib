@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7531" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="70" id="sDD-mb-iH8" customClass="CommentTableViewCell">
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="commentTableCell" rowHeight="70" id="sDD-mb-iH8" customClass="CommentTableViewCell">
             <rect key="frame" x="0.0" y="0.0" width="404" height="70"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sDD-mb-iH8" id="kWt-Fs-MrN">
@@ -31,12 +30,6 @@
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4oB-oG-Txy" userLabel="commentContent">
-                        <rect key="frame" x="52" y="30" width="296" height="35"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qVT-qB-st5" userLabel="time">
                         <rect key="frame" x="352" y="8" width="44" height="21"/>
                         <constraints>
@@ -46,33 +39,33 @@
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Test aaa" translatesAutoresizingMaskIntoConstraints="NO" id="0uN-4e-D9D" customClass="CommentTextView">
+                        <rect key="frame" x="48" y="26" width="296" height="41"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    </textView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="qVT-qB-st5" firstAttribute="leading" secondItem="4oB-oG-Txy" secondAttribute="trailing" constant="4" id="71a-Ey-3XI"/>
-                    <constraint firstAttribute="bottom" secondItem="4oB-oG-Txy" secondAttribute="bottom" constant="4" id="EmZ-iy-l6L"/>
+                    <constraint firstItem="0uN-4e-D9D" firstAttribute="top" secondItem="WTJ-7a-2Xu" secondAttribute="bottom" constant="-2" id="2Ah-Gx-lGY"/>
+                    <constraint firstItem="0uN-4e-D9D" firstAttribute="leading" secondItem="U7b-3J-oDn" secondAttribute="trailing" constant="4" id="3KR-za-qNE"/>
                     <constraint firstItem="WTJ-7a-2Xu" firstAttribute="top" secondItem="U7b-3J-oDn" secondAttribute="top" id="EoY-an-pvF"/>
                     <constraint firstItem="U7b-3J-oDn" firstAttribute="top" secondItem="kWt-Fs-MrN" secondAttribute="top" constant="8" id="H8L-vi-AEW"/>
-                    <constraint firstItem="4oB-oG-Txy" firstAttribute="leading" secondItem="U7b-3J-oDn" secondAttribute="trailing" constant="8" id="Jb5-hP-trT"/>
+                    <constraint firstAttribute="bottom" secondItem="0uN-4e-D9D" secondAttribute="bottom" constant="2" id="a4z-5W-LEH"/>
                     <constraint firstItem="qVT-qB-st5" firstAttribute="top" secondItem="kWt-Fs-MrN" secondAttribute="top" constant="8" id="bqX-rk-m9p"/>
-                    <constraint firstItem="4oB-oG-Txy" firstAttribute="top" secondItem="WTJ-7a-2Xu" secondAttribute="bottom" constant="2" id="cHD-SI-mqK"/>
-                    <constraint firstItem="4oB-oG-Txy" firstAttribute="top" secondItem="WTJ-7a-2Xu" secondAttribute="bottom" constant="2" id="eT7-cv-qRw"/>
+                    <constraint firstItem="qVT-qB-st5" firstAttribute="leading" secondItem="0uN-4e-D9D" secondAttribute="trailing" constant="8" id="l7r-Kw-kh2"/>
                     <constraint firstItem="U7b-3J-oDn" firstAttribute="leading" secondItem="kWt-Fs-MrN" secondAttribute="leading" constant="8" id="nxf-fe-25d"/>
                     <constraint firstAttribute="trailing" secondItem="qVT-qB-st5" secondAttribute="trailing" constant="8" id="vbS-lw-Dmp"/>
                     <constraint firstItem="WTJ-7a-2Xu" firstAttribute="leading" secondItem="U7b-3J-oDn" secondAttribute="trailing" constant="8" id="zIu-On-rlv"/>
                 </constraints>
-                <variation key="default">
-                    <mask key="constraints">
-                        <exclude reference="cHD-SI-mqK"/>
-                    </mask>
-                </variation>
             </tableViewCellContentView>
             <connections>
-                <outlet property="commentContent" destination="4oB-oG-Txy" id="udE-OC-wpY"/>
+                <outlet property="commentContent" destination="0uN-4e-D9D" id="S81-BE-iob"/>
                 <outlet property="commentTime" destination="qVT-qB-st5" id="Cig-iM-82y"/>
                 <outlet property="userAvatorView" destination="U7b-3J-oDn" id="3qb-pv-wAS"/>
                 <outlet property="userName" destination="WTJ-7a-2Xu" id="26N-Rf-AWw"/>
             </connections>
-            <point key="canvasLocation" x="335" y="-384"/>
+            <point key="canvasLocation" x="179" y="-469"/>
         </tableViewCell>
     </objects>
 </document>

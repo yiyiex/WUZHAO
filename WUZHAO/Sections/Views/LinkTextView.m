@@ -9,7 +9,7 @@
 #import "LinkTextView.h"
 
 @interface LinkTextView()
-@property (nonatomic, strong) NSString *activeString;
+@property (nonatomic) NSRange currentRange;
 @property (nonatomic, strong) NSMutableDictionary *linkedTextRangeDictionary;
 @property (nonatomic, strong) NSMutableDictionary *linkedTextTapHandlerDictionary;
 @property (nonatomic, strong) NSMutableDictionary *linkedTextDefaultAttributesDictionary;
@@ -38,7 +38,17 @@
     return self;
 }
 
-
+-(void)reset
+{
+    self.linkedTextDefaultAttributesDictionary = nil;
+    self.linkedTextRangeDictionary = nil;
+    self.linkedTextHighlightedAttributesDictionary = nil;
+    self.linkedTextTapHandlerDictionary = nil;
+    
+    self.text = nil;
+    self.attributedText = nil;
+    self.currentRange = NSMakeRange(0, 0);
+}
 -(NSMutableDictionary *)linkedTextRangeDictionary
 {
     if (!_linkedTextRangeDictionary)
@@ -74,28 +84,90 @@
 
 
 #pragma mark - Set Link Strings
-
--(void)linkString:(NSString *)string defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandler:(LinkedStringTapHandler)tapHandler
+-(void)linkTextWithString:(NSString *)string defaultAttributes:(NSDictionary *)defaultAttributes highlightAttributes:(NSDictionary *)highlightAttributes tabHandler:(LinkedStringRangeTapHandler)tapHandler
 {
     if (!string || !defaultAttributes)
     {
         return;
     }
-    NSDictionary *linkedStringDictionary = [self dictionaryForLinkedString:string defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandler:tapHandler];
+    NSRange stringRange = [self.text rangeOfString:string];
+    NSDictionary *linkedStringDictionary = [self dictionaryForLinkedString:string stringRange:stringRange defaultAttributes:defaultAttributes highlightedAttributes:highlightAttributes tapHandler:tapHandler];
     [self addLinkedStringAndAttributes:linkedStringDictionary];
-   
-    
+}
+-(void)setText:(NSString *)string linkStrings:(NSArray *)linkStrings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandlers:(NSArray *)tapHandlers
+{
+    if (!string ||!defaultAttributes)
+    {
+        return;
+    }
+    NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc]initWithString:string];
+    self.attributedText = mutableAttributedString;
+    if (tapHandlers.count == 0)
+    {
+        return;
+    }
+    for (NSInteger i = 0;i<linkStrings.count;i++)
+    {
+        NSRange linkStringInnerRange = [string rangeOfString:linkStrings[i]];
+        NSDictionary *linkedStringDictionary;
+        if (tapHandlers.count >=linkStrings.count)
+        {
+            linkedStringDictionary = [self dictionaryForLinkedString:linkStrings[i] stringRange:linkStringInnerRange defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandler:tapHandlers[i]];
+        }
+        else
+        {
+            linkedStringDictionary = [self dictionaryForLinkedString:linkStrings[i] stringRange:linkStringInnerRange defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandler:tapHandlers[0]];
+        }
+        
+        [self addLinkedStringAndAttributes:linkedStringDictionary];
+    }
 
+    
 }
 
--(void)linkStrings:(NSArray *)strings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tabHandler:(LinkedStringTapHandler)tabHandler
+-(void)appendString:(NSString *)string linkStrings:(NSArray *)linkStrings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandlers:(NSArray *)tapHandlers
 {
- 
-}
+    if (!string || !defaultAttributes)
+    {
+        return;
+    }
+    NSUInteger oldLength = self.text.length;
+    NSMutableAttributedString *mutableAttributedString;
+    if (oldLength == 0)
+    {
+        mutableAttributedString = [[NSMutableAttributedString alloc]initWithString:string attributes:nil];
+    }
+    else
+    {
+        mutableAttributedString = [[NSMutableAttributedString alloc]initWithAttributedString:self.attributedText];
+        NSAttributedString *appendString = [[NSAttributedString alloc]initWithString:string];
+        [mutableAttributedString beginEditing];
+        [mutableAttributedString appendAttributedString:appendString];
+        [mutableAttributedString endEditing];
+    }
 
--(void)linkStringWithRegEx:(NSRegularExpression *)regex defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tabHandler:(LinkedStringTapHandler)tabHandler
-{
+    self.attributedText = mutableAttributedString;
     
+    if (tapHandlers.count == 0)
+    {
+        return;
+    }
+    for (NSInteger i = 0;i<linkStrings.count;i++)
+    {
+        NSRange linkStringInnerRange = [string rangeOfString:linkStrings[i]];
+        NSRange linkStringOutRange = NSMakeRange(linkStringInnerRange.location + oldLength, linkStringInnerRange.length);
+        NSDictionary *linkedStringDictionary;
+        if (tapHandlers.count >=linkStrings.count)
+        {
+            linkedStringDictionary = [self dictionaryForLinkedString:linkStrings[i] stringRange:linkStringOutRange defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandler:tapHandlers[i]];
+        }
+        else
+        {
+            linkedStringDictionary = [self dictionaryForLinkedString:linkStrings[i] stringRange:linkStringOutRange defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandler:tapHandlers[0]];
+        }
+
+        [self addLinkedStringAndAttributes:linkedStringDictionary];
+    }
 }
 
 -(void)addLinkedStringAndAttributes:(NSDictionary *)linkedStringDictionary
@@ -108,16 +180,16 @@
     NSString *text = self.text;
     NSAttributedString *attributedString = self.attributedText;
     NSString *string = linkedStringDictionary[@"string"];
+    NSRange range = [linkedStringDictionary[@"stringRange"] rangeValue];
     NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc]initWithAttributedString:attributedString];
-    NSRange rangeOfString = [text rangeOfString:string];
     [mutableAttributedString beginEditing];
-    if (rangeOfString.length)
+    if (range.length)
     {
-        [self setRange:rangeOfString forLinkedString:string];
-        [self setHandler:linkedStringDictionary[@"handler"] forLinkedString:string];
-        [self setDefaultAttributes:linkedStringDictionary[@"defaultAttributes"] forLinkedString:string];
-        [self setHighlightedAttributes:linkedStringDictionary[@"highlightedAttributes"] forLinkedString:string];
-        [mutableAttributedString addAttributes:linkedStringDictionary[@"defaultAttributes"] range:rangeOfString];
+        [self setRange:range forLinkedString:string];
+        [self setHandler:linkedStringDictionary[@"handler"] forLinkedStringRange:range];
+        [self setDefaultAttributes:linkedStringDictionary[@"defaultAttributes"] forLinkedStringRange:range];
+        [self setHighlightedAttributes:linkedStringDictionary[@"highlightedAttributes"] forLinkedStringRange:range];
+        [mutableAttributedString addAttributes:linkedStringDictionary[@"defaultAttributes"] range:range];
         
     }
     [mutableAttributedString endEditing];
@@ -125,30 +197,26 @@
     
 }
 #pragma mark - Touch Handling Methods
--(NSString *)handleTouches:(NSSet *)touches
+-(NSRange)handleTouches:(NSSet *)touches
 {
     CGPoint location = [touches.allObjects.lastObject locationInView:self];
     location.x -= self.textContainerInset.left;
     location.y -= self.textContainerInset.top;
-    return  [self findLinkedStringAtPoint:location inDictionary:self.linkedTextRangeDictionary];
+    return  [self findLinkedStringRangeAtPoint:location inDictionary:self.linkedTextRangeDictionary];
 }
--(NSString *)findLinkedStringAtPoint:(CGPoint)point inDictionary:(NSDictionary *)dictionary
+-(NSRange)findLinkedStringRangeAtPoint:(CGPoint)point inDictionary:(NSDictionary *)dictionary
 {
-    if (!dictionary)
-    {
-        return nil;
-    }
     NSUInteger characterIndex;
     characterIndex = [self.layoutManager characterIndexForPoint:point inTextContainer:self.textContainer fractionOfDistanceBetweenInsertionPoints:NULL];
-    __block NSString *result = nil;
+    __block NSRange result = NSMakeRange(0, 0) ;
     [dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         NSValue *value = (NSValue*)obj;
-        NSRange rangeToCheck = [value rangeValue];
+        NSRange rangeToCheck = [key rangeValue];
         NSUInteger min = rangeToCheck.location;
         NSUInteger max = min + rangeToCheck.length;
         if (characterIndex >=min && characterIndex <=max)
         {
-            result = key;
+            result = rangeToCheck;
             *stop = YES;
         }
     }];
@@ -164,49 +232,49 @@
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    NSString *tappedString = [self handleTouches:touches];
-    NSDictionary *highlightAttributes = self.linkedTextHighlightedAttributesDictionary[tappedString];
-    if (tappedString && highlightAttributes)
+    NSRange tappedStringRange = [self handleTouches:touches];
+    NSDictionary *highlightAttributes = self.linkedTextHighlightedAttributesDictionary[[NSValue valueWithRange:tappedStringRange]];
+    if ( highlightAttributes)
     {
-        self.activeString = tappedString;
-        [self setAttributes:highlightAttributes forLinkedString:tappedString];
+        self.currentRange = tappedStringRange;
+        [self setAttributes:highlightAttributes forLinkedStringRange:tappedStringRange];
     }
-
+    
     
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    NSString *tappedString = [self handleTouches:touches];
-    NSDictionary *defaultAttributes = self.linkedTextDefaultAttributesDictionary[tappedString];
-    if (tappedString && defaultAttributes)
+    NSRange tappedStringRange = [self handleTouches:touches];
+    NSDictionary *defaultAttributes = self.linkedTextDefaultAttributesDictionary[[NSValue valueWithRange:tappedStringRange]];
+    if (defaultAttributes)
     {
-        if ([self.activeString isEqualToString:tappedString])
+        if (self.currentRange.location == tappedStringRange.location &&self.currentRange.length == tappedStringRange.length )
         {
-            LinkedStringTapHandler tapHandler = self.linkedTextTapHandlerDictionary[self.activeString];
-            tapHandler(self.activeString);
-            [self setAttributes:defaultAttributes forLinkedString:tappedString];
+            LinkedStringRangeTapHandler tapHandler = self.linkedTextTapHandlerDictionary[[NSValue valueWithRange:self.currentRange]];
+            tapHandler(self.currentRange);
+            [self setAttributes:defaultAttributes forLinkedStringRange:self.currentRange];
         }
-        self.activeString = nil;
+        self.currentRange = NSMakeRange(0 , 0);
     }
-
+    
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    NSString *tappedStrng = [self handleTouches:touches];
-    if (![tappedStrng isEqualToString:self.activeString])
+    NSRange tappedStringRange = [self handleTouches:touches];
+    if ( tappedStringRange.location != self.currentRange.location || tappedStringRange.length != self.currentRange.length )
     {
-        if (self.activeString)
+        if (self.currentRange.length>0 && self.currentRange.location >0)
         {
-            NSDictionary *defaultAttributes = self.linkedTextDefaultAttributesDictionary[self.activeString];
-            [self setAttributes:defaultAttributes forLinkedString:self.activeString];
+            NSDictionary *defaultAttributes = self.linkedTextDefaultAttributesDictionary[[NSValue valueWithRange:self.currentRange ]];
+            [self setAttributes:defaultAttributes forLinkedStringRange:self.currentRange];
         }
-        if (tappedStrng)
+        if (tappedStringRange.location >0 && tappedStringRange.length >0)
         {
-            self.activeString = tappedStrng;
-            NSDictionary *highlightedAttributes = self.linkedTextHighlightedAttributesDictionary[tappedStrng];
-            [self setAttributes:highlightedAttributes forLinkedString:tappedStrng];
+            self.currentRange = tappedStringRange;
+            NSDictionary *highlightedAttributes = self.linkedTextHighlightedAttributesDictionary[[NSValue valueWithRange:tappedStringRange]];
+            [self setAttributes:highlightedAttributes forLinkedStringRange:tappedStringRange];
         }
     }
 }
@@ -215,7 +283,7 @@
 
 
 #pragma mark - Private Method
--(NSDictionary *)dictionaryForLinkedString:(NSString *)linkedString defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandler:(LinkedStringTapHandler)handler
+-(NSDictionary *)dictionaryForLinkedString:(NSString *)linkedString stringRange:(NSRange)stringRange defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandler:(LinkedStringRangeTapHandler)handler
 {
     if (!defaultAttributes)
     {
@@ -226,6 +294,7 @@
         highlightedAttributes = [defaultAttributes copy];
     }
     return @{
+             @"stringRange":[NSValue valueWithRange:stringRange],
              @"string":linkedString,
              @"defaultAttributes":defaultAttributes,
              @"highlightedAttributes":highlightedAttributes,
@@ -237,55 +306,56 @@
     if (linkedString && range.length)
     {
         NSValue *rangeValue = [NSValue valueWithRange:range];
-        [self.linkedTextRangeDictionary setObject:rangeValue forKey:linkedString];
+        [self.linkedTextRangeDictionary setObject:linkedString forKey:rangeValue];
     }
 }
--(void)setHandler:(LinkedStringTapHandler)handler forLinkedString:(NSString *)linkedString
+-(void)setHandler:(LinkedStringRangeTapHandler)handler forLinkedStringRange:(NSRange)range
 {
-    if (linkedString && handler!=NULL)
+    if (handler!=NULL)
     {
-        self.linkedTextTapHandlerDictionary[linkedString] = [handler copy];
+        self.linkedTextTapHandlerDictionary[[NSValue valueWithRange:range]] = [handler copy];
     }
 }
--(void)setDefaultAttributes:(NSDictionary *)defaultAttributes forLinkedString:(NSString *)linkedString
+-(void)setDefaultAttributes:(NSDictionary *)defaultAttributes forLinkedStringRange:(NSRange)range
 {
-    if (linkedString && defaultAttributes)
+    if ( defaultAttributes)
     {
-        self.linkedTextDefaultAttributesDictionary[linkedString] = [defaultAttributes copy];
+        self.linkedTextDefaultAttributesDictionary[[NSValue valueWithRange:range]] = [defaultAttributes copy];
     }
 }
--(void)setHighlightedAttributes:(NSDictionary *)highlightedAttributes forLinkedString:(NSString *)linkedString
+-(void)setHighlightedAttributes:(NSDictionary *)highlightedAttributes forLinkedStringRange:(NSRange)range
 {
-    if (linkedString && highlightedAttributes)
+    if (highlightedAttributes)
     {
-        self.linkedTextHighlightedAttributesDictionary[linkedString] = [highlightedAttributes mutableCopy];
+        self.linkedTextHighlightedAttributesDictionary[[NSValue valueWithRange:range]] = [highlightedAttributes mutableCopy];
     }
 }
 
 #pragma mark - Utility Methods
--(void)setAttributes:(NSDictionary *)attributes forLinkedString:(NSString *)linkedString
+-(void)setAttributes:(NSDictionary *)attributes forLinkedStringRange:(NSRange)range
 {
-    if (!attributes || !linkedString)
-    {
-        return;
-    }
-      NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc]initWithAttributedString:self.attributedText];
-    NSRange linkedStringRange = [self.text rangeOfString:linkedString];
-    [mutableAttributedString beginEditing];
-    [mutableAttributedString addAttributes:attributes range:linkedStringRange];
-    [mutableAttributedString endEditing];
-    self.attributedText = mutableAttributedString;
-}
--(void)setTextColor:(UIColor *)color forLinkedString:(NSString *)linkedString
-{
-    if (!color || !linkedString)
+    if (!attributes)
     {
         return;
     }
     NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc]initWithAttributedString:self.attributedText];
-    NSRange linkedStringRange = [self.text rangeOfString:linkedString];
     [mutableAttributedString beginEditing];
-    [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:color range:linkedStringRange];
+    [mutableAttributedString addAttributes:attributes range:range];
+    [mutableAttributedString endEditing];
+    self.attributedText = mutableAttributedString;
+}
+
+
+
+-(void)setTextColor:(UIColor *)color forLinkedStringRane:(NSRange)range
+{
+    if (!color)
+    {
+        return;
+    }
+    NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc]initWithAttributedString:self.attributedText];
+    [mutableAttributedString beginEditing];
+    [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:color range:range];
     [mutableAttributedString endEditing];
     self.attributedText = mutableAttributedString;
 }
@@ -297,7 +367,7 @@
     self.scrollEnabled = NO;
     self.selectable = NO;
     self.allowsEditingTextAttributes = NO;
-
+    
 }
 
 

@@ -1,19 +1,22 @@
 //
 //  LinkTextView.h
-//  WZLinkTextView
+//  WUZHAO
 //
-//  Created by yiyi on 15/4/29.
+//  Created by yiyi on 15/5/12.
 //  Copyright (c) 2015年 yiyi. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-typedef void(^LinkedStringTapHandler)(NSString *linkedString);
+typedef void(^LinkedStringRangeTapHandler)(NSRange linkStringRange);
+
 @interface LinkTextView : UITextView
 
--(void)linkString:(NSString *)string defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandler:(LinkedStringTapHandler)tapHandler;
+-(void)reset;
+-(void)linkTextWithString:(NSString *)string defaultAttributes:(NSDictionary *)defaultAttributes highlightAttributes:(NSDictionary *)highlightAttributes tabHandler:(LinkedStringRangeTapHandler)tapHandler;
+-(void)setText:(NSString *)string linkStrings:(NSArray *)linkStrings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandlers:(NSArray *)tapHandlers;
+-(void)appendString:(NSString *)string linkStrings:(NSArray *)linkStrings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes :(NSDictionary *)highlightedAttributes tapHandlers:(NSArray *)tapHandlers;
 
--(void)linkStrings:(NSArray *)strings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tabHandler:(LinkedStringTapHandler)tabHandler;
 
--(void)linkStringWithRegEx:(NSRegularExpression *)regex defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tabHandler:(LinkedStringTapHandler)tabHandler;
-
+-(NSRange)handleTouches:(NSSet *)touches;
+-(NSRange)findLinkedStringRangeAtPoint:(CGPoint)point inDictionary:(NSDictionary *)dictionary;
 @end

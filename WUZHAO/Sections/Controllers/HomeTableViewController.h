@@ -8,15 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "PhotoTableViewCell.h"
-typedef NS_ENUM(NSInteger, WZ_TABLEVIEWSTYLE) {
-    WZ_TABLEVIEWSTYLEHOME = 0,
-    WZ_TABLEVIEWSTYLEDETAIL
-};
-
 
 @class WhatsGoingOn;
 @class User;
 
+typedef NS_ENUM(NSInteger, WZ_TABLEVIEWSTYLE) {
+    WZ_TABLEVIEWSTYLEHOME = 0,
+    WZ_TABLEVIEWSTYLEDETAIL
+};
 
 @interface HomeTableViewController : UITableViewController
 @property (nonatomic ,strong) User *currentUser;

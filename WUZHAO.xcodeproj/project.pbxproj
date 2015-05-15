@@ -142,7 +142,6 @@
 		7D7FADD11AC6C7D600AC9BD1 /* straighten-grid@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D7FADCB1AC6C7D600AC9BD1 /* straighten-grid@3x.png */; };
 		7D83C0571A6CBBCD00B754C2 /* EditPersonalInfoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D83C0561A6CBBCD00B754C2 /* EditPersonalInfoTableViewController.m */; };
 		7D8CA83D1AF9C282004D485F /* DynamicResizingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8CA83C1AF9C282004D485F /* DynamicResizingTableViewCell.m */; };
-		7D8CA8421AF9D4E0004D485F /* PostTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8CA8411AF9D4E0004D485F /* PostTableViewCell.m */; };
 		7D8CA8461AFA027B004D485F /* LinkTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8CA8451AFA027B004D485F /* LinkTextView.m */; };
 		7D8F09F91A9EAD620016DC62 /* NSString+SHA1WithSalt.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8F09F81A9EAD620016DC62 /* NSString+SHA1WithSalt.m */; };
 		7D928D0C1AE3CBA400C763F8 /* CaptureItemContainerUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D928D0B1AE3CBA400C763F8 /* CaptureItemContainerUIView.m */; };
@@ -223,6 +222,7 @@
 		7DD0E4291AA0115F002AF97D /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD0E4281AA0115F002AF97D /* libicucore.dylib */; };
 		7DD0E42B1AA020B8002AF97D /* HTTPAPITest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD0E42A1AA020B8002AF97D /* HTTPAPITest.m */; };
 		7DDCC23F1ACBA3320047DE7F /* CommentListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DDCC23E1ACBA3320047DE7F /* CommentListTableViewCell.xib */; };
+		7DDFA98C1B049A4600F182FA /* ApplicationUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DDFA98B1B049A4600F182FA /* ApplicationUtility.m */; };
 		7DE066B21A3F06CF008086BD /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE066B11A3F06CF008086BD /* LoginViewController.m */; };
 		7DE067461A3F07AC008086BD /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE066B51A3F07AC008086BD /* AFHTTPRequestOperation.m */; };
 		7DE067471A3F07AC008086BD /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE066B71A3F07AC008086BD /* AFHTTPRequestOperationManager.m */; };
@@ -516,8 +516,6 @@
 		7D8CA83B1AF9C282004D485F /* DynamicResizingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DynamicResizingTableViewCell.h; path = WUZHAO/Sections/Views/DynamicResizingTableViewCell.h; sourceTree = "<group>"; };
 		7D8CA83C1AF9C282004D485F /* DynamicResizingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DynamicResizingTableViewCell.m; path = WUZHAO/Sections/Views/DynamicResizingTableViewCell.m; sourceTree = "<group>"; };
 		7D8CA83E1AF9D260004D485F /* DynamicResizingCellProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DynamicResizingCellProtocol.h; path = WUZHAO/Sections/Views/DynamicResizingCellProtocol.h; sourceTree = "<group>"; };
-		7D8CA8401AF9D4E0004D485F /* PostTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PostTableViewCell.h; path = WUZHAO/Sections/Views/PostTableViewCell.h; sourceTree = "<group>"; };
-		7D8CA8411AF9D4E0004D485F /* PostTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PostTableViewCell.m; path = WUZHAO/Sections/Views/PostTableViewCell.m; sourceTree = "<group>"; };
 		7D8CA8441AFA027B004D485F /* LinkTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinkTextView.h; path = WUZHAO/Sections/Views/LinkTextView.h; sourceTree = "<group>"; };
 		7D8CA8451AFA027B004D485F /* LinkTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkTextView.m; path = WUZHAO/Sections/Views/LinkTextView.m; sourceTree = "<group>"; };
 		7D8F09F71A9EAD620016DC62 /* NSString+SHA1WithSalt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+SHA1WithSalt.h"; path = "WUZHAO/General/NSString+SHA1WithSalt.h"; sourceTree = "<group>"; };
@@ -622,6 +620,8 @@
 		7DD0E4281AA0115F002AF97D /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		7DD0E42A1AA020B8002AF97D /* HTTPAPITest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTTPAPITest.m; sourceTree = "<group>"; };
 		7DDCC23E1ACBA3320047DE7F /* CommentListTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CommentListTableViewCell.xib; path = WUZHAO/Storyboard/CommentListTableViewCell.xib; sourceTree = "<group>"; };
+		7DDFA98A1B049A4600F182FA /* ApplicationUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ApplicationUtility.h; path = WUZHAO/General/ApplicationUtility.h; sourceTree = "<group>"; };
+		7DDFA98B1B049A4600F182FA /* ApplicationUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ApplicationUtility.m; path = WUZHAO/General/ApplicationUtility.m; sourceTree = "<group>"; };
 		7DE066B01A3F06CF008086BD /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoginViewController.h; path = WUZHAO/Sections/Controllers/LoginAndRegister/LoginViewController.h; sourceTree = "<group>"; };
 		7DE066B11A3F06CF008086BD /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginViewController.m; path = WUZHAO/Sections/Controllers/LoginAndRegister/LoginViewController.m; sourceTree = "<group>"; };
 		7DE066B41A3F07AC008086BD /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -926,6 +926,8 @@
 				7DF6062C1AEBBED2008DCEA4 /* Geodetic.m */,
 				7D5F5E741AFF5F9A00786066 /* CameraUtility.h */,
 				7D5F5E751AFF5F9A00786066 /* CameraUtility.m */,
+				7DDFA98A1B049A4600F182FA /* ApplicationUtility.h */,
+				7DDFA98B1B049A4600F182FA /* ApplicationUtility.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -1193,10 +1195,9 @@
 				7D72BD6E1ADCF9750013BCF4 /* FeedsFollowTableViewCell.m */,
 				7DF606301AEBD71A008DCEA4 /* AddressTableViewCell.h */,
 				7DF606311AEBD71A008DCEA4 /* AddressTableViewCell.m */,
-				7D8CA8401AF9D4E0004D485F /* PostTableViewCell.h */,
-				7D8CA8411AF9D4E0004D485F /* PostTableViewCell.m */,
 				7D8CA83B1AF9C282004D485F /* DynamicResizingTableViewCell.h */,
 				7D8CA83C1AF9C282004D485F /* DynamicResizingTableViewCell.m */,
+				7DF95BD71ADB915100774F79 /* PlaceholderTextView.h */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -1212,6 +1213,7 @@
 		7D8CA8431AFA0259004D485F /* Text */ = {
 			isa = PBXGroup;
 			children = (
+				7DF95BD81ADB915100774F79 /* PlaceholderTextView.m */,
 				7D93BDFD1AFA171D008D206E /* CommentTextView.h */,
 				7D93BDFE1AFA171D008D206E /* CommentTextView.m */,
 				7D8CA8441AFA027B004D485F /* LinkTextView.h */,
@@ -1287,8 +1289,6 @@
 		7DC29DB31A3F20FD0065BBD2 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				7DF95BD71ADB915100774F79 /* PlaceholderTextView.h */,
-				7DF95BD81ADB915100774F79 /* PlaceholderTextView.m */,
 				7DF75E971A84BC3500894132 /* BarItem.h */,
 				7DF75E981A84BC3500894132 /* BarItem.m */,
 				7DF75E941A84BAB700894132 /* CBStoreHouseRefreshControl.h */,
@@ -1853,7 +1853,6 @@
 				7DC29DB61A3F21230065BBD2 /* CommonContainerViewController.m in Sources */,
 				7D65E2171A39701E00F84754 /* AppDelegate.m in Sources */,
 				7DE0677D1A3F07AC008086BD /* UIImage+WebP.m in Sources */,
-				7D8CA8421AF9D4E0004D485F /* PostTableViewCell.m in Sources */,
 				7D55DAA01A47EF730083A2A3 /* PhotoCommon.m in Sources */,
 				7D45775E1A62C2C500786533 /* QNUploadOption.m in Sources */,
 				7D754B851AD7D463002878F6 /* UIViewController+BackBarItem.m in Sources */,
@@ -1961,6 +1960,7 @@
 				7DE0677A1A3F07AC008086BD /* UIButton+WebCache.m in Sources */,
 				7D1B495F1A467EC900C4CEC4 /* AddressInfoList.m in Sources */,
 				7D65E2141A39701E00F84754 /* main.m in Sources */,
+				7DDFA98C1B049A4600F182FA /* ApplicationUtility.m in Sources */,
 				7DE067891A3F08F3008086BD /* AFHTTPAPIClient.m in Sources */,
 				7DE066B21A3F06CF008086BD /* LoginViewController.m in Sources */,
 				7DF95BD31ADA6C7E00774F79 /* SearchResultTableViewController2.m in Sources */,
@@ -2026,7 +2026,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: yiyi shen (37PYG22632)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: yiyi shen (37PYG22632)";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2048,7 +2048,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "59e61f47-2050-4e5b-a216-0593cc664986";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -2070,8 +2070,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: yiyi shen (JNYT7F8DQX)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: yiyi shen (JNYT7F8DQX)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: yiyi shen (37PYG22632)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: yiyi shen (37PYG22632)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2087,7 +2087,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "59e61f47-2050-4e5b-a216-0593cc664986";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
