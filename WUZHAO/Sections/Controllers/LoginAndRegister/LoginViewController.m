@@ -107,14 +107,19 @@
     self.UserNameTextField.placeholder = @"用户名/邮箱";
     self.UserNameTextField.keyboardType = UIKeyboardAppearanceDefault;
     self.UserNameTextField.keyboardType = UIKeyboardTypeDefault;
+    [self.UserNameTextField addTarget:self action:@selector(textFieldDidChanged:) forControlEvents:UIControlEventEditingChanged];
+    [self.UserNameTextField addTarget:self action:@selector(checkInput) forControlEvents:UIControlEventEditingDidEndOnExit];
 
     self.PasswordTextField.placeholder = @"密 码";
     self.PasswordTextField.keyboardType = UIKeyboardAppearanceDefault;
     self.PasswordTextField.keyboardType = UIKeyboardTypeDefault;
+    [self.PasswordTextField addTarget:self action:@selector(textFieldDidChanged:) forControlEvents:UIControlEventEditingChanged];
+    [self.PasswordTextField addTarget:self action:@selector(checkInput) forControlEvents:UIControlEventEditingDidEndOnExit];
     
     [self.LoginButton setTitle:@"登  录" forState:UIControlStateNormal];
-    [self.LoginButton setThemeFrameAppearence];
+   // [self.LoginButton setThemeFrameAppearence];
     [self.LoginButton setBigButtonAppearance];
+    [self.LoginButton setGreyBackGroundAppearance];
     [self.LoginButton setEnabled:NO];
     
     [self.forgotPasswordLabel setThemeLabelAppearance];
@@ -273,19 +278,32 @@
     [self performSegueWithIdentifier:@"findPassword" sender:nil];
 }
 
-#pragma mark -textview delegate
+#pragma mark -touch delegate
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if (![self.UserNameTextField isExclusiveTouch])
     {
         [self.UserNameTextField resignFirstResponder];
-        [self checkInput];
     }
     if (![self.PasswordTextField isExclusiveTouch])
 
     {
         [self.PasswordTextField resignFirstResponder];
-        [self checkInput];
+    }
+}
+#pragma mark -textfield delegate
+
+-(void)textFieldDidChanged:(id)sender
+{
+    if (![self.UserNameTextField.text isEqualToString:@""] && ![self.PasswordTextField.text isEqualToString:@""] )
+    {
+        [self.LoginButton setThemeFrameAppearence];
+        [self.LoginButton setEnabled:YES];
+    }
+    else
+    {
+        [self.LoginButton setGreyBackGroundAppearance];
+        [self.LoginButton setEnabled:NO];
     }
 }
 
@@ -311,6 +329,8 @@
         }
     }];
 }
+
+
 
 
 

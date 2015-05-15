@@ -31,5 +31,6 @@
 
 -(void)commentTextView:(CommentTextView *)commentTextView didClickLinkUser:(User *)user;
 -(void)didClickUnlinedTextOncommentTextView:(CommentTextView *)commentTextView;
+-(void)moreCommentClick:(CommentTextView *)commentTextView;
 
 @end

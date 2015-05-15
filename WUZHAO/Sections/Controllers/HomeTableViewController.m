@@ -374,25 +374,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     [[NSNotificationCenter defaultCenter]postNotificationName:@"activeTargetTab" object:self userInfo:@{@"index":@2}];
 }
 
--(void)moreCommentClick:(UITapGestureRecognizer *)gesture
-{
-    PhotoTableViewCell * cell ;
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
-    {
-        cell = (PhotoTableViewCell *)[[[gesture.view superview]superview]superview];
-    }
-    else
-    {
-        cell = (PhotoTableViewCell *)[[[[gesture.view superview]superview]superview]superview];
-    }
-    NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
-    self.currentCommentIndexPath = selectItemIndexPath;
-     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
-    CommentListViewController *commentListView = [[CommentListViewController alloc]init];
-    [commentListView setPoiItem:item];
-    [commentListView setCommentList:[item.commentList mutableCopy]];
-     [self.navigationController pushViewController:commentListView animated:YES];
-}
 -(void)commentLabelClick:(UITapGestureRecognizer *)gesture
 {
     PhotoTableViewCell * cell ;
@@ -648,7 +629,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     
     if ([cell.zanClickButton.currentTitle isEqualToString:@"赞"])
     {
-        //item.likeCount += 1;
         [self addMeToZanData:item];
         [cell configureCellWithData:item parentController:self];
         if (item.likeCount == 1)
@@ -659,10 +639,24 @@ static NSString *reuseIdentifier = @"HomeTableCell";
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:selectItemIndexPath] withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView endUpdates];
-            //[self.tableView beginUpdates];
-            //[self.tableView endUpdates];
             
         }
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [[QDYHTTPClient sharedInstance]ZanPhotoWithUserId:self.currentUser.UserID postId:item.postId whenComplete:^(NSDictionary *returnData) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([returnData objectForKey:@"data"])
+                    {
+                        NSLog(@"zan success");
+                    }
+                    else
+                    {
+                        NSLog(@"zan failed");
+                        // [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                    }
+                    
+                });
+            }];
+        });
         
         // [cell.zanClickButton setTitle:@"已赞" forState:UIControlStateNormal];
         
@@ -678,36 +672,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:selectItemIndexPath] withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView endUpdates];
-            // [self.tableView beginUpdates];
-            //[self.tableView endUpdates];
         }
-        //  [cell.zanClickButton setTitle:@"赞" forState:UIControlStateNormal];
-    }
-
-
-    if (!item.isLike)
-    {
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            [[QDYHTTPClient sharedInstance]ZanPhotoWithUserId:self.currentUser.UserID postId:item.postId whenComplete:^(NSDictionary *returnData) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if ([returnData objectForKey:@"data"])
-                    {
-                        NSLog(@"zan success");
-                    }
-                    else
-                    {
-                        NSLog(@"zan failed");
-                       // [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-                    }
-
-                });
-            }];
-        });
-
-        
-    }
-    else
-    {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             [[QDYHTTPClient sharedInstance]CancelZanPhotoWithUserId:self.currentUser.UserID postId:item.postId whenComplete:^(NSDictionary *returnData) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -717,14 +682,14 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                     }
                     else
                     {
-                         NSLog(@"cancel zan failed");
+                        NSLog(@"cancel zan failed");
                         //[SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
                     }
                 });
-
+                
             }];
         });
-
+        //  [cell.zanClickButton setTitle:@"赞" forState:UIControlStateNormal];
     }
 
 }
@@ -775,7 +740,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
     CommentListViewController *commentListView = [[CommentListViewController alloc]init];
     commentListView.poiItem = item;
-    commentListView.isKeyboardShow = YES;
+    commentListView.isKeyboardShowWhenLoadView = YES;
     [self.navigationController pushViewController:commentListView animated:YES];
 }
 
@@ -1009,5 +974,25 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 -(void)commentTextView:(CommentTextView *)commentTextView didClickLinkUser:(User *)user
 {
     [self goToPersonalPageWithUserInfo:user];
+}
+
+-(void)moreCommentClick:(CommentTextView *)commentTextView
+{
+    PhotoTableViewCell * cell ;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
+    {
+        cell = (PhotoTableViewCell *)[[commentTextView superview]superview];
+    }
+    else
+    {
+        cell = (PhotoTableViewCell *)[[[commentTextView superview]superview]superview];
+    }
+    NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
+    self.currentCommentIndexPath = selectItemIndexPath;
+    WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
+    CommentListViewController *commentListView = [[CommentListViewController alloc]init];
+    [commentListView setPoiItem:item];
+    [commentListView setCommentList:[item.commentList mutableCopy]];
+    [self.navigationController pushViewController:commentListView animated:YES];
 }
 @end

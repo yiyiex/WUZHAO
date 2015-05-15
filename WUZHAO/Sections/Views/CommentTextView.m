@@ -56,7 +56,7 @@
     defaultAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_SMALLP_BOLD_SIZE};
     highlightedAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_SMALLP_BOLD_SIZE};
     
-    for (NSInteger i = 0;i <commentStringList.count;i++)
+    for (NSInteger i = 0;i <commentList.count;i++)
     {
         NSMutableArray *linkStrings = [[NSMutableArray alloc]init];
         NSMutableArray *taphandlers = [[NSMutableArray alloc]init];
@@ -101,7 +101,22 @@
             NSString *appendString = [NSString stringWithFormat:@"\n%@",commentStringList[i]];
             [self appendString:appendString linkStrings:linkStrings defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:taphandlers];
         }
+        
     }
+    if (commentStringList.count == 6)
+    {
+        LinkedStringRangeTapHandler taphandler = ^(NSRange linkStringRange) {
+            
+            if ([self.delegate respondsToSelector:@selector(moreCommentClick:)])
+            {
+                [self.delegate moreCommentClick:self];
+            }
+        };
+        
+        NSString *appendString = [NSString stringWithFormat:@"\n%@",commentStringList[5]];
+        [self appendString:appendString linkStrings:@[appendString] defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:@[taphandler]];
+    }
+
 }
 
 -(void)setTextWithCommentString:(NSString *)commentString CommentItem:(NSDictionary *)commentItem

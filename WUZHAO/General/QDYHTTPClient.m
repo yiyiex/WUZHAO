@@ -780,7 +780,7 @@
                 {
                     WhatsGoingOn *item = [[WhatsGoingOn alloc]init];
                     item.postId = postId;
-                    [item configureWithCommentList:data];
+                    [item configureWithCommentList:data commentNum:data.count];
                     [returnData setValue:item forKey:@"data"];
                 }
             }

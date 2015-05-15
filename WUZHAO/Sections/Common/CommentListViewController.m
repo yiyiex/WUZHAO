@@ -22,7 +22,7 @@
 #import "DAKeyboardControl.h"
 #import "SVProgressHUD.h"
 #define SEGUEFIRST @"showCommentList"
-@interface CommentListViewController ()<UITableViewDataSource,UITableViewDelegate,CommentTextViewDelegate>
+@interface CommentListViewController ()<UITableViewDataSource,UITableViewDelegate,CommentTextViewDelegate,UITextViewDelegate>
 
 @property (nonatomic,strong) UITableView *commentListTableView; //展示评论列表
 @property (nonatomic,strong) UIToolbar *toolbar;  //发表评论工具栏
@@ -45,6 +45,7 @@
     self.navigationItem.title = @"评论列表";
     [self addCommentListTableView];
     [self addToolBar];
+    [self setKeyboard];
     //[self setKeyboard];
     [self getLatestCommentList];
     
@@ -53,11 +54,21 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [self setKeyboard];
+    if (self.isKeyboardShowWhenLoadView)
+    {
+        [self.commentTextField becomeFirstResponder];
+    }
+   
+
 }
 -(void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
+    //[self.view removeKeyboardControl];
+    
+}
+-(void)dealloc
+{
     [self.view removeKeyboardControl];
 }
 
@@ -113,6 +124,14 @@
         [_commentListTableView setDataSource:self];
         [_commentListTableView setSectionIndexBackgroundColor:[UIColor clearColor]];
         [self.view addSubview:_commentListTableView];
+        
+        UISwipeGestureRecognizer *swipeUpGesture = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(hideKeyboard)];
+        [swipeUpGesture setDirection:UISwipeGestureRecognizerDirectionUp];
+        [_commentListTableView addGestureRecognizer:swipeUpGesture];
+        UISwipeGestureRecognizer *swipeDownGesture = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(hideKeyboard)];
+        [swipeDownGesture setDirection:UISwipeGestureRecognizerDirectionDown];
+        [_commentListTableView addGestureRecognizer:swipeDownGesture];
+       
 
     }
 }
@@ -129,13 +148,22 @@
         [self.view addSubview:_toolbar];
         [self setToolbar:_toolbar];
     
-        _commentTextField = [[PlaceholderTextView alloc]initWithFrame:CGRectMake(10.0f, 6.0f, _toolbar.bounds.size.width-20.0f-68.0f, 30.0f)];
+        _commentTextField = [[PlaceholderTextView alloc]initWithFrame:CGRectMake(10.0f, 6.0f, _toolbar.bounds.size.width -20.0f -68.0f, 30.0f)];
         _commentTextField.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         _commentTextField.placeholder = @"输入评论内容...";
         _commentTextField.placeholderFont = WZ_FONT_COMMON_SIZE;
         [_commentTextField setFont:WZ_FONT_COMMON_SIZE];
+        [_commentTextField setScrollEnabled:YES];
+         _commentTextField.delegate = self;
+        
+        [_commentTextField setReturnKeyType:UIReturnKeyDone];
+        
+        
+        
+        
         [_toolbar addSubview:_commentTextField];
         [self setCommentTextField:_commentTextField];
+        
         
         _sendButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         _sendButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
@@ -162,27 +190,38 @@
     
     WEAKSELF_WZ
     [self.view addKeyboardPanningWithActionHandler:^(CGRect keyboardFrameInView) {
-        /*
-         Try not to call "self" inside this block (retain cycle).
-         But if you do, make sure to remove DAKeyboardControl
-         when you are done with the view controller by calling:
-         [self.view removeKeyboardControl];
-         */
+        
+        
         __strong typeof (weakSelf_WZ)strongSelf = weakSelf_WZ;
         CGRect toolBarFrame = strongSelf.toolbar.frame;
+        CGRect tableViewFrame = strongSelf.commentListTableView.frame;
+        tableViewFrame.size.height = keyboardFrameInView.origin.y - toolBarFrame.size.height;
+        strongSelf.commentListTableView.frame = tableViewFrame;
+        
         toolBarFrame.origin.y = keyboardFrameInView.origin.y - toolBarFrame.size.height;
         strongSelf.toolbar.frame = toolBarFrame;
         
         
-        CGRect tableViewFrame = strongSelf.commentListTableView.frame;
-        tableViewFrame.size.height = toolBarFrame.origin.y ;
-        strongSelf.commentListTableView.frame = tableViewFrame;
+       
         
                 
     }];
 }
-
+#pragma mark - gesture
+-(void)avatarClick:(UITapGestureRecognizer *)gesture
+{
+    CommentTableViewCell *cell = (CommentTableViewCell *)[[gesture.view superview]superview];
+    NSIndexPath *indexpath = [self.commentListTableView indexPathForCell:cell];
+    User *user = [[User alloc]init];
+    NSDictionary *cellData = self.commentList[indexpath.row];
+    user.UserID = [[cellData objectForKey:@"userId"]integerValue];
+    user.UserName = [cellData objectForKey:@"userName"];
+    [self goToPersonalPageWithUserInfo:user];
+    
+    
+}
 #pragma mark -  action
+
 -(void)sendComment:(id)sender
 {
     NSString *commentContent = self.commentTextField.text;
@@ -191,13 +230,15 @@
         return;
     }
     self.commentTextField.text = @"";
+    [self updateCommentViewFrame];
+    [self setCommentTextFieldPlaceHolder];
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     NSInteger userId = [userDefault integerForKey:@"userId"];
     NSString *userName = [userDefault objectForKey:@"userName"];
     NSString *avatarUrl = [userDefault objectForKey:@"avatarUrl"];
     NSInteger postId = self.poiItem.postId;
     NSInteger replyUserId = 0;
-    if (self.replyUser.UserID>0)
+    if (self.replyUser.UserID != userId)
     {
         replyUserId = self.replyUser.UserID;
     }
@@ -262,27 +303,7 @@
     // Pass the selected object to the new view controller.
 }
 */
-#pragma mark -------UITableView delegate--------
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSLog(@"estimate  height for row at index path$$$$$$$$$$$$$$$$");
-    return UITableViewAutomaticDimension;
-}
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSLog(@"caculate  height for row at index path$$$$$$$$$$$$$$$$");
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-        return UITableViewAutomaticDimension;
-    }
-    self.prototypeCell.bounds = CGRectMake(0, 0, CGRectGetWidth(self.commentListTableView.bounds), CGRectGetHeight(self.prototypeCell.bounds));
-    [self.prototypeCell configureDataWith:self.commentList[indexPath.row] parentController:self];
-    CGSize size = [self.prototypeCell systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-    CGSize textViewSize = [self.prototypeCell.commentContent sizeThatFits:CGSizeMake(self.prototypeCell.commentContent.frame.size.width, FLT_MAX)];
-    CGFloat h = 28 + textViewSize.height;
-    NSLog(@"comment cell height :---------%f",h);
-    return h+1;
-    
-}
+
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary *cellData = [self.commentList objectAtIndex:indexPath.row];
@@ -368,15 +389,15 @@
     else
     {
         NSDictionary *commentItem = self.commentList[indexPath.row];
-        NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-        NSInteger replyUserId = [[commentItem valueForKey:@"userId"]integerValue];
-        NSLog(@"reply user id %ld",(long)replyUserId);
-        NSString *replyUserName = [commentItem objectForKey:@"userName"];
-        if (replyUserId != myUserId)
+        self.replyUser.UserID =  [[commentItem valueForKey:@"userId"]integerValue];
+        self.replyUser.UserName = [commentItem objectForKey:@"userName"];
+        [self setCommentTextFieldPlaceHolder];
+        if (self.replyUser.UserID != [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
         {
-            self.replyUser.UserID = replyUserId;
-            self.replyUser.UserName = replyUserName;
-            self.commentTextField.placeholder = [NSString stringWithFormat:@"回复%@：",replyUserName];
+            if (![self.commentTextField isFirstResponder])
+            {
+                [self.commentTextField becomeFirstResponder];
+            }
         }
     }
 }
@@ -463,26 +484,33 @@
                     {
                         self.commentList = [returnItem.commentList mutableCopy];
                         [self.commentListTableView reloadData];
+                      //  [self.commentListTableView setContentOffset:CGPointMake(0, FLT_MAX)];
+                        NSLog(@"content size  %f",self.commentListTableView.contentSize.height);
+                        NSLog(@"bounds size  %f",self.commentListTableView.bounds.size.height);
+                        NSLog(@"frame size  %f",self.commentListTableView.frame.size.height);
+                        NSLog(@"keyboard frame  %f",self.view.keyboardFrameInView.size.height);
+
+                        NSIndexPath *lastindexPath = [NSIndexPath indexPathForRow:self.commentList.count-1 inSection:0];
+                        [self.commentListTableView scrollToRowAtIndexPath:lastindexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+                       /*
                         if (self.view.keyboardFrameInView.size.height >0)
                         {
                             //键盘展开时，滚动到底部
-                            if (self.commentListTableView.contentSize.height > WZ_APP_SIZE.height- self.view.keyboardFrameInView.size.height)
+                            if (self.commentListTableView.contentSize.height > self.commentListTableView.bounds.size.height)
                             {
-                                [self.commentListTableView setContentOffset:CGPointMake(0, self.commentListTableView.contentSize.height -self.commentListTableView.bounds.size.height -64 ) animated:YES];
+                                
+                                [self.commentListTableView setContentOffset:CGPointMake(0, self.commentListTableView.contentSize.height + 64) animated:NO];
                             }
                         }
                         else
                         {
-                            NSLog(@"content size height%f",self.commentListTableView.contentSize.height);
-                           // NSLog(@"content size height%f",self.commentListTableView)
-                            NSLog(@"bounds size height%f",self.commentListTableView.bounds.size.height);
-                             NSLog(@"frame size height%f",self.commentListTableView.frame.size.height);
+                           
                             
-                            if (self.commentListTableView.contentSize.height > self.commentListTableView.frame.size.height)
+                            if (self.commentListTableView.contentSize.height > self.commentListTableView.bounds.size.height)
                             {
                                 [self.commentListTableView setContentOffset:CGPointMake(0, self.commentListTableView.contentSize.height -self.commentListTableView.bounds.size.height +44) animated:NO];
                             }
-                        }
+                        }*/
                     }
                     else
                     {
@@ -501,7 +529,34 @@
     });
  }
 
+#pragma mark - textView delegate
+
+-(void)textViewDidEndEditing:(UITextView *)textView
+{
+    NSLog(@"return key click");
+}
+-(void)textViewDidChange:(UITextView *)textView
+{
+    if ([textView isEqual:self.commentTextField])
+    {
+        [self updateCommentViewFrame];
+    }
+}
+
+
+-(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    if ([text isEqualToString:@"\n"])
+    {
+        [self sendComment:self.sendButton];
+        return NO;
+    }
+    return YES;
+    
+}
+
 #pragma mark - commentTextView Delegate
+
 -(void)commentTextView:(CommentTextView *)commentTextView didClickLinkUser:(User *)user
 {
     [self goToPersonalPageWithUserInfo:user];
@@ -512,46 +567,71 @@
     CommentTableViewCell *cell = (CommentTableViewCell *)[[commentTextView superview]superview];
     NSIndexPath *indexpath = [self.commentListTableView indexPathForCell:cell];
     NSDictionary *commentItem = self.commentList[indexpath.row];
-    NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-    NSInteger replyUserId = [[commentItem valueForKey:@"userId"]integerValue];
-    NSLog(@"reply user id %ld",(long)replyUserId);
-    NSString *replyUserName = [commentItem objectForKey:@"userName"];
-    if (replyUserId != myUserId)
+    self.replyUser.UserID =  [[commentItem valueForKey:@"userId"]integerValue];
+    self.replyUser.UserName = [commentItem objectForKey:@"userName"];
+    [self setCommentTextFieldPlaceHolder];
+    if (self.replyUser.UserID != [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
     {
-        self.replyUser.UserID = replyUserId;
-        self.replyUser.UserName = replyUserName;
-        self.commentTextField.placeholder = [NSString stringWithFormat:@"回复%@：",replyUserName];
+        if (![self.commentTextField isFirstResponder])
+        {
+            [self.commentTextField becomeFirstResponder];
+        }
     }
 }
 
+
+
 #pragma mark - method
--(void)avatarClick:(UITapGestureRecognizer *)gesture
+-(void)hideKeyboard
 {
-    CommentTableViewCell *cell = (CommentTableViewCell *)[[gesture.view superview]superview];
-    NSIndexPath *indexpath = [self.commentListTableView indexPathForCell:cell];
-    User *user = [[User alloc]init];
-    NSDictionary *cellData = self.commentList[indexpath.row];
-    user.UserID = [[cellData objectForKey:@"userId"]integerValue];
-    user.UserName = [cellData objectForKey:@"userName"];
-    [self goToPersonalPageWithUserInfo:user];
+    self.replyUser.UserID = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    self.replyUser.UserName = [[NSUserDefaults standardUserDefaults] objectForKey:@"userName"];
+    [self setCommentTextFieldPlaceHolder];
+    //[[NSNotificationCenter defaultCenter]postNotificationName:UIKeyboardWillHideNotification object:nil];
     
+                             
+}
+-(void)updateCommentViewFrame
+{
+    
+    UITextView *textView = self.commentTextField;
+    CGRect textViewFrame = textView.frame;
+    // 计算 text view 的高度
+    CGSize maxSize = CGSizeMake(textViewFrame.size.width, CGFLOAT_MAX);
+    CGSize newSize = [textView sizeThatFits:maxSize];
+    if (newSize.height <90 )
+    {
+        textViewFrame.size.height = newSize.height;
+        
+        
+        
+        
+        // 让 table view 重新计算高度
+        UIToolbar *toolbar = self.toolbar;
+        CGRect toolBarFrame = toolbar.frame;
+        
+        toolBarFrame.origin.y = toolBarFrame.origin.y +toolBarFrame.size.height - textViewFrame.size.height -10;
+        toolBarFrame.size.height = textViewFrame.size.height +10;
+        toolbar.frame = toolBarFrame;
+        textView.frame = textViewFrame;
+    }
     
 }
 
--(void)commentClick:(UITapGestureRecognizer *)gesture
+-(void)setCommentTextFieldPlaceHolder
 {
-    CommentTableViewCell *cell = (CommentTableViewCell *)[[gesture.view superview]superview];
-    NSIndexPath *indexpath = [self.commentListTableView indexPathForCell:cell];
-    NSDictionary *commentItem = self.commentList[indexpath.row];
     NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-    NSInteger replyUserId = [[commentItem valueForKey:@"userId"]integerValue];
-    NSLog(@"reply user id %ld",(long)replyUserId);
-    NSString *replyUserName = [commentItem objectForKey:@"userName"];
-    if (replyUserId != myUserId)
+    if (!self.replyUser)
     {
-        self.replyUser.UserID = replyUserId;
-        self.replyUser.UserName = replyUserName;
-        self.commentTextField.placeholder = [NSString stringWithFormat:@"回复%@：",replyUserName];
+        self.commentTextField.placeholder = @"输入评论内容...";
+    }
+    if (self.replyUser.UserID != myUserId && self.replyUser.UserName)
+    {
+        self.commentTextField.placeholder = [NSString stringWithFormat:@"回复%@：",self.replyUser.UserName];
+    }
+    else
+    {
+        self.commentTextField.placeholder = @"输入评论内容...";
     }
 }
 
@@ -562,7 +642,5 @@
     [personalViewCon setUserInfo:user];
     [self.navigationController pushViewController:personalViewCon animated:YES];
 }
-
-
 
 @end

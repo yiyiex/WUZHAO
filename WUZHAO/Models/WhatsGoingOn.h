@@ -31,7 +31,7 @@
 + (NSArray *) newDataSource;
 
 -(instancetype)initWithAttributes:(NSDictionary *)data;
--(void)configureWithCommentList:(NSArray *)commentListInData;
+-(void)configureWithCommentList:(NSArray *)commentListInData commentNum:(NSInteger)commentNum;
 -(void)configureIWithLikeList:(NSArray *)likeList;
 
 @end
