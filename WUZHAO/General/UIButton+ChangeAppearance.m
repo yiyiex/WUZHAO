@@ -82,9 +82,10 @@
 
 -(void)setThemeFrameAppearence
 {
+    [self clearFrame];
     self.layer.borderWidth = 1.0;
     self.layer.borderColor = [THEME_COLOR_DARK CGColor];
-      [self setBackgroundImage:[UIImage imageWithColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+    [self setBackgroundImage:[UIImage imageWithColor:[UIColor whiteColor]] forState:UIControlStateNormal];
     [self setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
     [self setTitleColor:THEME_COLOR_DARKER forState:UIControlStateHighlighted];
 }
@@ -92,11 +93,11 @@
 -(void)setThemeBackGroundAppearance
 {
     [self clearFrame];
-    [self setBackgroundColor:THEME_COLOR_DARK];
+   // [self setBackgroundColor:THEME_COLOR_DARK];
     
    // [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARK] forState:UIControlStateNormal];
    // [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARKER] forState:UIControlStateHighlighted];
-    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_LIGHT_GREY] forState:UIControlStateDisabled];
+    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARK] forState:UIControlStateNormal];
     
     [self setTitleColor:THEME_COLOR_WHITE forState:UIControlStateNormal];
     [self setTitleColor:THEME_COLOR_WHITE forState:UIControlStateHighlighted];

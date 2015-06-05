@@ -34,9 +34,10 @@
 -(void)setTextWithoutUserNameWithCommentItem:(NSDictionary *)commentItem
 {
     [self setTextColor:THEME_COLOR_DARK_GREY_PARENT];
-    [self setFont:WZ_FONT_SMALLP_SIZE];
-    defaultAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_SMALLP_BOLD_SIZE};
-    highlightedAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_SMALLP_BOLD_SIZE};
+    [self setFont:WZ_FONT_COMMON_SIZE];
+    
+    defaultAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
+    highlightedAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
     
     NSString *commentString;
     if ([[commentItem objectForKey:@"replyUserId"]integerValue]>0)
@@ -51,11 +52,12 @@
 }
 -(void)setTextWithCommentStringList:(NSArray *)commentStringList CommentList:(NSArray *)commentList
 {
-    [self setTextColor:THEME_COLOR_DARK_GREY_PARENT];
-    [self setFont:WZ_FONT_COMMON_SIZE];
-    defaultAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_SMALLP_BOLD_SIZE};
-    highlightedAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_SMALLP_BOLD_SIZE};
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+    paragraphStyle.lineSpacing = 6;
     
+    defaultAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle};
+    highlightedAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle};
+
     for (NSInteger i = 0;i <commentList.count;i++)
     {
         NSMutableArray *linkStrings = [[NSMutableArray alloc]init];
@@ -93,13 +95,15 @@
         }
         if (i == 0)
         {
-            [self setText:commentStringList[i] linkStrings:linkStrings defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:taphandlers];
+            NSAttributedString *attributedString = [[NSAttributedString alloc]initWithString:commentStringList[i] attributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY_PARENT,NSFontAttributeName:WZ_FONT_COMMON_SIZE}];
+            [self setText:attributedString linkStrings:linkStrings defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:taphandlers];
         }
         else
         {
             
             NSString *appendString = [NSString stringWithFormat:@"\n%@",commentStringList[i]];
-            [self appendString:appendString linkStrings:linkStrings defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:taphandlers];
+            NSAttributedString *attributedString = [[NSAttributedString alloc]initWithString:appendString attributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY_PARENT,NSFontAttributeName:WZ_FONT_COMMON_SIZE}];
+            [self appendText:attributedString linkStrings:linkStrings defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:taphandlers];
         }
         
     }
@@ -113,8 +117,9 @@
             }
         };
         
-        NSString *appendString = [NSString stringWithFormat:@"\n%@",commentStringList[5]];
-        [self appendString:appendString linkStrings:@[appendString] defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:@[taphandler]];
+        NSString *commentString = [NSString stringWithFormat:@"\n%@",commentStringList[5]];
+        NSAttributedString *appendString = [[NSAttributedString alloc]initWithString:commentString attributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY_PARENT,NSFontAttributeName:WZ_FONT_COMMON_SIZE}];
+        [self appendText:appendString linkStrings:@[commentStringList[5]] defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:@[taphandler]];
     }
 
 }

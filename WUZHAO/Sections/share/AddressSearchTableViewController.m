@@ -12,6 +12,8 @@
 #import "UIView+ChangeAppearance.h"
 #import "AddressTableViewCell.h"
 
+
+#import "captureMacro.h"
 #import "macro.h"
 #import "Geodetic.h"
 
@@ -87,7 +89,7 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 -(void)initTopBar
 {
     UIView *topBarView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width,50)];
-    [topBarView setBackgroundColor:rgba_WZ(23,24,26,0.9)];
+    [topBarView setBackgroundColor:DARK_PARENT_BACKGROUND_COLOR];
     UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(8, 8, 40,40)];
     [backButton.titleLabel setFont:WZ_FONT_COMMON_SIZE];
     [backButton setTitle:@"取消" forState:UIControlStateNormal];

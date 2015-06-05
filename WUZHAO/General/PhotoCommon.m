@@ -12,6 +12,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreLocation/CoreLocation.h>
 #import <ImageIO/ImageIO.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
 
 
@@ -39,6 +40,27 @@
     return theImage;
 }
 
++(UIImage *)imageNamed:(NSString *)name withColor:(UIColor *)color
+{
+    UIImage *img = [UIImage imageNamed:name];
+    
+    UIGraphicsBeginImageContext(img.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [color setFill];
+    CGContextTranslateCTM(context, 0, img.size.height);
+    CGContextScaleCTM(context, 1.0, -1.0);
+    CGContextSetBlendMode(context, kCGBlendModeColorBurn);
+    CGRect rect = CGRectMake(0, 0, img.size
+                             .width, img.size.height);
+    CGContextDrawImage(context, rect, img.CGImage);
+    CGContextAddRect(context, rect);
+    CGContextDrawPath(context, kCGPathFill);
+    UIImage *coloredImg = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return coloredImg;
+}
+
 //画一条线
 + (void)drawALineWithFrame:(CGRect)frame andColor:(UIColor*)color inLayer:(CALayer*)parentLayer {
     CALayer *layer = [CALayer layer];
@@ -49,9 +71,37 @@
 
 #pragma mark -------------save image to local---------------
 //保存照片至本机
+
 + (void)saveImageToPhotoAlbum:(UIImage*)image {
     
     UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+}
+
++(void)saveImageToPhotoAlbumWithExif:(NSDictionary *)exif image:(UIImage *)image
+{
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
+    CGImageRef imageRef = image.CGImage;
+    
+    //方向校正
+    if ([exif objectForKey:@"Orientation"])
+    {
+        [exif setValue:@(UIImageOrientationUp) forKey:@"Orientation"];
+    }
+    if ( [exif objectForKey:@"{TIFF}"])
+    {
+        NSDictionary *tiff = [exif objectForKey:@"{TIFF}"];
+        if ([tiff objectForKey:@"Orientation"])
+        {
+            [[exif objectForKey:@"{TIFF}"] setValue:@(UIImageOrientationUp) forKey:@"Orientation"];
+        }
+    }
+    
+    NSLog(@"%@",exif);
+    
+    [library writeImageToSavedPhotosAlbum:imageRef metadata:exif completionBlock:^(NSURL *assetURL, NSError *error) {
+        NSLog(@"%@",assetURL);
+        NSLog(@"%@",error);
+    }];
 }
 +(void)saveImageToPhotoAlbumWithLocation:(CLLocation *)location image:(UIImage *)image
 {

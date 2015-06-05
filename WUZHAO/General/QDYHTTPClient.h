@@ -37,6 +37,9 @@
 -(void)logOutWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
 
+#pragma mark - baidu push register
+-(void)registerBPushWithBpUserId:(NSString *)bpUserId bpChannelId:(NSString *)bpChannelId deviceToken:(NSString *)deviceToken whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+
 #pragma mark ====personal info
 //get personal info with userId
 -(void)GetPersonalSimpleInfoWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
@@ -102,6 +105,4 @@
 
 //feed back
 -(void)feedBackWithUserId:(NSInteger)userId content:(NSString *)content contact:(NSString *)contact whenComplete:(void (^)(NSDictionary *))whenComplete;
-
--(void)updateLocalUserInfo;
 @end

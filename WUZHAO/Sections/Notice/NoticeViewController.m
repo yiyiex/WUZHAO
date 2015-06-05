@@ -13,6 +13,8 @@
 #import "MineViewController.h"
 #import "SVProgressHUD.h"
 
+#import "NoticeContentTextView.h"
+
 #import "UILabel+ChangeAppearance.h"
 #import "UIImageView+WebCache.h"
 #import "Feeds.h"
@@ -21,7 +23,7 @@
 #import "macro.h"
 
 
-@interface NoticeViewController ()
+@interface NoticeViewController ()<NoticeContentTextViewDelegate>
 
 @property (nonatomic,strong) NSMutableArray *dataSource;
 @property (nonatomic,strong) UIView *infoView;
@@ -66,7 +68,7 @@
         {
             cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
         }
-        [self configureZanCell:cell WithFeeds:feeds];
+        [self configureZanCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
         
         
     }
@@ -77,7 +79,16 @@
         {
             cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
         }
-        [self configureCommentCell:cell WithFeeds:feeds];
+        [self configureCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
+    }
+    else if (feeds.type == WZ_FEEDSTYPE_REPLYCOMMENT)
+    {
+        cell = (FeedsZanAndCommentTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"zanAndCommentCell" forIndexPath:indexPath];
+        if (!cell)
+        {
+            cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
+        }
+        [self configureReplyCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
     }
     else if (feeds.type == WZ_FEEDSTYPE_FOLLOW)
     {
@@ -86,8 +97,9 @@
         {
             cell = [[FeedsFollowTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"followCell"];
         }
-        [self configureFollowCell:cell WithFeeds:feeds];
+        [self configureFollowCell:(FeedsFollowTableViewCell *)cell WithFeeds:feeds];
     }
+    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
     
@@ -101,14 +113,50 @@
 {
     return 1;
 }
--(CGFloat)tableView:(UITableView *)tableView estimatedHeightForFooterInSection:(NSInteger)section
+
+
+-(float)caculateProtoCellHeightWithData:(Feeds *)feeds
 {
-    return UITableViewAutomaticDimension;
+    float height;
+    if (feeds.type == WZ_FEEDSTYPE_ZAN)
+    {
+        height =  64;
+    }
+    else if (feeds.type == WZ_FEEDSTYPE_COMMENT)
+    {
+       FeedsZanAndCommentTableViewCell * cell = (FeedsZanAndCommentTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"zanAndCommentCell" ];
+        if (!cell)
+        {
+            cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
+        }
+        [self configureCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
+        height = cell.contentTextView.frame.size.height >60?cell.contentTextView.frame.size.height:64;
+        
+    }
+    else if (feeds.type == WZ_FEEDSTYPE_REPLYCOMMENT)
+    {
+        FeedsZanAndCommentTableViewCell * cell = (FeedsZanAndCommentTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"zanAndCommentCell" ];
+        if (!cell)
+        {
+            cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
+        }
+        [self configureReplyCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
+         height = cell.contentTextView.frame.size.height >60?cell.contentTextView.frame.size.height:64;
+    }
+    else if (feeds.type == WZ_FEEDSTYPE_FOLLOW)
+    {
+        height = 64;
+    }
+    return height;
+}
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return[ self caculateProtoCellHeightWithData:self.dataSource[indexPath.row]];
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 56;
+    return [self caculateProtoCellHeightWithData:self.dataSource[indexPath.row]];
 }
 
 /*
@@ -127,6 +175,10 @@
 -(void)configureCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:(Feeds *)feeds
 {
     [cell configureCommentWithFeeds:feeds parentController:self];
+}
+-(void)configureReplyCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:(Feeds *)feeds
+{
+    [cell configureReplyCommentWithFeeds:feeds parentController:self];
 }
 -(void)configureFollowCell:(FeedsFollowTableViewCell *)cell WithFeeds:(Feeds *)feeds
 {
@@ -182,6 +234,7 @@
     HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
     [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:feeds.feedsPhoto]];
     [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLEDETAIL];
+    [detailPhotoController GetLatestDataList];
     [self.navigationController pushViewController:detailPhotoController animated:YES];
     
 }
@@ -215,4 +268,11 @@
 {
     
 }*/
+
+
+#pragma mark - noticeTextViewDelegate
+-(void)noticeContentTextView:(NoticeContentTextView *)noticeContentTextView didClickLinkUser:(User *)user
+{
+    [self goToUserPageWithUserInfo:user];
+}
 @end

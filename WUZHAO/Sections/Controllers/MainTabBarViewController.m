@@ -37,6 +37,7 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
 
 @interface MainTabBarViewController()
 @property (nonatomic) NSInteger currentTabIndex ;
+@property (nonatomic) BOOL shoudlRefreshCon;
 
 @property (nonatomic,strong) HomeTableViewController *homeTableViewCon;
 @property (nonatomic,strong) SearchViewController *searchViewCon;
@@ -62,7 +63,17 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
     }
     
     self.delegate = self;
-    self.currentTabIndex =0;
+
+    self.selectedIndex = self.currentTabIndex =0;
+    if ([[NSUserDefaults standardUserDefaults]valueForKey:@"launchIndex"])
+    {
+        self.selectedIndex  = self.currentTabIndex = [[[NSUserDefaults standardUserDefaults]valueForKey:@"launchIndex"]integerValue];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"launchIndex"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+
+        
+        
+    }
     [self activeCurrentTab];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(activeCurrentTab) name:@"finishPostImage" object:Nil];
       [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(activeTargetTab:) name:@"activeTargetTab" object:Nil];
@@ -87,7 +98,6 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
 {
     [super viewWillAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
-    [self getNoticeNumber];
     
 }
 
@@ -127,6 +137,7 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
 #pragma mark =controllers delegate
 -(void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
+    
 
     if (item.tag == WZ_SHARE_TAB)
     {
@@ -141,7 +152,13 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
     }
     else
     {
+        if (self.currentTabIndex == item.tag)
+        {
+            self.shoudlRefreshCon = true;
+            return;
+        }
         self.currentTabIndex = item.tag;
+        self.shoudlRefreshCon = false;
     }
 }
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
@@ -149,6 +166,22 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
     NSLog(@"selected controller%@",viewController);
     viewController.navigationItem.hidesBackButton = YES;
     NSLog(@"rbstorybaord viewController frame %f %f %f %f ",viewController.view.frame.origin.x,viewController.view.frame.origin.y,viewController.view.frame.size.width,viewController.view.frame.size.height);
+    if([viewController isKindOfClass:[RBStoryboardLink class]])
+    {
+        RBStoryboardLink *linkViewController = (RBStoryboardLink *)viewController;
+        UIViewController *destinationViewController = linkViewController.scene;
+        if ([destinationViewController isKindOfClass:[NoticeViewController class]])
+        {
+            NoticeViewController *noticeViewController = (NoticeViewController *)destinationViewController;
+            [noticeViewController getLatestData];
+            [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
+            [ApplicationUtility setApplicationIconBadgeWithNum:0];
+        }
+    }
+    if (!self.shoudlRefreshCon)
+    {
+        return;
+    }
     if ([viewController isKindOfClass:[RBStoryboardLink class]])
     {
         RBStoryboardLink *linkViewController = (RBStoryboardLink *)viewController;
@@ -157,6 +190,7 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
         {
             MineViewController *mineViewController = (MineViewController *)destinationViewController;
             NSLog(@"mine viewController frame %f %f %f %f ",mineViewController.view.frame.origin.x,mineViewController.view.frame.origin.y,mineViewController.view.frame.size.width,mineViewController.view.frame.size.height);
+            
             mineViewController.shouldBackToTop = YES;
             [mineViewController getLatestData];
         }
@@ -174,6 +208,7 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
             SearchViewController *searchViewController = (SearchViewController *)destinationViewController;
             [searchViewController getLatestData];            
         }
+        /*
         if ([destinationViewController isKindOfClass:[NoticeViewController class]])
         {
             NoticeViewController *noticeViewController = (NoticeViewController *)destinationViewController;
@@ -183,16 +218,23 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
             //TO DO
             [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
             [ApplicationUtility setApplicationIconBadgeWithNum:0];
-        }
+        }*/
         
         
     }
 }
+
+
 -(void)activeCurrentTab
 {
-  
-    self.selectedIndex = self.currentTabIndex;
-    [self refreshTabContent];
+    if (self.selectedIndex != self.currentTabIndex)
+    {
+        self.selectedIndex = self.currentTabIndex;
+    }
+    else
+    {
+        [self refreshTabContent];
+    }
 
 }
 -(void)activeTargetTab:(NSNotification *)notification
@@ -271,13 +313,6 @@ typedef NS_ENUM(NSInteger, WZ_TABTAG) {
     }
 }
 
-
--(void)getNoticeNumber
-{
-    //向服务器请求新通知数量
-    //TO DO
-
-}
 -(void)updateNoticeInfo:(NSNotification *)notification
 {
     NSNumber *index =(NSNumber *) [[notification userInfo]objectForKey:@"notificationNum"];

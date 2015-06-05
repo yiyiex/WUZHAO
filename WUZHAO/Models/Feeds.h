@@ -14,14 +14,14 @@ typedef NS_ENUM(NSInteger, WZ_FEEDSTYPE)
 {
     WZ_FEEDSTYPE_ZAN = 1,
     WZ_FEEDSTYPE_COMMENT = 2,
-    WZ_FEEDSTYPE_FOLLOW = 3
+    WZ_FEEDSTYPE_FOLLOW = 3,
+    WZ_FEEDSTYPE_REPLYCOMMENT = 4
 };
 
 @interface Feeds : NSObject
 @property (nonatomic) NSInteger feedsId;
 @property (nonatomic,strong) User *feedsUser;
-//type  0-赞 1-评论 2-关注
-@property (nonatomic) NSInteger type;
+@property (nonatomic) NSInteger type;  //type  1-赞 2-评论 3-关注 4-回复
 @property (nonatomic,strong) NSString *content;
 @property (nonatomic,strong) WhatsGoingOn *feedsPhoto;
 @property (nonatomic,strong) NSString *time;

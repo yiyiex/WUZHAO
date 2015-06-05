@@ -56,18 +56,6 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"editPwd"])
-    {
-        
-    }
-    else if ([segue.identifier isEqualToString:@"feedback"])
-    {
-        
-    }
-}
-
 -(void)setUserInfo:(User *)userInfo
 {
     if (_userInfo)
@@ -136,6 +124,7 @@
         self.selfDescriptionTextView.text = self.userInfo.selfDescriptions;
     }
     
+
     
     // [self.selfDescriptionTextField sizeToFit];
     /*
@@ -179,6 +168,30 @@
     self.logoutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     [self.logoutCell.textLabel setFont:WZ_FONT_LARGE_BOLD_SIZE];
     [self.logoutCell.textLabel setTextColor:THEME_COLOR_DARK];
+    
+    
+    //gesture
+    [self.changePwdCell setUserInteractionEnabled:YES];
+    UITapGestureRecognizer *passwordCellClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(passwordCellClick:)];
+    [self.changePwdCell addGestureRecognizer:passwordCellClick];
+    
+    [self.feedBackCell setUserInteractionEnabled:YES];
+    UITapGestureRecognizer *feedbackCellClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(feedbackCellClick:)];
+    [self.feedBackCell addGestureRecognizer:feedbackCellClick];
+    
+    [self.logoutCell setUserInteractionEnabled:YES];
+    UITapGestureRecognizer *logoutCellClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(logoutCellClick:)];
+    [self.logoutCell addGestureRecognizer:logoutCellClick];
+    
+    [self.tableView setUserInteractionEnabled:YES];
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tableviewTouch:)];
+    [self.tableView addGestureRecognizer:tapGesture];
+    UISwipeGestureRecognizer *swipDownGesture = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(tableviewSwipeDown:)];
+    [swipDownGesture setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self.tableView addGestureRecognizer:swipDownGesture];
+    UISwipeGestureRecognizer *swipUpGesture = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(tableviewSwipeUp:)];
+    [swipUpGesture setDirection:UISwipeGestureRecognizerDirectionUp];
+    [self.tableView addGestureRecognizer:swipUpGesture];
     
 
 
@@ -425,6 +438,65 @@
     [picker dismissViewControllerAnimated:YES completion:^{
         
     }];
+}
+
+#pragma mark - touches delegate
+-(void)resignFirstResponderOfView:(UIView *)view
+{
+    if ([self.nickNameTextField isFirstResponder])
+    {
+        [self.nickNameTextField resignFirstResponder];
+    }
+    if ([self.selfDescriptionTextView isFirstResponder])
+    {
+        [self.selfDescriptionTextView resignFirstResponder];
+    }
+    
+}
+-(void)passwordCellClick:(UIGestureRecognizer *)gesture
+{
+    UIView *view = gesture.view;
+    if (view == self.changePwdCell)
+    {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
+        SetPasswordTableViewController *setPasswordController = [storyboard instantiateViewControllerWithIdentifier:@"setPassword"];
+        [self.navigationController pushViewController:setPasswordController animated:YES];
+    }
+}
+-(void)feedbackCellClick:(UIGestureRecognizer *)gesture
+{
+    UIView *view = gesture.view;
+    if (view == self.feedBackCell)
+    {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
+        FeedbackViewController *feedbackController = [storyboard instantiateViewControllerWithIdentifier:@"feedback"];
+        [self.navigationController pushViewController:feedbackController animated:YES];
+    }
+    
+}
+-(void)logoutCellClick:(UIGestureRecognizer *)gesture
+{
+    UIView *view = gesture.view;
+    if (view == self.logoutCell)
+    {
+        [self logout];
+    }
+}
+
+
+
+-(void)tableviewTouch:(UIGestureRecognizer *)gesture
+{
+    UIView *view = gesture.view;
+    [self resignFirstResponderOfView:view];
+}
+-(void)tableviewSwipeDown:(UIGestureRecognizer *)gesture
+{
+    [self resignFirstResponderOfView:self.view];
+}
+-(void)tableviewSwipeUp:(UIGestureRecognizer *)gesture
+{
+    [self resignFirstResponderOfView:self.view];
 }
 
 

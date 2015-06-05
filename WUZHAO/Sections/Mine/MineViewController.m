@@ -46,6 +46,7 @@
 @property (nonatomic, weak) FootPrintTableViewController *myFootPrintViewController;
 
 @property (nonatomic,strong) UIRefreshControl *refreshControl;
+@property (nonatomic,strong) UILabel *footLabel;
 
 @property (nonatomic) BOOL shouldRefreshData;
 @property (nonatomic) BOOL shouldReloadData;
@@ -79,7 +80,10 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
     
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(deleteMyPhotos:) name:@"deleteMyPhoto" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(deleteMyPhotos:) name:@"deletePost" object:nil];
+
+    
+    
     self.selectToShowTabbar.selectedItem = [self.selectToShowTabbar.items objectAtIndex:0];
    
     // Do any additional setup after loading the view.
@@ -102,8 +106,6 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         [self.myPhotoCollectionViewController.collectionView reloadData];
         self.shouldReloadData = false;
     }
-    NSLog(@"view frame : %f %f %f %f",self.view.frame.origin.x,self.view.frame.origin.y,self.view.frame.size.width,self.view.frame.size.height);
-    NSLog(@"scrollview frame : %f %f %f %f",self.scrollView.frame.origin.x,self.scrollView.frame.origin.y,self.scrollView.frame.size.width,self.scrollView.frame.size.height);
 }
 
 - (void)dealloc {
@@ -125,16 +127,16 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 
 -(float)scrollContentViewHeight
 {
-    float topHeight = _avator.frame.size.height + self.descriptionTopConstraint.constant + self.descriptionViewHeightConstraint.constant + self.descriptionBottomConstraint.constant + _selectToShowTabbar.frame.size.height ;
+    float topHeight = _avator.frame.size.height + self.descriptionTopConstraint.constant + self.descriptionViewHeightConstraint.constant + self.descriptionBottomConstraint.constant ;
     float bottomHeight;
     if (self.myPhotosCollectionDatasource.count >9)
     {
-         bottomHeight = (ceil ((float)self.myPhotosCollectionDatasource.count/3)) * WZ_APP_SIZE.width/3 +44;
+         bottomHeight = (ceil ((float)self.myPhotosCollectionDatasource.count/3)) * WZ_APP_SIZE.width/3+64;
     }
     else
     {
         //bottomHeight = 4*WZ_APP_SIZE.width/3;
-        bottomHeight = WZ_APP_SIZE.height -topHeight +44;
+        bottomHeight = WZ_APP_SIZE.height -topHeight +20;
     }
     
     return topHeight + bottomHeight;
@@ -335,6 +337,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                         {
                             //[SVProgressHUD showInfoWithStatus:@"关注成功"];
                             [myBtn setTitle:@"已关注" forState:UIControlStateNormal];
+                            self.userInfo.followType = FOLLOWED;
+                            [myBtn setThemeBackGroundAppearance];
                             
                         }
                         else if ([result objectForKey:@"error"])
@@ -347,7 +351,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
             });
 
         }
-        else if ([myBtn.titleLabel.text  isEqualToString:@"已关注"])
+        else if ([myBtn.titleLabel.text  isEqualToString:@"已关注"]||[myBtn.titleLabel.text  isEqualToString:@"互相关注"])
         {
             NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -357,6 +361,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                 {
                     //[SVProgressHUD showInfoWithStatus:@"关注成功"];
                     [myBtn setTitle:@"关注" forState:UIControlStateNormal];
+                    self.userInfo.followType = UNFOLLOW;
+                    [myBtn setThemeFrameAppearence];
                     
                 }
                 else if ([result objectForKey:@"error"])
@@ -430,6 +436,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         [self SetPhotosCollectionData];
         [self.myPhotoCollectionViewController.collectionView setScrollEnabled:NO];
         [self.myPhotoCollectionViewController.collectionView setScrollsToTop:NO];
+        self.myPhotoCollectionViewController.detailStyle = DETAIL_STYLE_SINGLEPAGE;
+        self.myPhotoCollectionViewController.dataSource = self;
         
     }
     else if( [childController isKindOfClass:[FootPrintTableViewController class]])
@@ -518,7 +526,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     {
         //NSLog(@"photolist %@",self.userInfo.photoList);
         [_myPhotosCollectionDatasource removeAllObjects];
-        self.photoCollectionCurrentPage = 1;
+       // self.photoCollectionCurrentPage = 1;
         for (NSDictionary *i in self.userInfo.photoList)
         {
             WhatsGoingOn *item = [[WhatsGoingOn alloc]init];
@@ -580,10 +588,34 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                             [self.scrollContentViewHeightConstraint setConstant:self.scrollContentViewHeight];
                             [self.view setNeedsLayout];
                             [self.view layoutIfNeeded];
+                            if (_footLabel)
+                            {
+                                [_footLabel setHidden:YES];
+                            }
                         }
                         else
                         {
                             NSLog(@"no more data");
+                            if (!_footLabel)
+                            {
+                                float tabbarHeight = 0;
+                                if (self.userInfo.UserID == [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
+                                {
+                                    tabbarHeight = 40;
+                                }
+                        
+                                _footLabel = [[UILabel alloc]init];
+                                //[_footLabel setBackgroundColor:THEME_COLOR_DARK];
+                                _footLabel.text = @"没有更多照片了";
+                                _footLabel.textColor = THEME_COLOR_DARK_GREY_PARENT;
+                                _footLabel.font = WZ_FONT_COMMON_SIZE;
+                                _footLabel.textAlignment = NSTextAlignmentCenter;
+                                [self.containerViewController.currentViewController.view addSubview:_footLabel];
+                            
+                            }
+                            [_footLabel setFrame:CGRectMake(0, self.containerViewController.currentViewController.view.frame.size.height -32, WZ_APP_SIZE.width, 32)];
+                            [_footLabel setHidden:NO];
+                            
                             //TO DO
                         }
                         NSLog(@"collection view height%f",self.containerViewController.currentViewController.view.frame.size.height);
@@ -605,6 +637,34 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         });
     }
     
+}
+
+//get more data without update the UI
+-(void)getMoreCollectionDataWithCompleteBlock:(void (^)(void))whenComplete
+{
+    NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [[QDYHTTPClient sharedInstance]GetPersonalInfoWithUserId:_userInfo.UserID currentUserId:myUserId page:self.photoCollectionCurrentPage+1 whenComplete:^(NSDictionary *returnData) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([returnData objectForKey:@"data"])
+                {
+                    User *user = [returnData objectForKey:@"data"];
+                    NSLog(@"userinfo %@",user);
+                    if (user.photoList.count >0)
+                    {
+                        [self addMorePhotoCollectionDataWith:user.photoList];
+                        self.photoCollectionCurrentPage ++;
+                    }
+         
+                }
+                else if ([returnData objectForKey:@"error"])
+                {
+                    NSLog(@"get more colleciton Data error");
+                }
+            });
+            
+        }];
+    });
 }
 
 
@@ -651,15 +711,15 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 -(void)deleteMyPhotos:(NSNotification *)notification
 {
     NSLog(@"%@",notification);
-   // NSIndexPath *deleteIndexPath = [[notification userInfo]objectForKey:@"indexPath"];
-    //[_myPhotosCollectionDatasource removeObjectAtIndex:deleteIndexPath.row];
-    NSLog(@"%@",self.myPhotosCollectionDatasource);
-    self.shouldReloadData = true;
-    //网络刷新
-    [self getLatestData];
-    //本地刷新
-    //[self.myPhotoCollectionViewController setDatasource:_myPhotosCollectionDatasource];
-    //[self.myPhotoCollectionViewController.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:deleteIndexPath]];
+    NSInteger postId =[(NSNumber *) [[notification userInfo] objectForKey:@"postId"]integerValue];
+    [self.userInfo.photoList enumerateObjectsUsingBlock:^(NSDictionary * item, NSUInteger idx, BOOL *stop) {
+        if ([[item valueForKey:@"postId"]integerValue] == postId)
+        {
+            [self.userInfo.photoList removeObject:item];
+            *stop = YES;
+        }
+    }];
+    [self SetPhotosCollectionData];
 }
 
 #pragma mark - scrollview delegate
@@ -668,7 +728,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     CGPoint loadMorePoint = CGPointMake(0, self.scrollView.contentSize.height);
     CGPoint targetPoint = *targetContentOffset;
     NSLog(@"app size.hight :%f",WZ_APP_SIZE.height);
-    if (targetPoint.y > loadMorePoint.y -WZ_APP_SIZE.height )
+    if (targetPoint.y > loadMorePoint.y -WZ_APP_SIZE.height-41 )
     {
         [self loadMoreCollectionData];
         
@@ -677,6 +737,36 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     
+}
+
+
+#pragma mark - photosCollectionView datasource
+-(WhatsGoingOn *)PhotosCollectionViewController:(PhotosCollectionViewController *)detailViews dataAtIndex:(NSInteger)index
+{
+    __block WhatsGoingOn *item;
+    if (index<self.myPhotosCollectionDatasource.count)
+    {
+        return self.myPhotosCollectionDatasource[index];
+    }
+    if (index>=self.myPhotosCollectionDatasource.count)
+    {
+         
+      [self getMoreCollectionDataWithCompleteBlock:^{
+          if (index > self.myPhotosCollectionDatasource.count)
+          {
+              item = nil;
+          }
+          else
+          {
+              item = self.myPhotosCollectionDatasource[index];
+          }
+      }];
+        
+    }
+    WhatsGoingOn *result = item;
+    return result;
+
+   
 }
 
 

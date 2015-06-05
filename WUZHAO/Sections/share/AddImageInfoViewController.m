@@ -5,7 +5,7 @@
 //  Created by yiyi on 14-12-21.
 //  Copyright (c) 2014年 yiyi. All rights reserved.
 //
-
+#import "captureMacro.h"
 #import "AddImageInfoViewController.h"
 #import "AddressInfoList.h"
 #import "AddressSearchTableViewController.h"
@@ -160,7 +160,7 @@
 -(void)initTopBar
 {
     self.topBarView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width,50)];
-    [self.topBarView setBackgroundColor:rgba_WZ(23,24,26,0.9)];
+    [self.topBarView setBackgroundColor:DARK_PARENT_BACKGROUND_COLOR];
     UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(13, 13, 24, 24)];
     [backButton setBackgroundImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(backBarButtonClick:) forControlEvents:UIControlEventTouchUpInside];

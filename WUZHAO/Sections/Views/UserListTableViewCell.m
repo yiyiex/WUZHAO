@@ -64,6 +64,7 @@
                     if ([result objectForKey:@"data"])
                     {
                         //[SVProgressHUD showInfoWithStatus:@"关注成功"];
+                        [sender setHidden:NO];
                         [sender setTitle:@"已关注" forState:UIControlStateNormal];
                         [sender setThemeBackGroundAppearance];
                         
@@ -87,6 +88,7 @@
                 if ([result objectForKey:@"data"])
                 {
                     //[SVProgressHUD showInfoWithStatus:@"关注成功"];
+                    [sender setHidden:NO];
                     [sender setTitle:@"关注" forState:UIControlStateNormal];
                     [sender setThemeFrameAppearence];
                     

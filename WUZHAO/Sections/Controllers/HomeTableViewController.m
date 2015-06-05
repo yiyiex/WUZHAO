@@ -12,6 +12,8 @@
 #import "CommentListViewController.h"
 #import "UserListTableViewController.h"
 
+
+
 #import "CommentTextView.h"
 
 #import "UIImageView+WebCache.h"
@@ -40,7 +42,7 @@
 
 
 @property (nonatomic) float tableViewOffset;
-@property (nonatomic)  BOOL shouldRefreshData;
+
 @property (nonatomic,strong) NSIndexPath *currentZanIndexPath;
 
 @property (nonatomic,strong) NSIndexPath *currentCommentIndexPath;
@@ -61,9 +63,10 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     //refresh control
     self.refreshControl = [[UIRefreshControl alloc]init];
     [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
-    self.shouldRefreshData = true;
     self.tableViewOffset = 0.0;
-    [self loadData];
+    
+    
+    //[self loadData];
     
 
 }
@@ -121,6 +124,12 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
+    
+    if (SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(@"7"))
+    {
+        self.automaticallyAdjustsScrollViewInsets = NO;
+        [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
+    }
     
     //[self.navigationItem.backBarButtonItem setTitle:@""];
 }
@@ -283,17 +292,17 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     float descriptionHieght;
     CGSize descriptionSize = self.prototypeCell.descriptionTextView.frame.size;
     // NSLog(@"description content  at index %ld:%@",(long)indexPath.row,self.prototypeCell.descriptionTextView.text);
-    NSLog(@"description content height %f widht %f",descriptionSize.height,descriptionSize.width);
+   // NSLog(@"description content height %f widht %f",descriptionSize.height,descriptionSize.width);
     
     if (descriptionSize.height>0)
     {
-        descriptionHieght = descriptionSize.height + 10.0f;
+        descriptionHieght = descriptionSize.height + 6.0f;
     }
     float commentViewHeight = 0;
     
     CGSize commentViewSize = self.prototypeCell.commentView.frame.size;
     // NSLog(@"comment content  at index %ld :%@",(long)indexPath.row,self.prototypeCell.commentView.text);
-    NSLog(@"comment content height %f  %f",commentViewSize.height,commentViewSize.width);
+    //NSLog(@"comment content height %f  %f",commentViewSize.height,commentViewSize.width);
     if (commentViewSize.height>0)
     {
         commentViewHeight = commentViewSize.height;
@@ -301,7 +310,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     float likeViewHeight = 0;
     if (dataItem.likeCount >0)
     {
-        likeViewHeight = 32;
+        likeViewHeight = 36;
     }
     float basicheight = 48 + WZ_APP_SIZE.width + (12+24+12);
     float height = basicheight + descriptionHieght+ commentViewHeight+likeViewHeight ;
@@ -317,17 +326,18 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         return UITableViewAutomaticDimension;
     }
     return 600;*/
-    NSLog(@"estimate  height for row at index path %ld",(long)indexPath.row);
+    //NSLog(@"estimate  height for row at index path %ld",(long)indexPath.row);
     // return UITableViewAutomaticDimension;
     WhatsGoingOn *item = [self.dataSource objectAtIndex:indexPath.row];
     height = [self caculateProtoCellHeightWithData:item];
     return height;
+    
    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"caculate  height for row at index path %ld",(long)indexPath.row);
+   // NSLog(@"caculate  height for row at index path %ld",(long)indexPath.row);
     float height;
    // return UITableViewAutomaticDimension;
     WhatsGoingOn *item = [self.dataSource objectAtIndex:indexPath.row];
@@ -356,9 +366,9 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     //点击头像，跳转个人主页
     [self configureCell:cell forContent:item atIndexPath:indexPath];
     
-    NSLog(@"cell height at indexpath:%ld ---- %f",(long)indexPath.row,cell.contentView.frame.size.height);
-    NSLog(@"cell headview height at indexpath:%ld ---- %f",(long)indexPath.row,cell.headView.frame.size.height);
-     NSLog(@"cell imageview  at indexpath:%ld ---- (%f , %f)",(long)indexPath.row,cell.homeCellImageView.frame.size.width,cell.homeCellImageView.frame.size.height);
+   // NSLog(@"cell height at indexpath:%ld ---- %f",(long)indexPath.row,cell.contentView.frame.size.height);
+    //NSLog(@"cell headview height at indexpath:%ld ---- %f",(long)indexPath.row,cell.headView.frame.size.height);
+     //NSLog(@"cell imageview  at indexpath:%ld ---- (%f , %f)",(long)indexPath.row,cell.homeCellImageView.frame.size.width,cell.homeCellImageView.frame.size.height);
     return cell;
 }
 
@@ -489,10 +499,18 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                                  dispatch_async(dispatch_get_main_queue(), ^{
                                      if ([returnData objectForKey:@"data"])
                                      {
-                                         [self.tableView beginUpdates];
-                                         [self.dataSource removeObjectAtIndex:selectItemIndexPath.row];
-                                         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject: selectItemIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
-                                         [self.tableView endUpdates];
+                                         if(self.tableStyle == WZ_TABLEVIEWSTYLEHOME)
+                                         {
+                                             [self.tableView beginUpdates];
+                                             [self.dataSource removeObjectAtIndex:selectItemIndexPath.row];
+                                             [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject: selectItemIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                             [self.tableView endUpdates];
+                                         }
+                                         else if (self.tableStyle == WZ_TABLEVIEWSTYLEDETAIL)
+                                         {
+                                             [[NSNotificationCenter defaultCenter]postNotificationName:@"deletePost" object:nil userInfo:@{@"postId":[NSNumber numberWithInteger:item.postId]}];
+                                             [self.navigationController popViewControllerAnimated:YES];
+                                         }
                                      }
                                      else
                                      {
@@ -574,7 +592,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"确定"])
     {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            WhatsGoingOn *item = [self.dataSource objectAtIndex:self.currentDeleteIndexPath];
+            WhatsGoingOn *item = [self.dataSource objectAtIndex:self.currentDeleteIndexPath.row];
             [[QDYHTTPClient sharedInstance]deletePhotoWithUserId:self.currentUser.UserID postId:item
              .postId whenComplete:^(NSDictionary *returnData)
              {
@@ -864,8 +882,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 
 -(void)GetLatestDataList
 {
-    if(self.shouldRefreshData)
-    {
+
         //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
         self.shouldRefreshData = false;
         if (self.tableStyle == WZ_TABLEVIEWSTYLEHOME)
@@ -967,7 +984,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                 });
             }
         }
-    }
 }
 
 #pragma mark - commentTextView Delegate
@@ -995,4 +1011,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     [commentListView setCommentList:[item.commentList mutableCopy]];
     [self.navigationController pushViewController:commentListView animated:YES];
 }
+
+
 @end

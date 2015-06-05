@@ -12,9 +12,9 @@
 #import "SVProgressHUD.h"
 
 #import "SCNavigationController.h"
-#import "WZFilterUIViewController.h"
 #import "AddImageInfoViewController.h"
 #import "TWPhotoPickerController.h"
+#import "PhotoFilterViewCollectionViewController.h"
 
 #import "CaptureItemContainerUIView.h"
 
@@ -23,33 +23,13 @@
 #import <Photos/Photos.h>
 #import <CoreLocation/CoreLocation.h>
 
+#import "captureMacro.h"
+
 #define SWITCH_SHOW_FOCUSVIEW_UNTIL_FOCUS_DONE      0   //对焦框是否一直闪到对焦完成
 
 #define SWITCH_SHOW_DEFAULT_IMAGE_FOR_NONE_CAMERA   1   //没有拍照功能的设备，是否给一张默认图片体验一下
 
-//height
 
-#if __isIPHONE_4s
-#define CAMERA_TOPVIEW_HEIGHT   0
-#else
-#define CAMERA_TOPVIEW_HEIGHT   50
-#endif
-
-
-#define CAMERA_MENU_VIEW_HEIGH  50  //menu
-#define CAMERA_BUTTON_WIDTH  70 //cameraButton
-#define CAMERA_PHOTO_CHOOSE_BUTTON_WIDTH 50//photoChoose Button
-
-//color
-#define BOTTOM_CONTAINER_COLOR rgba_WZ(23,24,26,1.0)
-#define MENU_CONTAINER_COLOR rgba_WZ(23,24,26,0.9)
-
-
-
-//对焦
-#define ADJUSTINT_FOCUS @"adjustingFocus"
-#define LOW_ALPHA   0.7f
-#define HIGH_ALPHA  1.0f
 
 //typedef enum {
 //    bottomContainerViewTypeCamera    =   0,  //拍照页面
@@ -441,7 +421,7 @@
     //竖向
     CGFloat width = 40;
     CGFloat height = _previewRect.size.height - 100;
-    SCSlider *slider = [[SCSlider alloc] initWithFrame:CGRectMake(_previewRect.size.width - width, (_previewRect.size.height + CAMERA_MENU_VIEW_HEIGH - height) / 2, width, height) direction:SCSliderDirectionVertical];
+    SCSlider *slider = [[SCSlider alloc] initWithFrame:CGRectMake(_previewRect.size.width - width, (_previewRect.size.height  - height) / 2, width, height) direction:SCSliderDirectionVertical];
     slider.alpha = 0.f;
     slider.minValue = MIN_PINCH_SCALE_NUM;
     slider.maxValue = MAX_PINCH_SCALE_NUM;
@@ -591,11 +571,28 @@ void c_slideAlpha() {
             actiView = nil;
             sender.userInteractionEnabled = YES;
             [weakSelf_WZ showCameraCover:NO];
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
             
-            AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
-            [addImageInfoCon setPostImage:stillImage];
-            [weakSelf_WZ presentViewController:addImageInfoCon animated:YES completion:nil];
+            __strong typeof(weakSelf_WZ)strongSelf = weakSelf_WZ;
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
+            PhotoFilterViewCollectionViewController *filterController = [storyboard instantiateViewControllerWithIdentifier:@"filterViewController"];
+            strongSelf.stillImage = [stillImage copy];
+            filterController.stillImage = strongSelf.stillImage;
+            filterController.filterBlock = ^(UIImage *image,BOOL needSave)
+            {
+                strongSelf.stillImage = [image copy];
+                if (needSave)
+                {
+                    [PhotoCommon saveImageToPhotoAlbumWithExif:strongSelf.imageInfo image:strongSelf.stillImage];
+                    //[PhotoCommon saveImageToPhotoAlbum:image];
+                }
+                AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
+                [addImageInfoCon setPostImage:strongSelf.stillImage];
+                
+                [strongSelf presentViewController:addImageInfoCon animated:YES completion:nil];
+            };
+            [strongSelf presentViewController:filterController animated:YES completion:^{
+                
+            }];
             
             //[[NSNotificationCenter defaultCenter] postNotificationName:@"hideBar" object:nil];
         });
@@ -652,16 +649,29 @@ void c_slideAlpha() {
         strongSelf.imageInfo = [imageInfo mutableCopy];
         NSLog(@"image info %@",strongSelf.imageInfo);
          NSLog(@"image gps %@",[strongSelf.imageInfo objectForKey:@"{GPS}"]);
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];        
-        AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
-        [addImageInfoCon setPostImage:strongSelf.stillImage];
-        [addImageInfoCon setPostImageInfo:strongSelf.imageInfo];
         
-        [strongSelf presentViewController:addImageInfoCon animated:YES completion:nil];
-        //VPImageCropperViewController *imgCropperVC = [[VPImageCropperViewController alloc]initWithImage:strongSelf.stillImage cropFrame:CGRectMake(0, 100, WZ_APP_SIZE.width, WZ_APP_SIZE.width) limitScaleRatio:3.0];
         
-        //imgCropperVC.delegate = strongSelf;
-        //[strongSelf presentViewController:imgCropperVC animated:YES completion:nil];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
+        PhotoFilterViewCollectionViewController *filterController = [storyboard instantiateViewControllerWithIdentifier:@"filterViewController"];
+        filterController.stillImage = strongSelf.stillImage;
+        filterController.filterBlock = ^(UIImage *image,BOOL needSave)
+
+        {
+            strongSelf.stillImage = [image copy];
+            if (needSave)
+            {
+                [PhotoCommon saveImageToPhotoAlbumWithExif:strongSelf.imageInfo image:strongSelf.stillImage];
+               // [PhotoCommon saveImageToPhotoAlbum:image];
+            }
+            AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
+            [addImageInfoCon setPostImage:self.stillImage];
+            [addImageInfoCon setPostImageInfo:strongSelf.imageInfo];
+            
+            [strongSelf presentViewController:addImageInfoCon animated:YES completion:nil];
+        };
+        [strongSelf presentViewController:filterController animated:YES completion:^{
+            
+        }];
     };
     [self presentViewController:photoPicker animated:YES completion:NULL];
 }

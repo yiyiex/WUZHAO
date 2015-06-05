@@ -14,8 +14,21 @@
 
 -(NSURLSessionDataTask *)ExecuteRequestWithMethod:(NSString *)method api:(NSString *)api parameters:(NSDictionary *)param complete:(void (^)(NSDictionary *, NSError *))complete
 {
-    NSString *token = [[NSUserDefaults standardUserDefaults]objectForKey:@"token"];
-    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *token = @"";
+    NSInteger userId = 0;
+    if ([userDefaults objectForKey:@"token"])
+    {
+        token = [userDefaults objectForKey:@"token"];
+    }
+    if ([userDefaults integerForKey:@"userId"])
+    {
+        userId = [userDefaults integerForKey:@"userId"];
+    }
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    // app版本
+    NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    [self.requestSerializer setValue:app_Version forHTTPHeaderField:@"version"];
     [self.requestSerializer setValue:token forHTTPHeaderField:@"token"];
     [self.requestSerializer setValue:[NSString stringWithFormat:@"%ld",(long)userId] forHTTPHeaderField:@"userId"];
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];

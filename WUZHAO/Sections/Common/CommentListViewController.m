@@ -41,8 +41,10 @@
     
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
-    
     self.navigationItem.title = @"评论列表";
+   // self.automaticallyAdjustsScrollViewInsets = NO;
+    //[self.commentListTableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
+    
     [self addCommentListTableView];
     [self addToolBar];
     [self setKeyboard];
@@ -70,6 +72,7 @@
 -(void)dealloc
 {
     [self.view removeKeyboardControl];
+    [self.commentListTableView setEditing:NO];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -96,7 +99,7 @@
 - (CommentTableViewCell *)prototypeCell
 {
     if (!_prototypeCell) {
-        _prototypeCell = [self.commentListTableView dequeueReusableCellWithIdentifier:NSStringFromClass([CommentTableViewCell class])];
+        _prototypeCell = [self.commentListTableView dequeueReusableCellWithIdentifier:@"commentTableCell"];
     }
     return _prototypeCell;
 }
@@ -250,6 +253,7 @@
                 {
                    // [SVProgressHUD showInfoWithStatus:@"评论成功"];
                     NSLog(@"评论成功");
+                    
                     //更新主页显示内容
                     NSString *commentString;
                     NSMutableDictionary *myCommentItem = [[NSMutableDictionary alloc]init];
@@ -259,6 +263,11 @@
                     [myCommentItem setObject:[NSNumber numberWithInteger:postId] forKey:@"postId"];
                     [myCommentItem setObject:userName forKey:@"userName"];
                     [myCommentItem setObject:[NSNumber numberWithInteger:userId] forKey:@"userId"];
+                    if (replyUserId >0)
+                    {
+                        [myCommentItem setObject:[NSNumber numberWithInteger:self.replyUser.UserID] forKey:@"replyUserId"];
+                        [myCommentItem setObject:self.replyUser.UserName forKey:@"replyUserName"];
+                    }
                     if(avatarUrl)
                     {
                         [myCommentItem setObject:avatarUrl forKey:@"avatarUrl"];
@@ -266,21 +275,54 @@
                     commentString =[NSString stringWithFormat:@"%@: %@",[myCommentItem objectForKey:@"userName"],[myCommentItem objectForKey:@"content"]];
                     NSMutableArray *newpoiCommentList = [NSMutableArray arrayWithArray:self.poiItem.commentList];
                     NSMutableArray *newCommentStringList = [NSMutableArray arrayWithArray:self.poiItem.commentStringList];
-                    if (newpoiCommentList.count>=5)
+                    if (newpoiCommentList.count ==5 && newCommentStringList.count ==6)
                     {
                         [newpoiCommentList removeObjectAtIndex:0];
                         [newCommentStringList removeObjectAtIndex:0];
+                        if (replyUserId >0)
+                        {
+                            [newCommentStringList insertObject:[NSString stringWithFormat:@"%@ 回复 %@: %@",userName,self.replyUser.UserName,commentContent] atIndex:newCommentStringList.count -1];
+                        }
+                        else
+                        {
+                            [newCommentStringList insertObject:[NSString stringWithFormat:@"%@: %@",userName,commentContent] atIndex:newCommentStringList.count-1];
+                        }
+                        [newCommentStringList removeLastObject];
+                          [newCommentStringList addObject:[NSString stringWithFormat:@"查看全部%ld条评论",(long)self.poiItem.commentNum+1]];
+                    }
+                    else   if (newpoiCommentList.count ==5 && newCommentStringList.count ==5)
+                    {
+                        [newpoiCommentList removeObjectAtIndex:0];
+                        [newCommentStringList removeObjectAtIndex:0];
+                        if (replyUserId >0)
+                        {
+                            [newCommentStringList addObject:[NSString stringWithFormat:@"%@ 回复 %@: %@",userName,self.replyUser.UserName,commentContent] ];
+                        }
+                        else
+                        {
+                            [newCommentStringList addObject:[NSString stringWithFormat:@"%@: %@",userName,commentContent] ];
+                            
+                        }
+                        [newCommentStringList addObject:[NSString stringWithFormat:@"查看全部%ld条评论",(long)self.poiItem.commentNum+1]];
+                    }
+                    else
+                    {
+                        if (replyUserId >0)
+                        {
+                            [newCommentStringList addObject:[NSString stringWithFormat:@"%@ 回复 %@: %@",userName,self.replyUser.UserName,commentContent]];
+                        }
+                        else
+                        {
+                            [newCommentStringList addObject:[NSString stringWithFormat:@"%@: %@",userName,commentContent]];
+                        }
                     }
                     [newpoiCommentList addObject:myCommentItem];
+           
+
                     self.poiItem.commentList = newpoiCommentList;
-                    [newCommentStringList addObject:commentString];
                     self.poiItem.commentStringList = newCommentStringList;
                     self.poiItem.commentNum ++;
-                    // [self.commentList addObject:@{}];
                     [self getLatestCommentList];
-                    NSLog(@"comment list tableview contentsize height:%f",self.commentListTableView.contentSize.height);
-                    NSLog(@"app height:%f",WZ_APP_SIZE.height);
-                    NSLog(@"comment list tableview origian height :%f",self.commentListTableView.bounds.origin.y);
                 }
                 else if ([returnData objectForKey:@"error"])
                 {
@@ -366,7 +408,16 @@
         }
     }*/
 }
-
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.prototypeCell configureDataWith:self.commentList[indexPath.row] parentController:nil];
+    return  28+ self.prototypeCell.commentContent.frame.size.height +2;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.prototypeCell configureDataWith:self.commentList[indexPath.row] parentController:nil];
+    return  28+ self.prototypeCell.commentContent.frame.size.height +2;
+}
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     /*if (self.commentList.count <=4)
@@ -411,16 +462,13 @@
     {
         return UITableViewCellEditingStyleDelete;
     }
-    /*
-    else
-    {
-        return UITableViewCellEditingStyleNone;
-    }*/
+
     return UITableViewCellEditingStyleNone;
 }
 
 -(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     return YES;
 }
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -489,28 +537,12 @@
                         NSLog(@"bounds size  %f",self.commentListTableView.bounds.size.height);
                         NSLog(@"frame size  %f",self.commentListTableView.frame.size.height);
                         NSLog(@"keyboard frame  %f",self.view.keyboardFrameInView.size.height);
-
-                        NSIndexPath *lastindexPath = [NSIndexPath indexPathForRow:self.commentList.count-1 inSection:0];
-                        [self.commentListTableView scrollToRowAtIndexPath:lastindexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-                       /*
-                        if (self.view.keyboardFrameInView.size.height >0)
+                        if (self.commentListTableView.contentSize.height >self.commentListTableView.bounds.size.height)
                         {
-                            //键盘展开时，滚动到底部
-                            if (self.commentListTableView.contentSize.height > self.commentListTableView.bounds.size.height)
-                            {
-                                
-                                [self.commentListTableView setContentOffset:CGPointMake(0, self.commentListTableView.contentSize.height + 64) animated:NO];
-                            }
+                            [self.commentListTableView setContentOffset:CGPointMake(0,self.commentListTableView.contentSize.height -self.commentListTableView.bounds.size.height) animated:YES];
                         }
-                        else
-                        {
-                           
-                            
-                            if (self.commentListTableView.contentSize.height > self.commentListTableView.bounds.size.height)
-                            {
-                                [self.commentListTableView setContentOffset:CGPointMake(0, self.commentListTableView.contentSize.height -self.commentListTableView.bounds.size.height +44) animated:NO];
-                            }
-                        }*/
+               
+                  
                     }
                     else
                     {
@@ -528,6 +560,8 @@
 
     });
  }
+
+
 
 #pragma mark - textView delegate
 

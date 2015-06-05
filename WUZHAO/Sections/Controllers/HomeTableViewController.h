@@ -21,6 +21,7 @@ typedef NS_ENUM(NSInteger, WZ_TABLEVIEWSTYLE) {
 @property (nonatomic ,strong) User *currentUser;
 @property (nonatomic ,strong) NSMutableArray *dataSource;
 @property (nonatomic) NSInteger tableStyle;
+@property (nonatomic)  BOOL shouldRefreshData;
 - (void)configureCell:(PhotoTableViewCell *)cell forContent:(WhatsGoingOn *)content atIndexPath:(NSIndexPath *)indexPath;
 
 - (void)GetLatestDataList;

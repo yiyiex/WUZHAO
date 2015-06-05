@@ -7,14 +7,94 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7D0071AC1A7878BB0053A1AA /* WZFilterUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0071AB1A7878BB0053A1AA /* WZFilterUIViewController.m */; };
-		7D0071AF1A787C0B0053A1AA /* FeSlideFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0071AE1A787C0B0053A1AA /* FeSlideFilterView.m */; };
+		7D00BDFF1B204A6000374EC0 /* check@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BDF61B204A6000374EC0 /* check@3x.png */; };
+		7D00BE091B20509900374EC0 /* cancel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE081B20509900374EC0 /* cancel@2x.png */; };
+		7D00BE111B205C5000374EC0 /* cancel.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE0A1B205C5000374EC0 /* cancel.png */; };
+		7D00BE121B205C5000374EC0 /* cancel@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE0B1B205C5000374EC0 /* cancel@3x.png */; };
+		7D00BE131B205C5000374EC0 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE0C1B205C5000374EC0 /* check.png */; };
+		7D00BE141B205C5000374EC0 /* check@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE0D1B205C5000374EC0 /* check@2x.png */; };
+		7D00BE151B205C5000374EC0 /* filter.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE0E1B205C5000374EC0 /* filter.png */; };
+		7D00BE161B205C5000374EC0 /* filter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE0F1B205C5000374EC0 /* filter@2x.png */; };
+		7D00BE171B205C5000374EC0 /* filter@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE101B205C5000374EC0 /* filter@3x.png */; };
+		7D00BE1C1B20652F00374EC0 /* 曝光.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE191B20652F00374EC0 /* 曝光.png */; };
+		7D00BE4C1B206AEC00374EC0 /* 饱和度.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE1F1B206AEC00374EC0 /* 饱和度.png */; };
+		7D00BE4F1B206AEC00374EC0 /* 裁剪.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE221B206AEC00374EC0 /* 裁剪.png */; };
+		7D00BE521B206AEC00374EC0 /* 对比度.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE251B206AEC00374EC0 /* 对比度.png */; };
+		7D00BE551B206AEC00374EC0 /* 肤色.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE281B206AEC00374EC0 /* 肤色.png */; };
+		7D00BE581B206AEC00374EC0 /* 高光.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE2B1B206AEC00374EC0 /* 高光.png */; };
+		7D00BE5B1B206AEC00374EC0 /* 工具.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE2E1B206AEC00374EC0 /* 工具.png */; };
+		7D00BE5E1B206AEC00374EC0 /* 角度校正.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE311B206AEC00374EC0 /* 角度校正.png */; };
+		7D00BE611B206AEC00374EC0 /* 滤镜.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE341B206AEC00374EC0 /* 滤镜.png */; };
+		7D00BE641B206AEC00374EC0 /* 亮度.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE371B206AEC00374EC0 /* 亮度.png */; };
+		7D00BE671B206AEC00374EC0 /* 锐化.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE3A1B206AEC00374EC0 /* 锐化.png */; };
+		7D00BE6A1B206AEC00374EC0 /* 色温.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE3D1B206AEC00374EC0 /* 色温.png */; };
+		7D00BE6D1B206AEC00374EC0 /* 褪色.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE401B206AEC00374EC0 /* 褪色.png */; };
+		7D00BE701B206AEC00374EC0 /* 阴影.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE431B206AEC00374EC0 /* 阴影.png */; };
+		7D00BE731B206AEC00374EC0 /* 晕影.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE461B206AEC00374EC0 /* 晕影.png */; };
+		7D00BE761B206AEC00374EC0 /* grain.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE491B206AEC00374EC0 /* grain.png */; };
+		7D00BE7F1B20726700374EC0 /* 工具_s.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE791B20726700374EC0 /* 工具_s.png */; };
+		7D00BE821B20726700374EC0 /* 滤镜_s.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE7C1B20726700374EC0 /* 滤镜_s.png */; };
+		7D00BE8B1B214E5C00374EC0 /* 色相.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE851B214E5C00374EC0 /* 色相.png */; };
+		7D00BE8E1B214E5C00374EC0 /* 颜色.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE881B214E5C00374EC0 /* 颜色.png */; };
+		7D00BE941B21508A00374EC0 /* 高斯模糊.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BE911B21508A00374EC0 /* 高斯模糊.png */; };
+		7D00BF211B218F8200374EC0 /* 柔和.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF1E1B218F8200374EC0 /* 柔和.png */; };
+		7D00BF501B2194FD00374EC0 /* 饱和度@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF241B2194FD00374EC0 /* 饱和度@2x.png */; };
+		7D00BF511B2194FD00374EC0 /* 饱和度@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF251B2194FD00374EC0 /* 饱和度@3x.png */; };
+		7D00BF521B2194FD00374EC0 /* 裁剪@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF261B2194FD00374EC0 /* 裁剪@2x.png */; };
+		7D00BF531B2194FD00374EC0 /* 裁剪@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF271B2194FD00374EC0 /* 裁剪@3x.png */; };
+		7D00BF541B2194FD00374EC0 /* 对比度@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF281B2194FD00374EC0 /* 对比度@2x.png */; };
+		7D00BF551B2194FD00374EC0 /* 对比度@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF291B2194FD00374EC0 /* 对比度@3x.png */; };
+		7D00BF561B2194FD00374EC0 /* 肤色@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF2A1B2194FD00374EC0 /* 肤色@2x.png */; };
+		7D00BF571B2194FD00374EC0 /* 肤色@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF2B1B2194FD00374EC0 /* 肤色@3x.png */; };
+		7D00BF581B2194FD00374EC0 /* 高光@2X.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF2C1B2194FD00374EC0 /* 高光@2X.png */; };
+		7D00BF591B2194FD00374EC0 /* 高光@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF2D1B2194FD00374EC0 /* 高光@3x.png */; };
+		7D00BF5A1B2194FD00374EC0 /* 高斯模糊@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF2E1B2194FD00374EC0 /* 高斯模糊@2x.png */; };
+		7D00BF5B1B2194FD00374EC0 /* 高斯模糊@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF2F1B2194FD00374EC0 /* 高斯模糊@3x.png */; };
+		7D00BF5C1B2194FD00374EC0 /* 工具_s@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF301B2194FD00374EC0 /* 工具_s@2x.png */; };
+		7D00BF5D1B2194FD00374EC0 /* 工具_s@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF311B2194FD00374EC0 /* 工具_s@3x.png */; };
+		7D00BF5E1B2194FD00374EC0 /* 工具@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF321B2194FD00374EC0 /* 工具@2x.png */; };
+		7D00BF5F1B2194FD00374EC0 /* 工具@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF331B2194FD00374EC0 /* 工具@3x.png */; };
+		7D00BF601B2194FD00374EC0 /* 角度校正@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF341B2194FD00374EC0 /* 角度校正@2x.png */; };
+		7D00BF611B2194FD00374EC0 /* 角度校正@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF351B2194FD00374EC0 /* 角度校正@3x.png */; };
+		7D00BF621B2194FD00374EC0 /* 亮度@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF361B2194FD00374EC0 /* 亮度@2x.png */; };
+		7D00BF631B2194FD00374EC0 /* 亮度@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF371B2194FD00374EC0 /* 亮度@3x.png */; };
+		7D00BF641B2194FD00374EC0 /* 滤镜_s@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF381B2194FD00374EC0 /* 滤镜_s@2x.png */; };
+		7D00BF651B2194FD00374EC0 /* 滤镜_s@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF391B2194FD00374EC0 /* 滤镜_s@3x.png */; };
+		7D00BF661B2194FD00374EC0 /* 滤镜@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF3A1B2194FD00374EC0 /* 滤镜@2x.png */; };
+		7D00BF671B2194FD00374EC0 /* 滤镜@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF3B1B2194FD00374EC0 /* 滤镜@3x.png */; };
+		7D00BF681B2194FD00374EC0 /* 曝光@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF3C1B2194FD00374EC0 /* 曝光@2x.png */; };
+		7D00BF691B2194FD00374EC0 /* 曝光@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF3D1B2194FD00374EC0 /* 曝光@3x.png */; };
+		7D00BF6A1B2194FD00374EC0 /* 柔和@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF3E1B2194FD00374EC0 /* 柔和@2x.png */; };
+		7D00BF6B1B2194FD00374EC0 /* 柔和@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF3F1B2194FD00374EC0 /* 柔和@3x.png */; };
+		7D00BF6C1B2194FD00374EC0 /* 锐化@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF401B2194FD00374EC0 /* 锐化@2x.png */; };
+		7D00BF6D1B2194FD00374EC0 /* 锐化@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF411B2194FD00374EC0 /* 锐化@3x.png */; };
+		7D00BF6E1B2194FD00374EC0 /* 色温@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF421B2194FD00374EC0 /* 色温@2x.png */; };
+		7D00BF6F1B2194FD00374EC0 /* 色温@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF431B2194FD00374EC0 /* 色温@3x.png */; };
+		7D00BF701B2194FD00374EC0 /* 色相@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF441B2194FD00374EC0 /* 色相@2x.png */; };
+		7D00BF711B2194FD00374EC0 /* 色相@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF451B2194FD00374EC0 /* 色相@3x.png */; };
+		7D00BF721B2194FD00374EC0 /* 褪色@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF461B2194FD00374EC0 /* 褪色@2x.png */; };
+		7D00BF731B2194FD00374EC0 /* 褪色@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF471B2194FD00374EC0 /* 褪色@3x.png */; };
+		7D00BF741B2194FD00374EC0 /* 颜色@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF481B2194FD00374EC0 /* 颜色@2x.png */; };
+		7D00BF751B2194FD00374EC0 /* 颜色@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF491B2194FD00374EC0 /* 颜色@3x.png */; };
+		7D00BF761B2194FD00374EC0 /* 阴影@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF4A1B2194FD00374EC0 /* 阴影@2x.png */; };
+		7D00BF771B2194FD00374EC0 /* 阴影@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF4B1B2194FD00374EC0 /* 阴影@3x.png */; };
+		7D00BF781B2194FD00374EC0 /* 晕影@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF4C1B2194FD00374EC0 /* 晕影@2x.png */; };
+		7D00BF791B2194FD00374EC0 /* 晕影@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF4D1B2194FD00374EC0 /* 晕影@3x.png */; };
+		7D00BF7A1B2194FD00374EC0 /* grain@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF4E1B2194FD00374EC0 /* grain@2x.png */; };
+		7D00BF7B1B2194FD00374EC0 /* grain@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D00BF4F1B2194FD00374EC0 /* grain@3x.png */; };
 		7D0290F41AD384C1003D8393 /* SearchResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0290F31AD384C1003D8393 /* SearchResultViewController.m */; };
 		7D0290F61AD3D64B003D8393 /* UserListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D0290F51AD3D64B003D8393 /* UserListTableViewCell.xib */; };
 		7D0644EE1AD2BAF00002E0FA /* POI.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0644ED1AD2BAF00002E0FA /* POI.m */; };
 		7D1317CF1A5D35CA003A9D77 /* DAKeyboardControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1317CE1A5D35CA003A9D77 /* DAKeyboardControl.m */; };
 		7D1317D51A5E32DC003A9D77 /* CommentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1317D31A5E32DC003A9D77 /* CommentTableViewCell.m */; };
 		7D1359EC1A66B78E0058C02A /* NoticeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1359EB1A66B78E0058C02A /* NoticeViewController.m */; };
+		7D14B1061B19752C00DDF176 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D14B1051B19752C00DDF176 /* GLKit.framework */; };
+		7D14B1091B19760400DDF176 /* FilteredImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D14B1081B19760400DDF176 /* FilteredImageView.m */; };
+		7D14B10D1B19DA8C00DDF176 /* PhotoFilterCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D14B10C1B19DA8C00DDF176 /* PhotoFilterCollectionViewCell.m */; };
+		7D14B1101B19DD5700DDF176 /* PhotoFilterViewCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D14B10F1B19DD5700DDF176 /* PhotoFilterViewCollectionViewController.m */; };
+		7D14B1171B1D5EBC00DDF176 /* FilterSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D14B1161B1D5EBC00DDF176 /* FilterSliderView.m */; };
+		7D14B11A1B1D782300DDF176 /* HUMSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D14B1191B1D782300DDF176 /* HUMSlider.m */; };
+		7D14B11E1B1D942300DDF176 /* PhotoEffectCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D14B11D1B1D942300DDF176 /* PhotoEffectCollectionViewCell.m */; };
 		7D1502801A8B8D4000327DA5 /* QDYHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D15027F1A8B8D4000327DA5 /* QDYHTTPClient.m */; };
 		7D1673B71AFC5926006CB524 /* menuClose@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D1673B51AFC5926006CB524 /* menuClose@2x.png */; };
 		7D1673B81AFC5926006CB524 /* menuIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D1673B61AFC5926006CB524 /* menuIcon@2x.png */; };
@@ -178,6 +258,8 @@
 		7D9A78771AE9054500CD7287 /* map-marker@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A78661AE9054400CD7287 /* map-marker@3x.png */; };
 		7D9A78781AE9054500CD7287 /* trash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A78671AE9054400CD7287 /* trash@2x.png */; };
 		7D9A78791AE9054500CD7287 /* trash@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A78681AE9054400CD7287 /* trash@3x.png */; };
+		7DA50DD21B0DD73B00CE8DDC /* PhotoDetailViewsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA50DD11B0DD73B00CE8DDC /* PhotoDetailViewsController.m */; };
+		7DA50DD51B1054E800CE8DDC /* NoticeContentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA50DD41B1054E800CE8DDC /* NoticeContentTextView.m */; };
 		7DA5BE721A9DBC4100C8BA4B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DA5BE711A9DBC4100C8BA4B /* CoreData.framework */; };
 		7DA5BE741A9DBC4700C8BA4B /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DA5BE731A9DBC4700C8BA4B /* CoreImage.framework */; };
 		7DA5BE761A9DBC4D00C8BA4B /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DA5BE751A9DBC4D00C8BA4B /* CoreLocation.framework */; };
@@ -199,6 +281,9 @@
 		7DA5BE971A9DBCEB00C8BA4B /* AMapSearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DA5BE951A9DBCEB00C8BA4B /* AMapSearchKit.framework */; };
 		7DA5BE981A9DBCEB00C8BA4B /* MAMapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DA5BE961A9DBCEB00C8BA4B /* MAMapKit.framework */; };
 		7DB6D60F1A4BAD53005F1442 /* GlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB6D60E1A4BAD53005F1442 /* GlobalAppearance.m */; };
+		7DB731571B09C17E00972FBF /* DDScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB731561B09C17E00972FBF /* DDScrollViewController.m */; };
+		7DB7315A1B09C1AA00972FBF /* PhotoScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB731591B09C1AA00972FBF /* PhotoScrollViewController.m */; };
+		7DB7315D1B0AD0EF00972FBF /* ViewContainerScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7315C1B0AD0EF00972FBF /* ViewContainerScrollViewController.m */; };
 		7DBA3F9B1AFB7C9F001B2BBA /* IGLDropDownItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBA3F981AFB7C9F001B2BBA /* IGLDropDownItem.m */; };
 		7DBA3F9C1AFB7C9F001B2BBA /* IGLDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBA3F9A1AFB7C9F001B2BBA /* IGLDropDownMenu.m */; };
 		7DBE50E41ADE53C000C1A3B3 /* FeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBE50E31ADE53C000C1A3B3 /* FeedbackViewController.m */; };
@@ -293,10 +378,81 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		7D0071AA1A7878BB0053A1AA /* WZFilterUIViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WZFilterUIViewController.h; path = WUZHAO/Sections/share/WZFilterUIViewController.h; sourceTree = "<group>"; };
-		7D0071AB1A7878BB0053A1AA /* WZFilterUIViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WZFilterUIViewController.m; path = WUZHAO/Sections/share/WZFilterUIViewController.m; sourceTree = "<group>"; };
-		7D0071AD1A787C0B0053A1AA /* FeSlideFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeSlideFilterView.h; path = WUZHAO/Sections/Views/FeSlideFilterView.h; sourceTree = "<group>"; };
-		7D0071AE1A787C0B0053A1AA /* FeSlideFilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FeSlideFilterView.m; path = WUZHAO/Sections/Views/FeSlideFilterView.m; sourceTree = "<group>"; };
+		7D00BDF61B204A6000374EC0 /* check@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check@3x.png"; sourceTree = "<group>"; };
+		7D00BE081B20509900374EC0 /* cancel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel@2x.png"; sourceTree = "<group>"; };
+		7D00BE0A1B205C5000374EC0 /* cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cancel.png; sourceTree = "<group>"; };
+		7D00BE0B1B205C5000374EC0 /* cancel@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel@3x.png"; sourceTree = "<group>"; };
+		7D00BE0C1B205C5000374EC0 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
+		7D00BE0D1B205C5000374EC0 /* check@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check@2x.png"; sourceTree = "<group>"; };
+		7D00BE0E1B205C5000374EC0 /* filter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filter.png; sourceTree = "<group>"; };
+		7D00BE0F1B205C5000374EC0 /* filter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filter@2x.png"; sourceTree = "<group>"; };
+		7D00BE101B205C5000374EC0 /* filter@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filter@3x.png"; sourceTree = "<group>"; };
+		7D00BE191B20652F00374EC0 /* 曝光.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "曝光.png"; path = "Filter/曝光.png"; sourceTree = "<group>"; };
+		7D00BE1F1B206AEC00374EC0 /* 饱和度.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "饱和度.png"; path = "Filter/饱和度.png"; sourceTree = "<group>"; };
+		7D00BE221B206AEC00374EC0 /* 裁剪.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "裁剪.png"; path = "Filter/裁剪.png"; sourceTree = "<group>"; };
+		7D00BE251B206AEC00374EC0 /* 对比度.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "对比度.png"; path = "Filter/对比度.png"; sourceTree = "<group>"; };
+		7D00BE281B206AEC00374EC0 /* 肤色.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "肤色.png"; path = "Filter/肤色.png"; sourceTree = "<group>"; };
+		7D00BE2B1B206AEC00374EC0 /* 高光.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "高光.png"; path = "Filter/高光.png"; sourceTree = "<group>"; };
+		7D00BE2E1B206AEC00374EC0 /* 工具.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "工具.png"; path = "Filter/工具.png"; sourceTree = "<group>"; };
+		7D00BE311B206AEC00374EC0 /* 角度校正.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "角度校正.png"; path = "Filter/角度校正.png"; sourceTree = "<group>"; };
+		7D00BE341B206AEC00374EC0 /* 滤镜.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "滤镜.png"; path = "Filter/滤镜.png"; sourceTree = "<group>"; };
+		7D00BE371B206AEC00374EC0 /* 亮度.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "亮度.png"; path = "Filter/亮度.png"; sourceTree = "<group>"; };
+		7D00BE3A1B206AEC00374EC0 /* 锐化.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "锐化.png"; path = "Filter/锐化.png"; sourceTree = "<group>"; };
+		7D00BE3D1B206AEC00374EC0 /* 色温.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "色温.png"; path = "Filter/色温.png"; sourceTree = "<group>"; };
+		7D00BE401B206AEC00374EC0 /* 褪色.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "褪色.png"; path = "Filter/褪色.png"; sourceTree = "<group>"; };
+		7D00BE431B206AEC00374EC0 /* 阴影.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "阴影.png"; path = "Filter/阴影.png"; sourceTree = "<group>"; };
+		7D00BE461B206AEC00374EC0 /* 晕影.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "晕影.png"; path = "Filter/晕影.png"; sourceTree = "<group>"; };
+		7D00BE491B206AEC00374EC0 /* grain.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grain.png; path = Filter/grain.png; sourceTree = "<group>"; };
+		7D00BE791B20726700374EC0 /* 工具_s.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "工具_s.png"; path = "Filter/工具_s.png"; sourceTree = "<group>"; };
+		7D00BE7C1B20726700374EC0 /* 滤镜_s.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "滤镜_s.png"; path = "Filter/滤镜_s.png"; sourceTree = "<group>"; };
+		7D00BE851B214E5C00374EC0 /* 色相.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "色相.png"; path = "Filter/色相.png"; sourceTree = "<group>"; };
+		7D00BE881B214E5C00374EC0 /* 颜色.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "颜色.png"; path = "Filter/颜色.png"; sourceTree = "<group>"; };
+		7D00BE911B21508A00374EC0 /* 高斯模糊.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "高斯模糊.png"; path = "Filter/高斯模糊.png"; sourceTree = "<group>"; };
+		7D00BF1E1B218F8200374EC0 /* 柔和.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "柔和.png"; path = "Filter/柔和.png"; sourceTree = "<group>"; };
+		7D00BF241B2194FD00374EC0 /* 饱和度@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "饱和度@2x.png"; path = "Filter/饱和度@2x.png"; sourceTree = "<group>"; };
+		7D00BF251B2194FD00374EC0 /* 饱和度@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "饱和度@3x.png"; path = "Filter/饱和度@3x.png"; sourceTree = "<group>"; };
+		7D00BF261B2194FD00374EC0 /* 裁剪@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "裁剪@2x.png"; path = "Filter/裁剪@2x.png"; sourceTree = "<group>"; };
+		7D00BF271B2194FD00374EC0 /* 裁剪@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "裁剪@3x.png"; path = "Filter/裁剪@3x.png"; sourceTree = "<group>"; };
+		7D00BF281B2194FD00374EC0 /* 对比度@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "对比度@2x.png"; path = "Filter/对比度@2x.png"; sourceTree = "<group>"; };
+		7D00BF291B2194FD00374EC0 /* 对比度@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "对比度@3x.png"; path = "Filter/对比度@3x.png"; sourceTree = "<group>"; };
+		7D00BF2A1B2194FD00374EC0 /* 肤色@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "肤色@2x.png"; path = "Filter/肤色@2x.png"; sourceTree = "<group>"; };
+		7D00BF2B1B2194FD00374EC0 /* 肤色@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "肤色@3x.png"; path = "Filter/肤色@3x.png"; sourceTree = "<group>"; };
+		7D00BF2C1B2194FD00374EC0 /* 高光@2X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "高光@2X.png"; path = "Filter/高光@2X.png"; sourceTree = "<group>"; };
+		7D00BF2D1B2194FD00374EC0 /* 高光@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "高光@3x.png"; path = "Filter/高光@3x.png"; sourceTree = "<group>"; };
+		7D00BF2E1B2194FD00374EC0 /* 高斯模糊@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "高斯模糊@2x.png"; path = "Filter/高斯模糊@2x.png"; sourceTree = "<group>"; };
+		7D00BF2F1B2194FD00374EC0 /* 高斯模糊@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "高斯模糊@3x.png"; path = "Filter/高斯模糊@3x.png"; sourceTree = "<group>"; };
+		7D00BF301B2194FD00374EC0 /* 工具_s@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "工具_s@2x.png"; path = "Filter/工具_s@2x.png"; sourceTree = "<group>"; };
+		7D00BF311B2194FD00374EC0 /* 工具_s@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "工具_s@3x.png"; path = "Filter/工具_s@3x.png"; sourceTree = "<group>"; };
+		7D00BF321B2194FD00374EC0 /* 工具@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "工具@2x.png"; path = "Filter/工具@2x.png"; sourceTree = "<group>"; };
+		7D00BF331B2194FD00374EC0 /* 工具@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "工具@3x.png"; path = "Filter/工具@3x.png"; sourceTree = "<group>"; };
+		7D00BF341B2194FD00374EC0 /* 角度校正@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "角度校正@2x.png"; path = "Filter/角度校正@2x.png"; sourceTree = "<group>"; };
+		7D00BF351B2194FD00374EC0 /* 角度校正@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "角度校正@3x.png"; path = "Filter/角度校正@3x.png"; sourceTree = "<group>"; };
+		7D00BF361B2194FD00374EC0 /* 亮度@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "亮度@2x.png"; path = "Filter/亮度@2x.png"; sourceTree = "<group>"; };
+		7D00BF371B2194FD00374EC0 /* 亮度@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "亮度@3x.png"; path = "Filter/亮度@3x.png"; sourceTree = "<group>"; };
+		7D00BF381B2194FD00374EC0 /* 滤镜_s@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "滤镜_s@2x.png"; path = "Filter/滤镜_s@2x.png"; sourceTree = "<group>"; };
+		7D00BF391B2194FD00374EC0 /* 滤镜_s@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "滤镜_s@3x.png"; path = "Filter/滤镜_s@3x.png"; sourceTree = "<group>"; };
+		7D00BF3A1B2194FD00374EC0 /* 滤镜@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "滤镜@2x.png"; path = "Filter/滤镜@2x.png"; sourceTree = "<group>"; };
+		7D00BF3B1B2194FD00374EC0 /* 滤镜@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "滤镜@3x.png"; path = "Filter/滤镜@3x.png"; sourceTree = "<group>"; };
+		7D00BF3C1B2194FD00374EC0 /* 曝光@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "曝光@2x.png"; path = "Filter/曝光@2x.png"; sourceTree = "<group>"; };
+		7D00BF3D1B2194FD00374EC0 /* 曝光@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "曝光@3x.png"; path = "Filter/曝光@3x.png"; sourceTree = "<group>"; };
+		7D00BF3E1B2194FD00374EC0 /* 柔和@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "柔和@2x.png"; path = "Filter/柔和@2x.png"; sourceTree = "<group>"; };
+		7D00BF3F1B2194FD00374EC0 /* 柔和@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "柔和@3x.png"; path = "Filter/柔和@3x.png"; sourceTree = "<group>"; };
+		7D00BF401B2194FD00374EC0 /* 锐化@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "锐化@2x.png"; path = "Filter/锐化@2x.png"; sourceTree = "<group>"; };
+		7D00BF411B2194FD00374EC0 /* 锐化@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "锐化@3x.png"; path = "Filter/锐化@3x.png"; sourceTree = "<group>"; };
+		7D00BF421B2194FD00374EC0 /* 色温@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "色温@2x.png"; path = "Filter/色温@2x.png"; sourceTree = "<group>"; };
+		7D00BF431B2194FD00374EC0 /* 色温@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "色温@3x.png"; path = "Filter/色温@3x.png"; sourceTree = "<group>"; };
+		7D00BF441B2194FD00374EC0 /* 色相@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "色相@2x.png"; path = "Filter/色相@2x.png"; sourceTree = "<group>"; };
+		7D00BF451B2194FD00374EC0 /* 色相@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "色相@3x.png"; path = "Filter/色相@3x.png"; sourceTree = "<group>"; };
+		7D00BF461B2194FD00374EC0 /* 褪色@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "褪色@2x.png"; path = "Filter/褪色@2x.png"; sourceTree = "<group>"; };
+		7D00BF471B2194FD00374EC0 /* 褪色@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "褪色@3x.png"; path = "Filter/褪色@3x.png"; sourceTree = "<group>"; };
+		7D00BF481B2194FD00374EC0 /* 颜色@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "颜色@2x.png"; path = "Filter/颜色@2x.png"; sourceTree = "<group>"; };
+		7D00BF491B2194FD00374EC0 /* 颜色@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "颜色@3x.png"; path = "Filter/颜色@3x.png"; sourceTree = "<group>"; };
+		7D00BF4A1B2194FD00374EC0 /* 阴影@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "阴影@2x.png"; path = "Filter/阴影@2x.png"; sourceTree = "<group>"; };
+		7D00BF4B1B2194FD00374EC0 /* 阴影@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "阴影@3x.png"; path = "Filter/阴影@3x.png"; sourceTree = "<group>"; };
+		7D00BF4C1B2194FD00374EC0 /* 晕影@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "晕影@2x.png"; path = "Filter/晕影@2x.png"; sourceTree = "<group>"; };
+		7D00BF4D1B2194FD00374EC0 /* 晕影@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "晕影@3x.png"; path = "Filter/晕影@3x.png"; sourceTree = "<group>"; };
+		7D00BF4E1B2194FD00374EC0 /* grain@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "grain@2x.png"; path = "Filter/grain@2x.png"; sourceTree = "<group>"; };
+		7D00BF4F1B2194FD00374EC0 /* grain@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "grain@3x.png"; path = "Filter/grain@3x.png"; sourceTree = "<group>"; };
 		7D0290F21AD384C1003D8393 /* SearchResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResultViewController.h; path = WUZHAO/Sections/Controllers/Search/SearchResultViewController.h; sourceTree = "<group>"; };
 		7D0290F31AD384C1003D8393 /* SearchResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResultViewController.m; path = WUZHAO/Sections/Controllers/Search/SearchResultViewController.m; sourceTree = "<group>"; };
 		7D0290F51AD3D64B003D8393 /* UserListTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = UserListTableViewCell.xib; path = WUZHAO/Storyboard/UserListTableViewCell.xib; sourceTree = "<group>"; };
@@ -308,6 +464,20 @@
 		7D1317D31A5E32DC003A9D77 /* CommentTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CommentTableViewCell.m; path = WUZHAO/Sections/Views/CommentTableViewCell.m; sourceTree = "<group>"; };
 		7D1359EA1A66B78E0058C02A /* NoticeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoticeViewController.h; path = WUZHAO/Sections/Notice/NoticeViewController.h; sourceTree = "<group>"; };
 		7D1359EB1A66B78E0058C02A /* NoticeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoticeViewController.m; path = WUZHAO/Sections/Notice/NoticeViewController.m; sourceTree = "<group>"; };
+		7D14B1051B19752C00DDF176 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		7D14B1071B19760400DDF176 /* FilteredImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilteredImageView.h; path = WUZHAO/Sections/Views/FilteredImageView.h; sourceTree = "<group>"; };
+		7D14B1081B19760400DDF176 /* FilteredImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilteredImageView.m; path = WUZHAO/Sections/Views/FilteredImageView.m; sourceTree = "<group>"; };
+		7D14B10B1B19DA8C00DDF176 /* PhotoFilterCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhotoFilterCollectionViewCell.h; path = WUZHAO/Sections/Views/PhotoFilterCollectionViewCell.h; sourceTree = "<group>"; };
+		7D14B10C1B19DA8C00DDF176 /* PhotoFilterCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PhotoFilterCollectionViewCell.m; path = WUZHAO/Sections/Views/PhotoFilterCollectionViewCell.m; sourceTree = "<group>"; };
+		7D14B10E1B19DD5700DDF176 /* PhotoFilterViewCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhotoFilterViewCollectionViewController.h; path = WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.h; sourceTree = "<group>"; };
+		7D14B10F1B19DD5700DDF176 /* PhotoFilterViewCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PhotoFilterViewCollectionViewController.m; path = WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m; sourceTree = "<group>"; };
+		7D14B1111B1BF02800DDF176 /* captureMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = captureMacro.h; path = WUZHAO/Sections/share/captureMacro.h; sourceTree = "<group>"; };
+		7D14B1151B1D5EBC00DDF176 /* FilterSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterSliderView.h; path = WUZHAO/Sections/share/FilterSliderView.h; sourceTree = "<group>"; };
+		7D14B1161B1D5EBC00DDF176 /* FilterSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterSliderView.m; path = WUZHAO/Sections/share/FilterSliderView.m; sourceTree = "<group>"; };
+		7D14B1181B1D782300DDF176 /* HUMSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HUMSlider.h; path = WUZHAO/Sections/Common/HUMSlider.h; sourceTree = "<group>"; };
+		7D14B1191B1D782300DDF176 /* HUMSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HUMSlider.m; path = WUZHAO/Sections/Common/HUMSlider.m; sourceTree = "<group>"; };
+		7D14B11C1B1D942300DDF176 /* PhotoEffectCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhotoEffectCollectionViewCell.h; path = WUZHAO/Sections/Views/PhotoEffectCollectionViewCell.h; sourceTree = "<group>"; };
+		7D14B11D1B1D942300DDF176 /* PhotoEffectCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PhotoEffectCollectionViewCell.m; path = WUZHAO/Sections/Views/PhotoEffectCollectionViewCell.m; sourceTree = "<group>"; };
 		7D15027E1A8B8D4000327DA5 /* QDYHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QDYHTTPClient.h; path = WUZHAO/General/QDYHTTPClient.h; sourceTree = "<group>"; };
 		7D15027F1A8B8D4000327DA5 /* QDYHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QDYHTTPClient.m; path = WUZHAO/General/QDYHTTPClient.m; sourceTree = "<group>"; };
 		7D1673B51AFC5926006CB524 /* menuClose@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "menuClose@2x.png"; sourceTree = "<group>"; };
@@ -558,6 +728,10 @@
 		7D9A78661AE9054400CD7287 /* map-marker@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "map-marker@3x.png"; sourceTree = "<group>"; };
 		7D9A78671AE9054400CD7287 /* trash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trash@2x.png"; sourceTree = "<group>"; };
 		7D9A78681AE9054400CD7287 /* trash@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trash@3x.png"; sourceTree = "<group>"; };
+		7DA50DD01B0DD73B00CE8DDC /* PhotoDetailViewsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhotoDetailViewsController.h; path = WUZHAO/Sections/Controllers/Common/PhotoDetailViewsController.h; sourceTree = "<group>"; };
+		7DA50DD11B0DD73B00CE8DDC /* PhotoDetailViewsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PhotoDetailViewsController.m; path = WUZHAO/Sections/Controllers/Common/PhotoDetailViewsController.m; sourceTree = "<group>"; };
+		7DA50DD31B1054E800CE8DDC /* NoticeContentTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoticeContentTextView.h; path = WUZHAO/Sections/Views/NoticeContentTextView.h; sourceTree = "<group>"; };
+		7DA50DD41B1054E800CE8DDC /* NoticeContentTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoticeContentTextView.m; path = WUZHAO/Sections/Views/NoticeContentTextView.m; sourceTree = "<group>"; };
 		7DA5BE711A9DBC4100C8BA4B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		7DA5BE731A9DBC4700C8BA4B /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		7DA5BE751A9DBC4D00C8BA4B /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -581,6 +755,12 @@
 		7DA5BE991A9DBCF600C8BA4B /* libcommonCrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcommonCrypto.dylib; path = usr/lib/system/libcommonCrypto.dylib; sourceTree = SDKROOT; };
 		7DB6D60D1A4BAD53005F1442 /* GlobalAppearance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GlobalAppearance.h; path = WUZHAO/General/GlobalAppearance.h; sourceTree = "<group>"; };
 		7DB6D60E1A4BAD53005F1442 /* GlobalAppearance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GlobalAppearance.m; path = WUZHAO/General/GlobalAppearance.m; sourceTree = "<group>"; };
+		7DB731551B09C17E00972FBF /* DDScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDScrollViewController.h; sourceTree = "<group>"; };
+		7DB731561B09C17E00972FBF /* DDScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDScrollViewController.m; sourceTree = "<group>"; };
+		7DB731581B09C1AA00972FBF /* PhotoScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhotoScrollViewController.h; path = WUZHAO/Sections/Controllers/Common/PhotoScrollViewController.h; sourceTree = "<group>"; };
+		7DB731591B09C1AA00972FBF /* PhotoScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PhotoScrollViewController.m; path = WUZHAO/Sections/Controllers/Common/PhotoScrollViewController.m; sourceTree = "<group>"; };
+		7DB7315B1B0AD0EF00972FBF /* ViewContainerScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewContainerScrollViewController.h; path = WUZHAO/Sections/Controllers/Common/ViewContainerScrollViewController.h; sourceTree = "<group>"; };
+		7DB7315C1B0AD0EF00972FBF /* ViewContainerScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewContainerScrollViewController.m; path = WUZHAO/Sections/Controllers/Common/ViewContainerScrollViewController.m; sourceTree = "<group>"; };
 		7DBA3F971AFB7C9F001B2BBA /* IGLDropDownItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IGLDropDownItem.h; sourceTree = "<group>"; };
 		7DBA3F981AFB7C9F001B2BBA /* IGLDropDownItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IGLDropDownItem.m; sourceTree = "<group>"; };
 		7DBA3F991AFB7C9F001B2BBA /* IGLDropDownMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IGLDropDownMenu.h; sourceTree = "<group>"; };
@@ -714,6 +894,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D14B1061B19752C00DDF176 /* GLKit.framework in Frameworks */,
+				7DA5BE781A9DBC5200C8BA4B /* OpenGLES.framework in Frameworks */,
 				7D928D191AE6483500C763F8 /* AssetsLibrary.framework in Frameworks */,
 				7D741BF21AB95CD2006C320A /* Photos.framework in Frameworks */,
 				7DD0E4291AA0115F002AF97D /* libicucore.dylib in Frameworks */,
@@ -734,7 +916,6 @@
 				7DA5BE801A9DBC7500C8BA4B /* SystemConfiguration.framework in Frameworks */,
 				7DA5BE7E1A9DBC6A00C8BA4B /* MobileCoreServices.framework in Frameworks */,
 				7DA5BE7A1A9DBC5B00C8BA4B /* UIKit.framework in Frameworks */,
-				7DA5BE781A9DBC5200C8BA4B /* OpenGLES.framework in Frameworks */,
 				7DA5BE761A9DBC4D00C8BA4B /* CoreLocation.framework in Frameworks */,
 				7DA5BE741A9DBC4700C8BA4B /* CoreImage.framework in Frameworks */,
 				7DF606391AEBE841008DCEA4 /* libBPush.a in Frameworks */,
@@ -752,6 +933,79 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7D00BE181B2064ED00374EC0 /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				7D00BF241B2194FD00374EC0 /* 饱和度@2x.png */,
+				7D00BF251B2194FD00374EC0 /* 饱和度@3x.png */,
+				7D00BF261B2194FD00374EC0 /* 裁剪@2x.png */,
+				7D00BF271B2194FD00374EC0 /* 裁剪@3x.png */,
+				7D00BF281B2194FD00374EC0 /* 对比度@2x.png */,
+				7D00BF291B2194FD00374EC0 /* 对比度@3x.png */,
+				7D00BF2A1B2194FD00374EC0 /* 肤色@2x.png */,
+				7D00BF2B1B2194FD00374EC0 /* 肤色@3x.png */,
+				7D00BF2C1B2194FD00374EC0 /* 高光@2X.png */,
+				7D00BF2D1B2194FD00374EC0 /* 高光@3x.png */,
+				7D00BF2E1B2194FD00374EC0 /* 高斯模糊@2x.png */,
+				7D00BF2F1B2194FD00374EC0 /* 高斯模糊@3x.png */,
+				7D00BF301B2194FD00374EC0 /* 工具_s@2x.png */,
+				7D00BF311B2194FD00374EC0 /* 工具_s@3x.png */,
+				7D00BF321B2194FD00374EC0 /* 工具@2x.png */,
+				7D00BF331B2194FD00374EC0 /* 工具@3x.png */,
+				7D00BF341B2194FD00374EC0 /* 角度校正@2x.png */,
+				7D00BF351B2194FD00374EC0 /* 角度校正@3x.png */,
+				7D00BF361B2194FD00374EC0 /* 亮度@2x.png */,
+				7D00BF371B2194FD00374EC0 /* 亮度@3x.png */,
+				7D00BF381B2194FD00374EC0 /* 滤镜_s@2x.png */,
+				7D00BF391B2194FD00374EC0 /* 滤镜_s@3x.png */,
+				7D00BF3A1B2194FD00374EC0 /* 滤镜@2x.png */,
+				7D00BF3B1B2194FD00374EC0 /* 滤镜@3x.png */,
+				7D00BF3C1B2194FD00374EC0 /* 曝光@2x.png */,
+				7D00BF3D1B2194FD00374EC0 /* 曝光@3x.png */,
+				7D00BF3E1B2194FD00374EC0 /* 柔和@2x.png */,
+				7D00BF3F1B2194FD00374EC0 /* 柔和@3x.png */,
+				7D00BF401B2194FD00374EC0 /* 锐化@2x.png */,
+				7D00BF411B2194FD00374EC0 /* 锐化@3x.png */,
+				7D00BF421B2194FD00374EC0 /* 色温@2x.png */,
+				7D00BF431B2194FD00374EC0 /* 色温@3x.png */,
+				7D00BF441B2194FD00374EC0 /* 色相@2x.png */,
+				7D00BF451B2194FD00374EC0 /* 色相@3x.png */,
+				7D00BF461B2194FD00374EC0 /* 褪色@2x.png */,
+				7D00BF471B2194FD00374EC0 /* 褪色@3x.png */,
+				7D00BF481B2194FD00374EC0 /* 颜色@2x.png */,
+				7D00BF491B2194FD00374EC0 /* 颜色@3x.png */,
+				7D00BF4A1B2194FD00374EC0 /* 阴影@2x.png */,
+				7D00BF4B1B2194FD00374EC0 /* 阴影@3x.png */,
+				7D00BF4C1B2194FD00374EC0 /* 晕影@2x.png */,
+				7D00BF4D1B2194FD00374EC0 /* 晕影@3x.png */,
+				7D00BF4E1B2194FD00374EC0 /* grain@2x.png */,
+				7D00BF4F1B2194FD00374EC0 /* grain@3x.png */,
+				7D00BF1E1B218F8200374EC0 /* 柔和.png */,
+				7D00BE911B21508A00374EC0 /* 高斯模糊.png */,
+				7D00BE851B214E5C00374EC0 /* 色相.png */,
+				7D00BE881B214E5C00374EC0 /* 颜色.png */,
+				7D00BE791B20726700374EC0 /* 工具_s.png */,
+				7D00BE7C1B20726700374EC0 /* 滤镜_s.png */,
+				7D00BE1F1B206AEC00374EC0 /* 饱和度.png */,
+				7D00BE221B206AEC00374EC0 /* 裁剪.png */,
+				7D00BE251B206AEC00374EC0 /* 对比度.png */,
+				7D00BE281B206AEC00374EC0 /* 肤色.png */,
+				7D00BE2B1B206AEC00374EC0 /* 高光.png */,
+				7D00BE2E1B206AEC00374EC0 /* 工具.png */,
+				7D00BE311B206AEC00374EC0 /* 角度校正.png */,
+				7D00BE341B206AEC00374EC0 /* 滤镜.png */,
+				7D00BE371B206AEC00374EC0 /* 亮度.png */,
+				7D00BE3A1B206AEC00374EC0 /* 锐化.png */,
+				7D00BE3D1B206AEC00374EC0 /* 色温.png */,
+				7D00BE401B206AEC00374EC0 /* 褪色.png */,
+				7D00BE431B206AEC00374EC0 /* 阴影.png */,
+				7D00BE461B206AEC00374EC0 /* 晕影.png */,
+				7D00BE491B206AEC00374EC0 /* grain.png */,
+				7D00BE191B20652F00374EC0 /* 曝光.png */,
+			);
+			name = Filter;
+			sourceTree = "<group>";
+		};
 		7D1359E91A66B75F0058C02A /* Notice */ = {
 			isa = PBXGroup;
 			children = (
@@ -759,6 +1013,24 @@
 				7D1359EB1A66B78E0058C02A /* NoticeViewController.m */,
 			);
 			name = Notice;
+			sourceTree = "<group>";
+		};
+		7D14B10A1B19DA5C00DDF176 /* ImageView */ = {
+			isa = PBXGroup;
+			children = (
+				7D14B1071B19760400DDF176 /* FilteredImageView.h */,
+				7D14B1081B19760400DDF176 /* FilteredImageView.m */,
+			);
+			name = ImageView;
+			sourceTree = "<group>";
+		};
+		7D14B11B1B1D782800DDF176 /* Slider */ = {
+			isa = PBXGroup;
+			children = (
+				7D14B1181B1D782300DDF176 /* HUMSlider.h */,
+				7D14B1191B1D782300DDF176 /* HUMSlider.m */,
+			);
+			name = Slider;
 			sourceTree = "<group>";
 		};
 		7D17D8981A660AE300FD8713 /* Hub */ = {
@@ -1031,10 +1303,13 @@
 				7D7047711A45C76400EC0D40 /* SCNavigationController.m */,
 				7D1B495A1A467B1500C4CEC4 /* AddImageInfoViewController.h */,
 				7D1B495B1A467B1500C4CEC4 /* AddImageInfoViewController.m */,
-				7D0071AA1A7878BB0053A1AA /* WZFilterUIViewController.h */,
-				7D0071AB1A7878BB0053A1AA /* WZFilterUIViewController.m */,
 				7DF95BD41ADAA72300774F79 /* AddressSearchTableViewController.h */,
 				7DF95BD51ADAA72300774F79 /* AddressSearchTableViewController.m */,
+				7D14B10E1B19DD5700DDF176 /* PhotoFilterViewCollectionViewController.h */,
+				7D14B10F1B19DD5700DDF176 /* PhotoFilterViewCollectionViewController.m */,
+				7D14B1111B1BF02800DDF176 /* captureMacro.h */,
+				7D14B1151B1D5EBC00DDF176 /* FilterSliderView.h */,
+				7D14B1161B1D5EBC00DDF176 /* FilterSliderView.m */,
 			);
 			name = Share;
 			sourceTree = "<group>";
@@ -1081,6 +1356,7 @@
 		7D7047B31A45CDFB00EC0D40 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				7D00BE181B2064ED00374EC0 /* Filter */,
 				7D17D8981A660AE300FD8713 /* Hub */,
 				7D4576F91A611B5000786533 /* Common */,
 				7D7047B41A45CDFB00EC0D40 /* Camera */,
@@ -1092,6 +1368,15 @@
 		7D7047B41A45CDFB00EC0D40 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
+				7D00BE0A1B205C5000374EC0 /* cancel.png */,
+				7D00BE0B1B205C5000374EC0 /* cancel@3x.png */,
+				7D00BE0C1B205C5000374EC0 /* check.png */,
+				7D00BE0D1B205C5000374EC0 /* check@2x.png */,
+				7D00BE0E1B205C5000374EC0 /* filter.png */,
+				7D00BE0F1B205C5000374EC0 /* filter@2x.png */,
+				7D00BE101B205C5000374EC0 /* filter@3x.png */,
+				7D00BE081B20509900374EC0 /* cancel@2x.png */,
+				7D00BDF61B204A6000374EC0 /* check@3x.png */,
 				7D1673B51AFC5926006CB524 /* menuClose@2x.png */,
 				7D1673B61AFC5926006CB524 /* menuIcon@2x.png */,
 				7D7FADC61AC6C7D600AC9BD1 /* back@2x.png */,
@@ -1197,7 +1482,10 @@
 				7DF606311AEBD71A008DCEA4 /* AddressTableViewCell.m */,
 				7D8CA83B1AF9C282004D485F /* DynamicResizingTableViewCell.h */,
 				7D8CA83C1AF9C282004D485F /* DynamicResizingTableViewCell.m */,
-				7DF95BD71ADB915100774F79 /* PlaceholderTextView.h */,
+				7D14B10B1B19DA8C00DDF176 /* PhotoFilterCollectionViewCell.h */,
+				7D14B10C1B19DA8C00DDF176 /* PhotoFilterCollectionViewCell.m */,
+				7D14B11C1B1D942300DDF176 /* PhotoEffectCollectionViewCell.h */,
+				7D14B11D1B1D942300DDF176 /* PhotoEffectCollectionViewCell.m */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -1213,11 +1501,14 @@
 		7D8CA8431AFA0259004D485F /* Text */ = {
 			isa = PBXGroup;
 			children = (
+				7DF95BD71ADB915100774F79 /* PlaceholderTextView.h */,
 				7DF95BD81ADB915100774F79 /* PlaceholderTextView.m */,
 				7D93BDFD1AFA171D008D206E /* CommentTextView.h */,
 				7D93BDFE1AFA171D008D206E /* CommentTextView.m */,
 				7D8CA8441AFA027B004D485F /* LinkTextView.h */,
 				7D8CA8451AFA027B004D485F /* LinkTextView.m */,
+				7DA50DD31B1054E800CE8DDC /* NoticeContentTextView.h */,
+				7DA50DD41B1054E800CE8DDC /* NoticeContentTextView.m */,
 			);
 			name = Text;
 			sourceTree = "<group>";
@@ -1265,6 +1556,16 @@
 			name = appearance;
 			sourceTree = "<group>";
 		};
+		7DB731541B09C17E00972FBF /* DDScrollViewController */ = {
+			isa = PBXGroup;
+			children = (
+				7DB731551B09C17E00972FBF /* DDScrollViewController.h */,
+				7DB731561B09C17E00972FBF /* DDScrollViewController.m */,
+			);
+			name = DDScrollViewController;
+			path = WUZHAO/Sections/Controllers/Common/DDScrollViewController;
+			sourceTree = "<group>";
+		};
 		7DBA3F961AFB7C9F001B2BBA /* IGLDropDownMenu */ = {
 			isa = PBXGroup;
 			children = (
@@ -1289,6 +1590,7 @@
 		7DC29DB31A3F20FD0065BBD2 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				7DB731541B09C17E00972FBF /* DDScrollViewController */,
 				7DF75E971A84BC3500894132 /* BarItem.h */,
 				7DF75E981A84BC3500894132 /* BarItem.m */,
 				7DF75E941A84BAB700894132 /* CBStoreHouseRefreshControl.h */,
@@ -1305,6 +1607,12 @@
 				7D4576F41A5FD50100786533 /* CommentListViewController.m */,
 				7D76FB091ACCE3C5003CCF64 /* PhotoDetailTableViewController.h */,
 				7D76FB0A1ACCE3C5003CCF64 /* PhotoDetailTableViewController.m */,
+				7DB731581B09C1AA00972FBF /* PhotoScrollViewController.h */,
+				7DB731591B09C1AA00972FBF /* PhotoScrollViewController.m */,
+				7DB7315B1B0AD0EF00972FBF /* ViewContainerScrollViewController.h */,
+				7DB7315C1B0AD0EF00972FBF /* ViewContainerScrollViewController.m */,
+				7DA50DD01B0DD73B00CE8DDC /* PhotoDetailViewsController.h */,
+				7DA50DD11B0DD73B00CE8DDC /* PhotoDetailViewsController.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -1344,6 +1652,7 @@
 		7DE0669E1A3F037F008086BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7D14B1051B19752C00DDF176 /* GLKit.framework */,
 				7D928D181AE6483500C763F8 /* AssetsLibrary.framework */,
 				7D741BF11AB95CD2006C320A /* Photos.framework */,
 				7DD0E4281AA0115F002AF97D /* libicucore.dylib */,
@@ -1563,6 +1872,8 @@
 		7DE067901A3F0F42008086BD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				7D14B11B1B1D782800DDF176 /* Slider */,
+				7D14B10A1B19DA5C00DDF176 /* ImageView */,
 				7D2BEBC31AFB062000F42F02 /* Menu */,
 				7D8CA8471AFA0289004D485F /* Segue */,
 				7D8CA8431AFA0259004D485F /* Text */,
@@ -1570,8 +1881,6 @@
 				7D8CA83A1AF9C249004D485F /* Cell */,
 				7D928D0A1AE3CBA400C763F8 /* CaptureItemContainerUIView.h */,
 				7D928D0B1AE3CBA400C763F8 /* CaptureItemContainerUIView.m */,
-				7D0071AD1A787C0B0053A1AA /* FeSlideFilterView.h */,
-				7D0071AE1A787C0B0053A1AA /* FeSlideFilterView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1723,8 +2032,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D00BF701B2194FD00374EC0 /* 色相@2x.png in Resources */,
 				7D9A78771AE9054500CD7287 /* map-marker@3x.png in Resources */,
 				7D65E2201A39701E00F84754 /* Main.storyboard in Resources */,
+				7D00BF5D1B2194FD00374EC0 /* 工具_s@3x.png in Resources */,
 				7D7047D41A45CDFB00EC0D40 /* camera_line_h@2x.png in Resources */,
 				7D9A78571AE9034C00CD7287 /* person@3x.png in Resources */,
 				7D0290F61AD3D64B003D8393 /* UserListTableViewCell.xib in Resources */,
@@ -1737,89 +2048,162 @@
 				7D17D8C51A660B5600FD8713 /* Icon-iOS7@2x.png in Resources */,
 				7D7047D91A45CDFB00EC0D40 /* flashing_auto.png in Resources */,
 				7D9A78781AE9054500CD7287 /* trash@2x.png in Resources */,
+				7D00BF5A1B2194FD00374EC0 /* 高斯模糊@2x.png in Resources */,
+				7D00BF6F1B2194FD00374EC0 /* 色温@3x.png in Resources */,
+				7D00BE091B20509900374EC0 /* cancel@2x.png in Resources */,
 				7D7047E71A45CDFB00EC0D40 /* touch_focus.png in Resources */,
 				7D7FADD11AC6C7D600AC9BD1 /* straighten-grid@3x.png in Resources */,
 				7D7047E21A45CDFB00EC0D40 /* shot_h@2x.png in Resources */,
 				7DC451D81ABB24EE0040716A /* Launch Screen.xib in Resources */,
 				7D17D8C31A660B5600FD8713 /* Default.png in Resources */,
+				7D00BF6A1B2194FD00374EC0 /* 柔和@2x.png in Resources */,
+				7D00BF561B2194FD00374EC0 /* 肤色@2x.png in Resources */,
 				7D7047E61A45CDFB00EC0D40 /* switch_camera_h@2x.png in Resources */,
 				7D17D8C81A660B5600FD8713 /* Icon.png in Resources */,
 				7D9A786F1AE9054400CD7287 /* home.png in Resources */,
+				7D00BF591B2194FD00374EC0 /* 高光@3x.png in Resources */,
 				7D5F5E701AFF5B4F00786066 /* Introduction.storyboard in Resources */,
 				7DE62BE01AB19FF900F35E6D /* Feeds.storyboard in Resources */,
 				7D7047621A44204F00EC0D40 /* SVProgressHUD.bundle in Resources */,
 				7D9A78791AE9054500CD7287 /* trash@3x.png in Resources */,
+				7D00BE581B206AEC00374EC0 /* 高光.png in Resources */,
+				7D00BF761B2194FD00374EC0 /* 阴影@2x.png in Resources */,
 				7D7047E91A45CDFB00EC0D40 /* touch_focus_x.png in Resources */,
+				7D00BF6C1B2194FD00374EC0 /* 锐化@2x.png in Resources */,
 				7D9A78471AE8FBF300CD7287 /* location.png in Resources */,
+				7D00BE671B206AEC00374EC0 /* 锐化.png in Resources */,
 				7D7047DB1A45CDFB00EC0D40 /* flashing_off.png in Resources */,
 				7D9A786D1AE9054400CD7287 /* heart@2x.png in Resources */,
+				7D00BF531B2194FD00374EC0 /* 裁剪@3x.png in Resources */,
 				7D9A78101AE8EDD800CD7287 /* bell@2x.png in Resources */,
 				7D17D8C11A660B5600FD8713 /* Default-iOS7-568h@2x.png in Resources */,
 				7D7FADCF1AC6C7D600AC9BD1 /* cameraroll-picker-grip@3x.png in Resources */,
 				7D7047DA1A45CDFB00EC0D40 /* flashing_auto@2x.png in Resources */,
+				7D00BF711B2194FD00374EC0 /* 色相@3x.png in Resources */,
 				7D7047EA1A45CDFB00EC0D40 /* touch_focus_x@2x.png in Resources */,
 				7D9A78761AE9054400CD7287 /* map-marker@2x.png in Resources */,
+				7D00BF781B2194FD00374EC0 /* 晕影@2x.png in Resources */,
+				7D00BF511B2194FD00374EC0 /* 饱和度@3x.png in Resources */,
+				7D00BE161B205C5000374EC0 /* filter@2x.png in Resources */,
+				7D00BF521B2194FD00374EC0 /* 裁剪@2x.png in Resources */,
 				7D9A77F31AE8EBC200CD7287 /* camera-slr.png in Resources */,
+				7D00BF5B1B2194FD00374EC0 /* 高斯模糊@3x.png in Resources */,
 				7D9A78691AE9054400CD7287 /* bell.png in Resources */,
+				7D00BE7F1B20726700374EC0 /* 工具_s.png in Resources */,
 				7D7047D11A45CDFB00EC0D40 /* camera_line.png in Resources */,
+				7D00BE611B206AEC00374EC0 /* 滤镜.png in Resources */,
+				7D00BE4F1B206AEC00374EC0 /* 裁剪.png in Resources */,
+				7D00BF6D1B2194FD00374EC0 /* 锐化@3x.png in Resources */,
 				7D21E9321A5CC24700815A33 /* PhotosCollectionCell.xib in Resources */,
 				7D7FADC11AC6C62300AC9BD1 /* straighten-grid@2x.png in Resources */,
+				7D00BE141B205C5000374EC0 /* check@2x.png in Resources */,
 				7D7FADD01AC6C7D600AC9BD1 /* straighten-grid@2x.png in Resources */,
 				7DEE7B121AB06EA100A38AA3 /* UserList.storyboard in Resources */,
+				7D00BE941B21508A00374EC0 /* 高斯模糊.png in Resources */,
+				7D00BE171B205C5000374EC0 /* filter@3x.png in Resources */,
 				7D9A786E1AE9054400CD7287 /* heart@3x.png in Resources */,
+				7D00BF7A1B2194FD00374EC0 /* grain@2x.png in Resources */,
+				7D00BF6E1B2194FD00374EC0 /* 色温@2x.png in Resources */,
+				7D00BE131B205C5000374EC0 /* check.png in Resources */,
+				7D00BE6D1B206AEC00374EC0 /* 褪色.png in Resources */,
+				7D00BF5F1B2194FD00374EC0 /* 工具@3x.png in Resources */,
 				7D65E2221A39701E00F84754 /* Images.xcassets in Resources */,
+				7D00BF541B2194FD00374EC0 /* 对比度@2x.png in Resources */,
 				7D7047E81A45CDFB00EC0D40 /* touch_focus@2x.png in Resources */,
+				7D00BE111B205C5000374EC0 /* cancel.png in Resources */,
 				7D7047D21A45CDFB00EC0D40 /* camera_line@2x.png in Resources */,
+				7D00BF661B2194FD00374EC0 /* 滤镜@2x.png in Resources */,
+				7D00BF741B2194FD00374EC0 /* 颜色@2x.png in Resources */,
 				7D9A78721AE9054400CD7287 /* magnifying-glass.png in Resources */,
+				7D00BF6B1B2194FD00374EC0 /* 柔和@3x.png in Resources */,
 				7D7FADBF1AC6C62300AC9BD1 /* cameraroll-picker-grip@2x.png in Resources */,
+				7D00BE551B206AEC00374EC0 /* 肤色.png in Resources */,
 				7D17D8BE1A660B5600FD8713 /* 37x-Checkmark.png in Resources */,
 				7D7047DC1A45CDFB00EC0D40 /* flashing_off@2x.png in Resources */,
 				7D9A78341AE8F00D00CD7287 /* bell-3x.png in Resources */,
 				7D9A78711AE9054400CD7287 /* home@3x.png in Resources */,
+				7D00BF7B1B2194FD00374EC0 /* grain@3x.png in Resources */,
+				7D00BF791B2194FD00374EC0 /* 晕影@3x.png in Resources */,
+				7D00BF651B2194FD00374EC0 /* 滤镜_s@3x.png in Resources */,
+				7D00BF751B2194FD00374EC0 /* 颜色@3x.png in Resources */,
 				7D9A78451AE8FBF300CD7287 /* location@2x.png in Resources */,
 				7D7FADC21AC6C62300AC9BD1 /* straighten-grid@3x.png in Resources */,
 				7D9A78751AE9054400CD7287 /* map-marker.png in Resources */,
 				7D7FADCC1AC6C7D600AC9BD1 /* back@2x.png in Resources */,
+				7D00BF771B2194FD00374EC0 /* 阴影@3x.png in Resources */,
 				7D41F13F1AA461B1003A4BB1 /* Launch.storyboard in Resources */,
+				7D00BE151B205C5000374EC0 /* filter.png in Resources */,
 				7D7047D31A45CDFB00EC0D40 /* camera_line_h.png in Resources */,
+				7D00BF681B2194FD00374EC0 /* 曝光@2x.png in Resources */,
+				7D00BF5C1B2194FD00374EC0 /* 工具_s@2x.png in Resources */,
 				7DC29DA11A3F10450065BBD2 /* Search.storyboard in Resources */,
 				7D7FADC01AC6C62300AC9BD1 /* cameraroll-picker-grip@3x.png in Resources */,
+				7D00BE761B206AEC00374EC0 /* grain.png in Resources */,
 				7D7FADCD1AC6C7D600AC9BD1 /* back@3x.png in Resources */,
 				7DDCC23F1ACBA3320047DE7F /* CommentListTableViewCell.xib in Resources */,
 				7D9A78111AE8EDD800CD7287 /* bell@3x.png in Resources */,
 				7D17D8C91A660B5600FD8713 /* Icon@2x.png in Resources */,
 				7D17D8C01A660B5600FD8713 /* Default-568h@2x.png in Resources */,
 				7D7047E01A45CDFB00EC0D40 /* shot@2x.png in Resources */,
+				7D00BE5E1B206AEC00374EC0 /* 角度校正.png in Resources */,
 				7D17D8C21A660B5600FD8713 /* Default-iOS7@2x.png in Resources */,
 				7D9A78461AE8FBF300CD7287 /* location@3x.png in Resources */,
 				7D7047D71A45CDFB00EC0D40 /* close_cha_h.png in Resources */,
 				7D9A78701AE9054400CD7287 /* home@2x.png in Resources */,
+				7D00BF5E1B2194FD00374EC0 /* 工具@2x.png in Resources */,
 				7D9A78561AE9034C00CD7287 /* person@2x.png in Resources */,
+				7D00BE8B1B214E5C00374EC0 /* 色相.png in Resources */,
+				7D00BF601B2194FD00374EC0 /* 角度校正@2x.png in Resources */,
+				7D00BE1C1B20652F00374EC0 /* 曝光.png in Resources */,
 				7D7047E31A45CDFB00EC0D40 /* switch_camera.png in Resources */,
 				7D7047D61A45CDFB00EC0D40 /* close_cha@2x.png in Resources */,
+				7D00BE641B206AEC00374EC0 /* 亮度.png in Resources */,
+				7D00BE121B205C5000374EC0 /* cancel@3x.png in Resources */,
+				7D00BF211B218F8200374EC0 /* 柔和.png in Resources */,
+				7D00BE701B206AEC00374EC0 /* 阴影.png in Resources */,
 				7D7047DF1A45CDFB00EC0D40 /* shot.png in Resources */,
+				7D00BF721B2194FD00374EC0 /* 褪色@2x.png in Resources */,
 				7D9A786B1AE9054400CD7287 /* camera-slr@3x.png in Resources */,
 				7D9A78741AE9054400CD7287 /* magnifying-glass@3x.png in Resources */,
 				7DC29DA31A3F105D0065BBD2 /* Share.storyboard in Resources */,
 				7D7FADCE1AC6C7D600AC9BD1 /* cameraroll-picker-grip@2x.png in Resources */,
 				7D7047E41A45CDFB00EC0D40 /* switch_camera@2x.png in Resources */,
 				7DF6062F1AEBD5FE008DCEA4 /* AddressTableViewCell.xib in Resources */,
+				7D00BE6A1B206AEC00374EC0 /* 色温.png in Resources */,
+				7D00BF611B2194FD00374EC0 /* 角度校正@3x.png in Resources */,
 				7D1673BD1AFCB8AD006CB524 /* AlbumListTableViewCell.xib in Resources */,
 				7D17D8C71A660B5600FD8713 /* Icon-Small@2x.png in Resources */,
+				7D00BE731B206AEC00374EC0 /* 晕影.png in Resources */,
 				7D9A783B1AE8F00D00CD7287 /* trash.png in Resources */,
+				7D00BF571B2194FD00374EC0 /* 肤色@3x.png in Resources */,
 				7D7047E11A45CDFB00EC0D40 /* shot_h.png in Resources */,
+				7D00BE8E1B214E5C00374EC0 /* 颜色.png in Resources */,
+				7D00BE521B206AEC00374EC0 /* 对比度.png in Resources */,
+				7D00BE5B1B206AEC00374EC0 /* 工具.png in Resources */,
 				7D17D8C61A660B5600FD8713 /* Icon-Small.png in Resources */,
+				7D00BF631B2194FD00374EC0 /* 亮度@3x.png in Resources */,
 				7D7047D81A45CDFB00EC0D40 /* close_cha_h@2x.png in Resources */,
+				7D00BF621B2194FD00374EC0 /* 亮度@2x.png in Resources */,
+				7D00BE4C1B206AEC00374EC0 /* 饱和度.png in Resources */,
+				7D00BE821B20726700374EC0 /* 滤镜_s.png in Resources */,
 				7D17D8BF1A660B5600FD8713 /* 37x-Checkmark@2x.png in Resources */,
 				7D9A78731AE9054400CD7287 /* magnifying-glass@2x.png in Resources */,
 				7D7047E51A45CDFB00EC0D40 /* switch_camera_h.png in Resources */,
+				7D00BF731B2194FD00374EC0 /* 褪色@3x.png in Resources */,
 				7D686E6E1A592ED200A61E0A /* Address.storyboard in Resources */,
 				7DE0678F1A3F0EED008086BD /* WhatsNew.storyboard in Resources */,
 				7DC29DA51A3F106F0065BBD2 /* Mine.storyboard in Resources */,
+				7D00BF671B2194FD00374EC0 /* 滤镜@3x.png in Resources */,
+				7D00BF691B2194FD00374EC0 /* 曝光@3x.png in Resources */,
+				7D00BF551B2194FD00374EC0 /* 对比度@3x.png in Resources */,
 				7DF6063F1AED0097008DCEA4 /* place_40.png in Resources */,
+				7D00BF581B2194FD00374EC0 /* 高光@2X.png in Resources */,
 				7D7047DE1A45CDFB00EC0D40 /* flashing_on@2x.png in Resources */,
+				7D00BF641B2194FD00374EC0 /* 滤镜_s@2x.png in Resources */,
+				7D00BDFF1B204A6000374EC0 /* check@3x.png in Resources */,
 				7D7047D51A45CDFB00EC0D40 /* close_cha.png in Resources */,
 				7D9A786A1AE9054400CD7287 /* camera-slr@2x.png in Resources */,
+				7D00BF501B2194FD00374EC0 /* 饱和度@2x.png in Resources */,
 				7D1673B71AFC5926006CB524 /* menuClose@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1844,7 +2228,9 @@
 				7DE0677F1A3F07AC008086BD /* UIImageView+WebCache.m in Sources */,
 				7D1B49621A46F01F00C4CEC4 /* FootPrint.m in Sources */,
 				7D0290F41AD384C1003D8393 /* SearchResultViewController.m in Sources */,
+				7D14B11A1B1D782300DDF176 /* HUMSlider.m in Sources */,
 				7DBA3F9C1AFB7C9F001B2BBA /* IGLDropDownMenu.m in Sources */,
+				7D14B11E1B1D942300DDF176 /* PhotoEffectCollectionViewCell.m in Sources */,
 				7DE067771A3F07AC008086BD /* SDWebImageDownloaderOperation.m in Sources */,
 				7D1502801A8B8D4000327DA5 /* QDYHTTPClient.m in Sources */,
 				7D1317CF1A5D35CA003A9D77 /* DAKeyboardControl.m in Sources */,
@@ -1853,9 +2239,11 @@
 				7DC29DB61A3F21230065BBD2 /* CommonContainerViewController.m in Sources */,
 				7D65E2171A39701E00F84754 /* AppDelegate.m in Sources */,
 				7DE0677D1A3F07AC008086BD /* UIImage+WebP.m in Sources */,
+				7DB7315A1B09C1AA00972FBF /* PhotoScrollViewController.m in Sources */,
 				7D55DAA01A47EF730083A2A3 /* PhotoCommon.m in Sources */,
 				7D45775E1A62C2C500786533 /* QNUploadOption.m in Sources */,
 				7D754B851AD7D463002878F6 /* UIViewController+BackBarItem.m in Sources */,
+				7DA50DD51B1054E800CE8DDC /* NoticeContentTextView.m in Sources */,
 				7DE067471A3F07AC008086BD /* AFHTTPRequestOperationManager.m in Sources */,
 				7DE067741A3F07AC008086BD /* SDWebImageCompat.m in Sources */,
 				7D2BEBC61AFB074000F42F02 /* PopOverMenu.m in Sources */,
@@ -1886,10 +2274,8 @@
 				7D21E92E1A5A79F900815A33 /* UserListTableViewCell.m in Sources */,
 				7DE0677E1A3F07AC008086BD /* UIImageView+HighlightedWebCache.m in Sources */,
 				7D4577591A62C2C500786533 /* QNResponseInfo.m in Sources */,
-				7D0071AF1A787C0B0053A1AA /* FeSlideFilterView.m in Sources */,
 				7D21E9241A5A30B700815A33 /* TheAddress.m in Sources */,
 				7D45775C1A62C2C500786533 /* QNResumeUpload.m in Sources */,
-				7D0071AC1A7878BB0053A1AA /* WZFilterUIViewController.m in Sources */,
 				7D4577531A62C2C500786533 /* QNAsyncRun.m in Sources */,
 				7DBE50E41ADE53C000C1A3B3 /* FeedbackViewController.m in Sources */,
 				7D83C0571A6CBBCD00B754C2 /* EditPersonalInfoTableViewController.m in Sources */,
@@ -1901,6 +2287,7 @@
 				7D41F1361AA43D42003A4BB1 /* UILabel+ChangeAppearance.m in Sources */,
 				7D2BEBC91AFB082100F42F02 /* MenuItem.m in Sources */,
 				7DE067711A3F07AC008086BD /* MKAnnotationView+WebCache.m in Sources */,
+				7D14B10D1B19DA8C00DDF176 /* PhotoFilterCollectionViewCell.m in Sources */,
 				7DF6062D1AEBBED2008DCEA4 /* Geodetic.m in Sources */,
 				7D8CA8461AFA027B004D485F /* LinkTextView.m in Sources */,
 				7D76FB0B1ACCE3C5003CCF64 /* PhotoDetailTableViewController.m in Sources */,
@@ -1927,6 +2314,8 @@
 				7D17D8D01A6668F800FD8713 /* SVIndefiniteAnimatedView.m in Sources */,
 				7D6CDBD81AA0491800BD2597 /* PIOSearchAPI.m in Sources */,
 				7D7047631A44204F00EC0D40 /* SVProgressHUD.m in Sources */,
+				7DB731571B09C17E00972FBF /* DDScrollViewController.m in Sources */,
+				7D14B1091B19760400DDF176 /* FilteredImageView.m in Sources */,
 				7DE067931A3F0FA9008086BD /* PhotoTableViewCell.m in Sources */,
 				7D79974F1AC0129F00909D36 /* ALView+PureLayout.m in Sources */,
 				7DC29DC61A3F34BB0065BBD2 /* RBStoryboardModalSegue.m in Sources */,
@@ -1943,6 +2332,7 @@
 				7D4577571A62C2C500786533 /* QNUrlSafeBase64.m in Sources */,
 				7D6A67EC1A5EB2290021F12C /* UITabBarController+HideTabBar.m in Sources */,
 				7DF6969C1AAC44FA006DDD33 /* UIView+ChangeAppearance.m in Sources */,
+				7D14B1101B19DD5700DDF176 /* PhotoFilterViewCollectionViewController.m in Sources */,
 				7DC451D71ABB24EE0040716A /* HMSegmentedControl.m in Sources */,
 				7D41F13C1AA460CB003A4BB1 /* LaunchViewController.m in Sources */,
 				7DE0674C1A3F07AC008086BD /* AFURLRequestSerialization.m in Sources */,
@@ -1951,7 +2341,9 @@
 				7DE0674E1A3F07AC008086BD /* AFURLSessionManager.m in Sources */,
 				7D45775D1A62C2C500786533 /* QNUploadManager.m in Sources */,
 				7DF75E991A84BC3500894132 /* BarItem.m in Sources */,
+				7D14B1171B1D5EBC00DDF176 /* FilterSliderView.m in Sources */,
 				7DF75E961A84BAB700894132 /* CBStoreHouseRefreshControl.m in Sources */,
+				7DB7315D1B0AD0EF00972FBF /* ViewContainerScrollViewController.m in Sources */,
 				7DE067721A3F07AC008086BD /* NSData+ImageContentType.m in Sources */,
 				7D41F1391AA440A9003A4BB1 /* UIButton+ChangeAppearance.m in Sources */,
 				7D17D8CD1A660BC300FD8713 /* MBProgressHUD.m in Sources */,
@@ -1971,6 +2363,7 @@
 				7DC29DAE1A3F13F30065BBD2 /* WhatsGoingOn.m in Sources */,
 				7DC29DC91A3F34BB0065BBD2 /* RBStoryboardSegue.m in Sources */,
 				7D928D0C1AE3CBA400C763F8 /* CaptureItemContainerUIView.m in Sources */,
+				7DA50DD21B0DD73B00CE8DDC /* PhotoDetailViewsController.m in Sources */,
 				7D5F5E731AFF5C8800786066 /* SetAvatarIntroductionViewController.m in Sources */,
 				7DC29DA81A3F113C0065BBD2 /* HomeTableViewController.m in Sources */,
 			);
@@ -2026,7 +2419,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: yiyi shen (37PYG22632)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: yiyi shen (37PYG22632)";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2048,7 +2441,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "0d5464a8-8e7b-4825-889f-57dadb2ef517";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -2071,6 +2464,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: yiyi shen (37PYG22632)";
+				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Developer: yiyi shen (37PYG22632)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: yiyi shen (37PYG22632)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -2087,7 +2481,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "0d5464a8-8e7b-4825-889f-57dadb2ef517";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2098,8 +2492,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: yiyi shen (37PYG22632)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: yiyi shen (37PYG22632)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/WUZHAO/Vendor",
@@ -2117,7 +2511,7 @@
 					"$(PROJECT_DIR)/WUZHAO/Vendor/LibBPush",
 				);
 				PRODUCT_NAME = Place;
-				PROVISIONING_PROFILE = "d1266534-4418-4f40-a716-9ab5c3044b76";
+				PROVISIONING_PROFILE = "0d5464a8-8e7b-4825-889f-57dadb2ef517";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 			};
 			name = Debug;
@@ -2127,7 +2521,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: yiyi shen (JNYT7F8DQX)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: yiyi shen (37PYG22632)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: yiyi shen (JNYT7F8DQX)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2146,7 +2540,7 @@
 					"$(PROJECT_DIR)/WUZHAO/Vendor/LibBPush",
 				);
 				PRODUCT_NAME = Place;
-				PROVISIONING_PROFILE = "d1266534-4418-4f40-a716-9ab5c3044b76";
+				PROVISIONING_PROFILE = "0d5464a8-8e7b-4825-889f-57dadb2ef517";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 			};
 			name = Release;

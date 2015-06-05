@@ -30,7 +30,9 @@
 @protocol CommentTextViewDelegate <NSObject>
 
 -(void)commentTextView:(CommentTextView *)commentTextView didClickLinkUser:(User *)user;
--(void)didClickUnlinedTextOncommentTextView:(CommentTextView *)commentTextView;
+
+@optional
 -(void)moreCommentClick:(CommentTextView *)commentTextView;
+-(void)didClickUnlinedTextOncommentTextView:(CommentTextView *)commentTextView;
 
 @end
