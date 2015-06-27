@@ -15,6 +15,7 @@
 
 #import "NoticeContentTextView.h"
 
+#import "UIViewController+HideBottomBar.h"
 #import "UILabel+ChangeAppearance.h"
 #import "UIImageView+WebCache.h"
 #import "Feeds.h"
@@ -34,9 +35,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initNavigationItem];
-    
-    [self getLatestData];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -47,13 +46,15 @@
 {
     [super viewWillAppear:animated];
     [self initNavigationItem];
+    
 }
 -(void)initNavigationItem
 {
     self.navigationItem.title = @"通 知";
-    self.tabBarController.navigationController.navigationBarHidden = NO;
-    self.tabBarController.navigationItem.title = @"通知";
-    self.tabBarController.navigationItem.hidesBackButton = YES;
+    self.navigationController.navigationBarHidden = NO;
+    self.navigationItem.hidesBackButton = YES;
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.backBarButtonItem = backBarItem;
 }
 
 #pragma mark - tableview delegate
@@ -233,9 +234,9 @@
     UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
     HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
     [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:feeds.feedsPhoto]];
-    [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLEDETAIL];
+    [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
     [detailPhotoController GetLatestDataList];
-    [self.navigationController pushViewController:detailPhotoController animated:YES];
+    [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
     
 }
 -(void)avatarClick:(UIGestureRecognizer *)gesture
@@ -261,7 +262,7 @@
     MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
     [personalViewCon setUserInfo:user];
     [personalViewCon.navigationController setNavigationBarHidden:YES];
-    [self.navigationController pushViewController:personalViewCon animated:YES];
+    [self pushToViewController:personalViewCon animated:YES hideBottomBar:YES];
 }
 /*
 -(void)followButtonClick:(UIGestureRecognizer *)gesture
@@ -274,5 +275,12 @@
 -(void)noticeContentTextView:(NoticeContentTextView *)noticeContentTextView didClickLinkUser:(User *)user
 {
     [self goToUserPageWithUserInfo:user];
+}
+
+#pragma mark - notification selector
+-(void)clearUserInfo
+{
+    self.dataSource = nil;
+    [self.tableView reloadData];
 }
 @end

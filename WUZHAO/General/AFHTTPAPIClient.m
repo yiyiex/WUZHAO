@@ -41,15 +41,24 @@
                 if ( [[responseObject objectForKey:@"success"] isEqualToString:@"false"])
                 {
                     NSLog(@"get infomation failed:");
+                    //code 110 token校验失败
                     if ([(NSNumber *)[responseObject objectForKey:@"code"]integerValue] ==110)
                     {
                         NSLog(@"token校验失败");
                         [[NSNotificationCenter defaultCenter]postNotificationName:@"tokenIllegal" object:nil];
-                        complete(@{@"msg":@"登录态失效，请重新登录"},nil);
+                        //complete(@{@"error":@"登录态失效，请重新登录"},nil);
+                        complete(nil,nil);
                     }
                     else
                     {
-                        complete(@{@"msg":[responseObject objectForKey:@"msg"]},nil);
+                        if ([responseObject objectForKey:@"msg"])
+                        {
+                            complete(@{@"msg":[responseObject objectForKey:@"msg"]},nil);
+                        }
+                        else
+                        {
+                            complete(@{@"msg":@"请求失败"},nil);
+                        }
                     }
                 }
                 else

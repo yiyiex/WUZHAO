@@ -34,20 +34,13 @@
         [self.contents addObject:[NSNull null]];
     }
     CGRect scrollviewFrame = self.view.frame;
-    
-    scrollviewFrame.size.height -=64;
-    
-    scrollviewFrame.origin.y +=64;
     self.scrollView = [[UIScrollView alloc] initWithFrame: scrollviewFrame];
-    self.scrollView.bounds = CGRectOffset(scrollviewFrame, 0, -64);
-   // self.scrollView.bounds = self.view.frame;
+    self.scrollView.bounds = scrollviewFrame;
     NSLog(@"scrollview controller view frame %f %f %f %f",self.view.frame.origin.x,self.view.frame.origin.y,self.view.frame.size.width,self.view.frame.size.height);
    // self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.view.frame) * 3, FLT_MAX);
-    self.scrollView.backgroundColor = [UIColor greenColor];
-    [self.scrollView setScrollsToTop:NO];
     self.scrollView.pagingEnabled = YES;
+    self.scrollView.backgroundColor  = [UIColor greenColor];
     self.scrollView.showsHorizontalScrollIndicator = NO;
-    [self.scrollView setScrollsToTop:NO];
     [self.scrollView setAlwaysBounceVertical:NO];
     [self.scrollView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
     [self.scrollView setDirectionalLockEnabled:YES];
@@ -72,7 +65,7 @@
         [self.contents replaceObjectAtIndex:0 withObject:[self.dataSource ddScrollView:self contentViewControllerAtIndex:0]];
         [self.contents replaceObjectAtIndex:1 withObject:[NSNull null]];
         [self.contents replaceObjectAtIndex:2 withObject:[NSNull null]];
-        self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.view.frame), self.scrollView.frame.size.height);
+        self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.view.frame), self.view.frame.size.height);
         UIViewController* viewController = [self.contents objectAtIndex:0];
         UITableView* view = (UITableView *)viewController.view;
         view.scrollEnabled = false;
@@ -88,8 +81,7 @@
 
     else if (self.numberOfControllers >= 2)
     {
-   // [self.scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
+        
         for (int i = 0; i < 3; i ++)
         {
             NSInteger thisPage = self.activeIndex -1 +i;
@@ -114,7 +106,7 @@
     if ((NSNull *)[self.contents objectAtIndex:0 ]!= [NSNull null] && (NSNull *)[self.contents objectAtIndex:2]!= [NSNull null])
     {
         float contentSizeWidth = CGRectGetWidth(self.view.frame) * 3;
-        self.scrollView.contentSize = CGSizeMake(contentSizeWidth, self.scrollView.frame.size.height);
+        self.scrollView.contentSize = CGSizeMake(contentSizeWidth, self.view.frame.size.height);
         for (int i = 0; i < 3; i++)
         {
             UIViewController* viewController = [self.contents objectAtIndex:i];
@@ -132,7 +124,7 @@
     else if ((NSNull *)[self.contents objectAtIndex:0] == [NSNull null])
     {
  
-       self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.view.frame) * 2,  self.scrollView.frame.size.height);
+       self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.view.frame) * 2,  self.view.frame.size.height);
         for (int i = 0;i <2; i++)
         {
             UIViewController* viewController = [self.contents objectAtIndex:(i+1)];
@@ -149,7 +141,7 @@
     //the right side of the scrollview when dataCount>=3
     else if ((NSNull *)[self.contents objectAtIndex:2] == [NSNull null])
     {
-        self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.view.frame) * 2,  self.scrollView.frame.size.height);
+        self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.view.frame) * 2, self.view.frame.size.height);
         for (int i = 0;i <2; i++)
         {
             UIViewController* viewController = [self.contents objectAtIndex:i];
@@ -239,14 +231,14 @@
             {
                 _offsetRatio = offsetRatio - 1;
                 self.activeIndex = [self validIndexValue: (self.activeIndex + 1)];
-                 NSLog(@"active index:%ld",self.activeIndex);
+                 NSLog(@"active index:%ld",(long)self.activeIndex);
                 
             }
             else if (offsetRatio <0.5 && offsetRatio >=0 &&  ((NSNull *)[self.contents objectAtIndex:2] == [NSNull null]))
             {
                 
                 self.activeIndex = [self validIndexValue: (self.activeIndex - 1)];
-                 NSLog(@"active index:%ld",self.activeIndex);
+                 NSLog(@"active index:%ld",(long)self.activeIndex);
                 _offsetRatio = offsetRatio +1;
             }
         }
@@ -258,18 +250,11 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-     NSLog(@"view frame %f  %f  %f  %f",self.view.frame.origin.x,self.view.frame.origin.y,self.view.frame.size.width,self.view.frame.size.height);
-    NSLog(@"view bounds %f  %f  %f  %f",self.view.bounds.origin.x,self.view.bounds.origin.y,self.view.bounds.size.width,self.view.bounds.size.height);
-    NSLog(@"scrollview frame %f  %f  %f  %f",self.scrollView.frame.origin.x,self.scrollView.frame.origin.y,self.scrollView.frame.size.width,self.scrollView.frame.size.height);
-    NSLog(@"scrollview bounds %f  %f  %f  %f",self.scrollView.bounds.origin.x,self.scrollView.bounds.origin.y,self.scrollView.bounds.size.width,self.scrollView.bounds.size.height);
     if (self.scrollView.contentOffset.x!=0 &self.scrollView.contentOffset.y !=0)
     {
         return;
     }
-    if(self.scrollView.contentOffset.y!=0)
-    {
-        return;
-    }
+
     if (scrollView.contentSize.width/scrollView.frame.size.width ==3)
     {
         self.offsetRatio = scrollView.contentOffset.x/CGRectGetWidth(scrollView.frame) - 1;

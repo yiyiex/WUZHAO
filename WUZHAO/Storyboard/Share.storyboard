@@ -56,28 +56,18 @@
                                     <constraint firstAttribute="width" secondItem="JSh-em-or7" secondAttribute="height" multiplier="1:1" id="2Lu-9k-TOS"/>
                                 </constraints>
                             </glkView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g1U-qr-nnp">
-                                <rect key="frame" x="0.0" y="540" width="600" height="60"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="60" id="lE2-2d-fL3"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="EQ3-g6-pa6" secondAttribute="trailing" id="EiY-Zd-j77"/>
                             <constraint firstItem="JSh-em-or7" firstAttribute="width" secondItem="UMn-XI-AA1" secondAttribute="width" id="Ho7-9U-n23"/>
                             <constraint firstItem="JSh-em-or7" firstAttribute="leading" secondItem="UMn-XI-AA1" secondAttribute="leadingMargin" constant="-16" id="Kvp-Wc-dLC"/>
-                            <constraint firstItem="LEd-AF-ui4" firstAttribute="top" secondItem="g1U-qr-nnp" secondAttribute="bottom" id="OVB-Xg-80Y"/>
                             <constraint firstItem="EQ3-g6-pa6" firstAttribute="leading" secondItem="UMn-XI-AA1" secondAttribute="leading" id="Pkx-Ys-fRW"/>
                             <constraint firstAttribute="trailingMargin" secondItem="JSh-em-or7" secondAttribute="trailing" constant="-16" id="Tc1-ml-MR2"/>
                             <constraint firstItem="JSh-em-or7" firstAttribute="top" secondItem="EQ3-g6-pa6" secondAttribute="bottom" id="TeN-UL-WWQ"/>
                             <constraint firstAttribute="centerX" secondItem="JSh-em-or7" secondAttribute="centerX" id="YKf-re-Fnm"/>
                             <constraint firstAttribute="centerX" secondItem="EQ3-g6-pa6" secondAttribute="centerX" id="kxx-ub-4Zq"/>
-                            <constraint firstAttribute="trailing" secondItem="g1U-qr-nnp" secondAttribute="trailing" id="lt3-EQ-B3g"/>
                             <constraint firstItem="EQ3-g6-pa6" firstAttribute="top" secondItem="r8q-ON-xpb" secondAttribute="bottom" id="qvq-1j-7R8"/>
-                            <constraint firstItem="g1U-qr-nnp" firstAttribute="leading" secondItem="UMn-XI-AA1" secondAttribute="leading" id="sI7-MI-eYz"/>
                             <constraint firstAttribute="width" secondItem="EQ3-g6-pa6" secondAttribute="width" id="xhE-qq-wfM"/>
                         </constraints>
                         <variation key="default">
@@ -88,7 +78,6 @@
                         </variation>
                     </view>
                     <connections>
-                        <outlet property="bottomBarView" destination="g1U-qr-nnp" id="8hz-Xf-cyg"/>
                         <outlet property="filteredImageView" destination="JSh-em-or7" id="cJl-Un-gWL"/>
                         <outlet property="topBarView" destination="EQ3-g6-pa6" id="ziB-3j-Ekm"/>
                     </connections>

@@ -17,6 +17,9 @@
 #import "macro.h"
 #import "Geodetic.h"
 
+#import "PIOSearchAPI.h"
+#import "SVProgressHUD.h"
+
 #import <AMapSearchKit/AMapSearchAPI.h>
 #import <MAMapKit/MAMapKit.h>
 #import <MapKit/MapKit.h>
@@ -29,13 +32,17 @@
     CLLocationManager *_locationManager;
     CGPoint postImageCenter;
     UIView *greyMaskView;
-    UIActivityIndicatorView *_aiv;
+    
+    NSString *googleSearchNextPageToken;
 }
+@property (strong, nonatomic) UIButton *locationButton;
 @property (strong, nonatomic) UISearchBar *searchBar;
 @property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) NSIndexPath *currentAddressTableSelectedIndex;
 @property (nonatomic ,strong)  NSMutableArray *addressDataSource;
 @property (nonatomic ,strong)  NSMutableArray *searchAddressDataSource;
+@property (nonatomic, strong) UIActivityIndicatorView *tableViewAiv;
+@property (nonatomic, strong) UIActivityIndicatorView *locationButtonAiv;
 @property (nonatomic) BOOL searchControllerWasActive;
 
 
@@ -48,6 +55,10 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     self.searchControllerWasActive = NO;
     [self initTopBar];
     [self initTableView];
+    if (self.location)
+    {
+        [self.locationButton setSelected:YES];
+    }
     if (self.addressDataSource.count<=0)
     {
         [self searchAddress];
@@ -104,7 +115,18 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
     [topBarView addSubview:titleLabel];
+    
+    UIButton *locationButton = [[UIButton alloc]initWithFrame:CGRectMake(CGRectGetWidth( topBarView.bounds) - 50, 8, 44 , 44)];
+    [locationButton setImage:[UIImage imageNamed:@"location_white"] forState:UIControlStateNormal];
+    [locationButton setImage:[UIImage imageNamed:@"location_green"] forState:UIControlStateSelected];
+    [locationButton addTarget:self action:@selector(switchLocation:) forControlEvents:UIControlEventTouchUpInside];
+    self.locationButton = locationButton;
+    [topBarView addSubview:self.locationButton];
+    
     [self.view addSubview:topBarView];
+    
+
+    
 }
 
 -(void)initTableView
@@ -150,13 +172,7 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 #pragma mark- location
 -(void)searchAddress
 {
-    if (!_aiv)
-    {
-        _aiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        _aiv.center = self.view.center;
-        [self.view addSubview:_aiv];
-    }
-    [_aiv startAnimating];
+    [self startAiv];
     
     //如果当前有照片的经纬度信息
     if (self.location)
@@ -165,15 +181,20 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     }
     else
     {
-        _locationManager = [[CLLocationManager alloc]init];
-        _locationManager.delegate = self;
-        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        if ([_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-            [_locationManager requestWhenInUseAuthorization];
-        }
-        _locationManager.distanceFilter = 500;
-        [_locationManager startUpdatingLocation];
+        [self searchCurrentAddress];
     }
+}
+-(void)searchCurrentAddress
+{
+    [self startAiv];
+    _locationManager = [[CLLocationManager alloc]init];
+    _locationManager.delegate = self;
+    _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    if ([_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [_locationManager requestWhenInUseAuthorization];
+    }
+    _locationManager.distanceFilter = 500;
+    [_locationManager startUpdatingLocation];
 }
 #pragma mark - CLLocationManagerDelegate
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
@@ -196,10 +217,7 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 -(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
     self.searchControllerWasActive = NO;
-    if([_aiv isAnimating])
-    {
-        [_aiv stopAnimating];
-    }
+    [self stopAiv];
     [self.searchBar setText:nil];
     [self.searchBar setShowsCancelButton:NO animated:YES];
     [self.searchBar resignFirstResponder];
@@ -218,13 +236,7 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 {
     NSLog(@"begin search");
     self.searchControllerWasActive = YES;
-    if (!_aiv)
-    {
-        _aiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        _aiv.center = self.view.center;
-        [self.view addSubview:_aiv];
-    }
-    [_aiv startAnimating];
+    [self startAiv];
     
     NSLog(@"searchBy : %@",_searchBar.text);
     [self searchAddressWithKeyword:_searchBar.text];
@@ -233,27 +245,61 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 #pragma mark - search With Location
 -(void)searchAddressWithLocation:(CLLocation *)location
 {
-    _search = [[AMapSearchAPI alloc]initWithSearchKey:@"2552aafe945c02ece19c41739007ca14" Delegate:self];
-    NSLog(@"world location %f %f",location.coordinate.latitude,location.coordinate.longitude);
-    CLLocation *marsLocation = [Geodetic transFromGPSToMars:location];
-     NSLog(@"mars location %f %f",marsLocation.coordinate.latitude,marsLocation.coordinate.longitude);
-    
-    AMapPlaceSearchRequest *poiRequest = [[AMapPlaceSearchRequest alloc]init];
-    poiRequest.searchType = AMapSearchType_PlaceAround;
-    AMapGeoPoint *postImageGeoPoint = [[AMapGeoPoint alloc]init];
-    postImageGeoPoint.latitude = marsLocation.coordinate.latitude;
-    postImageGeoPoint.longitude = marsLocation.coordinate.longitude;
-    NSLog(@"location :%f-----%f",postImageGeoPoint.latitude,postImageGeoPoint.longitude);
-    poiRequest.location = postImageGeoPoint;
-    
-    poiRequest.keywords = searchKeyWords;
-    //poiRequest.types = @"050000";
-    poiRequest.radius = 500;
-    poiRequest.sortrule = 1;
-    poiRequest.offset = 50;
-    poiRequest.requireExtension = YES;
-    [_search AMapPlaceSearch:poiRequest];
+    [self.addressDataSource removeAllObjects];
+    [self.tableView reloadData];
+    [self startAiv];
+    // CLLocation *location2 = [[CLLocation alloc]initWithLatitude:-33.8670522 longitude:151.1957362];
+    //判断是否在国内，国内通过高德SDK ，国外通过后台接口
+    if (![Geodetic isInsideChina:location])
+    {
+        [[PIOSearchAPI sharedInstance]SearchAroundPIOWithLongitude:location.coordinate.longitude Latitude:location.coordinate.latitude radius:500 whenComplete:^(NSDictionary *result) {
+            NSLog(@"%@",result);
+            [self stopAiv];
+            if ([result objectForKey:@"data"])
+            {
+                
+                NSDictionary *data = [result objectForKey:@"data"];
+                googleSearchNextPageToken = [data objectForKey:@"nextPageToken"];
+                [self.addressDataSource removeAllObjects];
+                for (NSDictionary *p in [data objectForKey:@"POIs"])
+                {
+                    POI *poiInfo = [[POI alloc]init];
+                    [poiInfo configureWithGoogleSearchResult:p];
+                    [self.addressDataSource addObject:poiInfo];
+                }
+                [self.tableView reloadData];
+            }
+            else if ([result objectForKey:@"error"])
+            {
+                [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+            }
+        }];
+    }
+    else
+    {
+        _search = [[AMapSearchAPI alloc]initWithSearchKey:@"2552aafe945c02ece19c41739007ca14" Delegate:self];
+        NSLog(@"world location %f %f",location.coordinate.latitude,location.coordinate.longitude);
+        CLLocation *marsLocation = [Geodetic transFromGPSToMars:location];
+         NSLog(@"mars location %f %f",marsLocation.coordinate.latitude,marsLocation.coordinate.longitude);
+        
+        AMapPlaceSearchRequest *poiRequest = [[AMapPlaceSearchRequest alloc]init];
+        poiRequest.searchType = AMapSearchType_PlaceAround;
+        AMapGeoPoint *postImageGeoPoint = [[AMapGeoPoint alloc]init];
+        postImageGeoPoint.latitude = marsLocation.coordinate.latitude;
+        postImageGeoPoint.longitude = marsLocation.coordinate.longitude;
+        NSLog(@"location :%f-----%f",postImageGeoPoint.latitude,postImageGeoPoint.longitude);
+        poiRequest.location = postImageGeoPoint;
+        
+        poiRequest.keywords = searchKeyWords;
+        //poiRequest.types = @"050000";
+        poiRequest.radius = 500;
+        poiRequest.sortrule = 1;
+        poiRequest.offset = 50;
+        poiRequest.requireExtension = YES;
+        [_search AMapPlaceSearch:poiRequest];
+    }
 }
+
 #pragma mark - search With keyword
 -(void)searchAddressWithKeyword:(NSString *)keyword
 {
@@ -271,29 +317,14 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 #pragma mark -amapSearch delegate
 -(void)onPlaceSearchDone:(AMapPlaceSearchRequest *)request response:(AMapPlaceSearchResponse *)response
 {
-    if (_aiv)
-    {
-        [_aiv stopAnimating];
-    }
+    [self stopAiv];
     NSLog(@"on place search Done %@",response);
     if (self.searchControllerWasActive)
     {
         [self.searchAddressDataSource removeAllObjects];
-        NSString *strPoi = @"";
         for (AMapPOI *p in response.pois) {
-            strPoi = [NSString stringWithFormat:@"%@\nPOI: %@", strPoi, p.description];
             POI *poiInfo = [[POI alloc]init];
-            poiInfo.uid = p.uid;
-            poiInfo.name = p.name;
-            poiInfo.address = p.address;
-            poiInfo.city = p.city;
-            poiInfo.district = p.district;
-            poiInfo.province = p.province;
-            poiInfo.stamp = p.timestamp;
-            NSString *location = [NSString stringWithFormat:@"%f,%f",p.location.latitude,p.location.longitude];
-            poiInfo.location = location;
-            poiInfo.classify = p.type;
-            
+            [poiInfo configureWithGaodeSearchResult:p];
             [self.searchAddressDataSource addObject:poiInfo];
         }
     }
@@ -301,24 +332,13 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     {
         //通过AMapPlaceSearchResponse对象处理搜索结果
         [self.addressDataSource removeAllObjects];
-        NSString *strPoi = @"";
         for (AMapPOI *p in response.pois) {
             if (p.weight <0.20)
             {
                 continue;
             }
-            strPoi = [NSString stringWithFormat:@"%@\nPOI: %@", strPoi, p.description];
             POI *poiInfo = [[POI alloc]init];
-            poiInfo.uid = p.uid;
-            poiInfo.name = p.name;
-            poiInfo.address = p.address;
-            poiInfo.city = p.city;
-            poiInfo.district = p.district;
-            poiInfo.province = p.province;
-            poiInfo.stamp = p.timestamp;
-            NSString *location = [NSString stringWithFormat:@"%f,%f",p.location.latitude,p.location.longitude];
-            poiInfo.location = location;
-            poiInfo.classify = p.type;
+            [poiInfo configureWithGaodeSearchResult:p];
             [self.addressDataSource addObject:poiInfo];
         }
         
@@ -340,7 +360,11 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     }
     else
     {
-        return self.addressDataSource.count+1;
+        if (self.addressDataSource.count >0)
+        {
+            return self.addressDataSource.count+1;
+        }
+        return 0;
     }
 }
 
@@ -489,9 +513,70 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 }
 
 #pragma mark - action
+
+-(void)switchLocation:(UIButton *)sender
+{
+    if (sender.selected)
+    {
+        sender.selected = NO;
+        [self searchCurrentAddress];
+        
+    }
+    else
+    {
+        if (self.location)
+        {
+            [self searchAddressWithLocation:self.location];
+            sender.selected = YES;
+        }
+        else
+        {
+            [self searchCurrentAddress];
+        }
+    }
+   
+}
 -(void)backBarButtonClick:(UIBarButtonItem *)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - aiv
+-(void)startAiv
+{
+    if (!_tableViewAiv)
+    {
+        _tableViewAiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        _tableViewAiv.center = self.view.center;
+        [self.view addSubview:_tableViewAiv];
+    }
+    if (![_tableViewAiv  isAnimating])
+    {
+        [_tableViewAiv startAnimating];
+    }
+    if (!_locationButtonAiv)
+    {
+        _locationButtonAiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        _locationButtonAiv.center = self.locationButton.center;
+        [self.view addSubview:_locationButtonAiv];
+    }
+    [self.locationButton setHidden:YES];
+    if (![_locationButtonAiv isAnimating])
+    {
+        [_locationButtonAiv startAnimating];
+    }
+}
+-(void)stopAiv
+{
+    if ([_tableViewAiv isAnimating])
+    {
+        [_tableViewAiv stopAnimating];
+    }
+    if ([_locationButtonAiv isAnimating])
+    {
+        [_locationButtonAiv stopAnimating];
+    }
+    [self.locationButton setHidden:NO];
 }
 
 

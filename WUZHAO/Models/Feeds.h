@@ -25,5 +25,7 @@ typedef NS_ENUM(NSInteger, WZ_FEEDSTYPE)
 @property (nonatomic,strong) NSString *content;
 @property (nonatomic,strong) WhatsGoingOn *feedsPhoto;
 @property (nonatomic,strong) NSString *time;
+
++(NSMutableArray *)configureFeedsWithData:(NSArray *)data;
 +(NSMutableArray *)getLatestFeeds;
 @end

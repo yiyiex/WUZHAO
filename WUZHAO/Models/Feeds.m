@@ -28,6 +28,38 @@
     return _feedsPhoto;
 }
 
++(NSMutableArray *)configureFeedsWithData:(NSArray *)data
+{
+    NSMutableArray *feeds = [[NSMutableArray alloc]init];
+    
+    for (NSDictionary *notice in data)
+    {
+        if ( [(NSNumber *)[notice objectForKey:@"noticeType"] integerValue] >4 ||[(NSNumber *)[notice objectForKey:@"noticeType"] integerValue]<1)
+        {
+            break;
+        }
+        Feeds *feed = [[Feeds alloc]init];
+        feed.feedsId = [(NSNumber *)[notice objectForKey:@"noticeId"] integerValue];
+        feed.type = [(NSNumber *)[notice objectForKey:@"noticeType"] integerValue];
+        feed.feedsUser.UserID =[(NSNumber *)[notice objectForKey:@"operatorId"] integerValue];
+        feed.feedsUser.UserName = [notice objectForKey:@"operatorNick"];
+        feed.feedsUser.avatarImageURLString = [notice objectForKey:@"operatorAvatar"];
+        if (! [[notice objectForKey:@"content"]isKindOfClass:[NSNull class]])
+        {
+            feed.content = [notice objectForKey:@"content"];
+        }
+        if (! [[notice objectForKey:@"postId"] isKindOfClass:[NSNull class]])
+        {
+            feed.feedsPhoto.postId = [(NSNumber *)[notice objectForKey:@"postId"]integerValue];
+            feed.feedsPhoto.imageUrlString = [notice objectForKey:@"photo"];
+        }
+        feed.time = [notice objectForKey:@"createTime"];
+        [feeds addObject:feed];
+        
+    }
+    return feeds;
+}
+
 +(NSMutableArray *)getLatestFeeds
 {
     NSArray *userList = [[User userList]mutableCopy];

@@ -133,6 +133,18 @@
    {
        return;
    }
+    if ([self.userNameTextField isFirstResponder])
+    {
+        [self.userNameTextField resignFirstResponder];
+    }
+    if ([self.emailTextField isFirstResponder])
+    {
+        [self.emailTextField resignFirstResponder];
+    }
+    if ([self.passwordTextField isFirstResponder])
+    {
+        [self.passwordTextField resignFirstResponder];
+    }
     self.registerButton.enabled = NO;
     [self registerNewUser];
 
@@ -212,9 +224,9 @@
                 [SVProgressHUD dismiss];
                 if ( [[QDYHTTPClient sharedInstance] IsAuthenticated])
                 {
-                    UIStoryboard *introductionStoryboard = [UIStoryboard storyboardWithName:@"Introduction" bundle:nil];
-                    SetAvatarIntroductionViewController *introductionController = [introductionStoryboard instantiateViewControllerWithIdentifier:@"introduction"];
-                    [self.navigationController pushViewController:introductionController animated:YES];
+                    [self dismissViewControllerAnimated:YES completion:^{
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"registSuccess" object:nil];
+                    }];
                 }
                 
             }

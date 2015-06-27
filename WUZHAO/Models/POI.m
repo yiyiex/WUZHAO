@@ -8,6 +8,8 @@
 
 #import "POI.h"
 
+
+
 @implementation POI
 
 -(instancetype)init
@@ -68,6 +70,33 @@
         
     }
     return self;
+}
+-(void)configureWithGaodeSearchResult:(AMapPOI *)p
+{
+    self.uid = p.uid;
+    self.name = p.name;
+    self.address = p.address;
+    self.city = p.city;
+    self.district = p.district;
+    self.province = p.province;
+    self.stamp = p.timestamp;
+    NSString *location = [NSString stringWithFormat:@"%f,%f",p.location.latitude,p.location.longitude];
+    self.location = location;
+    self.classify = p.type;
+    self.type = POI_TYPE_GAODE;
+}
+-(void)configureWithGoogleSearchResult:(NSDictionary *)result
+{
+    self.uid = [result objectForKey:@"placeId"];
+    self.name = [result objectForKey:@"name"];
+    self.address = [result objectForKey:@"vicinity"];
+    self.city = @"";
+    self.district = @"";
+    self.province = @"";
+    self.stamp = @"";
+    self.location = [result objectForKey:@"location"];
+    self.classify = [result objectForKey:@"type"];
+    self.type = POI_TYPE_GOOGLE;
 }
 
 

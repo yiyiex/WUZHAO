@@ -36,10 +36,19 @@
 //color
 #define rgba_WZ(r, g, b, a) [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:a]
 
-//字体颜色
-//#define THEME_COLOR rgba_WZ(120, 194, 196, 1.0)
-//#define THEME_COLOR rgba_WZ(153,224,253,1.0)
-//#define THEME_COLOR_DARK rgba_WZ(49,175,223,1.0)
+//主题颜色
+/*
+#blue
+#define THEME_COLOR rgba_WZ(128,195,246,1.0)
+#define THEME_COLOR_DARK rgba_WZ(27,127,214,1.0)
+
+#define THEME_COLOR_PARENT rgba_WZ(128,195,246, 0.5)
+#define THEME_COLOR_DARK_PARENT rgba_WZ(27,127,214,0.5)
+
+#define THEME_COLOR_DARKER rgba_WZ(17,97,179, 1)
+#define THEME_COLOR_DARKER_PARENT rgba_WZ(17,97,179,0.5)
+ */
+
 #define THEME_COLOR rgba_WZ(90,187,149,1.0)
 #define THEME_COLOR_DARK rgba_WZ(88,152,125,1.0)
 

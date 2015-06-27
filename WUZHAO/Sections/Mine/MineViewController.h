@@ -15,6 +15,7 @@
 #import "WhatsGoingOn.h"
 
 @interface MineViewController : UIViewController <UITabBarDelegate,PhotoCollectionViewControllerDataSource>
+
 @property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, strong) IBOutlet UIView *scrollContentView;
 

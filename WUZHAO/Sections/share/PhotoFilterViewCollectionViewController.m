@@ -47,7 +47,7 @@ typedef NS_ENUM(NSInteger, EDIT_TYPE)
 @property (nonatomic, strong) UIView *effectTopBarView;
 @property (nonatomic, strong) UILabel *effectTopBarTitleLabel;
 
-@property (nonatomic, weak) IBOutlet UIView *bottomBarView;
+@property (nonatomic, strong)  UIView *bottomBarView;
 @property (nonatomic, strong) UIButton *filterButton;
 @property (nonatomic, strong) UIButton *effectButton;
 
@@ -59,6 +59,7 @@ typedef NS_ENUM(NSInteger, EDIT_TYPE)
 @property (nonatomic, strong) UIView *selectIndicatorView;
 
 @property (nonatomic) EDIT_TYPE editType;
+@property (nonatomic, strong) NSMutableDictionary *effectUsed;
 
 @end
 
@@ -253,6 +254,12 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         [parameters.otherInputs addObject:@{@"key":kCIInputRadiusKey,@"value":@5}];
         [_effectDescriptions addObject:parameters];
         
+        self.effectUsed = [[NSMutableDictionary alloc]init];
+        [_effectDescriptions enumerateObjectsUsingBlock:^(FilterParameters *p, NSUInteger idx, BOOL *stop) {
+            [self.effectUsed setValue:@"NO" forKey:p.key];
+        }];
+        
+        
     }
     return _effectDescriptions;
 }
@@ -271,8 +278,8 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
 -(void)caculateCollectionRelationSize
 {
      collectionOriginY = 50 + WZ_APP_SIZE.width;
-     collectionHeight = WZ_APP_SIZE.height - collectionOriginY - 60;
-     collectionCellWidth =  collectionHeight>100? collectionHeight/2: collectionHeight -20;
+     collectionHeight = WZ_APP_SIZE.height - collectionOriginY - self.bottomBarView.frame.size.height;
+    collectionCellWidth =  isIPHONE_4s?collectionHeight -20: 54;
     
 
     
@@ -383,10 +390,11 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     [self initTopContainerView];
     [self initBottomContainerView];
-
+    [self.view setNeedsUpdateConstraints];
+    [self.view setNeedsLayout];
     //filteredImageView
     self.editType = EDIT_TYPE_FILTER;
     self.filteredImageView.inputImage = self.stillImage;
@@ -451,7 +459,28 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
 }
 
 -(void)initBottomContainerView
-{    
+{
+
+    float bottomContainerHeight;
+    if (isIPHONE_4s)
+    {
+        bottomContainerHeight = 60;
+    }
+    else if (isIPHONE_5)
+    {
+        bottomContainerHeight = 70;
+    }
+    else if (isIPHONE_6)
+    {
+       bottomContainerHeight = 70;
+    }
+    else if (isIPHONE_6P)
+    {
+        bottomContainerHeight = 80;
+    }
+    self.bottomBarView = [[UIView alloc]initWithFrame:CGRectMake(0, WZ_APP_SIZE.height - bottomContainerHeight, WZ_APP_SIZE.width, bottomContainerHeight)];
+    [self.view addSubview:self.bottomBarView];
+    
     [self.bottomBarView setBackgroundColor:DARK_BACKGROUND_COLOR];
     self.filterButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width/2, self.bottomBarView.frame.size.height)];
     [self.filterButton setImage:[UIImage imageNamed:@"滤镜"] forState:UIControlStateNormal];
@@ -516,46 +545,35 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     {
     
         PhotoFilterCollectionViewCell *cell;
-        if ([collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier1 forIndexPath:indexPath])
-        {
-            cell = (PhotoFilterCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier1 forIndexPath:indexPath];
-        }
-        else
-        {
-            cell = [[PhotoFilterCollectionViewCell alloc]init];
-            [collectionView registerClass:[PhotoFilterCollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier1];
-        }
-        
+        cell = (PhotoFilterCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier1 forIndexPath:indexPath];
         // Configure the cell
-        cell.filteredImageView.contentMode = UIViewContentModeScaleAspectFill;
-        cell.filteredImageView.inputImage = self.filteredImageView.inputImage;
-        CIFilter *filter = self.filters [indexPath.item];
-        cell.filteredImageView.filter = filter;
-        NSString *filterName = [[(NSString *) [filter.attributes objectForKey:kCIAttributeFilterDisplayName] componentsSeparatedByString:@" "]lastObject];
-        if ([filterName isEqualToString:@"Controls"])
+        if (cell)
         {
-            filterName = @"Normal";
+            cell.filteredImageView.contentMode = UIViewContentModeScaleAspectFill;
+            cell.filteredImageView.inputImage = self.filteredImageView.inputImage;
+            CIFilter *filter = self.filters [indexPath.item];
+            cell.filteredImageView.filter = filter;
+            NSString *filterName = [[(NSString *) [filter.attributes objectForKey:kCIAttributeFilterDisplayName] componentsSeparatedByString:@" "]lastObject];
+            if ([filterName isEqualToString:@"Controls"])
+            {
+                filterName = @"Normal";
+            }
+            cell.filterNameLabel.text = self.filterDescriptions[filterName];
+            return cell;
         }
-        cell.filterNameLabel.text = self.filterDescriptions[filterName];
-        return cell;
     }
     else if (self.editType == EDIT_TYPE_EFFECT)
     {
         PhotoEffectCollectionViewCell *cell;
-        if ([collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier2 forIndexPath:indexPath])
+        cell = (PhotoEffectCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier2 forIndexPath:indexPath];
+        if (cell)
         {
-            cell = (PhotoEffectCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier2 forIndexPath:indexPath];
+            FilterParameters *parameters = self.effectDescriptions[indexPath.item];
+            cell.effectNameLabel.text = parameters.name;
+            [cell.effectIconImageView setContentMode:UIViewContentModeScaleAspectFill];
+            [cell.effectIconImageView setImage:[UIImage imageNamed:parameters.name]];
+            return cell;
         }
-        else
-        {
-            cell = [[PhotoEffectCollectionViewCell alloc]init];
-            [collectionView registerClass:[PhotoEffectCollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier2];
-        }
-        FilterParameters *parameters = self.effectDescriptions[indexPath.item];
-        cell.effectNameLabel.text = parameters.name;
-        [cell.effectIconImageView setContentMode:UIViewContentModeScaleAspectFill];
-        [cell.effectIconImageView setImage:[UIImage imageNamed:parameters.name]];
-        return cell;
     }
     return nil;
     
@@ -624,6 +642,8 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         if (isNewFilter)
         {
             [self.filteredImageView.preEffectFilters addObject:parameters];
+            self.effectUsed[self.effectFilterSliderView.parameters.key] = @"YES";     
+            
         }
         [self showSliderEditView];
         
@@ -695,7 +715,7 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         [self.effectButton setSelected:NO];
         if (self.photoEffectCollectionView)
         {
-            self.topBarTitleLabel.text = @"选择滤镜";
+            self.topBarTitleLabel.text = @"滤镜";
             [self.photoEffectCollectionView setHidden:YES];
             [self.view sendSubviewToBack:self.photoEffectCollectionView];
         }
@@ -732,13 +752,18 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     if (self.effectFilterSliderView.parameters.currentValue == self.effectFilterSliderView.parameters.defaultValue)
     {
         [self.filteredImageView deletePreEffectFilter:self.effectFilterSliderView.parameters];
+        self.effectUsed[self.effectFilterSliderView.parameters.key] = @"NO";
     }
     [self hideSliderEditView];
 }
 -(void)sliderEditCancelClick:(UIButton *)sender
 {
     self.effectFilterSliderView.parameters.currentValue = preEffectValue;
-    [self.filteredImageView deletePreEffectFilter:self.effectFilterSliderView.parameters];
+    if (preEffectValue == self.effectFilterSliderView.parameters.defaultValue)
+    {
+        [self.filteredImageView deletePreEffectFilter:self.effectFilterSliderView.parameters];
+        self.effectUsed[self.effectFilterSliderView.parameters.key] = @"NO";
+    }
     [self hideSliderEditView];
 }
 

@@ -12,7 +12,7 @@
 typedef NS_ENUM(NSUInteger, DETAIL_STYLE)
 {
     DETAIL_STYLE_SINGLEPAGE = 0,
-    DETAIL_STYLE_SCROLLVIEW = 1
+    DETAIL_STYLE_LIST = 1
 };
 
 @class WhatsGoingOn;
@@ -33,8 +33,9 @@ typedef NS_ENUM(NSUInteger, DETAIL_STYLE)
 
 @protocol PhotoCollectionViewControllerDataSource <NSObject>
 
+@required
 -(NSInteger)numberOfPhotos:(PhotosCollectionViewController *)collectionViews;
-
--(WhatsGoingOn *)PhotosCollectionViewController:(PhotosCollectionViewController *)detailViews dataAtIndex:(NSInteger)index;
-
+-(WhatsGoingOn *)PhotosCollectionViewController:(PhotosCollectionViewController *)collectionView dataAtIndex:(NSInteger)index;
+@optional
+-(NSArray *)PhotosCollectionViewController:(PhotosCollectionViewController *)collectionView moreData:(NSInteger)page;
 @end

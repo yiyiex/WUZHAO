@@ -57,7 +57,7 @@
 -(void)initView
 {
     self.searchStatus = SEARCHSTATUSNOTBEGIN;
-   /*
+   *
     _segmentControl.sectionTitles = @[@"地点",@"用户"];
     _segmentControl.selectedSegmentIndex = 1;
     _segmentControl.backgroundColor = [UIColor whiteColor];
@@ -112,7 +112,7 @@
  
 }
 
-/*
+*
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation

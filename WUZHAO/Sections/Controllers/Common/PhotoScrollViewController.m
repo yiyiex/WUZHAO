@@ -97,7 +97,7 @@
 {
     HomeTableViewController *controller = self.reusePhotoDetailViewControllers[index %3];
     controller.dataSource = [[NSMutableArray alloc]initWithArray:@[[self.allPhotos objectAtIndex:index]]];
-    controller.tableStyle = WZ_TABLEVIEWSTYLEDETAIL;
+    controller.tableStyle = WZ_TABLEVIEWSTYLE_DETAIL;
     [controller GetLatestDataList];
     return controller;
 }

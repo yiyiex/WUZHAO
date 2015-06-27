@@ -56,12 +56,7 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)setUserInfo:(User *)userInfo
-{
-    if (_userInfo)
-        _userInfo = [[User alloc]init];
-    _userInfo = userInfo;
-}
+
 
 -(void)setNavigationItem
 {
@@ -124,35 +119,6 @@
         self.selfDescriptionTextView.text = self.userInfo.selfDescriptions;
     }
     
-
-    
-    // [self.selfDescriptionTextField sizeToFit];
-    /*
-    self.emailCell.imageView.image = [UIImage imageNamed:@"default"];
-    self.emailTextField = [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 300, 30)];
-    [self.emailTextField setFont:WZ_FONT_COMMON_SIZE];
-    [self.emailCell addSubview:self.emailTextField];
-    if (self.userInfo.email)
-    {
-        self.emailTextField.text = self.userInfo.email;
-    }
-    else
-    {
-        self.emailTextField.placeholder = @"邮箱";
-    }
-    
-    self.phoneNumCell.imageView.image = [UIImage imageNamed:@"default"];
-    self.phoneNumTextField = [[UITextField alloc]initWithFrame:CGRectMake(100, 10, 200, 30)];
-    [self.phoneNumCell addSubview:self.phoneNumTextField];
-    if (self.userInfo.phoneNum)
-    {
-        self.phoneNumTextField.text = self.userInfo.phoneNum;
-    }
-    else
-    {
-        self.phoneNumTextField.placeholder = @"手机";
-    }*/
-    
     //修改密码区
     [self.changePwdCell.textLabel setFont:WZ_FONT_COMMON_SIZE];
     self.changePwdCell.textLabel.text = @"修改密码";
@@ -171,6 +137,10 @@
     
     
     //gesture
+    [self.avatarInfoCell setUserInteractionEnabled:YES];
+    UITapGestureRecognizer *avatarCellClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(editAvator)];
+    [self.avatarInfoCell addGestureRecognizer:avatarCellClick];
+        
     [self.changePwdCell setUserInteractionEnabled:YES];
     UITapGestureRecognizer *passwordCellClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(passwordCellClick:)];
     [self.changePwdCell addGestureRecognizer:passwordCellClick];
@@ -242,8 +212,9 @@
 }
 - (void)logout
 {
+    [self.navigationController popViewControllerAnimated:NO];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"deleteUserInfo" object:nil];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"logOut" object:nil];
-
 }
 
 -(void)editAvator

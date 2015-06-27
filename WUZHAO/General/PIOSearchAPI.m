@@ -7,9 +7,8 @@
 //
 
 #import "PIOSearchAPI.h"
-#define PIOAPIHOST @"https://maps.googleapis.com"
-#define GOOGLEPLACEAPIKEY @"AIzaSyD75TeI-QYmsySYjoUlzVSpS2Oii7sbslM"
-#define LANG @"ch"
+#define PIOAPIHOST @"http://192.168.0.100/"
+
 @implementation PIOSearchAPI
 
 
@@ -20,34 +19,42 @@
     dispatch_once(&oncePredicate,^{
         
         sharedInstance = [[self alloc] initWithBaseURL:[NSURL URLWithString:PIOAPIHOST]];
+        sharedInstance.responseSerializer = [AFJSONResponseSerializer serializer];
+        [sharedInstance.responseSerializer setAcceptableContentTypes:[NSSet setWithObjects:@"application/json",@"text/html", nil]];
+        //[sharedInstance.responseSerializer setAcceptableContentTypes:[NSSet setWithObject:@"application/json"]];
         sharedInstance.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
         
     });
     return sharedInstance;
 }
 
--(void)SearchAroundPIOWithLongitude:(float)longitude Latitude:(float)latitude whenComplete:(void(^)(NSDictionary *result))whenComplete
+-(void)SearchAroundPIOWithLongitude:(float)longitude Latitude:(float)latitude radius:(float)radius whenComplete:(void(^)(NSDictionary *result))whenComplete
 {
-    NSString *api = @"maps/api/place/nearbysearch/json";
-    NSString *location = [NSString stringWithFormat:@"%f,%f",longitude,latitude];
-    NSString *rankby = @"prominence";
-    NSString *sensor = @"true";
+    NSString *api = @"wuzhao/api/nearbypoi";
+    NSString *location = [NSString stringWithFormat:@"%f,%f",latitude,longitude];
+
     
-    NSDictionary *param = @{@"key":GOOGLEPLACEAPIKEY,@"location":location,@"sensor":sensor,@"language":LANG,@"rankby":rankby};
+    NSDictionary *param = @{@"location":location,@"radius":[NSNumber numberWithFloat:radius]};
     
     [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
         NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
         if (result)
         {
-           if ([result objectForKey:@"error_message"])
-           {
-               NSLog(@"请求无法被接受，key 不正确，或者被墙");
-           }
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSMutableDictionary *data = [[NSMutableDictionary alloc]init];
+                [data setValue:[result objectForKey:@"nextPageToken"] forKey:@"nextPageToken"];
+                [data setValue:[result objectForKey:@"data"] forKey:@"POIs"];
+                [returnData setValue:data forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
             else
             {
-                NSLog(@"%@",result);
+                [returnData setValue:@"服务器错误" forKey:@"error"];
             }
-            returnData = result;
         }
         else if (error)
         {

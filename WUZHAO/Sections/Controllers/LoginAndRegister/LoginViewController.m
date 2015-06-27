@@ -42,6 +42,8 @@
     
     cancelLogin = false;
     
+   
+    
 
 
     // Do any additional setup after loading the view.
@@ -76,6 +78,7 @@
 
 -(void)setNavigationAppearance
 {
+   
     [self setTitle:@"登录"];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     UIBarButtonItem *close = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"close_cha"] style:UIBarButtonItemStylePlain target:self action:@selector(returnToLaunch)];
@@ -168,15 +171,12 @@
                                                    
                                                    if ([[QDYHTTPClient sharedInstance] IsAuthenticated])
                                                    {
-                                                      // User *userInfo = [[QDYHTTPClient sharedInstance] currentUser];
+                                                       [self dismissViewControllerAnimated:YES completion:^{
+                                                           [[NSNotificationCenter defaultCenter]postNotificationName:@"loginSuccess" object:nil];
+                                                       }];
                                                        
-                                                       UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                                                       MainTabBarViewController *main = [mainStoryboard instantiateViewControllerWithIdentifier:@"mainTabBarController"];
-                                            
-                                                       [self.navigationController pushViewController:main animated:YES];
-                                                       self.LoginButton.enabled = YES;
-                                                      
                                                        
+                                                     
                                                    }
                                                    return;
                                                }
@@ -236,6 +236,14 @@
     if(![self checkInput])
     {
         return;
+    }
+    if ([self.UserNameTextField isFirstResponder])
+    {
+        [self.UserNameTextField resignFirstResponder];
+    }
+    if ([self.PasswordTextField isFirstResponder])
+    {
+        [self.PasswordTextField resignFirstResponder];
     }
     self.LoginButton.enabled = NO;
     self.PasswordTextField.text = @"";

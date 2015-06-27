@@ -17,12 +17,14 @@
 
 #import "UIImageView+WebCache.h"
 #import "UIViewController+BackBarItem.h"
+#import "UIViewController+HideBottomBar.h"
 #import "UILabel+ChangeAppearance.h"
 #import "PhotoCommon.h"
 #import "macro.h"
 #import "QDYHTTPClient.h"
 
-@interface PhotosCollectionViewController ()<PhotoDetailViewsControllerDataSource>
+
+@interface PhotosCollectionViewController ()
 @property (nonatomic,strong) UIView *infoView;
 
 @end
@@ -165,19 +167,10 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
         UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
         HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
         [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];
-        [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLEDETAIL];
+        [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
         [detailPhotoController GetLatestDataList];
-        [self.navigationController pushViewController:detailPhotoController animated:YES];
+        [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
     }
-    /*
-    else if (self.detailStyle == DETAIL_STYLE_SCROLLVIEW)
-    {
-
-        PhotoDetailViewsController *detailViewsController = [[PhotoDetailViewsController alloc]initWithDataSource:self];
-        detailViewsController.dataSource = self;
-        detailViewsController.currentPhotoIndex = indexPath.row;
-        [self.navigationController pushViewController:detailViewsController animated:YES];
-    }*/
     else
     {
         WhatsGoingOn *item = [self.datasource objectAtIndex:indexPath.row];
@@ -185,14 +178,12 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
         UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
         HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
         [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];
-        [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLEDETAIL];
-        [self.navigationController pushViewController:detailPhotoController animated:YES];
+        [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
+        [detailPhotoController GetLatestDataList];
+        [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
         
     }
-    //PhotoDetailViewController *detailViewController = [detailStoryBoard instantiateViewControllerWithIdentifier:@"photoDetailView"];
-    //[detailViewController setWhatsGoingOnItem:item];
-    //detailViewController.cellIndexInCollection = indexPath;
-    //[self.navigationController pushViewController:detailViewController animated:YES];
+
     
 }
 

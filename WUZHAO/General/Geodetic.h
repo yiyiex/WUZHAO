@@ -12,5 +12,5 @@
 @interface Geodetic : NSObject
 
 +(CLLocation *)transFromGPSToMars:(CLLocation *)location;
-
++(BOOL)isInsideChina:(CLLocation *)location;
 @end

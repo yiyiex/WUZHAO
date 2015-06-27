@@ -31,11 +31,13 @@ typedef NS_ENUM(NSInteger, SWIPEDIRECTION)
 @interface PhotoDetailViewsController ()
 {
     SWIPEDIRECTION swipeDeirection;
+    NSSet *touchStartPoint;
+    NSSet *touchEndPoint;
 }
 @property (nonatomic, strong) UIView *privateContainerView;
 @property (nonatomic,strong) NSArray *detailViewControllers;
 @property (nonatomic,weak) HomeTableViewController *currentPhotoDetailController;
-@property (nonatomic,strong) NSArray *viewData;
+@property (nonatomic, weak) HomeTableViewController *toPhtoDetailController;
 
 @end
 
@@ -66,9 +68,9 @@ typedef NS_ENUM(NSInteger, SWIPEDIRECTION)
 {
     UIStoryboard *whatsNewStoryboard = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
     HomeTableViewController *detailView1 = [whatsNewStoryboard instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
-    detailView1.tableStyle = WZ_TABLEVIEWSTYLEDETAIL;
+    detailView1.tableStyle = WZ_TABLEVIEWSTYLE_DETAIL;
     HomeTableViewController *detailView2 = [whatsNewStoryboard instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
-    detailView2.tableStyle = WZ_TABLEVIEWSTYLEDETAIL;
+    detailView2.tableStyle = WZ_TABLEVIEWSTYLE_DETAIL;
     detailView2.dataSource = [[NSMutableArray alloc]init];
     self.detailViewControllers = [[NSArray alloc]initWithObjects:detailView1, detailView2, nil];
 }
@@ -81,6 +83,8 @@ typedef NS_ENUM(NSInteger, SWIPEDIRECTION)
     UIView *rootView = [[UIView alloc] init];
     rootView.backgroundColor = [UIColor blackColor];
     rootView.opaque = YES;
+    rootView.autoresizingMask = UIViewAutoresizingFlexibleHeight |UIViewAutoresizingFlexibleWidth;
+    [rootView setUserInteractionEnabled:YES];
     
     self.privateContainerView = [[UIView alloc] init];
     self.privateContainerView.backgroundColor = [UIColor blackColor];
@@ -97,6 +101,8 @@ typedef NS_ENUM(NSInteger, SWIPEDIRECTION)
 
     
     self.view = rootView;
+    
+
 }
 
 - (void)viewDidLoad {
@@ -104,6 +110,8 @@ typedef NS_ENUM(NSInteger, SWIPEDIRECTION)
     self.currentPhotoIndex = self.currentPhotoIndex?:0;
     self.currentPhotoDetailController = self.currentPhotoDetailController?:_detailViewControllers[0];
     
+   // [self.privateContainerView setUserInteractionEnabled:YES];
+    /*
     //gesture
     UISwipeGestureRecognizer *swipeToleft = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeToLeft:)];
     [swipeToleft setDirection:UISwipeGestureRecognizerDirectionLeft];
@@ -112,6 +120,7 @@ typedef NS_ENUM(NSInteger, SWIPEDIRECTION)
     [swipeToRight setDirection:UISwipeGestureRecognizerDirectionRight];
     [self.privateContainerView addGestureRecognizer:swipeToRight];
     [self.privateContainerView setUserInteractionEnabled:YES];
+     */
     
     // Do any additional setup after loading the view.
 }
@@ -124,13 +133,14 @@ typedef NS_ENUM(NSInteger, SWIPEDIRECTION)
         if (dataItem)
         {
             
-            self.viewData = @[dataItem];
+            
             _currentPhotoDetailController = currentPhotoDetailController;
+            _currentPhotoDetailController.dataSource =[NSMutableArray arrayWithArray : @[dataItem]];
+            [self.currentPhotoDetailController GetLatestDataList];
             [self _transitionToChildViewController:currentPhotoDetailController direction:swipeDeirection];
             NSLog(@"currentView  frame origin %f %f %f %f",_currentPhotoDetailController.view.frame.origin.x,_currentPhotoDetailController.view.frame.origin.y,_currentPhotoDetailController.view.frame.size.width,_currentPhotoDetailController.view.frame.size.height);
               NSLog(@"private container  frame origin %f %f %f %f",_privateContainerView.frame.origin.x,_privateContainerView.frame.origin.y,_privateContainerView.frame.size.width,_privateContainerView.frame.size.height);
-            self.currentPhotoDetailController.dataSource = [[NSMutableArray alloc]initWithArray:@[dataItem]];
-            [self.currentPhotoDetailController GetLatestDataList];
+           
             
         }
         else
@@ -143,6 +153,28 @@ typedef NS_ENUM(NSInteger, SWIPEDIRECTION)
     
 }
 
+-(void)setToPhtoDetailController:(HomeTableViewController *)toPhtoDetailController
+{
+    NSParameterAssert(currentPhotoDetailController);
+    if([self.dataSource respondsToSelector:@selector(photoDetailViewsController:dataAtIndex:)])
+    {
+        WhatsGoingOn *dataItem = [self.dataSource photoDetailViewsController:self dataAtIndex:self.currentPhotoIndex];
+        if (dataItem)
+        {
+
+            _toPhtoDetailController = toPhtoDetailController;
+            _toPhtoDetailController.dataSource = [NSMutableArray arrayWithArray:@[dataItem]];
+             [self.toPhtoDetailController GetLatestDataList];
+            [self _transitionToChildViewController:_toPhtoDetailController direction:swipeDeirection];
+        }
+        else
+        {
+            [SVProgressHUD showInfoWithStatus:@"没有更多数据了"];
+            self.currentPhotoIndex = swipeDeirection == SWIPEDIRECTION_LEFT? self.currentPhotoIndex+1:self.currentPhotoIndex-1;
+        }
+    }
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -151,15 +183,64 @@ typedef NS_ENUM(NSInteger, SWIPEDIRECTION)
 #pragma mark - gestrue
 -(void)swipeToLeft:(UISwipeGestureRecognizer *)gesture
 {
+    /*
     swipeDeirection = SWIPEDIRECTION_RIGHT;
     self.currentPhotoIndex ++;
     [self switchViewController];
+     */
 }
 -(void)swipeToRight:(UISwipeGestureRecognizer *)gesture
 {
+    /*
     swipeDeirection = SWIPEDIRECTION_LEFT;
     self.currentPhotoIndex --;
     [self switchViewController];
+     */
+}
+
+-(void)touchesMoveToRight
+{
+    
+}
+
+-(void)touchesMoveToLeft
+{
+    
+}
+
+#pragma mark - touches
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    touchStartPoint = touches;
+    [super touchesBegan:touches withEvent:event];
+}
+
+-(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    CGPoint movePoint = [touches.allObjects.lastObject locationInView:self.view];
+    CGPoint beganPoint = [touchStartPoint.allObjects.lastObject locationInView:self.view];
+    if (movePoint.x > beganPoint.x)
+    {
+        //swipe to right
+    }
+    if (movePoint.x < beganPoint.x)
+    {
+        //swipe to left
+    }
+    [super touchesMoved:touches withEvent:event];
+    
+    
+}
+
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+   // CGPoint endPoint = [touches.allObjects.lastObject locationInView:self.view];
+   // CGPoint beganPoint = [touchStartPoint.allObjects.lastObject locationInView:self.view];
+    
+    //check if to finish the animation
+    
+    
+    [super touchesMoved:touches withEvent:event];
 }
 
 #pragma mark - private method
@@ -332,10 +413,11 @@ static CGFloat const kInitialSpringVelocity = 0.5;
     
     [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:kDamping initialSpringVelocity:kInitialSpringVelocity options:0x00 animations:^{
         fromViewController.view.transform = travel;
-        fromViewController.view.alpha = 0;
+       
         toViewController.view.transform = CGAffineTransformIdentity;
         toViewController.view.alpha = 1;
     } completion:^(BOOL finished) {
+         fromViewController.view.alpha = 0;
         fromViewController.view.transform = CGAffineTransformIdentity;
         NSLog(@"to View frame origin %f %f",toViewController.view.frame.origin.x,toViewController.view.frame.origin.y);
         [transitionContext completeTransition:![transitionContext transitionWasCancelled]];

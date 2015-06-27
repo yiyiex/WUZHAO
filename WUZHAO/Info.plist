@@ -25,7 +25,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>3</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -33,7 +33,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>获取您周边的地址信息</string>
 	<key>UIMainStoryboardFile</key>
-	<string>Launch</string>
+	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

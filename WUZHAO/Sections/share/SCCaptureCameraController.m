@@ -94,11 +94,7 @@
     
     //notification
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationOrientationChange object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChange:) name:kNotificationOrientationChange object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endPostImage) name:@"finishPostImage" object:nil];
-    
-
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChange:) name:kNotificationOrientationChange object:nil];    
     //session manager
     SCCaptureSessionManager *manager = [[SCCaptureSessionManager alloc] init];
     
@@ -675,6 +671,7 @@ void c_slideAlpha() {
     };
     [self presentViewController:photoPicker animated:YES completion:NULL];
 }
+
 - (void)tmpBtnPressed:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }

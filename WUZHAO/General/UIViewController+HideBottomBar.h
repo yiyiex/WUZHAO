@@ -10,4 +10,6 @@
 
 @interface UIViewController (HideBottomBar)
 
+-(void)pushToViewController:(UIViewController *)viewController animated:(BOOL)animated hideBottomBar:(BOOL)hidden;
+
 @end

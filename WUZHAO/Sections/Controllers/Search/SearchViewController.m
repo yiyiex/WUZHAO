@@ -12,6 +12,8 @@
 #import "UserListTableViewController.h"
 #import "SearchResultViewController.h"
 #import "SearchResultTableViewController2.h"
+
+#import "UIViewController+HideBottomBar.h"
 #import "QDYHTTPClient.h"
 
 #import "SVProgressHUD.h"
@@ -61,10 +63,10 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.tabBarController.navigationItem.title = @"发现";
-    self.tabBarController.navigationController.navigationBarHidden = NO;
-    self.tabBarController.navigationItem.rightBarButtonItem = self.searchButton;
-    self.tabBarController.navigationItem.hidesBackButton = YES;
+    self.navigationItem.title = @"发 现";
+    self.navigationController.navigationBarHidden = NO;
+    self.navigationItem.rightBarButtonItem = self.searchButton;
+    self.navigationItem.hidesBackButton = YES;
 
     self.navigationItem.hidesBackButton = YES;
 }
@@ -145,7 +147,7 @@
     SearchResultViewController *searchResult = [storyboard instantiateViewControllerWithIdentifier:@"SearchResult"]; 
      */
     SearchResultTableViewController2 *searchResult = [[SearchResultTableViewController2 alloc]init];
-    [self.navigationController pushViewController:searchResult animated:YES];
+    [self pushToViewController:searchResult animated:YES hideBottomBar:YES];
 }
 -(void)initSwipGesture
 {

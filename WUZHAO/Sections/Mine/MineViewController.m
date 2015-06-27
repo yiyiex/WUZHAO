@@ -15,6 +15,8 @@
 #import "UserListTableViewController.h"
 #import "EditPersonalInfoTableViewController.h"
 
+#import "UIViewController+HideBottomBar.h"
+
 #import "UIImageView+WebCache.h"
 #import "UIImageView+ChangeAppearance.h"
 #import "UILabel+ChangeAppearance.h"
@@ -59,8 +61,7 @@
 
 
 static NSString * const minePhotoCell = @"minePhotosCell";
-- (void)viewDidLoad {
-    
+- (void)viewDidLoad {    
     [super viewDidLoad];
 
     [self setAppearance];
@@ -73,7 +74,6 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     self.shouldBackToTop = false;
 
     self.scrollView.delegate = self;
-    [self getLatestData];
     [self configGesture];
     
     
@@ -81,6 +81,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     self.navigationItem.backBarButtonItem = backBarItem;
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(deleteMyPhotos:) name:@"deletePost" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
 
     
     
@@ -94,8 +95,16 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [super viewWillAppear:animated];
     self.tabBarController.navigationItem.backBarButtonItem.title = @"";
     self.tabBarController.navigationController.navigationBarHidden = NO;
-    [self updateMyInfomationUI];
-    [self SetPhotosCollectionData];
+    if (self.myPhotosCollectionDatasource.count >0)
+    {
+        [self updateMyInfomationUI];
+        [self SetPhotosCollectionData];
+    }
+    else
+    {
+        [self getLatestData];
+    }
+  
     
 }
 -(void)viewDidAppear:(BOOL)animated
@@ -115,6 +124,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
 -(void)setUserInfo:(User *)userInfo
 {
     if (!_userInfo)
@@ -122,7 +133,6 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         _userInfo = [[User alloc]init];
     }
     _userInfo = [userInfo mutableCopy];
-    //同步本地保存用户数据
 }
 
 -(float)scrollContentViewHeight
@@ -144,6 +154,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 
 -(void)setAppearance
 {
+    
+    [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.avator setBackgroundColor:THEME_COLOR_LIGHT_GREY_MORE_PARENT];
     [self.avator setRoundConerWithRadius:self.avator.frame.size.width/2];
     
@@ -171,6 +183,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 {
 
     [_mineButton setTitle:@"正在加载..." forState:UIControlStateNormal];
+    [self.scrollView setContentOffset:CGPointMake(0, -64) animated:YES];
     self.shouldRefreshData = false;
     if (!_userInfo)
     {
@@ -181,7 +194,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     self.photoCollectionCurrentPage = 1;
     NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [[QDYHTTPClient sharedInstance]GetPersonalInfoWithUserId:_userInfo.UserID currentUserId:myUserId page:self.photoCollectionCurrentPage whenComplete:^(NSDictionary *returnData) {
+        [[QDYHTTPClient sharedInstance]GetPersonalInfoWithUserId:self.userInfo.UserID currentUserId:myUserId page:self.photoCollectionCurrentPage whenComplete:^(NSDictionary *returnData) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([returnData objectForKey:@"data"])
                 {
@@ -191,24 +204,22 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                     [self updateMyInfomationUI];
                     [self SetPhotosCollectionData];
                     NSLog(@"collection view height%f",self.containerViewController.currentViewController.view.frame.size.height);
+                    //[self.scrollView setContentOffset:CGPointMake(0, -64) animated:YES];
                     [self.scrollContentViewHeightConstraint setConstant:self.scrollContentViewHeight];
                     [self.scrollContentView setNeedsLayout];
                     [self.scrollContentView layoutIfNeeded];
-                    if (self.shouldBackToTop)
-                    {
-                        [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
-                    }
+                    
                 }
                 else if ([returnData objectForKey:@"error"])
                 {
                     [SVProgressHUD showErrorWithStatus:@"获取个人信息失败"];
                 }
-                self.shouldRefreshData = true;
-                
                 if ([self.refreshControl isRefreshing])
                 {
                     [self.refreshControl endRefreshing];
                 }
+                self.shouldRefreshData = true;
+                
             });
         }];
 
@@ -260,7 +271,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                     {
                         [followsList setTitle:[NSString stringWithFormat:@"%@关注的",self.userInfo.UserName]];
                     }
-                    [self.navigationController pushViewController:followsList animated:YES];
+                    [self pushToViewController:followsList animated:YES hideBottomBar:YES];
                 }
                 else if ([returnData objectForKey:@"error"])
                 {
@@ -299,7 +310,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                     {
                         [followersList setTitle:[NSString stringWithFormat:@"关注%@的",self.userInfo.UserName]];
                     }
-                    [self.navigationController pushViewController:followersList animated:YES];
+                    [self pushToViewController:followersList animated:YES hideBottomBar:YES];
                 }
                 else if ([returnData objectForKey:@"error"])
                 {
@@ -323,7 +334,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
             
             EditPersonalInfoTableViewController *editViewController = [storyboard instantiateViewControllerWithIdentifier:@"editPersonalInfo"];
             editViewController.userInfo = self.userInfo;
-            [self.navigationController pushViewController:editViewController animated:YES];
+            [self pushToViewController:editViewController animated:YES hideBottomBar:YES];
             
            // [self performSegueWithIdentifier:@"editPersonInfo" sender:self];
         }
@@ -702,10 +713,15 @@ static NSString * const minePhotoCell = @"minePhotosCell";
    
     if (self.shouldRefreshData)
     {
-
         [self setPersonalInfo];
     }
-    return;
+    else
+    {
+        if([self.refreshControl isRefreshing])
+        {
+            [self.refreshControl endRefreshing];
+        }
+    }
 }
 
 -(void)deleteMyPhotos:(NSNotification *)notification
@@ -720,6 +736,13 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         }
     }];
     [self SetPhotosCollectionData];
+}
+-(void)clearUserInfo
+{
+    self.userInfo = nil;
+    self.myPhotosCollectionDatasource = nil;
+    self.myAddressListDatasource = nil;
+    [self.myPhotoCollectionViewController loadData];
 }
 
 #pragma mark - scrollview delegate
@@ -739,8 +762,12 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     
 }
 
-
+/*
 #pragma mark - photosCollectionView datasource
+-(NSInteger)numberOfPhotos:(PhotosCollectionViewController *)collectionViews
+{
+    return self.myPhotosCollectionDatasource.count
+}
 -(WhatsGoingOn *)PhotosCollectionViewController:(PhotosCollectionViewController *)detailViews dataAtIndex:(NSInteger)index
 {
     __block WhatsGoingOn *item;
@@ -768,6 +795,12 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 
    
 }
+-(NSArray *)PhotosCollectionViewController:(PhotosCollectionViewController *)collectionView moreData:(NSInteger)page
+{
+    NSMutableArray *datas = [[NSMutableArray alloc]init];
+    return datas;
+}
+ */
 
 
 
