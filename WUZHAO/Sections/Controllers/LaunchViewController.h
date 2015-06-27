@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+typedef void (^dismissBlock)(void);
 
 @interface LaunchViewController : UIViewController
 
@@ -14,5 +15,7 @@
 
 @property (strong, nonatomic) IBOutlet UIButton *RegisterButton;
 @property (strong, nonatomic) IBOutlet UIButton *LoginButton;
+
+@property (nonatomic, strong) dismissBlock dismiss;
 
 @end

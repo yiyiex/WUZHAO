@@ -7,6 +7,7 @@
 //
 
 #import "LinkTextView.h"
+#import "macro.h"
 
 @interface LinkTextView()
 @property (nonatomic) NSRange currentRange;
@@ -94,21 +95,24 @@
     NSDictionary *linkedStringDictionary = [self dictionaryForLinkedString:string stringRange:stringRange defaultAttributes:defaultAttributes highlightedAttributes:highlightAttributes tapHandler:tapHandler];
     [self addLinkedStringAndAttributes:linkedStringDictionary];
 }
--(void)setText:(NSString *)string linkStrings:(NSArray *)linkStrings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandlers:(NSArray *)tapHandlers
+-(void)setText:(NSAttributedString *)string linkStrings:(NSArray *)linkStrings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandlers:(NSArray *)tapHandlers
 {
     if (!string ||!defaultAttributes)
     {
         return;
     }
-    NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc]initWithString:string];
+    NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc]initWithAttributedString:string];
+    
     self.attributedText = mutableAttributedString;
+    
     if (tapHandlers.count == 0)
     {
         return;
     }
     for (NSInteger i = 0;i<linkStrings.count;i++)
     {
-        NSRange linkStringInnerRange = [string rangeOfString:linkStrings[i]];
+        NSString *s = [string string];
+        NSRange linkStringInnerRange = [s rangeOfString:linkStrings[i]];
         NSDictionary *linkedStringDictionary;
         if (tapHandlers.count >=linkStrings.count)
         {
@@ -125,7 +129,7 @@
     
 }
 
--(void)appendString:(NSString *)string linkStrings:(NSArray *)linkStrings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandlers:(NSArray *)tapHandlers
+-(void)appendText:(NSAttributedString *)string linkStrings:(NSArray *)linkStrings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandlers:(NSArray *)tapHandlers
 {
     if (!string || !defaultAttributes)
     {
@@ -135,12 +139,12 @@
     NSMutableAttributedString *mutableAttributedString;
     if (oldLength == 0)
     {
-        mutableAttributedString = [[NSMutableAttributedString alloc]initWithString:string attributes:nil];
+        mutableAttributedString = [[NSMutableAttributedString alloc]initWithAttributedString:string];
     }
     else
     {
         mutableAttributedString = [[NSMutableAttributedString alloc]initWithAttributedString:self.attributedText];
-        NSAttributedString *appendString = [[NSAttributedString alloc]initWithString:string];
+        NSMutableAttributedString *appendString = [[NSMutableAttributedString alloc]initWithAttributedString:string];
         [mutableAttributedString beginEditing];
         [mutableAttributedString appendAttributedString:appendString];
         [mutableAttributedString endEditing];
@@ -154,7 +158,8 @@
     }
     for (NSInteger i = 0;i<linkStrings.count;i++)
     {
-        NSRange linkStringInnerRange = [string rangeOfString:linkStrings[i]];
+        NSString *s = [string string];
+        NSRange linkStringInnerRange = [s rangeOfString:linkStrings[i]];
         NSRange linkStringOutRange = NSMakeRange(linkStringInnerRange.location + oldLength, linkStringInnerRange.length);
         NSDictionary *linkedStringDictionary;
         if (tapHandlers.count >=linkStrings.count)
@@ -174,10 +179,10 @@
 {
     if (!self.text)
     {
-        self.text = linkedStringDictionary[@"string"];
+        //self.text = linkedStringDictionary[@"string"];
         self.attributedText = [[NSAttributedString alloc]initWithString:linkedStringDictionary[@"string"]];
     }
-    NSString *text = self.text;
+   // NSString *text = self.text;
     NSAttributedString *attributedString = self.attributedText;
     NSString *string = linkedStringDictionary[@"string"];
     NSRange range = [linkedStringDictionary[@"stringRange"] rangeValue];
@@ -210,7 +215,7 @@
     characterIndex = [self.layoutManager characterIndexForPoint:point inTextContainer:self.textContainer fractionOfDistanceBetweenInsertionPoints:NULL];
     __block NSRange result = NSMakeRange(0, 0) ;
     [dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        NSValue *value = (NSValue*)obj;
+       // NSValue *value = (NSValue*)obj;
         NSRange rangeToCheck = [key rangeValue];
         NSUInteger min = rangeToCheck.location;
         NSUInteger max = min + rangeToCheck.length;

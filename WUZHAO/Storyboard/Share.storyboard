@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ylf-36-K0f">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ylf-36-K0f">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Capture Camera Controller-->
@@ -29,6 +30,61 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CzV-5w-mg8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1108" y="235"/>
+        </scene>
+        <!--Photo Filter View Collection View Controller-->
+        <scene sceneID="PBY-mG-IoH">
+            <objects>
+                <viewController storyboardIdentifier="filterViewController" id="NU5-I4-ghc" customClass="PhotoFilterViewCollectionViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="r8q-ON-xpb"/>
+                        <viewControllerLayoutGuide type="bottom" id="LEd-AF-ui4"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="UMn-XI-AA1">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EQ3-g6-pa6">
+                                <rect key="frame" x="0.0" y="20" width="600" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="MSX-Xj-jJP"/>
+                                </constraints>
+                            </view>
+                            <glkView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JSh-em-or7" customClass="FilteredImageView">
+                                <rect key="frame" x="0.0" y="63" width="320" height="320"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="JSh-em-or7" secondAttribute="height" multiplier="1:1" id="2Lu-9k-TOS"/>
+                                </constraints>
+                            </glkView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="EQ3-g6-pa6" secondAttribute="trailing" id="EiY-Zd-j77"/>
+                            <constraint firstItem="JSh-em-or7" firstAttribute="width" secondItem="UMn-XI-AA1" secondAttribute="width" id="Ho7-9U-n23"/>
+                            <constraint firstItem="JSh-em-or7" firstAttribute="leading" secondItem="UMn-XI-AA1" secondAttribute="leadingMargin" constant="-16" id="Kvp-Wc-dLC"/>
+                            <constraint firstItem="EQ3-g6-pa6" firstAttribute="leading" secondItem="UMn-XI-AA1" secondAttribute="leading" id="Pkx-Ys-fRW"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="JSh-em-or7" secondAttribute="trailing" constant="-16" id="Tc1-ml-MR2"/>
+                            <constraint firstItem="JSh-em-or7" firstAttribute="top" secondItem="EQ3-g6-pa6" secondAttribute="bottom" id="TeN-UL-WWQ"/>
+                            <constraint firstAttribute="centerX" secondItem="JSh-em-or7" secondAttribute="centerX" id="YKf-re-Fnm"/>
+                            <constraint firstAttribute="centerX" secondItem="EQ3-g6-pa6" secondAttribute="centerX" id="kxx-ub-4Zq"/>
+                            <constraint firstItem="EQ3-g6-pa6" firstAttribute="top" secondItem="r8q-ON-xpb" secondAttribute="bottom" id="qvq-1j-7R8"/>
+                            <constraint firstAttribute="width" secondItem="EQ3-g6-pa6" secondAttribute="width" id="xhE-qq-wfM"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="Kvp-Wc-dLC"/>
+                                <exclude reference="Tc1-ml-MR2"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <connections>
+                        <outlet property="filteredImageView" destination="JSh-em-or7" id="cJl-Un-gWL"/>
+                        <outlet property="topBarView" destination="EQ3-g6-pa6" id="ziB-3j-Ekm"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="h5A-2x-HbO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1120" y="953"/>
         </scene>
         <!--Set Image Info-->
         <scene sceneID="zOl-Xp-qyv">

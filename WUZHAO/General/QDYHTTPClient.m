@@ -21,7 +21,7 @@
         
         sharedInstance = [[self alloc] initWithBaseURL:[NSURL URLWithString:KAPIHOST]];
         sharedInstance.responseSerializer = [AFJSONResponseSerializer serializer];
-        [sharedInstance.responseSerializer setAcceptableContentTypes:[NSSet setWithObject:@"application/json"]];
+        [sharedInstance.responseSerializer setAcceptableContentTypes:[NSSet setWithObjects:@"application/json",@"text/html", nil]];
         sharedInstance.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
         
     });
@@ -78,12 +78,14 @@
                     {
                         NSLog(@"login success! %@," ,[responseObject objectForKey:@"msg"]);
                         NSDictionary *data = [responseObject objectForKey:@"data"];
+                        
                         self.currentUser.UserID =[[data objectForKey:@"user_id"] intValue];
                         self.currentUser.UserName = [data objectForKey:@"nick"];
                         self.currentUser.userToken = [data objectForKey:@"token"];
                         //self.currentUser.userToken = @"";
                         [self setDefaultUserInfoWithUser:self.currentUser];
                         [self updateLocalUserInfo];
+                        [self updateUserPushInfo];
                         NSLog(@"^---^ user id%ld",(long)self.currentUser.UserID);
                         NSLog(@"^---^ user token%@",self.currentUser.userToken);
                         
@@ -136,7 +138,9 @@
                         self.currentUser.userToken = [data objectForKey:@"token"];
                         NSLog(@"\n user info ***********************%@",self.currentUser);
                         [self setDefaultUserInfoWithUser:self.currentUser];
+                        
                         [self updateLocalUserInfo];
+                        [self updateUserPushInfo];
                         
                         
                     }
@@ -145,7 +149,7 @@
                 else
                 {
                     NSLog(@"%ld",(long)httpResponse.statusCode);
-                    complete(@{@"sever error":@"服务器错误"},nil);
+                    complete(@{@"msg":@"服务器错误"},nil);
                 }
                 
                 
@@ -157,6 +161,36 @@
                 
                 
             }];
+}
+
+
+//regisetr baidu push
+-(void)registerBPushWithBpUserId:(NSString *)bpUserId bpChannelId:(NSString *)bpChannelId deviceToken:(NSString *)deviceToken whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/registerpush";
+    NSDictionary *param = @{@"bpUserId":bpUserId,@"bpChannelId":bpChannelId,@"deviceToken":deviceToken};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result) {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                [returnData setValue:@"注册百度推送成功" forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器异常" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
 }
 
 //log out
@@ -361,7 +395,7 @@
                 [returnData setValue:@"服务器错误" forKey:@"error"];
             }
         }
-        else
+        else if(error)
         {
             [returnData setValue:@"服务器异常" forKey:@"error"];
         }
@@ -520,7 +554,7 @@
                 [returnData setValue:@"服务器错误" forKey:@"error"];
             }
         }
-        else
+        else if (error)
         {
             [returnData setValue:@"服务器错误" forKey:@"error"];
         }
@@ -563,7 +597,7 @@
             }
             
         }
-        else
+        else if(error)
         {
             [returnData setValue:@"服务器错误" forKey:@"error"];
         }
@@ -757,7 +791,7 @@
             }
             
         }
-        else
+        else if(error)
         {
             [returnData setValue:@"服务器错误" forKey:@"error"];
         }
@@ -780,7 +814,7 @@
                 {
                     WhatsGoingOn *item = [[WhatsGoingOn alloc]init];
                     item.postId = postId;
-                    [item configureWithCommentList:data];
+                    [item configureWithCommentList:data commentNum:data.count];
                     [returnData setValue:item forKey:@"data"];
                 }
             }
@@ -794,7 +828,7 @@
             }
             
         }
-        else
+        else if(error)
         {
             [returnData setValue:@"服务器错误" forKey:@"error"];
         }
@@ -838,7 +872,7 @@
             }
             
         }
-        else
+        else if (error)
         {
             [returnData setValue:@"服务器错误" forKey:@"error"];
         }
@@ -873,7 +907,7 @@
             }
             
         }
-        else
+        else if(error)
         {
             [returnData setValue:@"服务器错误" forKey:@"error"];
         }
@@ -910,7 +944,7 @@
             }
             
         }
-        else
+        else if(error)
         {
             [returnData setValue:@"服务器错误" forKey:@"error"];
         }
@@ -944,7 +978,7 @@
             }
             
         }
-        else
+        else if (error)
         {
             [returnData setValue:@"服务器错误" forKey:@"error"];
         }
@@ -978,7 +1012,7 @@
             }
             
         }
-        else
+        else if (error)
         {
             [returnData setValue:@"服务器错误" forKey:@"error"];
         }
@@ -1018,7 +1052,7 @@
             }
             
         }
-        else
+        else if (error)
         {
             [returnData setValue:@"服务器错误" forKey:@"error"];
         }
@@ -1060,7 +1094,7 @@
             }
             
         }
-        else
+        else if (error)
         {
             [returnData setValue:@"服务器错误" forKey:@"error"];
         }
@@ -1136,41 +1170,7 @@
             if ([result objectForKey:@"success"])
             {
                 NSArray *data = [result objectForKey:@"data"];
-                NSMutableArray *feeds = [[NSMutableArray alloc]init];
-                for (NSDictionary *notice in data)
-                {
-                    /*
-                    {
-                        
-                        "noticeId": 3,
-                        "operatorId": 6,
-                        "noticeType": 3,
-                        "operatorNick": "哈利小球",
-                        "operatorAvatar": "http://7u2ibb.com1.z0.glb.clouddn.com/qdy_avatar_6_1426923010351.jpg/am",
-                        "content": null,
-                        "photo": "",
-                        "postId": null,
-                        "createTime": "14小时"
-                    },*/
-                    Feeds *feed = [[Feeds alloc]init];
-                    feed.feedsId = [(NSNumber *)[notice objectForKey:@"noticeId"] integerValue];
-                    feed.type = [(NSNumber *)[notice objectForKey:@"noticeType"] integerValue];
-                    feed.feedsUser.UserID =[(NSNumber *)[notice objectForKey:@"operatorId"] integerValue];
-                    feed.feedsUser.UserName = [notice objectForKey:@"operatorNick"];
-                    feed.feedsUser.avatarImageURLString = [notice objectForKey:@"operatorAvatar"];
-                    if (! [[notice objectForKey:@"content"]isKindOfClass:[NSNull class]])
-                    {
-                        feed.content = [notice objectForKey:@"content"];
-                    }
-                    if (! [[notice objectForKey:@"postId"] isKindOfClass:[NSNull class]])
-                    {
-                        feed.feedsPhoto.postId = [(NSNumber *)[notice objectForKey:@"postId"]integerValue];
-                        feed.feedsPhoto.imageUrlString = [notice objectForKey:@"photo"];
-                    }
-                    feed.time = [notice objectForKey:@"createTime"];
-                    [feeds addObject:feed];
-                    
-                }
+                NSMutableArray *feeds = [Feeds configureFeedsWithData:data];
                 [returnData setObject:feeds forKey:@"data"];
             }
             else if ([result objectForKey:@"msg"])
@@ -1224,6 +1224,36 @@
             NSLog(@"更新个人信息失败");
             [userDefaults setObject:@"" forKey:@"avatarUrl"];
             
+        }
+        [userDefaults synchronize];
+    }];
+}
+-(void)updateUserPushInfo
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+     NSString *bpUserId = @"";
+    NSString *bpChannelId = @"";
+    NSString *deviceToken = @"";
+    if ([userDefaults objectForKey:@"bpUserId"])
+    {
+        bpUserId = [userDefaults objectForKey:@"bpUserId"];
+    }
+    if ([userDefaults objectForKey:@"bpChannelId"])
+    {
+        bpChannelId = [userDefaults objectForKey:@"bpChannelId"];
+    }
+    if ( [userDefaults objectForKey:@"deviceToken"])
+    {
+        deviceToken = [userDefaults objectForKey:@"deviceToken"];
+    }
+    [[QDYHTTPClient sharedInstance]registerBPushWithBpUserId:bpUserId  bpChannelId:bpChannelId deviceToken:deviceToken whenComplete:^(NSDictionary *returnData) {
+        if ([returnData objectForKey:@"data"])
+        {
+            NSLog(@"register to baidu push success");
+        }
+        else if ([returnData objectForKey:@"error"])
+        {
+            NSLog(@"register to baidu push error");
         }
     }];
 }

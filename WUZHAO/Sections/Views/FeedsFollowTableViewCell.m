@@ -58,7 +58,7 @@
     
     [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsUser.avatarImageURLString]];
     
-    NSString *content =  [NSString stringWithFormat:@"%@ 关注了你 %@",feeds.feedsUser.UserName,feeds.time];
+    NSString *content =  [NSString stringWithFormat:@"%@ 关注了你  %@",feeds.feedsUser.UserName,feeds.time];
     NSMutableAttributedString *attributeContent = [[NSMutableAttributedString alloc]initWithString:content];
     NSRange userNameRange = [content rangeOfString:feeds.feedsUser.UserName];
     NSRange timeRange = [content rangeOfString:feeds.time];
@@ -67,6 +67,10 @@
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE} range:timeRange];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:staticStringRange];
     self.contentLabel.attributedText = attributeContent;
+    self.contentTextView.attributedText = attributeContent;
+    [self.contentTextView linkUserNameWithUserList:@[feeds.feedsUser]];
+    self.contentTextView.delegate = (id<NoticeContentTextViewDelegate>)self.parentController;
+    [self updateContentTextViewFrame];
     
    // [self.followButton setNormalButtonAppearance];
     /*
@@ -86,6 +90,14 @@
     
     [self setAppearance];
     
+}
+-(void)updateContentTextViewFrame
+{
+    CGRect frame = self.contentTextView.frame;
+    CGSize maxSize = CGSizeMake( WZ_APP_SIZE.width -60.0f, FLT_MAX);
+    CGSize newSize = [self.contentTextView sizeThatFits:maxSize];
+    frame.size = newSize;
+    self.contentTextView.frame = frame;
 }
 
 @end

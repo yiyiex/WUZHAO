@@ -14,8 +14,21 @@
 
 -(NSURLSessionDataTask *)ExecuteRequestWithMethod:(NSString *)method api:(NSString *)api parameters:(NSDictionary *)param complete:(void (^)(NSDictionary *, NSError *))complete
 {
-    NSString *token = [[NSUserDefaults standardUserDefaults]objectForKey:@"token"];
-    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *token = @"";
+    NSInteger userId = 0;
+    if ([userDefaults objectForKey:@"token"])
+    {
+        token = [userDefaults objectForKey:@"token"];
+    }
+    if ([userDefaults integerForKey:@"userId"])
+    {
+        userId = [userDefaults integerForKey:@"userId"];
+    }
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    // app版本
+    NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    [self.requestSerializer setValue:app_Version forHTTPHeaderField:@"version"];
     [self.requestSerializer setValue:token forHTTPHeaderField:@"token"];
     [self.requestSerializer setValue:[NSString stringWithFormat:@"%ld",(long)userId] forHTTPHeaderField:@"userId"];
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
@@ -28,15 +41,24 @@
                 if ( [[responseObject objectForKey:@"success"] isEqualToString:@"false"])
                 {
                     NSLog(@"get infomation failed:");
+                    //code 110 token校验失败
                     if ([(NSNumber *)[responseObject objectForKey:@"code"]integerValue] ==110)
                     {
                         NSLog(@"token校验失败");
                         [[NSNotificationCenter defaultCenter]postNotificationName:@"tokenIllegal" object:nil];
-                        complete(@{@"msg":@"登录态失效，请重新登录"},nil);
+                        //complete(@{@"error":@"登录态失效，请重新登录"},nil);
+                        complete(nil,nil);
                     }
                     else
                     {
-                        complete(@{@"msg":[responseObject objectForKey:@"msg"]},nil);
+                        if ([responseObject objectForKey:@"msg"])
+                        {
+                            complete(@{@"msg":[responseObject objectForKey:@"msg"]},nil);
+                        }
+                        else
+                        {
+                            complete(@{@"msg":@"请求失败"},nil);
+                        }
                     }
                 }
                 else

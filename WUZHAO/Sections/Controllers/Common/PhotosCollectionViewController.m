@@ -10,15 +10,19 @@
 #import "PhotoCollectionViewCell.h"
 #import "HomeTableViewController.h"
 
-#import "PhotoDetailTableViewController.h"
+#import "PhotoScrollViewController.h"
+#import "PhotoDetailViewsController.h"
+
 
 
 #import "UIImageView+WebCache.h"
 #import "UIViewController+BackBarItem.h"
+#import "UIViewController+HideBottomBar.h"
 #import "UILabel+ChangeAppearance.h"
 #import "PhotoCommon.h"
 #import "macro.h"
 #import "QDYHTTPClient.h"
+
 
 @interface PhotosCollectionViewController ()
 @property (nonatomic,strong) UIView *infoView;
@@ -156,22 +160,47 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     //[self performSegueWithIdentifier:@"showDetail" sender:self];
-
-    WhatsGoingOn *item = [self.datasource objectAtIndex:indexPath.row];
+    if (self.detailStyle == DETAIL_STYLE_SINGLEPAGE)
+    {
+        WhatsGoingOn *item = [self.datasource objectAtIndex:indexPath.row];
     
-    UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
-    HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
-    [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];
-    [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLEDETAIL];
-    [self.navigationController pushViewController:detailPhotoController animated:YES];
-    //PhotoDetailViewController *detailViewController = [detailStoryBoard instantiateViewControllerWithIdentifier:@"photoDetailView"];
-    //[detailViewController setWhatsGoingOnItem:item];
-    //detailViewController.cellIndexInCollection = indexPath;
-    //[self.navigationController pushViewController:detailViewController animated:YES];
+        UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
+        HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
+        [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];
+        [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
+        [detailPhotoController GetLatestDataList];
+        [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
+    }
+    else
+    {
+        WhatsGoingOn *item = [self.datasource objectAtIndex:indexPath.row];
+        
+        UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
+        HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
+        [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];
+        [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
+        [detailPhotoController GetLatestDataList];
+        [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
+        
+    }
+
     
 }
 
-
+#pragma mark - photoDetailViewsControllerDelegate
+-(WhatsGoingOn *)photoDetailViewsController:(PhotoDetailViewsController *)detailViews dataAtIndex:(NSInteger)index
+{
+    if (index <self.datasource.count)
+    {
+        return self.datasource[index];
+    }
+    else if ([self.dataSource respondsToSelector:@selector(PhotosCollectionViewController:dataAtIndex:)])
+    {
+        WhatsGoingOn *item = [self.dataSource PhotosCollectionViewController:self dataAtIndex:index];
+        return item;
+    }
+    return nil;
+}
 
 /*
 // Uncomment this method to specify if the specified item should be highlighted during tracking

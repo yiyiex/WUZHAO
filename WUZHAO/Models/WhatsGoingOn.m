@@ -80,8 +80,11 @@
     if ([data objectForKey:@"comment_list"])
     {
         NSArray *commentListInData = [data objectForKey:@"comment_list"];
-        [self configureWithCommentList:commentListInData];
+        NSInteger commentNum = [(NSNumber *)[data objectForKey:@"comment_num"]integerValue];
+        [self configureWithCommentList:commentListInData commentNum:commentNum];
+        
     }
+    
     if ([data objectForKey:@"likeUserList"])
     {
         NSArray *likeList = [data objectForKey:@"likeUserList"];
@@ -91,7 +94,7 @@
     return self;
 }
 
--(void)configureWithCommentList:(NSArray *)commentListInData
+-(void)configureWithCommentList:(NSArray *)commentListInData commentNum:(NSInteger)num
 {
     NSMutableArray *commentStringList = [[NSMutableArray alloc]init];
     NSMutableArray *commentList = [[NSMutableArray alloc]init];
@@ -124,6 +127,10 @@
         [commentStringList addObject:commentString];
         
         
+    }
+    if (self.hasMoreComments)
+    {
+        [commentStringList addObject:[NSString stringWithFormat:@"查看全部%ld条评论",(long)num]];
     }
     self.commentList = commentList;
     self.commentStringList = commentStringList;

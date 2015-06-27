@@ -22,7 +22,10 @@
 -(void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setNavigationAppearance];
+
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(dismissSelf) name:@"loginSuccess" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(dismissSelf) name:@"registSuccess" object:nil];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -42,6 +45,7 @@
         [self.RegisterButton setHidden:YES];
     }
 }
+
 
 
 -(void)setNavigationAppearance
@@ -75,7 +79,33 @@
     
 }
 
-
+-(void)dismissSelf
+{
+    if (self.navigationController)
+    {
+        if (self.navigationController.viewControllers.count ==1)
+        {
+            [self.navigationController dismissViewControllerAnimated:YES completion:^{
+                
+            }];
+        }
+        else
+        {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }
+    else
+    {
+    
+        [self dismissViewControllerAnimated:NO completion:^{
+            
+        }];
+    }
+    if (self.dismiss)
+    {
+        [self dismiss];
+    }
+}
 
 
 @end

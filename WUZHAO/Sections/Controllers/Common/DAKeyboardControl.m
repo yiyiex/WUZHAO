@@ -274,7 +274,9 @@ static char UIViewKeyboardPanRecognizer;
                      }
                      completion:^(BOOL finished){
                          if(self.completionBlock)
+                         {
                              self.completionBlock(finished, NO);
+                         }
                      }];
 }
 
@@ -297,6 +299,7 @@ static char UIViewKeyboardPanRecognizer;
     // Don't allow panning if inside the active input (unless SELF is a UITextView and the receiving view)
     return (![touch.view isFirstResponder] || ([self isKindOfClass:[UITextView class]] && [self isEqual:touch.view]));
 }
+
 
 - (void)panGestureDidChange:(UIPanGestureRecognizer *)gesture
 {

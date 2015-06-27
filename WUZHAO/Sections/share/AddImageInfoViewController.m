@@ -5,7 +5,7 @@
 //  Created by yiyi on 14-12-21.
 //  Copyright (c) 2014年 yiyi. All rights reserved.
 //
-
+#import "captureMacro.h"
 #import "AddImageInfoViewController.h"
 #import "AddressInfoList.h"
 #import "AddressSearchTableViewController.h"
@@ -27,7 +27,6 @@
 
 //#define PIOTKEYWORDS @"餐饮|购物|生活|体育|住宿|风景|地名|商务|科教|公司";
 #define POIKEYWORDS @"餐饮"
-#define poi_privider 1
 
 @interface AddImageInfoViewController()<UITableViewDataSource,UITableViewDelegate,AddressSearchTableViewControllerDelegate,UITextViewDelegate,UITextFieldDelegate>
 {
@@ -160,7 +159,7 @@
 -(void)initTopBar
 {
     self.topBarView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width,50)];
-    [self.topBarView setBackgroundColor:rgba_WZ(23,24,26,0.9)];
+    [self.topBarView setBackgroundColor:DARK_PARENT_BACKGROUND_COLOR];
     UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(13, 13, 24, 24)];
     [backButton setBackgroundImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(backBarButtonClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -208,7 +207,7 @@
 
     [self.postImageDescription resignFirstResponder];
     //发布照片信息,上传到七牛;上传成功后提示并转回主页
-    [self dismissViewControllerAnimated:YES completion:nil];
+    //[self dismissViewControllerAnimated:YES completion:nil];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"finishPostImage" object:nil];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self uploadPhotoToQiNiu];
@@ -327,7 +326,7 @@
                                                                         photo:[data objectForKey:@"imageName"]
                                                                       thought:photoDescription
                                                                        haspoi:_hasPoi
-                                                                     provider:poi_privider
+                                                                     provider:uploadPoi.type
                                                                           uid:uploadPoi.uid
                                                                          name:uploadPoi.name
                                                                      classify:uploadPoi.classify
@@ -439,22 +438,7 @@
     }
     return cell;
 }
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    
-    if (indexPath.section ==1 && indexPath.row == 0)
-    {
-        AddressSearchTableViewController *searchCon = [[AddressSearchTableViewController alloc]init];
-        searchCon.delegate = self;
-        if (self.poiInfo)
-        {
-            searchCon.poiInfo = self.poiInfo;
-        }
-        [self presentViewController:searchCon animated:YES completion:nil];
-        
-        
-    }
-}
+
 #pragma mark -dataformat
 
 - (NSString *)getDateTimeString
@@ -493,6 +477,12 @@
     }
     if ([self.postImageInfo objectForKey:@"{GPS}"])
     {
+        NSDictionary *GPSInfo = [self.postImageInfo objectForKey:@"{GPS}"];
+        NSString * latitude = [GPSInfo objectForKey:@"Latitude"];
+        NSString * longitude = [GPSInfo objectForKey:@"Longitude"];
+        searchCon.location = [[CLLocation alloc]initWithLatitude:[latitude floatValue] longitude:[longitude floatValue]];
+        [self presentViewController:searchCon animated:YES completion:nil];
+        /*
         
         UIAlertController *alertController =[UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         UIAlertAction *choosePhotoLocationAction = [UIAlertAction actionWithTitle:@"标记拍照位置" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -514,7 +504,9 @@
         [alertController addAction:cancelAction];
         [alertController addAction:choosePhotoLocationAction];
         [alertController addAction:chooseNearByLocationAction];
-        [self presentViewController:alertController animated:YES completion:nil];
+        
+        [self presentViewController:alertController animated:YES completion:nil];*/
+        
     }
     else
     {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="n8j-zi-5ug">
     <dependencies>
+        <deployment identifier="iOS"/>
         <development version="6000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -9,8 +10,8 @@
         <!--HomeTable-->
         <scene sceneID="u8H-Ox-FKO">
             <objects>
-                <tableViewController storyboardIdentifier="HomeTableViewController" id="n8j-zi-5ug" userLabel="HomeTable" customClass="HomeTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="472" sectionHeaderHeight="22" sectionFooterHeight="22" id="Pqn-qZ-5qG">
+                <tableViewController storyboardIdentifier="HomeTableViewController" title="主 页" id="n8j-zi-5ug" userLabel="HomeTable" customClass="HomeTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="472" sectionHeaderHeight="22" sectionFooterHeight="22" id="Pqn-qZ-5qG">
                         <rect key="frame" x="0.0" y="94" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -66,9 +67,12 @@
                                         </view>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jvh-cR-bp1">
                                             <rect key="frame" x="0.0" y="48" width="477" height="280"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="Jvh-cR-bp1" secondAttribute="height" multiplier="1:1" id="Uh8-bB-emZ"/>
+                                            </constraints>
                                         </imageView>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Ck-41-Qdd" userLabel="addressView">
-                                            <rect key="frame" x="0.0" y="306" width="608" height="22"/>
+                                            <rect key="frame" x="0.0" y="314" width="608" height="22"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="map-maker-22.png" translatesAutoresizingMaskIntoConstraints="NO" id="NS8-jZ-xVF">
                                                     <rect key="frame" x="8" y="6" width="11" height="11"/>
@@ -94,7 +98,7 @@
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x0m-5V-xwF" userLabel="descriptionView" customClass="UITextView">
-                                            <rect key="frame" x="8" y="328" width="584" height="26"/>
+                                            <rect key="frame" x="4" y="336" width="592" height="26"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="26" id="hwt-yI-eqe"/>
                                             </constraints>
@@ -154,10 +158,10 @@
                                     <constraints>
                                         <constraint firstItem="Jvh-cR-bp1" firstAttribute="leading" secondItem="oWk-FX-HpA" secondAttribute="leading" id="03S-Bq-VyS"/>
                                         <constraint firstAttribute="bottom" secondItem="NXt-KF-ZdU" secondAttribute="bottom" constant="12" id="04k-wW-MXv"/>
-                                        <constraint firstItem="x0m-5V-xwF" firstAttribute="leading" secondItem="oWk-FX-HpA" secondAttribute="leading" constant="8" id="0z9-U3-sTP"/>
+                                        <constraint firstItem="x0m-5V-xwF" firstAttribute="leading" secondItem="oWk-FX-HpA" secondAttribute="leading" constant="4" id="0z9-U3-sTP"/>
                                         <constraint firstItem="9Iz-Tu-VWB" firstAttribute="height" secondItem="NXt-KF-ZdU" secondAttribute="height" id="69I-P5-X75"/>
                                         <constraint firstItem="vcR-Um-zV6" firstAttribute="top" secondItem="0VZ-2G-7hP" secondAttribute="bottom" id="ABa-KO-eiR"/>
-                                        <constraint firstItem="0VZ-2G-7hP" firstAttribute="top" secondItem="x0m-5V-xwF" secondAttribute="bottom" constant="8" id="AxG-VP-GMp"/>
+                                        <constraint firstItem="0VZ-2G-7hP" firstAttribute="top" secondItem="x0m-5V-xwF" secondAttribute="bottom" id="AxG-VP-GMp"/>
                                         <constraint firstAttribute="trailing" secondItem="Jvh-cR-bp1" secondAttribute="trailing" id="Btp-Uv-t9N"/>
                                         <constraint firstItem="kwx-c6-mhO" firstAttribute="bottom" secondItem="Jvh-cR-bp1" secondAttribute="top" id="DFg-80-pjc"/>
                                         <constraint firstItem="3Ck-41-Qdd" firstAttribute="trailing" secondItem="oWk-FX-HpA" secondAttribute="trailing" constant="8" id="FkB-Ow-Yc2"/>
@@ -179,7 +183,7 @@
                                         <constraint firstItem="NXt-KF-ZdU" firstAttribute="leading" secondItem="oWk-FX-HpA" secondAttribute="leading" constant="8" id="rzi-6R-a6q"/>
                                         <constraint firstItem="3Ck-41-Qdd" firstAttribute="leading" secondItem="oWk-FX-HpA" secondAttribute="leading" id="tcG-p6-25E"/>
                                         <constraint firstItem="sqy-Nn-7Qk" firstAttribute="width" secondItem="NXt-KF-ZdU" secondAttribute="width" id="v3w-9l-yZt"/>
-                                        <constraint firstAttribute="trailing" secondItem="x0m-5V-xwF" secondAttribute="trailing" constant="8" id="xMW-ig-4c9"/>
+                                        <constraint firstAttribute="trailing" secondItem="x0m-5V-xwF" secondAttribute="trailing" constant="4" id="xMW-ig-4c9"/>
                                         <constraint firstItem="sqy-Nn-7Qk" firstAttribute="height" secondItem="NXt-KF-ZdU" secondAttribute="height" id="zX7-Fl-YRU"/>
                                         <constraint firstItem="0VZ-2G-7hP" firstAttribute="leading" secondItem="oWk-FX-HpA" secondAttribute="leading" id="zpJ-i9-2Cg"/>
                                     </constraints>
@@ -216,40 +220,14 @@
                             <outlet property="delegate" destination="n8j-zi-5ug" id="qDa-eX-4Uc"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="动态" id="tmL-z4-q8w"/>
-                    <nil key="simulatedTopBarMetrics"/>
+                    <navigationItem key="navigationItem" title="Place" id="tmL-z4-q8w"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="600"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ld4-m0-MSi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1398" y="-765"/>
-        </scene>
-        <!--Photos Table View Controller-->
-        <scene sceneID="3Cb-G3-L8X">
-            <objects>
-                <tableViewController storyboardIdentifier="PhotosTableViewController" id="mIg-nv-5vi" customClass="PhotosTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="cNO-fR-mBo">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Mka-Kj-bjJ">
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Mka-Kj-bjJ" id="0iW-oq-rAn">
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="mIg-nv-5vi" id="SLM-Xe-69G"/>
-                            <outlet property="delegate" destination="mIg-nv-5vi" id="mHa-LI-l9K"/>
-                        </connections>
-                    </tableView>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gIF-no-9fl" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1296" y="-22.999999999999996"/>
+            <point key="canvasLocation" x="1930" y="-765"/>
         </scene>
     </scenes>
     <resources>

@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "CommonContainerViewController.h"
+#import "PhotosCollectionViewController.h"
 
 #import "User.h"
 #import "FootPrint.h"
 #import "WhatsGoingOn.h"
 
-@interface MineViewController : UIViewController <UITabBarDelegate>
+@interface MineViewController : UIViewController <UITabBarDelegate,PhotoCollectionViewControllerDataSource>
+
 @property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, strong) IBOutlet UIView *scrollContentView;
 

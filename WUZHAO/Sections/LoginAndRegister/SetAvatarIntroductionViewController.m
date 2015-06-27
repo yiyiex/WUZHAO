@@ -80,6 +80,12 @@
     
     [self.nextButton setEnabled:NO];
     
+    UISwipeGestureRecognizer *swipeUpGesture = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeUp:)];
+    [self.view addGestureRecognizer:swipeUpGesture];
+    UISwipeGestureRecognizer *swipeDownGesture = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeDown:)];
+    [self.view addGestureRecognizer:swipeDownGesture];
+    
+    
 }
 /*
 #pragma mark - Navigation
@@ -101,6 +107,10 @@
 }
 -(void)avatarClickAction:(UITapGestureRecognizer *)gesture
 {
+    if ([self.selfDescriptionTextView isFirstResponder])
+    {
+        [self.selfDescriptionTextView resignFirstResponder];
+    }
     UIActionSheet *choiceSheet = [[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"拍照",@"从相册中选取", nil];
     [choiceSheet showInView:self.view];
 }
@@ -299,6 +309,32 @@
     [picker dismissViewControllerAnimated:YES completion:^{
         
     }];
+}
+
+#pragma mark -touch 
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if (![self.selfDescriptionTextView isExclusiveTouch])
+    {
+        [self.selfDescriptionTextView resignFirstResponder];
+    }
+}
+
+#pragma mark -swipe gesture
+-(void)swipeUp:(UISwipeGestureRecognizer*)gesture
+{
+    [self hideKeyboard];
+}
+-(void)swipeDown:(UISwipeGestureRecognizer *)gesture
+{
+    [self hideKeyboard];
+}
+-(void)hideKeyboard
+{
+    if ([self.selfDescriptionTextView isFirstResponder])
+    {
+        [self.selfDescriptionTextView resignFirstResponder];
+    }
 }
 
 

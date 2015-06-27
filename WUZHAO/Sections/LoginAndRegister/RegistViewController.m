@@ -77,25 +77,31 @@
 
 -(void)initView
 {
-    
-    
     self.emailTextField.placeholder = @"邮 箱";
     self.emailTextField.keyboardAppearance = UIKeyboardAppearanceDefault;
     self.emailTextField.keyboardType = UIKeyboardTypeAlphabet;
+    [self.emailTextField addTarget:self action:@selector(textFieldDidChanged:) forControlEvents:UIControlEventEditingChanged];
+    [self.emailTextField addTarget:self action:@selector(checkInput) forControlEvents:UIControlEventEditingDidEndOnExit];
+    
     
     self.userNameTextField.placeholder = @"用户名";
     self.userNameTextField.keyboardAppearance = UIKeyboardAppearanceDefault;
     self.userNameTextField.keyboardType = UIKeyboardTypeDefault;
+    [self.userNameTextField addTarget:self action:@selector(textFieldDidChanged:) forControlEvents:UIControlEventEditingChanged];
+    [self.userNameTextField addTarget:self action:@selector(checkInput) forControlEvents:UIControlEventEditingDidEndOnExit];
     
     self.passwordTextField.placeholder = @"密 码";
     self.passwordTextField.keyboardAppearance = UIKeyboardAppearanceDefault;
     self.passwordTextField.keyboardType = UIKeyboardTypeAlphabet;
+    [self.passwordTextField addTarget:self action:@selector(textFieldDidChanged:) forControlEvents:UIControlEventEditingChanged];
+    [self.passwordTextField addTarget:self action:@selector(checkInput) forControlEvents:UIControlEventEditingDidEndOnExit];
     
     
     [self.registerButton setTitle:@"注  册" forState:UIControlStateNormal];
     [self.registerButton setThemeBackGroundAppearance];
     [self.registerButton setBigButtonAppearance];
     [self.registerButton setEnabled:NO];
+    
     
     
     UIButton *testbutton = [[UIButton alloc]initWithFrame:CGRectMake(20, 300, 200, 30)];
@@ -121,27 +127,37 @@
       [PhotoCommon drawALineWithFrame:passwordLine andColor:THEME_COLOR_LIGHT_GREY inLayer:self.view.layer];
     
 }
-#pragma mark - buttn action
+#pragma mark - button action
 - (IBAction)registerToServer:(id)sender {
    if (![self checkInput])
    {
        return;
    }
+    if ([self.userNameTextField isFirstResponder])
+    {
+        [self.userNameTextField resignFirstResponder];
+    }
+    if ([self.emailTextField isFirstResponder])
+    {
+        [self.emailTextField resignFirstResponder];
+    }
+    if ([self.passwordTextField isFirstResponder])
+    {
+        [self.passwordTextField resignFirstResponder];
+    }
     self.registerButton.enabled = NO;
     [self registerNewUser];
 
     
 }
 - (IBAction)emailTextFieldEditEnd:(id)sender {
-    [self checkInput];
-
     [self.userNameTextField becomeFirstResponder];
 }
 
 - (IBAction)userNameTextFieldEditEnd:(id)sender {
-
-    [self checkInput];
+    
     [self.passwordTextField becomeFirstResponder];
+    
 }
 
 -(IBAction)passwordTextFieldEditEnd:(id)sender
@@ -208,15 +224,9 @@
                 [SVProgressHUD dismiss];
                 if ( [[QDYHTTPClient sharedInstance] IsAuthenticated])
                 {
-                    /*
-                    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                    MainTabBarViewController *main = [mainStoryboard instantiateViewControllerWithIdentifier:@"mainTabBarController"];
-                    [self.navigationController pushViewController:main animated:YES];
-                    return ;
-                     */
-                    UIStoryboard *introductionStoryboard = [UIStoryboard storyboardWithName:@"Introduction" bundle:nil];
-                    SetAvatarIntroductionViewController *introductionController = [introductionStoryboard instantiateViewControllerWithIdentifier:@"introduction"];
-                    [self.navigationController pushViewController:introductionController animated:YES];
+                    [self dismissViewControllerAnimated:YES completion:^{
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"registSuccess" object:nil];
+                    }];
                 }
                 
             }
@@ -234,63 +244,74 @@
     self.password = self.passwordTextField.text;
     self.email= self.emailTextField.text;
     
-    if ([self.userNameTextField.text isEqualToString:@""])
-    {
-        [self.registerButton setEnabled:NO];
-        return false;
-    }
-    if ([self.passwordTextField.text isEqualToString:@""])
-    {
-        [self.registerButton setEnabled:NO];
-        return false;
-    }
     if ([self.emailTextField.text isEqualToString:@""])
     {
         [self.registerButton setEnabled:NO];
         return false;
     }
-    [self.registerButton setEnabled:YES];
-    if (![self.emailTextField.text isVaildEmail])
+    if (![self.emailTextField.text isVaildEmail] )
     {
         [SVProgressHUD showInfoWithStatus:@"请输入正确的邮箱"];
         return false;
     }
-    if (![self.userNameTextField.text isValidUsername])
+    if ([self.userNameTextField.text isEqualToString:@""])
+    {
+        [self.registerButton setEnabled:NO];
+        return false;
+    }
+    if (![self.userNameTextField.text isValidUsername] )
     {
         [SVProgressHUD showInfoWithStatus:@"请输入规范的用户名，可以包含汉子、字母、数字以及下划线"];
         return false;
     }
-    
-    if (![self.passwordTextField.text isValidPassword])
+
+    if ([self.passwordTextField.text isEqualToString:@""])
+    {
+        [self.registerButton setEnabled:NO];
+        return false;
+    }
+    if (![self.passwordTextField.text isValidPassword] )
     {
         [SVProgressHUD showInfoWithStatus:@"密码至少6位"];
         return false;
     }
     [self.registerButton setEnabled:YES];
+   
     self.sPassword = [self.password SHA1];
     return true;
 }
 
-#pragma mark - textView Delegate
+#pragma mark -textfield delegate
+
+-(void)textFieldDidChanged:(id)sender
+{
+    if (![self.userNameTextField.text isEqualToString:@""] && ![self.passwordTextField.text isEqualToString:@""] && ![self.emailTextField.text isEqualToString:@""])
+    {
+        [self.registerButton setEnabled:YES];
+    }
+    else
+    {
+        [self.registerButton setEnabled:NO];
+    }
+}
+
+#pragma mark - touch Delegate
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [[[QDYHTTPClient sharedInstance]operationQueue]cancelAllOperations];
     if (![self.userNameTextField isExclusiveTouch])
     {
         [self.userNameTextField resignFirstResponder];
-        [self checkInput];
     }
     if (![self.passwordTextField isExclusiveTouch])
         
     {
         [self.passwordTextField resignFirstResponder];
-        [self checkInput];
     }
     
     if (![self.emailTextField isExclusiveTouch])
     {
         [self.emailTextField resignFirstResponder];
-        [self checkInput];
         
     }
 }

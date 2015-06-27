@@ -13,6 +13,9 @@
 #import "MineViewController.h"
 #import "SVProgressHUD.h"
 
+#import "NoticeContentTextView.h"
+
+#import "UIViewController+HideBottomBar.h"
 #import "UILabel+ChangeAppearance.h"
 #import "UIImageView+WebCache.h"
 #import "Feeds.h"
@@ -21,7 +24,7 @@
 #import "macro.h"
 
 
-@interface NoticeViewController ()
+@interface NoticeViewController ()<NoticeContentTextViewDelegate>
 
 @property (nonatomic,strong) NSMutableArray *dataSource;
 @property (nonatomic,strong) UIView *infoView;
@@ -32,9 +35,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initNavigationItem];
-    
-    [self getLatestData];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -45,13 +46,15 @@
 {
     [super viewWillAppear:animated];
     [self initNavigationItem];
+    
 }
 -(void)initNavigationItem
 {
     self.navigationItem.title = @"通 知";
-    self.tabBarController.navigationController.navigationBarHidden = NO;
-    self.tabBarController.navigationItem.title = @"通知";
-    self.tabBarController.navigationItem.hidesBackButton = YES;
+    self.navigationController.navigationBarHidden = NO;
+    self.navigationItem.hidesBackButton = YES;
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.backBarButtonItem = backBarItem;
 }
 
 #pragma mark - tableview delegate
@@ -66,7 +69,7 @@
         {
             cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
         }
-        [self configureZanCell:cell WithFeeds:feeds];
+        [self configureZanCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
         
         
     }
@@ -77,7 +80,16 @@
         {
             cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
         }
-        [self configureCommentCell:cell WithFeeds:feeds];
+        [self configureCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
+    }
+    else if (feeds.type == WZ_FEEDSTYPE_REPLYCOMMENT)
+    {
+        cell = (FeedsZanAndCommentTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"zanAndCommentCell" forIndexPath:indexPath];
+        if (!cell)
+        {
+            cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
+        }
+        [self configureReplyCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
     }
     else if (feeds.type == WZ_FEEDSTYPE_FOLLOW)
     {
@@ -86,8 +98,9 @@
         {
             cell = [[FeedsFollowTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"followCell"];
         }
-        [self configureFollowCell:cell WithFeeds:feeds];
+        [self configureFollowCell:(FeedsFollowTableViewCell *)cell WithFeeds:feeds];
     }
+    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
     
@@ -101,14 +114,50 @@
 {
     return 1;
 }
--(CGFloat)tableView:(UITableView *)tableView estimatedHeightForFooterInSection:(NSInteger)section
+
+
+-(float)caculateProtoCellHeightWithData:(Feeds *)feeds
 {
-    return UITableViewAutomaticDimension;
+    float height;
+    if (feeds.type == WZ_FEEDSTYPE_ZAN)
+    {
+        height =  64;
+    }
+    else if (feeds.type == WZ_FEEDSTYPE_COMMENT)
+    {
+       FeedsZanAndCommentTableViewCell * cell = (FeedsZanAndCommentTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"zanAndCommentCell" ];
+        if (!cell)
+        {
+            cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
+        }
+        [self configureCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
+        height = cell.contentTextView.frame.size.height >60?cell.contentTextView.frame.size.height:64;
+        
+    }
+    else if (feeds.type == WZ_FEEDSTYPE_REPLYCOMMENT)
+    {
+        FeedsZanAndCommentTableViewCell * cell = (FeedsZanAndCommentTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"zanAndCommentCell" ];
+        if (!cell)
+        {
+            cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
+        }
+        [self configureReplyCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
+         height = cell.contentTextView.frame.size.height >60?cell.contentTextView.frame.size.height:64;
+    }
+    else if (feeds.type == WZ_FEEDSTYPE_FOLLOW)
+    {
+        height = 64;
+    }
+    return height;
+}
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return[ self caculateProtoCellHeightWithData:self.dataSource[indexPath.row]];
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 56;
+    return [self caculateProtoCellHeightWithData:self.dataSource[indexPath.row]];
 }
 
 /*
@@ -127,6 +176,10 @@
 -(void)configureCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:(Feeds *)feeds
 {
     [cell configureCommentWithFeeds:feeds parentController:self];
+}
+-(void)configureReplyCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:(Feeds *)feeds
+{
+    [cell configureReplyCommentWithFeeds:feeds parentController:self];
 }
 -(void)configureFollowCell:(FeedsFollowTableViewCell *)cell WithFeeds:(Feeds *)feeds
 {
@@ -181,8 +234,9 @@
     UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
     HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
     [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:feeds.feedsPhoto]];
-    [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLEDETAIL];
-    [self.navigationController pushViewController:detailPhotoController animated:YES];
+    [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
+    [detailPhotoController GetLatestDataList];
+    [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
     
 }
 -(void)avatarClick:(UIGestureRecognizer *)gesture
@@ -208,11 +262,25 @@
     MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
     [personalViewCon setUserInfo:user];
     [personalViewCon.navigationController setNavigationBarHidden:YES];
-    [self.navigationController pushViewController:personalViewCon animated:YES];
+    [self pushToViewController:personalViewCon animated:YES hideBottomBar:YES];
 }
 /*
 -(void)followButtonClick:(UIGestureRecognizer *)gesture
 {
     
 }*/
+
+
+#pragma mark - noticeTextViewDelegate
+-(void)noticeContentTextView:(NoticeContentTextView *)noticeContentTextView didClickLinkUser:(User *)user
+{
+    [self goToUserPageWithUserInfo:user];
+}
+
+#pragma mark - notification selector
+-(void)clearUserInfo
+{
+    self.dataSource = nil;
+    [self.tableView reloadData];
+}
 @end

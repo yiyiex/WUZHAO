@@ -64,8 +64,8 @@
         self.circleColor = [UIColor whiteColor];
         
         self.showHalfWhenCirlceIsTop = YES;
-        self.lineWidth = 1;
-        self.circleRadius = 10;
+        self.lineWidth = 2;
+        self.circleRadius = 30;
     }
     return self;
 }

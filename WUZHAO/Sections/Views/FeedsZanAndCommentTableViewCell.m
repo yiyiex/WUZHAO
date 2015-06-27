@@ -54,6 +54,33 @@
     }
      */
 }
+-(void)configureReplyCommentWithFeeds:(Feeds *)feeds parentController:(UIViewController *)parentController
+{
+    self.parentController = parentController;
+    
+    [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsUser.avatarImageURLString]];
+    [self.feedsImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsPhoto.imageUrlString]];
+    
+    NSString *content =  [NSString stringWithFormat:@"%@ 回复了你的评论：%@  %@",feeds.feedsUser.UserName,feeds.content,feeds.time];
+    NSMutableAttributedString *attributeContent = [[NSMutableAttributedString alloc]initWithString:content];
+    NSRange userNameRange = [content rangeOfString:feeds.feedsUser.UserName];
+    NSRange commentRange = [content rangeOfString:feeds.content];
+    NSRange timeRange = [content rangeOfString:feeds.time];
+    NSRange staticStringRange = [content rangeOfString:@" 回复了你的评论："];
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:userNameRange];
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARKER_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE}  range:commentRange];
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE}  range:timeRange];
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:staticStringRange];
+    self.contentLabel.attributedText = attributeContent;
+    self.contentTextView.attributedText = attributeContent;
+    [self.contentTextView linkUserNameWithUserList:@[feeds.feedsUser]];
+     self.contentTextView.delegate = (id<NoticeContentTextViewDelegate>)self.parentController;
+    [self updateContentTextViewFrame];
+    //添加手势
+    [self configureGesture];
+    
+    [self setAppearance];
+}
 -(void)configureCommentWithFeeds:(Feeds *)feeds parentController:(UIViewController *)parentController
 {
     self.parentController = parentController;
@@ -61,28 +88,26 @@
     [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsUser.avatarImageURLString]];
     [self.feedsImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsPhoto.imageUrlString]];
     
-    NSString *content =  [NSString stringWithFormat:@"%@评论了你的照片：%@ %@",feeds.feedsUser.UserName,feeds.content,feeds.time];
+    NSString *content =  [NSString stringWithFormat:@"%@ 评论了你的照片：%@  %@",feeds.feedsUser.UserName,feeds.content,feeds.time];
     NSMutableAttributedString *attributeContent = [[NSMutableAttributedString alloc]initWithString:content];
     NSRange userNameRange = [content rangeOfString:feeds.feedsUser.UserName];
     NSRange commentRange = [content rangeOfString:feeds.content];
     NSRange timeRange = [content rangeOfString:feeds.time];
-    NSRange staticStringRange = [content rangeOfString:@"评论了你的照片："];
+    NSRange staticStringRange = [content rangeOfString:@" 评论了你的照片："];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:userNameRange];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARKER_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE}  range:commentRange];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE}  range:timeRange];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:staticStringRange];
     self.contentLabel.attributedText = attributeContent;
+    self.contentTextView.attributedText = attributeContent;
+    [self.contentTextView linkUserNameWithUserList:@[feeds.feedsUser]];
     
-    
-    
-    
+     self.contentTextView.delegate = (id<NoticeContentTextViewDelegate>)self.parentController;
+    [self updateContentTextViewFrame];
     //添加手势
     [self configureGesture];
     
     [self setAppearance];
-
-    
-    
 }
 -(void)configureZanWithFeeds:(Feeds *)feeds parentController:(UIViewController *)parentController
 {
@@ -91,7 +116,7 @@
     [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsUser.avatarImageURLString]];
     [self.feedsImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsPhoto.imageUrlString]];
     
-    NSString *content =  [NSString stringWithFormat:@"%@ 赞了你的照片 %@",feeds.feedsUser.UserName,feeds.time];
+    NSString *content =  [NSString stringWithFormat:@"%@ 赞了你的照片  %@",feeds.feedsUser.UserName,feeds.time];
     NSMutableAttributedString *attributeContent = [[NSMutableAttributedString alloc]initWithString:content];
     NSRange userNameRange = [content rangeOfString:feeds.feedsUser.UserName];
     NSRange timeRange = [content rangeOfString:feeds.time];
@@ -100,11 +125,25 @@
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE} range:timeRange];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:staticStringRange];
     self.contentLabel.attributedText = attributeContent;
+    self.contentTextView.attributedText = attributeContent;
+    [self.contentTextView linkUserNameWithUserList:@[feeds.feedsUser]];
+     self.contentTextView.delegate = (id<NoticeContentTextViewDelegate>)self.parentController;
+    [self updateContentTextViewFrame];
     //添加手势
     [self configureGesture];
     
     [self setAppearance];
 
+    
+}
+
+-(void)updateContentTextViewFrame
+{
+    CGRect frame = self.contentTextView.frame;
+    CGSize maxSize = CGSizeMake( WZ_APP_SIZE.width -116.0f, FLT_MAX);
+    CGSize newSize = [self.contentTextView sizeThatFits:maxSize];
+    frame.size = newSize;
+    self.contentTextView.frame = frame;
 }
 
 @end

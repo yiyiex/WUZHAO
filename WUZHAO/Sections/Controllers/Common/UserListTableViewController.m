@@ -28,7 +28,7 @@
 #define CELL_HEADERHEIGHT 52.0
 
 @interface UserListTableViewController ()
-
+@property (nonatomic, strong) UserListTableViewCell *prototypeCell;
 
 @end
 
@@ -40,9 +40,7 @@
     //self.userListStyle = UserListStyle3;
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
-    
-    self.tableView.estimatedRowHeight = 150.0;
-    self.tableView.rowHeight = UITableViewAutomaticDimension;
+
     if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)])
     {
         [self.tableView setLayoutMargins:UIEdgeInsetsZero];
@@ -64,6 +62,14 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (UserListTableViewCell *)prototypeCell
+{
+    if (!_prototypeCell) {
+        _prototypeCell = [self.tableView dequeueReusableCellWithIdentifier:@"commentTableCell"];
+    }
+    return _prototypeCell;
 }
 
 #pragma mark - basic method
@@ -102,6 +108,35 @@
     return self.datasource.count;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    float height = 44;
+    if ([self.userListStyle isEqualToString:UserListStyle1] || [self.userListStyle isEqualToString:UserListStyle2])
+    {
+        height = CELL_HEADERHEIGHT;
+    }
+    
+    else if ([self.userListStyle isEqualToString:UserListStyle3])
+    {
+        height =  CELL_HEADERHEIGHT + WZ_DEVICE_SIZE.width/3;
+    }
+    return height;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    float height = 44;
+    if ([self.userListStyle isEqualToString:UserListStyle1] || [self.userListStyle isEqualToString:UserListStyle2])
+    {
+        height = CELL_HEADERHEIGHT;
+    }
+    
+    else if ([self.userListStyle isEqualToString:UserListStyle3])
+    {
+        height =  CELL_HEADERHEIGHT + WZ_DEVICE_SIZE.width/3;
+    }
+    return height;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UserListTableViewCell *cell;

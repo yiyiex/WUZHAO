@@ -7,6 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AMapSearchKit/AMapSearchAPI.h>
+
+
+typedef  NS_ENUM(NSInteger, POI_TYPE)
+{
+    POI_TYPE_GAODE = 1,
+    POI_TYPE_GOOGLE = 2
+};
 
 @interface POI : NSObject
 
@@ -19,5 +27,10 @@
 @property (nonatomic,strong) NSString *city;
 @property (nonatomic,strong) NSString *district;
 @property (nonatomic,strong) NSString *stamp;
--(instancetype)initWithDictionary:(NSDictionary *)dictionary;
+@property (nonatomic) POI_TYPE type;
+
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+
+- (void)configureWithGaodeSearchResult:(AMapPOI *)p;
+- (void)configureWithGoogleSearchResult:(NSDictionary *)result;
 @end

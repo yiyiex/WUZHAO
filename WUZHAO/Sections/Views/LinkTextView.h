@@ -13,8 +13,8 @@ typedef void(^LinkedStringRangeTapHandler)(NSRange linkStringRange);
 
 -(void)reset;
 -(void)linkTextWithString:(NSString *)string defaultAttributes:(NSDictionary *)defaultAttributes highlightAttributes:(NSDictionary *)highlightAttributes tabHandler:(LinkedStringRangeTapHandler)tapHandler;
--(void)setText:(NSString *)string linkStrings:(NSArray *)linkStrings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandlers:(NSArray *)tapHandlers;
--(void)appendString:(NSString *)string linkStrings:(NSArray *)linkStrings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes :(NSDictionary *)highlightedAttributes tapHandlers:(NSArray *)tapHandlers;
+-(void)setText:(NSAttributedString *)string linkStrings:(NSArray *)linkStrings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes:(NSDictionary *)highlightedAttributes tapHandlers:(NSArray *)tapHandlers;
+-(void)appendText:(NSAttributedString *)string linkStrings:(NSArray *)linkStrings defaultAttributes:(NSDictionary *)defaultAttributes highlightedAttributes :(NSDictionary *)highlightedAttributes tapHandlers:(NSArray *)tapHandlers;
 
 
 -(NSRange)handleTouches:(NSSet *)touches;

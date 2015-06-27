@@ -22,7 +22,6 @@
 @property (strong, nonatomic) IBOutlet UITableViewCell *webSiteCell;
 @property (strong, nonatomic)  UITextField *webSiteTextField;
 @property (strong, nonatomic) IBOutlet UITableViewCell *selfDescriptionCell;
-@property (strong, nonatomic)  UITextField *selfDescriptionTextField;
 @property (strong, nonatomic)  PlaceholderTextView *selfDescriptionTextView;
 @property (strong, nonatomic) IBOutlet UITableViewCell *feedBackCell;
 

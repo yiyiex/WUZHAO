@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NoticeContentTextView.h"
 #import "Feeds.h"
 @interface FeedsZanAndCommentTableViewCell : UITableViewCell
 @property (nonatomic, strong) IBOutlet UIImageView *avatarImageView;
+@property (nonatomic, strong) IBOutlet NoticeContentTextView *contentTextView;
 @property (nonatomic, strong) IBOutlet UILabel *contentLabel;
 @property (nonatomic, strong) IBOutlet UIImageView *feedsImageView;
 
@@ -19,5 +21,5 @@
 -(void)setAppearance;
 -(void)configureZanWithFeeds:(Feeds *)feeds parentController:(UIViewController *)parentController;
 -(void)configureCommentWithFeeds:(Feeds *)feeds parentController:(UIViewController *)parentController;
-;
+-(void)configureReplyCommentWithFeeds:(Feeds *)feeds parentController:(UIViewController *)parentController;
 @end

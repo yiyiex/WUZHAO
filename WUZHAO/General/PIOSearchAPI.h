@@ -12,5 +12,5 @@
 
 +(PIOSearchAPI*)sharedInstance;
 
--(void)SearchAroundPIOWithLongitude:(float)longitude Latitude:(float)latitude whenComplete:(void(^)(NSDictionary *result))whenComplete;
+-(void)SearchAroundPIOWithLongitude:(float)longitude Latitude:(float)latitude radius:(float)radius whenComplete:(void(^)(NSDictionary *result))whenComplete;
 @end

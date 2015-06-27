@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "Feeds.h"
+#import "NoticeContentTextView.h"
 
 @interface FeedsFollowTableViewCell : UITableViewCell
 @property (nonatomic, strong) IBOutlet UIImageView *avatarImageView;
 @property (nonatomic, strong) IBOutlet UILabel *contentLabel;
+@property (nonatomic, strong) IBOutlet NoticeContentTextView *contentTextView;
 
 //@property (nonatomic, strong) IBOutlet UIButton *followButton;
 

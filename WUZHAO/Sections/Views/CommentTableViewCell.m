@@ -21,7 +21,7 @@
     [self.userAvatorView setRoundConerWithRadius:self.userAvatorView.frame.size.width/2];
     [self.userAvatorView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
     [self.userName setDarkGreyLabelAppearance];
-    [self.userName setFont:WZ_FONT_SMALLP_BOLD_SIZE];
+    [self.userName setFont:WZ_FONT_COMMON_SIZE];
     [self.commentTime setBoldReadOnlyLabelAppearance];
     [self.commentTime setTextAlignment:NSTextAlignmentRight];
 }
@@ -33,6 +33,13 @@
     self.userName.text = [NSString stringWithFormat:@"%@",[cellData objectForKey:@"userName"]];
     self.commentContent.delegate = (id<CommentTextViewDelegate>)self;
     [self.commentContent setTextWithoutUserNameWithCommentItem:cellData];
+    CGRect frame = self.commentContent.frame;
+    CGSize maxSize = CGSizeMake( WZ_APP_SIZE.width -104.0f, FLT_MAX);
+    CGSize newSize = [self.commentContent sizeThatFits:maxSize];
+    frame.size.height = newSize.height;
+    self.commentContent.frame = frame;
+    
+    NSLog(@"comment content height%f",self.commentContent.frame.size.height);
     self.commentTime.text =  [cellData objectForKey:@"time"];
     self.commentContent.delegate =(id<CommentTextViewDelegate>) self.parentController;
     [self setAppearance];
@@ -49,32 +56,8 @@
         [self.userName addGestureRecognizer:userNameTap];
         [self.userName setUserInteractionEnabled:YES];
     }
-    /*
-    if([self.parentController respondsToSelector:@selector(commentClick:)])
-    {
-        UITapGestureRecognizer *commentTap = [[UITapGestureRecognizer alloc]initWithTarget:self.parentController action:@selector(commentClick:)];
-        [self.commentContent addGestureRecognizer:commentTap];
-        [self.commentContent setUserInteractionEnabled:YES];
-    }*/
 }
 
-- (void)setBounds:(CGRect)bounds
-{
-    [super setBounds:bounds];
-    
-    self.contentView.frame = self.bounds;
-}
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    
-    // (2)
-    [self.contentView updateConstraintsIfNeeded];
-    [self.contentView layoutIfNeeded];
-    
-    // (3)
-    //self.commentContent.preferredMaxLayoutWidth = CGRectGetWidth(self.commentContent.frame);
-}
 
 - (void)awakeFromNib {
     // Initialization code

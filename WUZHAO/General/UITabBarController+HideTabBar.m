@@ -24,6 +24,7 @@
 
 -(void)setTabBarHidden:(BOOL)hidden animated:(BOOL)animated
 {
+
     BOOL isHidden = self.tabBarHidden;
     UIView *transitionView;
     if (hidden == isHidden)

@@ -124,8 +124,6 @@
 {
     //评论内容显示样式
     [self.commentView reset];
-    [self.commentView setFont:WZ_FONT_COMMON_SIZE];
-    [self.commentView setTextColor:THEME_COLOR_DARK_GREY_PARENT];
     self.commentView.delegate = (id<CommentTextViewDelegate>)self.parentViewController;
    
     [self.commentView setTextWithCommentStringList:self.content.commentStringList CommentList:self.content.commentList];
@@ -203,7 +201,7 @@
         for (NSInteger i = 0 ; i< avatorNum ; i++)
         {
             UIImageView *zanAvatar = [[UIImageView alloc]init];
-            [zanAvatar setFrame:CGRectMake( 8 + 32*i , 2, 28, 28)];
+            [zanAvatar setFrame:CGRectMake( 8 + 32*i , 8, 28, 28)];
             [zanAvatar setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
             [zanAvatar setOpaque:YES];
             [zanAvatar setRoundConerWithRadius:14];
@@ -217,7 +215,7 @@
                 [zanAvatar setUserInteractionEnabled:YES];
                 [zanAvatar addGestureRecognizer:zanUserAvatarClick];
             }
-            [self.likeLabelHeightConstraint setConstant:32];
+            [self.likeLabelHeightConstraint setConstant:36];
             
         }
         
@@ -273,7 +271,7 @@
     }
     else
     {
-        [self.descriptionViewVerticalSpaceToUpView setConstant:10.0f];
+        [self.descriptionViewVerticalSpaceToUpView setConstant:6.0f];
     }
    // if (imageUrl)
     [self.homeCellImageView sd_setImageWithURL:[NSURL URLWithString:self.content.imageUrlString]
@@ -410,7 +408,7 @@
     else
     {
         CGRect frame = textView.frame;
-        CGSize maxSize = CGSizeMake( WZ_APP_SIZE.width -16.0f, FLT_MAX);
+        CGSize maxSize = CGSizeMake( WZ_APP_SIZE.width -8.0f, FLT_MAX);
         CGSize newSize = [textView sizeThatFits:maxSize];
         frame.size = newSize;
         textView.frame = frame;

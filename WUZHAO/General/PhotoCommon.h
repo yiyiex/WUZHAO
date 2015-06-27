@@ -13,7 +13,11 @@
 
 +(void)saveImageToPhotoAlbum:(UIImage *)image;
 
++(void)saveImageToPhotoAlbumWithExif:(NSDictionary *)exif image:(UIImage *)image;
+
 + (UIImage*)createImageWithColor:(UIColor*)color size:(CGSize)imageSize;
+
++(UIImage *)imageNamed:(NSString *)name withColor:(UIColor *)color;
 
 + (void)drawALineWithFrame:(CGRect)frame andColor:(UIColor*)color inLayer:(CALayer*)parentLayer;
 

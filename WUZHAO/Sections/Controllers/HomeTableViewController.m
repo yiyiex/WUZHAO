@@ -12,7 +12,10 @@
 #import "CommentListViewController.h"
 #import "UserListTableViewController.h"
 
+
+
 #import "CommentTextView.h"
+#import "UIViewController+HideBottomBar.h"
 
 #import "UIImageView+WebCache.h"
 #import "UIImageView+ChangeAppearance.h"
@@ -40,7 +43,7 @@
 
 
 @property (nonatomic) float tableViewOffset;
-@property (nonatomic)  BOOL shouldRefreshData;
+
 @property (nonatomic,strong) NSIndexPath *currentZanIndexPath;
 
 @property (nonatomic,strong) NSIndexPath *currentCommentIndexPath;
@@ -61,10 +64,10 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     //refresh control
     self.refreshControl = [[UIRefreshControl alloc]init];
     [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
-    self.shouldRefreshData = true;
     self.tableViewOffset = 0.0;
-    [self loadData];
     
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
+    [self.tableView setContentOffset:CGPointMake(0, -64)];
 
 }
 
@@ -84,12 +87,20 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         [commentCell reloadInputViews];
         [self.tableView endUpdates];
     }
+    
+    if (self.dataSource.count ==0)
+    {
+        [self GetLatestDataList];
+    }
+    
+    //[[NSNotificationCenter defaultCenter]postNotificationName:@"showTabBar" object:nil];
 
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    //[[NSNotificationCenter defaultCenter]postNotificationName:@"hideTabBar" object:nil];
     [self.tableView reloadData];
 }
 
@@ -105,22 +116,31 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 }
 
 
+
+
 -(void)initNavigationItem
 {
-    self.tabBarController.navigationController.navigationBarHidden = NO;
-    if (self.tableStyle == WZ_TABLEVIEWSTYLEHOME)
+    self.navigationController.navigationBarHidden = NO;
+    if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
     {
-        self.tabBarController.navigationItem.title = @"Place";
+        self.navigationItem.title = @"Place";
+          self.navigationController.navigationItem.title = @"Place";
     }
     else
     {
-        self.tabBarController.navigationItem.title = @"照片详情";
         self.navigationItem.title = @"照片详情";
+        self.navigationController.navigationItem.title = @"照片详情";
     }
-    self.tabBarController.navigationItem.hidesBackButton = YES;
+    self.navigationController.navigationItem.hidesBackButton = YES;
     
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
+    
+    if (SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(@"7"))
+    {
+        self.automaticallyAdjustsScrollViewInsets = NO;
+        [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
+    }
     
     //[self.navigationItem.backBarButtonItem setTitle:@""];
 }
@@ -139,6 +159,9 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     if (!_currentUser)
     {
         _currentUser = [[User alloc]init];
+    }
+    if ([[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
+    {
         _currentUser.UserID = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
     }
     return _currentUser;
@@ -283,17 +306,17 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     float descriptionHieght;
     CGSize descriptionSize = self.prototypeCell.descriptionTextView.frame.size;
     // NSLog(@"description content  at index %ld:%@",(long)indexPath.row,self.prototypeCell.descriptionTextView.text);
-    NSLog(@"description content height %f widht %f",descriptionSize.height,descriptionSize.width);
+   // NSLog(@"description content height %f widht %f",descriptionSize.height,descriptionSize.width);
     
     if (descriptionSize.height>0)
     {
-        descriptionHieght = descriptionSize.height + 10.0f;
+        descriptionHieght = descriptionSize.height + 6.0f;
     }
     float commentViewHeight = 0;
     
     CGSize commentViewSize = self.prototypeCell.commentView.frame.size;
     // NSLog(@"comment content  at index %ld :%@",(long)indexPath.row,self.prototypeCell.commentView.text);
-    NSLog(@"comment content height %f  %f",commentViewSize.height,commentViewSize.width);
+    //NSLog(@"comment content height %f  %f",commentViewSize.height,commentViewSize.width);
     if (commentViewSize.height>0)
     {
         commentViewHeight = commentViewSize.height;
@@ -301,7 +324,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     float likeViewHeight = 0;
     if (dataItem.likeCount >0)
     {
-        likeViewHeight = 32;
+        likeViewHeight = 36;
     }
     float basicheight = 48 + WZ_APP_SIZE.width + (12+24+12);
     float height = basicheight + descriptionHieght+ commentViewHeight+likeViewHeight ;
@@ -317,17 +340,18 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         return UITableViewAutomaticDimension;
     }
     return 600;*/
-    NSLog(@"estimate  height for row at index path %ld",(long)indexPath.row);
+    //NSLog(@"estimate  height for row at index path %ld",(long)indexPath.row);
     // return UITableViewAutomaticDimension;
     WhatsGoingOn *item = [self.dataSource objectAtIndex:indexPath.row];
     height = [self caculateProtoCellHeightWithData:item];
     return height;
+    
    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"caculate  height for row at index path %ld",(long)indexPath.row);
+   // NSLog(@"caculate  height for row at index path %ld",(long)indexPath.row);
     float height;
    // return UITableViewAutomaticDimension;
     WhatsGoingOn *item = [self.dataSource objectAtIndex:indexPath.row];
@@ -356,9 +380,9 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     //点击头像，跳转个人主页
     [self configureCell:cell forContent:item atIndexPath:indexPath];
     
-    NSLog(@"cell height at indexpath:%ld ---- %f",(long)indexPath.row,cell.contentView.frame.size.height);
-    NSLog(@"cell headview height at indexpath:%ld ---- %f",(long)indexPath.row,cell.headView.frame.size.height);
-     NSLog(@"cell imageview  at indexpath:%ld ---- (%f , %f)",(long)indexPath.row,cell.homeCellImageView.frame.size.width,cell.homeCellImageView.frame.size.height);
+   // NSLog(@"cell height at indexpath:%ld ---- %f",(long)indexPath.row,cell.contentView.frame.size.height);
+    //NSLog(@"cell headview height at indexpath:%ld ---- %f",(long)indexPath.row,cell.headView.frame.size.height);
+     //NSLog(@"cell imageview  at indexpath:%ld ---- (%f , %f)",(long)indexPath.row,cell.homeCellImageView.frame.size.width,cell.homeCellImageView.frame.size.height);
     return cell;
 }
 
@@ -374,25 +398,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     [[NSNotificationCenter defaultCenter]postNotificationName:@"activeTargetTab" object:self userInfo:@{@"index":@2}];
 }
 
--(void)moreCommentClick:(UITapGestureRecognizer *)gesture
-{
-    PhotoTableViewCell * cell ;
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
-    {
-        cell = (PhotoTableViewCell *)[[[gesture.view superview]superview]superview];
-    }
-    else
-    {
-        cell = (PhotoTableViewCell *)[[[[gesture.view superview]superview]superview]superview];
-    }
-    NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
-    self.currentCommentIndexPath = selectItemIndexPath;
-     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
-    CommentListViewController *commentListView = [[CommentListViewController alloc]init];
-    [commentListView setPoiItem:item];
-    [commentListView setCommentList:[item.commentList mutableCopy]];
-     [self.navigationController pushViewController:commentListView animated:YES];
-}
 -(void)commentLabelClick:(UITapGestureRecognizer *)gesture
 {
     PhotoTableViewCell * cell ;
@@ -468,7 +473,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
     [self goToPersonalPageWithUserInfo:item.likeUserList[likeUserIndex]];
-   // [[NSNotificationCenter defaultCenter]postNotificationName:@"hideTabBar" object:nil];
+    
 }
 -(void)moreButtonClick:(UIButton *)sender
 {
@@ -508,10 +513,18 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                                  dispatch_async(dispatch_get_main_queue(), ^{
                                      if ([returnData objectForKey:@"data"])
                                      {
-                                         [self.tableView beginUpdates];
-                                         [self.dataSource removeObjectAtIndex:selectItemIndexPath.row];
-                                         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject: selectItemIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
-                                         [self.tableView endUpdates];
+                                         if(self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
+                                         {
+                                             [self.tableView beginUpdates];
+                                             [self.dataSource removeObjectAtIndex:selectItemIndexPath.row];
+                                             [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject: selectItemIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                             [self.tableView endUpdates];
+                                         }
+                                         else if (self.tableStyle == WZ_TABLEVIEWSTYLE_DETAIL)
+                                         {
+                                             [[NSNotificationCenter defaultCenter]postNotificationName:@"deletePost" object:nil userInfo:@{@"postId":[NSNumber numberWithInteger:item.postId]}];
+                                             [self.navigationController popViewControllerAnimated:YES];
+                                         }
                                      }
                                      else
                                      {
@@ -570,7 +583,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
     MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
     [personalViewCon setUserInfo:user];
-    [self.navigationController pushViewController:personalViewCon animated:YES];
+    [self pushToViewController:personalViewCon animated:YES hideBottomBar:YES];
 }
 
 #pragma mark - actionSheet delegate
@@ -593,7 +606,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"确定"])
     {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            WhatsGoingOn *item = [self.dataSource objectAtIndex:self.currentDeleteIndexPath];
+            WhatsGoingOn *item = [self.dataSource objectAtIndex:self.currentDeleteIndexPath.row];
             [[QDYHTTPClient sharedInstance]deletePhotoWithUserId:self.currentUser.UserID postId:item
              .postId whenComplete:^(NSDictionary *returnData)
              {
@@ -648,7 +661,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     
     if ([cell.zanClickButton.currentTitle isEqualToString:@"赞"])
     {
-        //item.likeCount += 1;
         [self addMeToZanData:item];
         [cell configureCellWithData:item parentController:self];
         if (item.likeCount == 1)
@@ -659,10 +671,24 @@ static NSString *reuseIdentifier = @"HomeTableCell";
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:selectItemIndexPath] withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView endUpdates];
-            //[self.tableView beginUpdates];
-            //[self.tableView endUpdates];
             
         }
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [[QDYHTTPClient sharedInstance]ZanPhotoWithUserId:self.currentUser.UserID postId:item.postId whenComplete:^(NSDictionary *returnData) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([returnData objectForKey:@"data"])
+                    {
+                        NSLog(@"zan success");
+                    }
+                    else
+                    {
+                        NSLog(@"zan failed");
+                        // [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                    }
+                    
+                });
+            }];
+        });
         
         // [cell.zanClickButton setTitle:@"已赞" forState:UIControlStateNormal];
         
@@ -678,36 +704,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:selectItemIndexPath] withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView endUpdates];
-            // [self.tableView beginUpdates];
-            //[self.tableView endUpdates];
         }
-        //  [cell.zanClickButton setTitle:@"赞" forState:UIControlStateNormal];
-    }
-
-
-    if (!item.isLike)
-    {
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            [[QDYHTTPClient sharedInstance]ZanPhotoWithUserId:self.currentUser.UserID postId:item.postId whenComplete:^(NSDictionary *returnData) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if ([returnData objectForKey:@"data"])
-                    {
-                        NSLog(@"zan success");
-                    }
-                    else
-                    {
-                        NSLog(@"zan failed");
-                       // [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-                    }
-
-                });
-            }];
-        });
-
-        
-    }
-    else
-    {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             [[QDYHTTPClient sharedInstance]CancelZanPhotoWithUserId:self.currentUser.UserID postId:item.postId whenComplete:^(NSDictionary *returnData) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -717,14 +714,14 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                     }
                     else
                     {
-                         NSLog(@"cancel zan failed");
+                        NSLog(@"cancel zan failed");
                         //[SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
                     }
                 });
-
+                
             }];
         });
-
+        //  [cell.zanClickButton setTitle:@"赞" forState:UIControlStateNormal];
     }
 
 }
@@ -775,8 +772,8 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
     CommentListViewController *commentListView = [[CommentListViewController alloc]init];
     commentListView.poiItem = item;
-    commentListView.isKeyboardShow = YES;
-    [self.navigationController pushViewController:commentListView animated:YES];
+    commentListView.isKeyboardShowWhenLoadView = YES;
+    [self pushToViewController:commentListView animated:YES hideBottomBar:YES];
 }
 
 -(void)likeLabelClick:(UITapGestureRecognizer *)gesture
@@ -803,7 +800,8 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                     [followsList setUserListStyle:UserListStyle1];
                     [followsList setDatasource:[returnData objectForKey:@"data"]];
                     [followsList setTitle:@"点赞的用户"];
-                    [self.navigationController pushViewController:followsList animated:YES];
+                    [followsList setHidesBottomBarWhenPushed:YES];
+                    [self pushToViewController:followsList animated:YES hideBottomBar:YES];
                 }
                 else
                 {
@@ -834,7 +832,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     //[self hidesBottomBarWhenPushed];
     addressViewCon.poiId = item.poiId;
     addressViewCon.poiName = item.poiName;
-    [self.navigationController pushViewController:addressViewCon animated:YES];
+    [self pushToViewController:addressViewCon animated:YES hideBottomBar:YES];
 }
 
 #pragma mark - scrollview delegate
@@ -852,7 +850,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 -(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
 {
     
-    if (self.tableStyle == WZ_TABLEVIEWSTYLEHOME)
+    if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
     {
         CGPoint loadMorePoint = CGPointMake(0, self.tableView.contentSize.height);
         CGPoint targetPoint = *targetContentOffset;
@@ -873,15 +871,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     {
         if (self.shouldRefreshData)
         {
-            [self.refreshControl beginRefreshing];
             [self GetLatestDataList];
-        }
-    }
-    else
-    {
-        if ([self.refreshControl isRefreshing])
-        {
-            [self.refreshControl endRefreshing];
         }
     }
     /*
@@ -899,11 +889,13 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 
 -(void)GetLatestDataList
 {
-    if(self.shouldRefreshData)
-    {
         //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
         self.shouldRefreshData = false;
-        if (self.tableStyle == WZ_TABLEVIEWSTYLEHOME)
+        if (![self.refreshControl isRefreshing])
+        {
+            [self.tableView setContentOffset:CGPointMake(0, -64) animated:YES];
+        }
+        if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
         {
             self.currentPage = 1;
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -932,6 +924,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                              dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
                              dispatch_after(popTime, dispatch_get_main_queue(), ^{
                                  [self.refreshControl endRefreshing];
+                               
                                  
                              });
                          }
@@ -943,6 +936,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                      {
                          [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
                      }
+                      [self.tableView setContentOffset:CGPointMake(0, -64) animated:NO];
                      
                      self.shouldRefreshData = true;
                      //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
@@ -953,7 +947,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
             });
 
         }
-        else if (self.tableStyle == WZ_TABLEVIEWSTYLEDETAIL)
+        else if (self.tableStyle == WZ_TABLEVIEWSTYLE_DETAIL)
         {
             self.currentPage = 1;
             WhatsGoingOn *item = [self.dataSource objectAtIndex:0];
@@ -982,6 +976,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                         {
                             [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
                         }
+                         [self.tableView setContentOffset:CGPointMake(0, -64) animated:NO];
                         
                         self.shouldRefreshData = true;
                     });
@@ -998,11 +993,11 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                 dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^{
                     [self.refreshControl endRefreshing];
+                     [self.tableView setContentOffset:CGPointMake(0, -64) animated:YES];
                     
                 });
             }
         }
-    }
 }
 
 #pragma mark - commentTextView Delegate
@@ -1010,4 +1005,41 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 {
     [self goToPersonalPageWithUserInfo:user];
 }
+
+-(void)moreCommentClick:(CommentTextView *)commentTextView
+{
+    PhotoTableViewCell * cell ;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
+    {
+        cell = (PhotoTableViewCell *)[[commentTextView superview]superview];
+    }
+    else
+    {
+        cell = (PhotoTableViewCell *)[[[commentTextView superview]superview]superview];
+    }
+    NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
+    self.currentCommentIndexPath = selectItemIndexPath;
+    WhatsGoingOn *item = [self.dataSource objectAtIndex:selectItemIndexPath.row];
+    CommentListViewController *commentListView = [[CommentListViewController alloc]init];
+    [commentListView setPoiItem:item];
+    [commentListView setCommentList:[item.commentList mutableCopy]];
+    [self pushToViewController:commentListView animated:YES hideBottomBar:YES];
+}
+
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    NSLog(@"touch in the home table view");
+}
+
+
+#pragma mark - notification action
+-(void)clearUserInfo
+{
+    self.currentUser = nil;
+    self.dataSource = nil;
+    [self.tableView reloadData];
+}
+
+
 @end

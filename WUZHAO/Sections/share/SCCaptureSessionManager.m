@@ -569,11 +569,11 @@
     for (int i = 0; i < 4; i++) {
         CGRect frame = CGRectZero;
         if (i == 0 || i == 1) {//画横线
-            frame = CGRectMake(0, headHeight + (i + 1) * eachAreaLength, squareLength, 1);
+            frame = CGRectMake(0, headHeight + (i + 1) * eachAreaLength, squareLength, 0.5);
         } else {
-            frame = CGRectMake((i + 1 - 2) * eachAreaLength, headHeight, 1, squareLength);
+            frame = CGRectMake((i + 1 - 2) * eachAreaLength, headHeight, 0.5, squareLength);
         }
-        [PhotoCommon drawALineWithFrame:frame andColor:[UIColor whiteColor] inLayer:_preview.layer];
+        [PhotoCommon drawALineWithFrame:frame andColor:[UIColor lightGrayColor] inLayer:_preview.layer];
     }
 }
 

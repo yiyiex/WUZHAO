@@ -42,6 +42,8 @@
     
     cancelLogin = false;
     
+   
+    
 
 
     // Do any additional setup after loading the view.
@@ -76,6 +78,7 @@
 
 -(void)setNavigationAppearance
 {
+   
     [self setTitle:@"登录"];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     UIBarButtonItem *close = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"close_cha"] style:UIBarButtonItemStylePlain target:self action:@selector(returnToLaunch)];
@@ -107,14 +110,19 @@
     self.UserNameTextField.placeholder = @"用户名/邮箱";
     self.UserNameTextField.keyboardType = UIKeyboardAppearanceDefault;
     self.UserNameTextField.keyboardType = UIKeyboardTypeDefault;
+    [self.UserNameTextField addTarget:self action:@selector(textFieldDidChanged:) forControlEvents:UIControlEventEditingChanged];
+    [self.UserNameTextField addTarget:self action:@selector(checkInput) forControlEvents:UIControlEventEditingDidEndOnExit];
 
     self.PasswordTextField.placeholder = @"密 码";
     self.PasswordTextField.keyboardType = UIKeyboardAppearanceDefault;
     self.PasswordTextField.keyboardType = UIKeyboardTypeDefault;
+    [self.PasswordTextField addTarget:self action:@selector(textFieldDidChanged:) forControlEvents:UIControlEventEditingChanged];
+    [self.PasswordTextField addTarget:self action:@selector(checkInput) forControlEvents:UIControlEventEditingDidEndOnExit];
     
     [self.LoginButton setTitle:@"登  录" forState:UIControlStateNormal];
-    [self.LoginButton setThemeFrameAppearence];
+   // [self.LoginButton setThemeFrameAppearence];
     [self.LoginButton setBigButtonAppearance];
+    [self.LoginButton setGreyBackGroundAppearance];
     [self.LoginButton setEnabled:NO];
     
     [self.forgotPasswordLabel setThemeLabelAppearance];
@@ -163,15 +171,12 @@
                                                    
                                                    if ([[QDYHTTPClient sharedInstance] IsAuthenticated])
                                                    {
-                                                      // User *userInfo = [[QDYHTTPClient sharedInstance] currentUser];
+                                                       [self dismissViewControllerAnimated:YES completion:^{
+                                                           [[NSNotificationCenter defaultCenter]postNotificationName:@"loginSuccess" object:nil];
+                                                       }];
                                                        
-                                                       UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                                                       MainTabBarViewController *main = [mainStoryboard instantiateViewControllerWithIdentifier:@"mainTabBarController"];
-                                                       [self.navigationController pushViewController:main animated:YES];
-                                                    
-                                                       self.LoginButton.enabled = YES;
-                                                      
                                                        
+                                                     
                                                    }
                                                    return;
                                                }
@@ -232,6 +237,14 @@
     {
         return;
     }
+    if ([self.UserNameTextField isFirstResponder])
+    {
+        [self.UserNameTextField resignFirstResponder];
+    }
+    if ([self.PasswordTextField isFirstResponder])
+    {
+        [self.PasswordTextField resignFirstResponder];
+    }
     self.LoginButton.enabled = NO;
     self.PasswordTextField.text = @"";
     [self login];
@@ -273,19 +286,32 @@
     [self performSegueWithIdentifier:@"findPassword" sender:nil];
 }
 
-#pragma mark -textview delegate
+#pragma mark -touch delegate
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if (![self.UserNameTextField isExclusiveTouch])
     {
         [self.UserNameTextField resignFirstResponder];
-        [self checkInput];
     }
     if (![self.PasswordTextField isExclusiveTouch])
 
     {
         [self.PasswordTextField resignFirstResponder];
-        [self checkInput];
+    }
+}
+#pragma mark -textfield delegate
+
+-(void)textFieldDidChanged:(id)sender
+{
+    if (![self.UserNameTextField.text isEqualToString:@""] && ![self.PasswordTextField.text isEqualToString:@""] )
+    {
+        [self.LoginButton setThemeFrameAppearence];
+        [self.LoginButton setEnabled:YES];
+    }
+    else
+    {
+        [self.LoginButton setGreyBackGroundAppearance];
+        [self.LoginButton setEnabled:NO];
     }
 }
 
@@ -311,6 +337,8 @@
         }
     }];
 }
+
+
 
 
 
