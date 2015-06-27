@@ -5508,7 +5508,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/General/PIOSearchAPI.m"
@@ -5540,7 +5540,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/General/PIOSearchAPI.m"
@@ -5598,6 +5598,22 @@
             startingLineNumber = "939"
             endingLineNumber = "939"
             landmarkName = "-GetLatestDataList"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/General/AFHTTPAPIClient.m"
+            timestampString = "457093222.138649"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "-ExecuteRequestWithMethod:api:parameters:complete:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -7,7 +7,7 @@
 //
 
 #import "PIOSearchAPI.h"
-#define PIOAPIHOST @"http://192.168.0.100/"
+#define PIOAPIHOST @"http://placeapp.cn/"
 
 @implementation PIOSearchAPI
 
@@ -30,7 +30,7 @@
 
 -(void)SearchAroundPIOWithLongitude:(float)longitude Latitude:(float)latitude radius:(float)radius whenComplete:(void(^)(NSDictionary *result))whenComplete
 {
-    NSString *api = @"wuzhao/api/nearbypoi";
+    NSString *api = @"api/nearbypoi";
     NSString *location = [NSString stringWithFormat:@"%f,%f",latitude,longitude];
 
     
