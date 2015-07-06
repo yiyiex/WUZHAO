@@ -14,7 +14,7 @@
 #import "QDYHTTPClient.h"
 #import "BPush.h"
 
-#import "PIOSearchAPI.h"
+#import "POISearchAPI.h"
 
 #import "ApplicationUtility.h"
 
@@ -213,6 +213,10 @@
                         [[NSNotificationCenter defaultCenter]postNotificationName:@"updateNotificationNum" object:nil userInfo:@{@"notificationNum":num}];
                         [ApplicationUtility setApplicationIconBadgeWithNum:num.integerValue];
                         
+                    }
+                    else
+                    {
+                        [ApplicationUtility setApplicationIconBadgeWithNum:0];
                     }
 
                 });

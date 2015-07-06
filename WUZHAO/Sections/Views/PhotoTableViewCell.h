@@ -34,10 +34,17 @@
 //photo
 @property (nonatomic, weak) IBOutlet UIImageView *homeCellImageView;
 
+//photos
+@property (nonatomic, weak) IBOutlet UIView *imagesContainerView;
+@property (nonatomic, weak) IBOutlet UIScrollView *imagesScrollView;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *imagesContainerViewHeightConstrant;
+
 //address
 @property (nonatomic, weak) IBOutlet UIView *addressLabelView;
 @property (weak, nonatomic) IBOutlet UILabel *addressLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *addressIcon;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *addressViewHeightConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *addressViewVerticalSpaceToUpView;
 
 //description
 @property (nonatomic, weak) IBOutlet UITextView *descriptionTextView;

@@ -10,12 +10,15 @@
 #import "PhotoFilterCollectionViewCell.h"
 #import "PhotoEffectCollectionViewCell.h"
 #import "FilterSliderView.h"
+#import "FilterSelectImageView.h"
+#import "ImageCropScrollView.h"
 
 #import "PhotoCommon.h"
 #import "captureMacro.h"
 #import "macro.h"
 #import "UIButton+ChangeAppearance.h"
 #import "UIImage+Color.h"
+#import "UIImage+Resize.h"
 
 #import "AddImageInfoViewController.h"
 
@@ -23,7 +26,8 @@
 typedef NS_ENUM(NSInteger, EDIT_TYPE)
 {
     EDIT_TYPE_FILTER = 1,
-    EDIT_TYPE_EFFECT = 2
+    EDIT_TYPE_EFFECT = 2,
+    EDIT_TYPE_CROP = 3
 };
 
 @interface PhotoFilterViewCollectionViewController ()
@@ -32,8 +36,14 @@ typedef NS_ENUM(NSInteger, EDIT_TYPE)
     
     float collectionOriginY;
     float collectionHeight;
+    float collectionViewOffset;
+    float collectionViewHeight;
     float collectionCellWidth;
+    
+    float bottombarHeight;
 }
+
+
 @property (nonatomic, strong) UICollectionView *photoFilterCollectionView;
 @property (nonatomic, strong) UICollectionView *photoEffectCollectionView;
 
@@ -42,6 +52,8 @@ typedef NS_ENUM(NSInteger, EDIT_TYPE)
 @property (nonatomic, strong) NSMutableArray *effectDescriptions;
 
 @property (nonatomic, weak) IBOutlet UIView *topBarView;
+@property (nonatomic, strong) UIScrollView *imageSelectScrollView;
+@property (nonatomic, strong) FilterSelectImageView *selectedImageView;
 @property (nonatomic, strong) UILabel *topBarTitleLabel;
 
 @property (nonatomic, strong) UIView *effectTopBarView;
@@ -50,16 +62,26 @@ typedef NS_ENUM(NSInteger, EDIT_TYPE)
 @property (nonatomic, strong)  UIView *bottomBarView;
 @property (nonatomic, strong) UIButton *filterButton;
 @property (nonatomic, strong) UIButton *effectButton;
+@property (nonatomic, strong) UIButton *cropButton;
 
 @property (nonatomic, strong) UIView *sliderEditView;
 @property (nonatomic, strong) UIButton *sliderEditOk;
 @property (nonatomic, strong) UIButton *sliderEditCancel;
 @property (nonatomic, strong) FilterSliderView *effectFilterSliderView;
 
+
+@property (nonatomic, strong) UIView *cropButtonView;
+@property (nonatomic, strong) UIButton *centerPhotoButton;
+@property (nonatomic, strong) UIButton *adaptiveButton;
+@property (nonatomic, strong) UIButton *cropOK;
+@property (nonatomic, strong) UIButton *cropCancel;
+@property (nonatomic, strong) ImageCropScrollView *cropScrollView;
+
 @property (nonatomic, strong) UIView *selectIndicatorView;
 
+@property (nonatomic, strong) UIView *selectImageIndicatorView;
+
 @property (nonatomic) EDIT_TYPE editType;
-@property (nonatomic, strong) NSMutableDictionary *effectUsed;
 
 @end
 
@@ -254,11 +276,6 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         [parameters.otherInputs addObject:@{@"key":kCIInputRadiusKey,@"value":@5}];
         [_effectDescriptions addObject:parameters];
         
-        self.effectUsed = [[NSMutableDictionary alloc]init];
-        [_effectDescriptions enumerateObjectsUsingBlock:^(FilterParameters *p, NSUInteger idx, BOOL *stop) {
-            [self.effectUsed setValue:@"NO" forKey:p.key];
-        }];
-        
         
     }
     return _effectDescriptions;
@@ -269,17 +286,58 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
 {
     if (!_selectIndicatorView)
     {
-        _selectIndicatorView = [[UIView alloc]initWithFrame:CGRectMake(0, collectionHeight - 8 , 66, 2)];
+        _selectIndicatorView = [[UIView alloc]initWithFrame:CGRectMake(0, collectionViewHeight-2  , collectionCellWidth, 2)];
         [_selectIndicatorView setBackgroundColor:THEME_COLOR_DARK];
+        
     }
+   
     return _selectIndicatorView;
 }
 
+-(NSMutableArray *)filteredImages
+{
+    if (!_filteredImages)
+    {
+        _filteredImages = [[NSMutableArray alloc]init];
+        [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            UIImage *image = [obj objectForKey:@"image"];
+            if (image.size.width != image.size.height)
+            {
+                float width = MIN(image.size.width, image.size.height);
+                CGRect cropRect = CGRectMake((image.size.width-width)/2, (image.size.height-width)/2,width,width);
+                image = [image croppedImage:cropRect];
+            }
+            [_filteredImages addObject:image];
+        }];
+    }
+    return _filteredImages;
+}
+
+-(NSMutableArray *)filteredImageViews
+{
+    if (!_filteredImageViews)
+    {
+        _filteredImageViews = [[NSMutableArray alloc]init];
+        [self.filteredImages enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            FilteredImageView *filterView = [[FilteredImageView alloc]initWithFrame:CGRectMake(0, self.topBarView.frame.size.height, WZ_APP_SIZE.width, WZ_APP_SIZE.width)];
+            filterView.inputImage = (UIImage *)obj;
+            filterView.contentMode = UIViewContentModeScaleAspectFill;
+            filterView.filter = self.filters[0];
+            [_filteredImageViews addObject:filterView];
+            
+        }];
+    }
+    return _filteredImageViews;
+}
+
+
 -(void)caculateCollectionRelationSize
 {
-     collectionOriginY = 50 + WZ_APP_SIZE.width;
-     collectionHeight = WZ_APP_SIZE.height - collectionOriginY - self.bottomBarView.frame.size.height;
-    collectionCellWidth =  isIPHONE_4s?collectionHeight -20: 54;
+    collectionOriginY = self.topBarView.frame.size.height + WZ_APP_SIZE.width ;
+    collectionHeight = WZ_APP_SIZE.height - collectionOriginY - bottombarHeight;
+    collectionCellWidth =  isIPHONE_4s?collectionHeight -20: 48;
+    collectionViewHeight = isIPHONE_4s? 40 : 100;
+    collectionViewOffset = (collectionHeight - collectionViewHeight)/2;
     
 
     
@@ -288,13 +346,11 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
 {
     if (!_photoFilterCollectionView)
     {
-
-        [self caculateCollectionRelationSize];
         UICollectionViewFlowLayout *collectionLayout = [[UICollectionViewFlowLayout alloc]init];
         collectionLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        if (collectionHeight >100)
+        if (collectionCellWidth == 48)
         {
-            collectionLayout.itemSize = CGSizeMake(collectionCellWidth, collectionCellWidth + 30);
+            collectionLayout.itemSize = CGSizeMake(collectionCellWidth, collectionCellWidth+20);
             [PhotoFilterCollectionViewCell setLabelheight:20];
             
         }
@@ -305,11 +361,12 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         }
         collectionLayout.minimumInteritemSpacing = 10;
         collectionLayout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 0);
-        _photoFilterCollectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 50 + WZ_APP_SIZE.width, WZ_APP_SIZE.width, collectionHeight) collectionViewLayout:collectionLayout];
+        _photoFilterCollectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, collectionOriginY + collectionViewOffset, WZ_APP_SIZE.width, collectionViewHeight) collectionViewLayout:collectionLayout];
+        [_photoFilterCollectionView addSubview:self.selectIndicatorView];
         _photoFilterCollectionView.dataSource = self;
         _photoFilterCollectionView.delegate = self;
-        [_photoFilterCollectionView registerClass:[PhotoFilterCollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier1];
         [PhotoFilterCollectionViewCell setCellWidth:collectionCellWidth];
+        [_photoFilterCollectionView registerClass:[PhotoFilterCollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier1];
         
         [self.view addSubview:_photoFilterCollectionView];
         
@@ -321,9 +378,9 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     {
         UICollectionViewFlowLayout *collectionLayout = [[UICollectionViewFlowLayout alloc]init];
         collectionLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        if (collectionHeight >100)
+        if (collectionCellWidth  == 48)
         {
-            collectionLayout.itemSize = CGSizeMake(collectionCellWidth, collectionCellWidth + 30);
+            collectionLayout.itemSize = CGSizeMake(collectionCellWidth, collectionCellWidth+20);
             [PhotoEffectCollectionViewCell setLabelheight:20];
             
         }
@@ -334,28 +391,44 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         }
         collectionLayout.minimumInteritemSpacing = 10;
         collectionLayout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 0);
-        _photoEffectCollectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 50 + WZ_APP_SIZE.width, WZ_APP_SIZE.width, collectionHeight) collectionViewLayout:collectionLayout];
+        _photoEffectCollectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, collectionOriginY + collectionViewOffset, WZ_APP_SIZE.width, collectionViewHeight) collectionViewLayout:collectionLayout];
         _photoEffectCollectionView.dataSource = self;
         _photoEffectCollectionView.delegate = self;
         [PhotoEffectCollectionViewCell setCellWidth:collectionCellWidth];
         [_photoEffectCollectionView registerClass:[PhotoEffectCollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier2];
+        
         [self.view addSubview:_photoEffectCollectionView];
 
     }
 }
 
--(void)initSliderEditView
+-(FilterSliderView *)effectFilterSliderView
 {
-    self.sliderEditView = [[UIView alloc]initWithFrame:CGRectMake(0, WZ_APP_SIZE.height, WZ_APP_SIZE.width, WZ_APP_SIZE.height - 50 -WZ_APP_SIZE.width)];
-    [self.sliderEditView setBackgroundColor:DARK_BACKGROUND_COLOR];
-    
     if (!_effectFilterSliderView)
     {
-        _effectFilterSliderView = [[FilterSliderView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, collectionHeight)];
-        _effectFilterSliderView.delegate = self.filteredImageView;
+        _effectFilterSliderView = [[FilterSliderView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, WZ_APP_SIZE.height - collectionOriginY - 44)];
     }
+    return _effectFilterSliderView;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    [self initTopContainerView];
+    [self initBottomContainerView];
+    [self caculateCollectionRelationSize];
+    [self.view setNeedsUpdateConstraints];
+    [self.view setNeedsLayout];
     
-    [self.sliderEditView addSubview:_effectFilterSliderView];
+    [self filterButtonClick:self.filterButton];
+    
+}
+
+-(void)initSliderEditView
+{
+    self.sliderEditView = [[UIView alloc]initWithFrame:CGRectMake(0,WZ_APP_SIZE.height, WZ_APP_SIZE.width, WZ_APP_SIZE.height - collectionOriginY)];
+    [self.sliderEditView setBackgroundColor:DARK_BACKGROUND_COLOR];
+    
     
     self.sliderEditOk = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2,self.sliderEditView.frame.size.height - self.bottomBarView.frame.size.height, WZ_APP_SIZE.width/2, self.bottomBarView.frame.size.height)];
     [self.sliderEditOk setImage:[UIImage imageNamed:@"check"] forState:UIControlStateNormal];
@@ -370,70 +443,90 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self.sliderEditCancel addTarget:self action:@selector(sliderEditCancelClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.sliderEditView addSubview:self.sliderEditCancel];
     
-    
+    [self.sliderEditView addSubview:self.effectFilterSliderView];
     [self.view addSubview:self.sliderEditView];
-    
-    
-   
 }
 
--(FilterSliderView *)effectFilterSliderView
+-(void)initCropView
 {
-    if (!_effectFilterSliderView)
-    {
-        _effectFilterSliderView = [[FilterSliderView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, 140)];
-       // [self.view addSubview:_effectFilterSliderView];
-        [_effectFilterSliderView setHidden:YES];
-    }
-    return _effectFilterSliderView;
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-
-    [self initTopContainerView];
-    [self initBottomContainerView];
-    [self.view setNeedsUpdateConstraints];
-    [self.view setNeedsLayout];
-    //filteredImageView
-    self.editType = EDIT_TYPE_FILTER;
-    self.filteredImageView.inputImage = self.stillImage;
-    self.filteredImageView.contentMode = UIViewContentModeScaleAspectFit;
-    self.filteredImageView.filter = self.filters[0];
+    self.cropScrollView = [[ImageCropScrollView alloc]initWithFrame:CGRectMake(0, self.topBarView.frame.size.height, WZ_APP_SIZE.width, WZ_APP_SIZE.width)];
+    [self.cropScrollView setBackgroundColor:DARK_BACKGROUND_COLOR];
+    [self.view addSubview:self.cropScrollView];
     
-    // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = NO;
     
-    // Register cell classes
-    [self initPhotoFilterCollectionView];
+    self.cropButtonView = [[UIView alloc]initWithFrame:CGRectMake(0,WZ_APP_SIZE.height, WZ_APP_SIZE.width,WZ_APP_SIZE.height - collectionOriginY)];
+    [self.cropButtonView setBackgroundColor:DARK_BACKGROUND_COLOR];
+    [self.view addSubview:self.cropButtonView];
     
-    // Do any additional setup after loading the view.
+    self.centerPhotoButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width/2,collectionHeight)];
+    [self.centerPhotoButton setImage:[UIImage imageNamed:@"centerPhoto"] forState:UIControlStateNormal];
+    [self.centerPhotoButton addTarget:self action:@selector(centerPhotoButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.cropButtonView addSubview:self.centerPhotoButton];
+    
+    self.adaptiveButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2, 0, WZ_APP_SIZE.width/2, collectionHeight)];
+    [self.adaptiveButton setImage:[UIImage imageNamed:@"adaptive_s"] forState:UIControlStateNormal];
+    [self.adaptiveButton setImage:[UIImage imageNamed:@"adaptive"] forState:UIControlStateSelected];
+    [self.adaptiveButton addTarget:self action:@selector(adaptiveButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.cropButtonView addSubview:self.adaptiveButton];
+    
+    self.cropCancel = [[UIButton alloc]initWithFrame:CGRectMake(0, collectionHeight, WZ_APP_SIZE.width/2, self.cropButtonView.frame.size.height - collectionHeight)];
+    [self.cropCancel setImage:[UIImage imageNamed:@"cancel"] forState:UIControlStateNormal];
+    [self.cropCancel addTarget:self action:@selector(cropEditCancelClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.cropCancel setSelected:YES];
+    [self.cropButtonView addSubview:self.cropCancel];
+    
+    self.cropOK = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2, collectionHeight, WZ_APP_SIZE.width/2, self.cropButtonView.frame.size.height - collectionHeight)];
+    [self.cropOK setImage:[UIImage imageNamed:@"check"] forState:UIControlStateNormal];
+    [self.cropOK addTarget:self action:@selector(cropEditOkClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.cropOK setSelected:YES];
+    [self.cropButtonView addSubview:self.cropOK];
 }
 
 
 -(void)initTopContainerView
 {
     [self.topBarView setBackgroundColor:DARK_BACKGROUND_COLOR];
-    UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(13, 13, 24, 24)];
+    float topBarViewHeight = self.topBarView.frame.size.height;
+    UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(8, (topBarViewHeight - 24)/2, 24, 24)];
     [backButton setBackgroundImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(backBarButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.topBarView addSubview:backButton];
-    UIButton *nextButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width-70, 5, 70, 40)];
+    UIButton *nextButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width-58, (topBarViewHeight - 40)/2, 58, 40)];
     [nextButton setTitle:@"继续" forState:UIControlStateNormal];
+    [nextButton.titleLabel setFont:[UIFont systemFontOfSize:16.0f]];
     [nextButton setBigButtonAppearance];
     [nextButton setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
     [nextButton addTarget:self action:@selector(nextButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.topBarView addSubview:nextButton];
     
-    CGRect rect = CGRectMake((WZ_APP_SIZE.width-100)/2, 0, 100, CGRectGetHeight(self.topBarView.bounds));
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:rect];
-    titleLabel.text = @"选择滤镜";
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.textColor = [UIColor whiteColor];
-    titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
-    self.topBarTitleLabel = titleLabel;
-    [self.topBarView addSubview:titleLabel];
+    float scrollViewWidth = WZ_APP_SIZE.width - 60 - 32;
+    CGRect rect = CGRectMake(40, 0, scrollViewWidth, CGRectGetHeight(self.topBarView.bounds));
+    self.imageSelectScrollView = [[UIScrollView alloc]initWithFrame:rect];
+    [self.topBarView addSubview:self.imageSelectScrollView];
+    float imageWidth = 52;
+    float imageSpacing =  (self.imageSelectScrollView.frame.size.height - imageWidth)/2;
+    [self.imageSelectScrollView setContentSize:CGSizeMake((imageWidth+imageSpacing)*self.imagesAndInfo.count ,self.imageSelectScrollView.frame.size.height)];
+    [self.filteredImages enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        FilterSelectImageView *imageView = [[FilterSelectImageView alloc]initWithFrame:CGRectMake((imageWidth+imageSpacing)*idx, imageSpacing, imageWidth, imageWidth)];
+        imageView.tag = idx;
+        imageView.image = (UIImage *)obj;
+        UITapGestureRecognizer *selectImageViewTapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(selectImage:)];
+        [imageView addGestureRecognizer:selectImageViewTapGesture];
+        [imageView setUserInteractionEnabled:YES];
+        if (idx == 0)
+        {
+            [self.filteredImageView removeFromSuperview];
+            self.filteredImageView = self.filteredImageViews[0];
+            self.filteredImageView.inputImage = self.filteredImages[idx];
+            [self.view addSubview:self.filteredImageView];
+            imageView.selected = YES;
+            self.selectedImageView = imageView;
+        }
+        
+        [self.imageSelectScrollView addSubview:imageView];
+        
+      
+    }];
     
     [self.view addSubview:self.topBarView];
 
@@ -441,7 +534,7 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
 
 -(void)initTopEffectView
 {
-    self.effectTopBarView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, 50)];
+    self.effectTopBarView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, self.topBarView.frame.size.height)];
     self.effectTopBarView.backgroundColor = DARK_BACKGROUND_COLOR;
     
     CGRect rect = CGRectMake((WZ_APP_SIZE.width-100)/2, 0, 100, CGRectGetHeight(self.topBarView.bounds));
@@ -460,29 +553,29 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
 
 -(void)initBottomContainerView
 {
-
-    float bottomContainerHeight;
     if (isIPHONE_4s)
     {
-        bottomContainerHeight = 60;
+        bottombarHeight = 50;
     }
     else if (isIPHONE_5)
     {
-        bottomContainerHeight = 70;
+        bottombarHeight = 60;
     }
     else if (isIPHONE_6)
     {
-       bottomContainerHeight = 70;
+       bottombarHeight = 60;
     }
     else if (isIPHONE_6P)
     {
-        bottomContainerHeight = 80;
+        bottombarHeight = 80;
     }
-    self.bottomBarView = [[UIView alloc]initWithFrame:CGRectMake(0, WZ_APP_SIZE.height - bottomContainerHeight, WZ_APP_SIZE.width, bottomContainerHeight)];
+    self.bottomBarView = [[UIView alloc]initWithFrame:CGRectMake(0, WZ_APP_SIZE.height - bottombarHeight, WZ_APP_SIZE.width, bottombarHeight)];
     [self.view addSubview:self.bottomBarView];
     
+    float buttonWidth = WZ_APP_SIZE.width/3;
+    
     [self.bottomBarView setBackgroundColor:DARK_BACKGROUND_COLOR];
-    self.filterButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width/2, self.bottomBarView.frame.size.height)];
+    self.filterButton = [[UIButton alloc]initWithFrame:CGRectMake(buttonWidth, 0, buttonWidth, self.bottomBarView.frame.size.height)];
     [self.filterButton setImage:[UIImage imageNamed:@"滤镜"] forState:UIControlStateNormal];
     [self.filterButton setImage:[UIImage imageNamed:@"滤镜_s"] forState:UIControlStateSelected];
     //[self.filterButton setTitle:@"滤 镜" forState:UIControlStateNormal];
@@ -493,7 +586,7 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self.filterButton setSelected:YES];
     [self.bottomBarView addSubview:self.filterButton];
     
-    self.effectButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2, 0,WZ_APP_SIZE.width/2, self.bottomBarView.frame.size.height)];
+    self.effectButton = [[UIButton alloc]initWithFrame:CGRectMake(buttonWidth*2, 0,buttonWidth, self.bottomBarView.frame.size.height)];
 
     [self.effectButton setImage:[UIImage imageNamed:@"工具"] forState:UIControlStateNormal];
     [self.effectButton setImage:[UIImage imageNamed:@"工具_s"] forState:UIControlStateSelected];
@@ -501,6 +594,13 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self.effectButton setBackgroundColor:[UIColor clearColor]];
     [self.effectButton addTarget:self action:@selector(effectButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.bottomBarView addSubview:self.effectButton];
+    
+    self.cropButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, buttonWidth, self.bottomBarView.frame.size.height)];
+    [self.cropButton setImage:[UIImage imageNamed:@"剪裁"] forState:UIControlStateNormal];
+    [self.cropButton setImage:[UIImage imageNamed:@"剪裁_s"] forState:UIControlStateSelected];
+    [self.cropButton addTarget:self action:@selector(cropButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.bottomBarView addSubview:self.cropButton];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -559,6 +659,15 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
                 filterName = @"Normal";
             }
             cell.filterNameLabel.text = self.filterDescriptions[filterName];
+            if (self.filteredImageView.filter == cell.filteredImageView.filter)
+            {
+                
+                [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionLeft];
+                CGRect cellRect = cell.frame;
+                CGRect tempRect = self.selectIndicatorView.frame;
+                tempRect.origin.x = cellRect.origin.x + SELECT_INDICATOR_OFFSET;
+                self.selectIndicatorView.frame = tempRect;
+            }
             return cell;
         }
     }
@@ -624,28 +733,28 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     }
     else if (self.editType == EDIT_TYPE_EFFECT)
     {
-
         __block FilterParameters *parameters  = self.effectDescriptions[indexPath.item];
         __block BOOL isNewFilter = YES;
+        
         [self.filteredImageView.preEffectFilters enumerateObjectsUsingBlock:^(FilterParameters *p, NSUInteger idx, BOOL *stop) {
             if ([p.name isEqualToString:parameters.name])
             {
-                //parameters = p;
+                parameters = p;
                 isNewFilter = NO;
                 *stop = YES;
             }
         }];
-        self.effectFilterSliderView.parameters = parameters;
+        
         self.effectTopBarTitleLabel.text = parameters.name;
         preEffectValue = parameters.currentValue;
-        
         if (isNewFilter)
         {
             [self.filteredImageView.preEffectFilters addObject:parameters];
-            self.effectUsed[self.effectFilterSliderView.parameters.key] = @"YES";     
             
         }
         [self showSliderEditView];
+        self.effectFilterSliderView.delegate = self.filteredImageView;
+        self.effectFilterSliderView.parameters = parameters;
         
         //[self.filteredImageView.preEffectFilters addObject:effectFilterDescription];
     }
@@ -657,7 +766,7 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self.topBarView setHidden:YES];
     [self.effectTopBarView setHidden:NO];
     
-    CGRect targetFrame = CGRectMake(0, 50 + WZ_APP_SIZE.width , WZ_APP_SIZE.width,  WZ_APP_SIZE.height - 50 - WZ_APP_SIZE.width);
+    CGRect targetFrame = CGRectMake(0, collectionOriginY , WZ_APP_SIZE.width,  WZ_APP_SIZE.height - collectionOriginY);
     [UIView animateWithDuration:0.3 animations:^{
         self.sliderEditView.frame = targetFrame;
     }];
@@ -668,11 +777,48 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self.effectTopBarView setHidden:YES];
     [self.topBarView setHidden:NO];
     
-    CGRect targetFrame = CGRectMake(0, WZ_APP_SIZE.height , WZ_APP_SIZE.width,  WZ_APP_SIZE.height - 50 - WZ_APP_SIZE.width);
+    CGRect targetFrame = CGRectMake(0, WZ_APP_SIZE.height , WZ_APP_SIZE.width,  WZ_APP_SIZE.height - collectionOriginY);
     [UIView animateWithDuration:0.3 animations:^{
         self.sliderEditView.frame = targetFrame;
     }];
     
+}
+
+-(void)showCropView
+{
+    [self.topBarView setHidden:YES];
+    if (!self.effectTopBarView)
+    {
+        [self initTopEffectView];
+    }
+    [self.effectTopBarView setHidden:NO];
+    self.effectTopBarTitleLabel.text = @"裁剪";
+    
+    [self.cropScrollView setHidden:NO];
+    [self.cropButtonView setHidden:NO];
+    [self.filteredImageView setHidden:YES];
+    
+    CGRect targetFrame = CGRectMake(0, collectionOriginY , WZ_APP_SIZE.width,  WZ_APP_SIZE.height - collectionOriginY);
+    [UIView animateWithDuration:0.3 animations:^{
+        self.cropButtonView.frame = targetFrame;
+        
+    } completion:^(BOOL finished) {
+       // [self.view bringSubviewToFront:self.cropButtonView];
+    }];
+}
+
+-(void)hideCropView
+{
+    [self.effectTopBarView setHidden:YES];
+    [self.topBarView setHidden:NO];
+    [self.filteredImageView setHidden:NO];
+    [self.cropScrollView setHidden:YES];
+    CGRect targetFrame = CGRectMake(0, WZ_APP_SIZE.height, WZ_APP_SIZE.width,  WZ_APP_SIZE.height - collectionOriginY);
+    [UIView animateWithDuration:0.3 animations:^{
+        self.cropButtonView.frame = targetFrame;
+    } completion:^(BOOL finished) {
+        [self filterButtonClick:self.filterButton];
+    }];
 }
 
 #pragma mark - method
@@ -689,12 +835,23 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self backBarButtonClick:nil];
     if (self.filterBlock)
     {
-        UIImage *postImage = [self.filteredImageView outputImage];
-        
-        BOOL filterUsed = [[self.filteredImageView.filter.attributes objectForKey:kCIAttributeFilterName] isEqualToString: @"CIColorControls"] ? NO : YES;
-        BOOL effectUsed = self.filteredImageView.preEffectFilters.count ==0?NO:YES;
-        BOOL needSave = filterUsed || effectUsed;
-        self.filterBlock(postImage,needSave);
+        NSMutableArray *newImagesAndInfo = [[NSMutableArray alloc]init];
+        [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            
+            FilteredImageView *filterImageView = self.filteredImageViews[idx];
+            BOOL filterUsed = [[filterImageView.filter.attributes objectForKey:kCIAttributeFilterName] isEqualToString: @"CIColorControls"] ? NO : YES;
+            BOOL effectUsed = filterImageView.preEffectFilters.count ==0?NO:YES;
+            NSString *needSave = filterUsed || effectUsed?@"true":@"false";
+            
+            NSMutableDictionary *imageAndInfo = [[NSMutableDictionary alloc]init];
+            [imageAndInfo setObject:filterImageView.outputImage forKey:@"image"];
+            [imageAndInfo setObject:needSave forKey:@"needSave"];
+            [imageAndInfo setObject:[obj objectForKey:@"imageInfo"] forKey:@"imageInfo"];
+            [newImagesAndInfo addObject:imageAndInfo];
+            
+            
+        }];
+        self.filterBlock(newImagesAndInfo);
     }
 
 
@@ -706,20 +863,38 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     {
         return;
     }
-    if (self.editType == EDIT_TYPE_EFFECT)
+    else
     {
+
+        if (_photoEffectCollectionView)
+        {
+            [self.photoEffectCollectionView setHidden:YES];
+        }
+        if ( _cropScrollView)
+        {
+            [self.cropButtonView setHidden:YES];
+            [self.cropScrollView setHidden:YES];
+            
+        }
         self.editType = EDIT_TYPE_FILTER;
-       // [self.filterButton setBackgroundColor:THEME_COLOR_DARK];
-       // [self.effectButton setBackgroundColor:[UIColor blackColor]];
+        if (!_photoFilterCollectionView)
+        {
+            [self initPhotoFilterCollectionView];
+            [self.photoFilterCollectionView reloadData];
+        }
+        [self.photoFilterCollectionView setHidden:NO];
+        
+        [self.effectTopBarView setHidden:YES];
+        [self.topBarView setHidden:NO];
+        
         [self.filterButton setSelected:YES];
         [self.effectButton setSelected:NO];
-        if (self.photoEffectCollectionView)
-        {
-            self.topBarTitleLabel.text = @"滤镜";
-            [self.photoEffectCollectionView setHidden:YES];
-            [self.view sendSubviewToBack:self.photoEffectCollectionView];
-        }
+        [self.cropButton setSelected:NO];
+        self.topBarTitleLabel.text = @"滤镜";
+        
+        [self.filteredImageView setHidden:NO];
     }
+    
 }
 -(void)effectButtonClick:(UIButton *)sender
 {
@@ -727,13 +902,19 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     {
         return;
     }
-    if (self.editType == EDIT_TYPE_FILTER)
+    else
     {
+        if (_cropScrollView)
+        {
+            [self.cropScrollView setHidden:YES];
+            [self.cropButtonView setHidden:YES];
+        }
+        if (_photoFilterCollectionView)
+        {
+            [self.photoFilterCollectionView setHidden:NO];
+        }
         self.editType = EDIT_TYPE_EFFECT;
-        [self.filterButton setSelected:NO];
-        [self.effectButton setSelected:YES];
-        self.topBarTitleLabel.text = @"工具";
-        if (!self.photoEffectCollectionView)
+        if (!_photoEffectCollectionView)
         {
             [self initPhotoEffectCollectionView];
             [self.photoEffectCollectionView reloadData];
@@ -741,8 +922,20 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
             [self initTopEffectView];
            
         }
-        [self.view sendSubviewToBack:self.photoFilterCollectionView];
         [self.photoEffectCollectionView setHidden:NO];
+        
+        [self.filterButton setSelected:NO];
+        [self.effectButton setSelected:YES];
+        [self.cropButton setSelected:NO];
+        
+        [self.effectTopBarView setHidden:YES];
+        [self.topBarView setHidden:NO];
+        
+        self.topBarTitleLabel.text = @"工具";
+        [self.filteredImageView setHidden:NO];
+
+
+        
         
     }
 }
@@ -752,7 +945,6 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     if (self.effectFilterSliderView.parameters.currentValue == self.effectFilterSliderView.parameters.defaultValue)
     {
         [self.filteredImageView deletePreEffectFilter:self.effectFilterSliderView.parameters];
-        self.effectUsed[self.effectFilterSliderView.parameters.key] = @"NO";
     }
     [self hideSliderEditView];
 }
@@ -762,10 +954,106 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     if (preEffectValue == self.effectFilterSliderView.parameters.defaultValue)
     {
         [self.filteredImageView deletePreEffectFilter:self.effectFilterSliderView.parameters];
-        self.effectUsed[self.effectFilterSliderView.parameters.key] = @"NO";
     }
     [self hideSliderEditView];
 }
 
+-(void)selectImage:(UITapGestureRecognizer *)gesture
+{
+    FilterSelectImageView *selectedImageView = (FilterSelectImageView *) gesture.view;
+    NSInteger oldSelectIndex = self.selectedImageView.tag;
+    [self.selectedImageView setSelected:NO];
+    self.filteredImages[oldSelectIndex] = self.filteredImageView.inputImage;
+    self.selectedImageView.image = self.filteredImageView.outputImage;
+    [self.filteredImageView removeFromSuperview];
+    
+    NSInteger newSelectIndex = selectedImageView.tag;
+    self.filteredImageView = self.filteredImageViews[newSelectIndex];
+    self.selectedImageView = selectedImageView;
+    [self.selectedImageView setSelected:YES];
+    self.filteredImageView.inputImage = self.filteredImages[newSelectIndex];
+    [self.view addSubview:self.filteredImageView];
+    [self filterButtonClick:nil];
+    [self.photoFilterCollectionView reloadData];
+}
+
+-(void)cropButtonClick:(UIButton *)sender
+{
+    if (self.editType == EDIT_TYPE_CROP)
+    {
+        return;
+    }
+    else
+    {
+        [self.filterButton setSelected:NO];
+        [self.effectButton setSelected:NO];
+        [self.cropButton setSelected:YES];
+        
+        if (_photoEffectCollectionView)
+        {
+            [self.photoEffectCollectionView setHidden:YES];
+        }
+        if (_photoFilterCollectionView)
+        {
+            [self.photoFilterCollectionView setHidden:YES];
+        }
+        
+        self.editType = EDIT_TYPE_CROP;
+        if (!_cropScrollView)
+        {
+            [self initCropView];
+        }
+        
+         self.filteredImageView.inputImage = [self.imagesAndInfo[self.selectedImageView.tag] objectForKey:@"image"];
+        self.cropScrollView.unfilteredImage = self.filteredImageView.inputImage;
+        [self.cropScrollView displayImage:self.filteredImageView.outputImage];
+        [self showCropView];
+        
+    }
+}
+
+
+-(void)centerPhotoButtonClick:(UIButton *)sender
+{
+    [self.cropScrollView setImageViewInCenter];
+}
+
+
+-(void)adaptiveButtonClick:(UIButton *)sender
+{
+    if (self.adaptiveButton.selected)
+    {
+
+        self.filteredImageView.inputImage = [self.imagesAndInfo[self.selectedImageView.tag] objectForKey:@"image"];
+        self.cropScrollView.unfilteredImage = self.filteredImageView.inputImage;
+        [self.cropScrollView displayImage:self.filteredImageView.outputImage];
+        self.adaptiveButton.selected = NO;
+    }
+    else
+    {
+        
+        [self.cropScrollView adaptImageView];
+        self.filteredImageView.inputImage = self.cropScrollView.unfilteredImage;
+        [self.cropScrollView displayImage:self.filteredImageView.outputImage];
+        self.adaptiveButton.selected = YES;
+    }
+}
+
+-(void)cropEditOkClick:(id)sender
+{
+    [self hideCropView];
+    self.filteredImages[self.selectedImageView.tag] = self.selectedImageView.image = [self.cropScrollView capture];
+    self.filteredImageView.inputImage = self.selectedImageView.image;
+   
+   
+    
+}
+
+-(void)cropEditCancelClick:(id)sender
+{
+    [self hideCropView];
+    self.filteredImageView.inputImage = self.selectedImageView.image;
+   
+}
 
 @end

@@ -33,4 +33,5 @@ typedef  NS_ENUM(NSInteger, POI_TYPE)
 
 - (void)configureWithGaodeSearchResult:(AMapPOI *)p;
 - (void)configureWithGoogleSearchResult:(NSDictionary *)result;
+-(void)configureWithGaodeaddressComponent:(AMapAddressComponent *)component;
 @end

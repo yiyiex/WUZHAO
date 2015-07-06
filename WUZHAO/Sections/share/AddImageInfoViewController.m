@@ -11,6 +11,7 @@
 #import "AddressSearchTableViewController.h"
 
 #import "QDYHTTPClient.h"
+#import "POISearchAPI.h"
 #import "SVProgressHUD.h"
 
 
@@ -22,28 +23,39 @@
 
 #import <AMapSearchKit/AMapSearchAPI.h>
 #import <CoreLocation/CoreLocation.h>
+#import "Geodetic.h"
+
 #import <ImageIO/ImageIO.h>
 
 
 //#define PIOTKEYWORDS @"餐饮|购物|生活|体育|住宿|风景|地名|商务|科教|公司";
 #define POIKEYWORDS @"餐饮"
-
-@interface AddImageInfoViewController()<UITableViewDataSource,UITableViewDelegate,AddressSearchTableViewControllerDelegate,UITextViewDelegate,UITextFieldDelegate>
+#define PHOTOWIDTH  (WZ_APP_SIZE.width-32)/3
+@interface AddImageInfoViewController()<UITableViewDataSource,UITableViewDelegate,AddressSearchTableViewControllerDelegate,UITextViewDelegate,UITextFieldDelegate,AMapSearchDelegate,CLLocationManagerDelegate>
 {
     AMapSearchAPI *_search;
     CLLocationManager *_locationManager;
+    CLLocation *searchLocation;
     CGPoint postImageCenter;
     CGRect postImageFrame;
     UIView *greyMaskView;
     UIImageView *bigImageView;
+   
+    
 }
 @property (strong, nonatomic)  IBOutlet UITableView *imageInfoTableView;
-@property (strong, nonatomic)  UIImageView *postImageView;
+
+@property (strong, nonatomic) UITableViewCell *postImagesCell;
+
+@property (strong, nonatomic) UITableViewCell *postImageDescriptionCell;
+
 @property (strong, nonatomic)  PlaceholderTextView *postImageDescription;
 @property (strong, nonatomic)  UITableViewCell *addressTableViewCell;
 
 @property (nonatomic) BOOL hasPoi;
 @property (nonatomic ,strong) POI *poiInfo;
+@property (nonatomic, strong) POI *provinceInfo;
+
 @property (nonatomic ,strong) NSArray *addressDatasource;
 
 @property (strong, nonatomic) UIButton *postButton;
@@ -76,7 +88,14 @@
 {
     if (self.poiInfo && self.hasPoi)
     {
-        self.addressTableViewCell.textLabel.text = self.poiInfo.name;
+        if (self.poiInfo.type == POI_TYPE_GAODE)
+        {
+            self.addressTableViewCell.textLabel.text = [NSString stringWithFormat:@"%@ · %@",self.poiInfo.city,self.poiInfo.name];
+        }
+        else
+        {
+            self.addressTableViewCell.textLabel.text = [NSString stringWithFormat:@"%@",self.poiInfo.name];
+        }
     }
     else
     {
@@ -86,24 +105,29 @@
 
 #pragma mark -datas
 
-
-
--(UIImageView *)postImageView
-{
-    if (_postImage)
-    {
-        _postImageView.image = _postImage;
-    }
-    return _postImageView;
-}
 -(NSDictionary *)postImageInfo
 {
     if (!_postImageInfo)
     {
-        NSData *imageData = UIImageJPEGRepresentation(_postImage, 1.0);
-        CFDataRef imageDataRef = (__bridge CFDataRef)imageData;
-        CGImageSourceRef imageSourceRef = CGImageSourceCreateWithData(imageDataRef, NULL);
-        _postImageInfo = (NSDictionary *) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(imageSourceRef, 0, NULL));
+        __block UIImage *image;
+        [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            NSDictionary *postImageInfo = [obj objectForKey:@"imageInfo"];
+            if ([postImageInfo objectForKey:@"{GPS}"])
+            {
+                _postImageInfo = postImageInfo;
+                image = [obj objectForKey:@"image"];
+                *stop = YES;
+           
+            }
+            else
+            {
+                NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+                CFDataRef imageDataRef = (__bridge CFDataRef)imageData;
+                CGImageSourceRef imageSourceRef = CGImageSourceCreateWithData(imageDataRef, NULL);
+                _postImageInfo = (NSDictionary *) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(imageSourceRef, 0, NULL));
+            }
+        }];
+ 
     }
     return _postImageInfo;
 }
@@ -145,16 +169,19 @@
     [swipUpGesture setDirection:UISwipeGestureRecognizerDirectionUp];
     [self.imageInfoTableView addGestureRecognizer:swipUpGesture];
     
-    [self initPostImageView];
+    [self initPostImagesCell];
 }
--(void)initPostImageView
+-(void)initPostImagesCell
 {
+    
+    /*
     self.postImageView.image = self.postImage;
     [self.postImageView.layer setMasksToBounds:YES];
     [self.postImageView.layer setCornerRadius:4.0f];
     UITapGestureRecognizer *imageClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showImageDetail:)];
     [self.postImageView addGestureRecognizer:imageClick];
     [self.postImageView setUserInteractionEnabled:YES];
+     */
 }
 -(void)initTopBar
 {
@@ -231,19 +258,21 @@
     [self.view addSubview:greyMaskView];
     bigImageView= [UIImageView new];
     UIWindow * window=[[[UIApplication sharedApplication] delegate] window];
-    postImageFrame = [self.postImageView.superview convertRect:self.postImageView.frame toView:window];
-    postImageCenter = [self.postImageView.superview convertPoint:self.postImageView.center toView:window];
+    UIImageView *imageView =(UIImageView *) gesture.view;
+    postImageFrame = [imageView.superview convertRect:imageView.frame toView:window];
+    postImageCenter = [imageView.superview convertPoint:imageView.center toView:window];
     bigImageView.center = postImageCenter;
     bigImageView.frame = postImageFrame;
-    bigImageView.image = self.postImageView.image;
+    bigImageView.image = imageView.image;
     bigImageView.userInteractionEnabled = YES;
-    self.postImageView.userInteractionEnabled = NO;
+    imageView.userInteractionEnabled = NO;
     UITapGestureRecognizer *bigImageClick = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backToSmallImage:)];
     [bigImageView addGestureRecognizer:bigImageClick];
 
     [self.view addSubview:bigImageView];
     [UIView animateWithDuration:0.5 animations:^{
         bigImageView.frame = CGRectMake(0, (WZ_APP_SIZE.height-WZ_APP_SIZE.width)/2, WZ_APP_SIZE.width, WZ_APP_SIZE.width);
+        imageView.userInteractionEnabled = YES;
     }];
 }
 -(void)backToSmallImage:(UITapGestureRecognizer *)gesture
@@ -255,8 +284,6 @@
     } completion:^(BOOL finished) {
         [view removeFromSuperview];
         [greyMaskView removeFromSuperview];
-        self.postImageView.userInteractionEnabled = YES;
-        
     }];
 }
 -(void)greyMaskClick:(UITapGestureRecognizer *)gesture
@@ -268,8 +295,6 @@
     } completion:^(BOOL finished) {
         [view removeFromSuperview];
         [greyMaskView removeFromSuperview];
-        self.postImageView.userInteractionEnabled = YES;
-        
     }];
 }
 
@@ -277,8 +302,114 @@
 {
     
     //获取token和filename请求
-    [SVProgressHUD showWithStatus:@"图片上传中..."];
+    NSMutableArray *photos = [[NSMutableArray alloc]init];
+    [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [photos addObject:[obj objectForKey:@"image"]];
+    }];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"beginUploadPhotos" object:nil userInfo:@{@"photos":photos}];
+   // [SVProgressHUD showWithStatus:@"图片上传中..."];
+    NSMutableArray *photoNames = [[NSMutableArray alloc]init];
+    
+    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [[QDYHTTPClient sharedInstance] GetQiNiuTokenWithUserId:userId type:1 whenComplete:^(NSDictionary *result) {
+                NSDictionary *data;
+                if ([result objectForKey:@"data"])
+                {
+                    data = [result objectForKey:@"data"];
+                    NSLog(@"%@",data);
+                }
+                else
+                {
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        [SVProgressHUD showErrorWithStatus:@"获取token失败"];
+                        return ;
+                    });
+                }
+                QNUploadManager *upLoadManager = [[QNUploadManager alloc]init];
+                NSData *imageData = UIImageJPEGRepresentation([obj objectForKey:@"image"], 0.7f);
+                [upLoadManager putData:imageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
+                 {
+                     NSLog(@"%@",info);
+                     if (info.error)
+                     {
+                         
+                         //重传逻辑
+                         NSData *imageData = UIImageJPEGRepresentation([obj objectForKey:@"image"], 0.7f);
+                         [upLoadManager putData:imageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
+                          {
+                              NSLog(@"%@",info);
+                              if (info.error)
+                              {
+                                  
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadPhotoFail" object:nil userInfo:@{@"photoIndex":[NSNumber numberWithInteger:idx]}];
+                                      
+                                      //用户端提示
+                                      [photoNames addObject:[data objectForKey:@"imageName"]];
+                                      if (photoNames.count == self.imagesAndInfo.count)
+                                      {
+                                          [self uploadPhotoInfosToServer:photoNames];
+                                          [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadAllPhotosSuccess" object:nil];
+                                      }
+                                  });
+                                  
+                              }
+                              else
+                              {
+                                  //用户端提示
+                                  [photoNames addObject:[data objectForKey:@"imageName"]];
+                                  [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadPhotoSuccess" object:nil userInfo:@{@"photoIndex":[NSNumber numberWithInteger:idx]}];
+                                  if (photoNames.count == self.imagesAndInfo.count)
+                                  {
+                                      [self uploadPhotoInfosToServer:photoNames];
+                                      [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadAllPhotosSuccess" object:nil];
+                                  }
+                                  
+                              }
+                              
+                              
+                          } option:nil];
+                     }
+                     else
+                     {
+                         //用户端提示
+                         [photoNames addObject:[data objectForKey:@"imageName"]];
+                         [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadPhotoSuccess" object:nil userInfo:@{@"photoIndex":[NSNumber numberWithInteger:idx]}];
+                         if (photoNames.count == self.imagesAndInfo.count)
+                         {
+                             [self uploadPhotoInfosToServer:photoNames];
+                                [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadAllPhotosSuccess" object:nil];
+                         }
+                         
+                     }
+                     
+                     
+                 } option:nil];
+        }];
+        
+    }];
+    });
+
    
+}
+
+-(void)uploadPhotoInfosToServer:(NSArray *)photoNames
+{
+    
+   __block  NSString *photosNameString;
+    
+    [photoNames enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if (idx == 0)
+        {
+            photosNameString = [NSString stringWithFormat:@"%@",obj];
+        }
+        else
+        {
+            photosNameString = [NSString stringWithFormat:@"%@;%@",photosNameString,obj];
+        }
+    }];
     NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
     NSString *photoDescription = self.postImageDescription.text;
     POI *uploadPoi;
@@ -290,80 +421,38 @@
     {
         uploadPoi = [[POI alloc]init];
     }
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-    [[QDYHTTPClient sharedInstance] GetQiNiuTokenWithUserId:userId type:1 whenComplete:^(NSDictionary *result) {
-        NSDictionary *data;
-        if ([result objectForKey:@"data"])
-        {
-            data = [result objectForKey:@"data"];
-            NSLog(@"%@",data);
-        }
-        else
-        {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showErrorWithStatus:@"获取token失败"];
-                return ;
-            });
-        
-        }
-        
-        QNUploadManager *upLoadManager = [[QNUploadManager alloc]init];
-        NSData *imageData = UIImageJPEGRepresentation(self.postImage, 0.7f);
-        [upLoadManager putData:imageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
-         {
-             NSLog(@"%@",info);
-             if (info.error)
+    [[QDYHTTPClient sharedInstance]PostPhotoInfomationWithUserId:userId
+                                                           photo:photosNameString
+                                                         thought:photoDescription
+                                                          haspoi:_hasPoi
+                                                        provider:uploadPoi.type
+                                                             uid:uploadPoi.uid
+                                                            name:uploadPoi.name
+                                                        classify:uploadPoi.classify
+                                                        location:uploadPoi.location
+                                                         address:uploadPoi.address
+                                                        province:uploadPoi.province
+                                                            city:uploadPoi.city
+                                                        district:uploadPoi.district
+                                                           stamp:uploadPoi.stamp
+                                                    whenComplete:^(NSDictionary *returnData)
+     {
+         
+         dispatch_async(dispatch_get_main_queue(), ^{
+             if ([returnData objectForKey:@"data"])
              {
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     [SVProgressHUD showErrorWithStatus:@"上传图片失败"];
-                 });
-                 
+                 //[[NSNotificationCenter defaultCenter]postNotificationName:@"uploadDataSuccess" object:nil];
              }
-             else
+             else if ([returnData objectForKey:@"error"])
              {
-                 //用户端提示
-                 [[QDYHTTPClient sharedInstance]PostPhotoInfomationWithUserId:userId
-                                                                        photo:[data objectForKey:@"imageName"]
-                                                                      thought:photoDescription
-                                                                       haspoi:_hasPoi
-                                                                     provider:uploadPoi.type
-                                                                          uid:uploadPoi.uid
-                                                                         name:uploadPoi.name
-                                                                     classify:uploadPoi.classify
-                                                                     location:uploadPoi.location
-                                                                      address:uploadPoi.address
-                                                                     province:uploadPoi.province
-                                                                         city:uploadPoi.city
-                                                                     district:uploadPoi.district
-                                                                        stamp:uploadPoi.stamp
-                                                                 whenComplete:^(NSDictionary *returnData)
-                  {
-                      
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          if ([returnData objectForKey:@"data"])
-                          {
-                              [SVProgressHUD showSuccessWithStatus:@"上传图片成功"];
-                              [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadDataSuccess" object:nil];
-                          }
-                          else if ([returnData objectForKey:@"error"])
-                          {
-                              [SVProgressHUD showErrorWithStatus:@"上传图片失败"];
-                          }
-                      });
-          
-                      
-                  }];
-                 
-                 
+                // [SVProgressHUD showErrorWithStatus:@"上传图片失败"];
              }
-             
-             
-         } option:nil];
-        
-    }];
-    });
-
-   
+         });
+         
+         
+     }];
+    
+    
 }
 #pragma mark - addressSearchTableviewDelegate
 -(void)finishSelectAddress:(POI *)addressInfo
@@ -388,15 +477,19 @@
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return 3;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0)
     {
-        return 100.0f;
+        return ceil((float)self.imagesAndInfo.count/3)*(PHOTOWIDTH + 8) + 8;
     }
     else if (indexPath.section == 1)
+    {
+        return 100.0f;
+    }
+    else if (indexPath.section == 2)
     {
         return 50.0f;
     }
@@ -409,27 +502,33 @@
     UITableViewCell *cell = [[UITableViewCell alloc]init];
     if (indexPath.section == 0 && indexPath.row ==0)
     {
-        self.postImageView = [[UIImageView alloc]initWithFrame:CGRectMake(8, 8, 84, 84)];
-        [self.postImageView setImage:self.postImage];
-        self.postImageView.image = self.postImage;
-        [self.postImageView.layer setMasksToBounds:YES];
-        [self.postImageView.layer setCornerRadius:4.0f];
-        UITapGestureRecognizer *imageClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showImageDetail:)];
-        [self.postImageView addGestureRecognizer:imageClick];
-        [self.postImageView setUserInteractionEnabled:YES];
-        self.postImageDescription = [[PlaceholderTextView alloc]initWithFrame:CGRectMake(100, 8, WZ_APP_SIZE.width - 108, 84)];
+        float spacing = 10;
+        [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(spacing+ (PHOTOWIDTH+spacing)*(idx%3) , spacing+(PHOTOWIDTH+spacing)*(idx/3), PHOTOWIDTH, PHOTOWIDTH)];
+            [imageView setImage:[obj objectForKey:@"image"]];
+            [imageView.layer setMasksToBounds:YES];
+            [imageView.layer setCornerRadius:4.0f];
+            UITapGestureRecognizer *imageClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showImageDetail:)];
+            [imageView addGestureRecognizer:imageClick];
+            [imageView setUserInteractionEnabled:YES];
+            [cell.contentView addSubview:imageView];
+        }];
+    }
+    else if (indexPath.section == 1 && indexPath.row == 0 )
+    {
+        self.postImageDescription = [[PlaceholderTextView alloc]initWithFrame:CGRectMake(8, 8, WZ_APP_SIZE.width - 16, 84)];
         self.postImageDescription.placeholder = @"添加照片说明";
         self.postImageDescription.placeholderFont = WZ_FONT_COMMON_SIZE;
         [self.postImageDescription setFont:WZ_FONT_COMMON_SIZE];
-        [cell.contentView addSubview:self.postImageView];
         [cell.contentView addSubview:self.postImageDescription];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    else if (indexPath.section == 1 && indexPath.row ==0)
+    else if (indexPath.section == 2 && indexPath.row ==0 )
     {
+        [self setCurrentLocation];
         self.addressTableViewCell = cell;
         cell.imageView.image = [UIImage imageNamed:@"map-marker"];
-        cell.textLabel.text = @"标记位置";
+       // cell.textLabel.text = @"标记位置";
         [cell.textLabel setFont:WZ_FONT_LARGE_SIZE];
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -437,6 +536,106 @@
         [self.addressTableViewCell addGestureRecognizer:addressCellClick];
     }
     return cell;
+}
+
+#pragma mark - CLLocationManagerDelegate
+-(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    NSLog(@"location failed!");
+}
+
+-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    NSLog(@"location success");
+    NSLog(@"location: %@",locations);
+    [manager stopUpdatingLocation];
+    searchLocation = locations.lastObject;
+    
+    [self regeoLocation];
+
+    
+}
+
+#pragma mark - address  ReGeocode
+-(void)setCurrentLocation
+{
+    if ([self.postImageInfo objectForKey:@"{GPS}"])
+    {
+        NSDictionary *GPSInfo = [self.postImageInfo objectForKey:@"{GPS}"];
+        NSString * latitude = [GPSInfo objectForKey:@"Latitude"];
+        NSString * longitude = [GPSInfo objectForKey:@"Longitude"];
+        searchLocation = [[CLLocation alloc]initWithLatitude:[latitude floatValue] longitude:[longitude floatValue]];
+        [self regeoLocation];
+    }
+    else
+    {
+        _locationManager = [[CLLocationManager alloc]init];
+        _locationManager.delegate = self;
+        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        if ([_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+            [_locationManager requestWhenInUseAuthorization];
+        }
+        _locationManager.distanceFilter = 500;
+        [_locationManager startUpdatingLocation];
+    }
+
+}
+
+
+-(void)regeoLocation
+{
+    //-33.8670522,151.1957362
+    //searchLocation = [[CLLocation alloc]initWithLatitude:-33.8670522 longitude:151.1957362];
+    if ([Geodetic isInsideChina:searchLocation])
+    {
+        CLLocation *marsLocation = [Geodetic transFromGPSToMars:searchLocation];
+        _search =  [[AMapSearchAPI alloc]initWithSearchKey:GAODE_SDK_KEY Delegate:self];
+        AMapReGeocodeSearchRequest *regeoRequest = [[AMapReGeocodeSearchRequest alloc]init];
+        regeoRequest.searchType = AMapSearchType_ReGeocode;
+        regeoRequest.location = [AMapGeoPoint locationWithLatitude:marsLocation.coordinate.latitude longitude:marsLocation.coordinate.longitude];
+        regeoRequest.radius = 1000;
+        regeoRequest.requireExtension = NO;
+        [_search AMapReGoecodeSearch:regeoRequest];
+    }
+    else
+    {
+        [[POISearchAPI sharedInstance]regeoGoogleLocation:searchLocation.coordinate.latitude longitude:searchLocation.coordinate.longitude whenComplete:^(NSDictionary *result) {
+            if ( [result objectForKey:@"data"])
+            {
+                self.poiInfo = [[POI alloc]init];
+                self.provinceInfo = [[POI alloc]init];
+                self.hasPoi = YES;
+                [self.poiInfo configureWithGoogleSearchResult:[[result objectForKey:@"data"]objectForKey:@"poiInfo" ]];
+                [self.provinceInfo configureWithGoogleSearchResult:[[result objectForKey:@"data"]objectForKey:@"poiInfo" ]];
+                self.addressTableViewCell.textLabel.text = [NSString stringWithFormat:@"%@",self.poiInfo.name];
+            }
+            else if ([result objectForKey:@"error"])
+            {
+                [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+                [self.addressTableViewCell.textLabel setText:@"选择地址"];
+            }
+            else
+            {
+                [SVProgressHUD showErrorWithStatus:@"获取地址失败"];
+                [self.addressTableViewCell.textLabel setText:@"选择地址"];
+            }
+        }];
+    }
+}
+-(void)onReGeocodeSearchDone:(AMapReGeocodeSearchRequest *)request response:(AMapReGeocodeSearchResponse *)response
+{
+    if (response.regeocode != nil)
+    {
+        NSString *result = [NSString stringWithFormat:@"ReGeocode: %@", response.regeocode];
+        NSLog(@"ReGeo: %@", result);
+        AMapAddressComponent *addressComponent = response.regeocode.addressComponent;
+        self.poiInfo = [[POI alloc]init];
+        self.provinceInfo = [[POI alloc]init];
+        self.hasPoi = YES;
+        [self.poiInfo configureWithGaodeaddressComponent:addressComponent];
+        [self.provinceInfo configureWithGaodeaddressComponent:addressComponent];
+        self.addressTableViewCell.textLabel.text = [NSString stringWithFormat:@"%@ · %@",self.poiInfo.city,self.poiInfo.name];
+    }
 }
 
 #pragma mark -dataformat
@@ -467,6 +666,8 @@
     return randomString;
 }
 
+#pragma mark - gesture actions
+
 -(void)addressCellClick:(UITapGestureRecognizer *)gesture
 {
     AddressSearchTableViewController *searchCon = [[AddressSearchTableViewController alloc]init];
@@ -474,6 +675,10 @@
     if (self.poiInfo)
     {
         searchCon.poiInfo = self.poiInfo;
+    }
+    if (self.provinceInfo)
+    {
+        searchCon.provincePoiInfo = self.provinceInfo;
     }
     if ([self.postImageInfo objectForKey:@"{GPS}"])
     {

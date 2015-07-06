@@ -15,6 +15,8 @@
 
 
 #import "CommentTextView.h"
+#import "progressImageView.h"
+
 #import "UIViewController+HideBottomBar.h"
 
 #import "UIImageView+WebCache.h"
@@ -52,6 +54,11 @@
 @property (nonatomic,strong) PhotoTableViewCell *prototypeCell;
 @property (nonatomic,strong) UIView *introductionView;
 
+@property (nonatomic, strong) UIScrollView *uploadPhotoIndicatorView;
+@property (nonatomic, strong) NSMutableArray *uploadImageProgressViews;
+
+
+
 @end
 
 @implementation HomeTableViewController
@@ -68,7 +75,12 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
     [self.tableView setContentOffset:CGPointMake(0, -64)];
-
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beginUploadPhotos:) name:@"beginUploadPhotos" object:Nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(finishiIndicator:) name:@"uploadPhotoSuccess" object:nil];
+     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(errorIndicator:) name:@"uploadPhotoFail" object:nil];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideIndicator) name:@"uploadAllPhotosSuccess" object:nil];
 }
 
 
@@ -303,6 +315,8 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 {
 
     [self.prototypeCell configureCellWithData:dataItem parentController:self];
+    float imageScrollHeight = self.prototypeCell.imagesContainerView.frame.size.height;
+    float addressHeight = self.prototypeCell.addressLabelView.frame.size.height + self.prototypeCell.addressViewVerticalSpaceToUpView.constant;
     float descriptionHieght;
     CGSize descriptionSize = self.prototypeCell.descriptionTextView.frame.size;
     // NSLog(@"description content  at index %ld:%@",(long)indexPath.row,self.prototypeCell.descriptionTextView.text);
@@ -327,7 +341,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         likeViewHeight = 36;
     }
     float basicheight = 48 + WZ_APP_SIZE.width + (12+24+12);
-    float height = basicheight + descriptionHieght+ commentViewHeight+likeViewHeight ;
+    float height = basicheight + imageScrollHeight + addressHeight + descriptionHieght+ commentViewHeight+likeViewHeight ;
     //NSLog(@"heihgt ************************* at index path %ld :%f",(long)indexPath.row,height);
     return height;
 }
@@ -379,6 +393,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     //各控件单击效果
     //点击头像，跳转个人主页
     [self configureCell:cell forContent:item atIndexPath:indexPath];
+    [self.tableView.panGestureRecognizer requireGestureRecognizerToFail:cell.imagesScrollView.panGestureRecognizer];
     
    // NSLog(@"cell height at indexpath:%ld ---- %f",(long)indexPath.row,cell.contentView.frame.size.height);
     //NSLog(@"cell headview height at indexpath:%ld ---- %f",(long)indexPath.row,cell.headView.frame.size.height);
@@ -854,7 +869,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     {
         CGPoint loadMorePoint = CGPointMake(0, self.tableView.contentSize.height);
         CGPoint targetPoint = *targetContentOffset;
-        float almostToBottomOffset = 90.0f;
+        float almostToBottomOffset = 0.0f;
         if (targetPoint.y > loadMorePoint.y - WZ_APP_SIZE.height + almostToBottomOffset)
         {
             [self performSelectorOnMainThread:@selector(loadMore:) withObject:self.loadMoreButton waitUntilDone:NO];
@@ -1030,7 +1045,9 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     NSLog(@"touch in the home table view");
+    
 }
+
 
 
 #pragma mark - notification action
@@ -1040,6 +1057,77 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     self.dataSource = nil;
     [self.tableView reloadData];
 }
+
+-(void)beginUploadPhotos:(NSNotification *)notification
+{
+    NSArray *photos =  [[notification userInfo] objectForKey:@"photos"];
+    [self showIndicator:photos];
+}
+
+-(void)finishiIndicator:(NSNotification *)notification
+{
+    
+    NSInteger index = [[[notification userInfo] objectForKey:@"photoIndex"]integerValue];
+    progressImageView *imageView = self.uploadImageProgressViews[index];
+    [imageView setfinishState];
+     
+}
+
+-(void)errorIndicator:(NSNotification *)notification
+{
+    
+    NSInteger index = [[[notification userInfo] objectForKey:@"photoIndex"]integerValue];
+    progressImageView *imageView = self.uploadImageProgressViews[index];
+    [imageView setErrorState];
+    
+}
+
+#pragma mark - uploadNewPhotoIndicator
+-(void)showIndicator:(NSArray *)photos
+{
+    float imageWidth = 48;
+    float spacing =8;
+    self.uploadPhotoIndicatorView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, 64)];
+    self.uploadPhotoIndicatorView.backgroundColor = [UIColor whiteColor];
+    self.uploadPhotoIndicatorView.contentSize = CGSizeMake(spacing +(imageWidth+spacing)*photos.count, 64);
+    [PhotoCommon drawALineWithFrame:CGRectMake(0, self.uploadPhotoIndicatorView.frame.size.height-0.5f, WZ_APP_SIZE.width, 0.5f) andColor:THEME_COLOR_LIGHT_GREY_PARENT inLayer:self.uploadPhotoIndicatorView.layer];
+    self.uploadImageProgressViews = [[NSMutableArray alloc]init];
+    [photos enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        progressImageView *imageView = [[progressImageView alloc]initWithFrame:CGRectMake(spacing +idx*(imageWidth+spacing), spacing, imageWidth, imageWidth)];
+        [self.uploadPhotoIndicatorView addSubview:imageView];
+        imageView.image = obj;
+        [self.uploadImageProgressViews addObject:imageView];
+    }];
+    self.tableView.tableHeaderView = self.uploadPhotoIndicatorView;
+    //[self.view addSubview:self.uploadPhotoIndicatorView];
+}
+
+-(void)hideIndicator
+{
+    CGRect rect = CGRectMake(0, -64, WZ_APP_SIZE.width, 64);
+    
+    [UIView animateWithDuration:0.3 delay:3.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        
+        self.uploadPhotoIndicatorView.frame = rect;
+        
+    } completion:^(BOOL finished) {
+        [self.uploadImageProgressViews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [obj removeFromSuperview];
+        }];
+        [self.uploadPhotoIndicatorView removeFromSuperview];
+        self.tableView.tableHeaderView = nil;
+        [self GetLatestDataList];
+        
+    }];
+}
+
+-(void)updateIndicatorAtIndex:(NSInteger)index withProcess:(float)process
+{
+    progressImageView *imageView = self.uploadImageProgressViews[index];
+    [imageView setProgress:process];
+}
+
+
 
 
 @end

@@ -8,6 +8,7 @@
 
 #import "User.h"
 #import "AFHTTPRequestOperation.h"
+#import "WhatsGoingOn.h"
 
 @interface User ()
 
@@ -68,10 +69,7 @@
     {
         for (NSDictionary *item in [attributes objectForKey:@"simplepost_list"])
         {
-            NSMutableDictionary *photoItem = [[NSMutableDictionary alloc]init];
-            [photoItem setObject:[item objectForKey:@"post_id"] forKey:@"postId"];
-            [photoItem setObject:[item objectForKey:@"create_time"] forKey:@"time"];
-            [photoItem setObject:[item objectForKey:@"photo"] forKey:@"photoUrl"];
+            WhatsGoingOn *photoItem = [[WhatsGoingOn alloc]initWithAttributes:item];
             [self.photoList addObject:photoItem];
         }
     }

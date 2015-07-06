@@ -15,6 +15,7 @@
 @property (nonatomic ,readwrite) NSInteger postId;
 @property (nonatomic,readwrite) NSInteger commentNum;
 @property (nonatomic,copy) NSString *imageUrlString;
+@property (nonatomic,copy) NSMutableArray *imageUrlList;
 @property (nonatomic,copy) NSString *postTime;
 @property (nonatomic,copy) NSString *imageDescription;
 //@property (nonatomic,copy) NSString *adddresMark;

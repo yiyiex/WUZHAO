@@ -17,7 +17,7 @@
 #import "macro.h"
 #import "Geodetic.h"
 
-#import "PIOSearchAPI.h"
+#import "POISearchAPI.h"
 #import "SVProgressHUD.h"
 
 #import <AMapSearchKit/AMapSearchAPI.h>
@@ -248,11 +248,12 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     [self.addressDataSource removeAllObjects];
     [self.tableView reloadData];
     [self startAiv];
-    // CLLocation *location2 = [[CLLocation alloc]initWithLatitude:-33.8670522 longitude:151.1957362];
+     //CLLocation *location2 = [[CLLocation alloc]initWithLatitude:-33.8670522 longitude:151.1957362];
+    //CLLocation *location2 = [[CLLocation alloc]initWithLatitude:29.797155 longitude:119.69141];
     //判断是否在国内，国内通过高德SDK ，国外通过后台接口
     if (![Geodetic isInsideChina:location])
     {
-        [[PIOSearchAPI sharedInstance]SearchAroundPIOWithLongitude:location.coordinate.longitude Latitude:location.coordinate.latitude radius:500 whenComplete:^(NSDictionary *result) {
+        [[POISearchAPI sharedInstance]SearchAroundPOIWithLongitude:location.coordinate.longitude Latitude:location.coordinate.latitude radius:500 ignorepolitical:1 whenComplete:^(NSDictionary *result) {
             NSLog(@"%@",result);
             [self stopAiv];
             if ([result objectForKey:@"data"])
@@ -261,6 +262,10 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
                 NSDictionary *data = [result objectForKey:@"data"];
                 googleSearchNextPageToken = [data objectForKey:@"nextPageToken"];
                 [self.addressDataSource removeAllObjects];
+                if (self.provincePoiInfo)
+                {
+                    [self.addressDataSource addObject:self.provincePoiInfo];
+                }
                 for (NSDictionary *p in [data objectForKey:@"POIs"])
                 {
                     POI *poiInfo = [[POI alloc]init];
@@ -303,7 +308,7 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 #pragma mark - search With keyword
 -(void)searchAddressWithKeyword:(NSString *)keyword
 {
-    _search = [[AMapSearchAPI alloc]initWithSearchKey:@"2552aafe945c02ece19c41739007ca14" Delegate:self];
+    _search = [[AMapSearchAPI alloc]initWithSearchKey:GAODE_SDK_KEY Delegate:self];
     
     AMapPlaceSearchRequest *poiRequest = [[AMapPlaceSearchRequest alloc]init];
     poiRequest.searchType = AMapSearchType_PlaceKeyword;
@@ -332,6 +337,10 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     {
         //通过AMapPlaceSearchResponse对象处理搜索结果
         [self.addressDataSource removeAllObjects];
+        if (self.provincePoiInfo)
+        {
+            [self.addressDataSource addObject:self.provincePoiInfo];
+        }
         for (AMapPOI *p in response.pois) {
             if (p.weight <0.20)
             {
@@ -341,6 +350,8 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
             [poiInfo configureWithGaodeSearchResult:p];
             [self.addressDataSource addObject:poiInfo];
         }
+        
+        
         
     }
     [self.tableView reloadData];
@@ -429,12 +440,52 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
             [cell.textLabel setFont:WZ_FONT_LARGE_BOLD_SIZE];
             [cell.textLabel setTextColor:THEME_COLOR_DARK];
         }
-        else if (indexPath.row >0)
+        
+        if (self.provincePoiInfo && indexPath.row == 1)
+        {
+            cell = [[AddressTableViewCell alloc]init];
+            if (self.provincePoiInfo.type == POI_TYPE_GAODE)
+            {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ %@",self.provincePoiInfo.city,self.provincePoiInfo.district];
+            }
+            else if (self.provincePoiInfo.type == POI_TYPE_GOOGLE)
+            {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@",self.provincePoiInfo.name];
+            }
+            else
+            {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ %@",self.provincePoiInfo.city,self.provincePoiInfo.district];
+            }
+            
+            [cell.textLabel setFont:WZ_FONT_LARGE_BOLD_SIZE];
+            if ([self.poiInfo.uid isEqualToString:self.provincePoiInfo.uid])
+            {
+                self.currentAddressTableSelectedIndex = indexPath;
+            }
+        }
+        else if (self.provincePoiInfo && indexPath.row >1)
         {
             cell = [tableView dequeueReusableCellWithIdentifier:@"addressInfoCell" forIndexPath:indexPath];
             if (!cell)
             {
                cell = [[AddressTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"addressInfoCell"];
+            }
+            POI *poiInfo = [self.addressDataSource objectAtIndex:(indexPath.row-1)];
+            if ([self.poiInfo.uid isEqualToString:poiInfo.uid])
+            {
+                self.currentAddressTableSelectedIndex = indexPath;
+            }
+            cell.addressLabel.text = [NSString stringWithFormat:@"%@",poiInfo.name];
+            cell.detailAddressLabel.text =[NSString stringWithFormat:@"%@%@",poiInfo.city,poiInfo.address];
+            [cell setAppearance];
+            //return cell;
+        }
+        else if (!self.provincePoiInfo && indexPath.row >0)
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"addressInfoCell" forIndexPath:indexPath];
+            if (!cell)
+            {
+                cell = [[AddressTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"addressInfoCell"];
             }
             POI *poiInfo = [self.addressDataSource objectAtIndex:(indexPath.row-1)];
             if ([self.poiInfo.uid isEqualToString:poiInfo.uid])

@@ -10,5 +10,10 @@
 
 @interface PhotoCollectionViewCell : UICollectionViewCell
 @property (nonatomic,strong) IBOutlet UIImageView  *cellImageView;
+@property (nonatomic, strong) IBOutlet UILabel *imageCountLabel;
 
+
+-(void) hideImageCountLabel;
+-(void) showImageCountLabel:(NSInteger)count;
+-(void) setAppearance;
 @end

@@ -98,6 +98,20 @@
     self.classify = [result objectForKey:@"type"];
     self.type = POI_TYPE_GOOGLE;
 }
+-(void)configureWithGaodeaddressComponent:(AMapAddressComponent *)component
+{
+    self.uid = component.adcode;
+    self.name = component.district;
+    self.address = [NSString stringWithFormat:@"%@%@%@",component.province,component.city,component.district];
+    self.city = [component.city isEqualToString:@""] ?component.province:component.city;
+    self.district = component.district;
+    self.province = component.province;
+    self.stamp = @"";
+    NSString *location = [NSString stringWithFormat:@"%f,%f",component.streetNumber.location.latitude,component.streetNumber.location.longitude];
+    self.location = location;
+    self.classify = @"行政区域";
+    self.type = POI_TYPE_GAODE;
+}
 
 
 @end

@@ -20,6 +20,7 @@
 @interface TWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate ,UITableViewDelegate,UITableViewDataSource>
 {
     CGFloat beginOriginY;
+    NSInteger selectedImageCount;
 }
 @property (strong, nonatomic) UIView *topView;
 @property (strong, nonatomic) UIImageView *maskView;
@@ -27,17 +28,21 @@
 
 @property (strong, nonatomic) NSMutableArray *assets;
 @property (strong, nonatomic) ALAssetsLibrary *assetsLibrary;
-
-@property (nonatomic,strong) PHFetchResult *fetchResult;
-
-@property (strong, nonatomic) UICollectionView *collectionView;
-
 @property (strong, nonatomic) UITableView *albumTableView;
 
 @property (strong, nonatomic) NSDictionary *imageInfo;
-
+@property (strong, nonatomic) UILabel *imageCountLabel;
+@property (strong, nonatomic) UIButton *cropBtn;
 @property (strong, nonatomic) NSMutableArray *albumMenuItems;
 @property (nonatomic, strong) NSString *currentSelectAlbumName;
+
+@property (strong, nonatomic) UICollectionView *collectionView;
+
+
+
+
+
+
 @end
 
 @implementation TWPhotoPickerController
@@ -52,6 +57,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    selectedImageCount = 0;
     [self getAllAlbumList];
     // Do any additional setup after loading the view.
     [self loadPhotos];
@@ -199,13 +205,22 @@
         titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
         [navView addSubview:titleLabel];
         
+        //selected images count label
+        rect = CGRectMake(CGRectGetWidth(navView.bounds)-85, 0, 25, CGRectGetHeight(navView.bounds));
+        self.imageCountLabel= [[UILabel alloc]initWithFrame:rect];
+        self.imageCountLabel.text = [NSString stringWithFormat:@"%ld/9",(long)selectedImageCount];
+        self.imageCountLabel.font = [UIFont boldSystemFontOfSize:16.0f];
+        self.imageCountLabel.textColor = [UIColor whiteColor];
+        [navView addSubview:self.imageCountLabel];
+        
         rect = CGRectMake(CGRectGetWidth(navView.bounds)-70, 0, 70, CGRectGetHeight(navView.bounds));
-        UIButton *cropBtn = [[UIButton alloc] initWithFrame:rect];
-        [cropBtn setTitle:@"继续" forState:UIControlStateNormal];
-        [cropBtn.titleLabel setFont:[UIFont systemFontOfSize:16.0f]];
-        [cropBtn setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
-        [cropBtn addTarget:self action:@selector(cropAction) forControlEvents:UIControlEventTouchUpInside];
-        [navView addSubview:cropBtn];
+        self.cropBtn = [[UIButton alloc] initWithFrame:rect];
+        [self.cropBtn setTitle:@"继续" forState:UIControlStateNormal];
+        [self.cropBtn.titleLabel setFont:[UIFont systemFontOfSize:16.0f]];
+        [self.cropBtn setTitleColor:THEME_COLOR_LIGHT_GREY forState:UIControlStateNormal];
+        [self.cropBtn setEnabled:NO];
+        [self.cropBtn addTarget:self action:@selector(cropAction) forControlEvents:UIControlEventTouchUpInside];
+        [navView addSubview:self.cropBtn];
         
         rect = CGRectMake(0, CGRectGetHeight(self.topView.bounds)-handleHeight, CGRectGetWidth(self.topView.bounds), handleHeight);
         UIView *dragView = [[UIView alloc] initWithFrame:rect];
@@ -263,6 +278,8 @@
         CGFloat colum = 4.0, spacing = 2.0;
         CGFloat value = floorf((CGRectGetWidth(self.view.bounds) - (colum - 1) * spacing) / colum);
         
+        
+        
         UICollectionViewFlowLayout *layout  = [[UICollectionViewFlowLayout alloc] init];
         layout.itemSize                     = CGSizeMake(value, value);
         layout.sectionInset                 = UIEdgeInsetsMake(0, 0, 0, 0);
@@ -275,6 +292,7 @@
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
         _collectionView.backgroundColor = [UIColor clearColor];
+        _collectionView.allowsMultipleSelection = YES;
         
         [_collectionView registerClass:[TWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"TWPhotoCollectionViewCell"];
         
@@ -335,7 +353,8 @@
 - (void)cropAction {
     [self backAction];
     if (self.cropBlock) {
-        self.cropBlock(self.imageScrollView.capture,self.imageInfo);
+        
+        //self.cropBlock(self.imageScrollView.capture,self.imageInfo);
     }
    
 }
@@ -475,6 +494,15 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
 
+    if (selectedImageCount ==9)
+    {
+        [[collectionView cellForItemAtIndexPath:indexPath] setSelected:NO];
+        return;
+    }
+    selectedImageCount ++;
+    [self.cropBtn setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
+    [self.cropBtn setEnabled:YES];
+    self.imageCountLabel.text = [NSString stringWithFormat:@"%ld/9",(long)selectedImageCount];
     ALAsset * asset = [self.assets objectAtIndex:indexPath.row];
     UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
     [self.imageScrollView displayImage:image];
@@ -488,7 +516,13 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    selectedImageCount --;
+    if (selectedImageCount == 0)
+    {
+        [self.cropBtn setTitleColor:THEME_COLOR_LIGHT_GREY forState:UIControlStateNormal];
+        [self.cropBtn setEnabled:NO];
+    }
+    self.imageCountLabel.text = [NSString stringWithFormat:@"%ld/9",(long)selectedImageCount];
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {

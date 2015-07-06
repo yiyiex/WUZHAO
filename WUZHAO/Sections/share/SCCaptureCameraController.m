@@ -14,6 +14,7 @@
 #import "SCNavigationController.h"
 #import "AddImageInfoViewController.h"
 #import "TWPhotoPickerController.h"
+#import "PhotosPickerViewController.h"
 #import "PhotoFilterViewCollectionViewController.h"
 
 #import "CaptureItemContainerUIView.h"
@@ -62,6 +63,7 @@
 
 //@property (nonatomic) id runtimeErrorHandlingObserver;
 //@property (nonatomic) BOOL lockInterfaceRotation;
+@property (nonatomic,strong) NSMutableArray *imagesAndInfo;
 
 @property (nonatomic, strong) UIImage *stillImage;
 @property (nonatomic, strong) NSDictionary *imageInfo;
@@ -172,7 +174,8 @@
     {
         NSLog(@"began to the info page");
         AddImageInfoViewController *imageInfoCon = segue.destinationViewController;
-        imageInfoCon.postImage = self.stillImage;
+        imageInfoCon.imagesAndInfo = self.imagesAndInfo;
+        //imageInfoCon.postImage = self.stillImage;
         
         
     }
@@ -556,8 +559,6 @@ void c_slideAlpha() {
             [PhotoCommon saveImageToPhotoAlbum:stillImage];//存至本机
             
             //写入地址信息
-            
-            
         });
         double delayInSeconds = 0.8f;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -569,20 +570,21 @@ void c_slideAlpha() {
             [weakSelf_WZ showCameraCover:NO];
             
             __strong typeof(weakSelf_WZ)strongSelf = weakSelf_WZ;
+            strongSelf.imagesAndInfo = [[NSMutableArray alloc]initWithObjects:@{@"image":stillImage,@"imageInfo":@{}}, nil];
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
             PhotoFilterViewCollectionViewController *filterController = [storyboard instantiateViewControllerWithIdentifier:@"filterViewController"];
-            strongSelf.stillImage = [stillImage copy];
-            filterController.stillImage = strongSelf.stillImage;
-            filterController.filterBlock = ^(UIImage *image,BOOL needSave)
+            filterController.imagesAndInfo = strongSelf.imagesAndInfo;
+            filterController.filterBlock = ^(NSMutableArray *imagesAndInfo)
             {
-                strongSelf.stillImage = [image copy];
-                if (needSave)
-                {
-                    [PhotoCommon saveImageToPhotoAlbumWithExif:strongSelf.imageInfo image:strongSelf.stillImage];
-                    //[PhotoCommon saveImageToPhotoAlbum:image];
-                }
+                strongSelf.imagesAndInfo = imagesAndInfo;
+                [imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    if ([[obj objectForKey:@"needSave"] isEqualToString:@"true"])
+                    {
+                        [PhotoCommon saveImageToPhotoAlbumWithExif:[obj objectForKey:@"imageInfo"] image:[obj objectForKey:@"image"]];
+                    }
+                }];
                 AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
-                [addImageInfoCon setPostImage:strongSelf.stillImage];
+                addImageInfoCon.imagesAndInfo = strongSelf.imagesAndInfo;
                 
                 [strongSelf presentViewController:addImageInfoCon animated:YES completion:nil];
             };
@@ -634,34 +636,39 @@ void c_slideAlpha() {
         return;
     }
         
-    TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
+    PhotosPickerViewController *photoPicker = [[PhotosPickerViewController alloc] init];
     
-    //********my first retain cycle!!!!!!!!
+    //******** my first retain cycle!!!!!!!!
     WEAKSELF_WZ
-    photoPicker.cropBlock = ^(UIImage *image,NSDictionary *imageInfo) {
+    photoPicker.selectedImagesBlock = ^(NSMutableArray *imagesAndInfo) {
         //do something
         __strong typeof(weakSelf_WZ)strongSelf = weakSelf_WZ;
-        strongSelf.stillImage = [_captureManager cropAndResizeImage:image withHead:0];
-        strongSelf.imageInfo = [imageInfo mutableCopy];
-        NSLog(@"image info %@",strongSelf.imageInfo);
-         NSLog(@"image gps %@",[strongSelf.imageInfo objectForKey:@"{GPS}"]);
-        
-        
+        strongSelf.imagesAndInfo = imagesAndInfo;
+        //__block NSMutableArray *newImagesAndInfo = [[NSMutableArray alloc]init];
+        /*[imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            UIImage *originImage = [obj objectForKey:@"image"];
+            UIImage *resizeImage = [strongSelf.captureManager resizeImage:originImage];
+            
+            NSDictionary *imageAndInfo = @{@"image":resizeImage,@"imageInfo":[obj objectForKey:@"imageInfo"]};
+            [newImagesAndInfo addObject:imageAndInfo];
+        }];*/
+        //strongSelf.imagesAndInfo = newImagesAndInfo;
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
         PhotoFilterViewCollectionViewController *filterController = [storyboard instantiateViewControllerWithIdentifier:@"filterViewController"];
-        filterController.stillImage = strongSelf.stillImage;
-        filterController.filterBlock = ^(UIImage *image,BOOL needSave)
+        filterController.imagesAndInfo = strongSelf.imagesAndInfo;
+        //filterController.stillImage = strongSelf.stillImage;
+        filterController.filterBlock = ^(NSMutableArray *imagesAndInfo)
 
         {
-            strongSelf.stillImage = [image copy];
-            if (needSave)
-            {
-                [PhotoCommon saveImageToPhotoAlbumWithExif:strongSelf.imageInfo image:strongSelf.stillImage];
-               // [PhotoCommon saveImageToPhotoAlbum:image];
-            }
+            strongSelf.imagesAndInfo = imagesAndInfo;
+            [imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                if ([[obj objectForKey:@"needSave"] isEqualToString:@"true"])
+                {
+                    [PhotoCommon saveImageToPhotoAlbumWithExif:[obj objectForKey:@"imageInfo"] image:[obj objectForKey:@"image"]];
+                }
+            }];
             AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
-            [addImageInfoCon setPostImage:self.stillImage];
-            [addImageInfoCon setPostImageInfo:strongSelf.imageInfo];
+            addImageInfoCon.imagesAndInfo = strongSelf.imagesAndInfo;
             
             [strongSelf presentViewController:addImageInfoCon animated:YES completion:nil];
         };
@@ -784,7 +791,7 @@ void c_slideAlpha() {
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
         
         AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
-        [addImageInfoCon setPostImage:self.stillImage];
+        addImageInfoCon.imagesAndInfo = self.imagesAndInfo;
         [self presentViewController:addImageInfoCon animated:YES completion:nil];
     }];
 

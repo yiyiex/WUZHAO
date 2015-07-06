@@ -71,6 +71,22 @@
                                                 <constraint firstAttribute="width" secondItem="Jvh-cR-bp1" secondAttribute="height" multiplier="1:1" id="Uh8-bB-emZ"/>
                                             </constraints>
                                         </imageView>
+                                        <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b50-D1-K1S" userLabel="ImagesContainerView">
+                                            <rect key="frame" x="0.0" y="336" width="288" height="0.0"/>
+                                            <subviews>
+                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pwv-RQ-4EG">
+                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="0.0"/>
+                                                </scrollView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="pwv-RQ-4EG" secondAttribute="bottom" id="9pE-Sf-6Q4"/>
+                                                <constraint firstItem="pwv-RQ-4EG" firstAttribute="leading" secondItem="b50-D1-K1S" secondAttribute="leading" id="9u5-Lv-GSZ"/>
+                                                <constraint firstAttribute="height" constant="86" id="B3a-LD-F6H"/>
+                                                <constraint firstItem="pwv-RQ-4EG" firstAttribute="top" secondItem="b50-D1-K1S" secondAttribute="top" id="T8E-6x-MFj"/>
+                                                <constraint firstAttribute="trailing" secondItem="pwv-RQ-4EG" secondAttribute="trailing" id="rAo-XM-wBk"/>
+                                            </constraints>
+                                        </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Ck-41-Qdd" userLabel="addressView">
                                             <rect key="frame" x="0.0" y="314" width="608" height="22"/>
                                             <subviews>
@@ -164,20 +180,24 @@
                                         <constraint firstItem="0VZ-2G-7hP" firstAttribute="top" secondItem="x0m-5V-xwF" secondAttribute="bottom" id="AxG-VP-GMp"/>
                                         <constraint firstAttribute="trailing" secondItem="Jvh-cR-bp1" secondAttribute="trailing" id="Btp-Uv-t9N"/>
                                         <constraint firstItem="kwx-c6-mhO" firstAttribute="bottom" secondItem="Jvh-cR-bp1" secondAttribute="top" id="DFg-80-pjc"/>
+                                        <constraint firstItem="b50-D1-K1S" firstAttribute="top" secondItem="Jvh-cR-bp1" secondAttribute="bottom" id="F7a-jY-ytt"/>
                                         <constraint firstItem="3Ck-41-Qdd" firstAttribute="trailing" secondItem="oWk-FX-HpA" secondAttribute="trailing" constant="8" id="FkB-Ow-Yc2"/>
                                         <constraint firstAttribute="trailing" secondItem="sqy-Nn-7Qk" secondAttribute="trailing" constant="8" id="NFV-3Y-sbu"/>
                                         <constraint firstItem="sqy-Nn-7Qk" firstAttribute="centerY" secondItem="NXt-KF-ZdU" secondAttribute="centerY" id="NJC-nU-azA"/>
-                                        <constraint firstItem="3Ck-41-Qdd" firstAttribute="bottom" secondItem="Jvh-cR-bp1" secondAttribute="bottom" id="OP9-Q2-sXO"/>
                                         <constraint firstItem="9Iz-Tu-VWB" firstAttribute="width" secondItem="NXt-KF-ZdU" secondAttribute="width" id="Pun-qA-cAM"/>
                                         <constraint firstItem="9Iz-Tu-VWB" firstAttribute="leading" secondItem="NXt-KF-ZdU" secondAttribute="trailing" constant="8" id="U7m-qj-0Fp"/>
                                         <constraint firstItem="kwx-c6-mhO" firstAttribute="leading" secondItem="oWk-FX-HpA" secondAttribute="leading" id="VU1-iI-VrV"/>
                                         <constraint firstItem="kwx-c6-mhO" firstAttribute="width" secondItem="Jvh-cR-bp1" secondAttribute="width" id="WBx-1g-wFF"/>
+                                        <constraint firstAttribute="trailing" secondItem="b50-D1-K1S" secondAttribute="trailing" id="ZKy-Q2-Zmw"/>
+                                        <constraint firstItem="b50-D1-K1S" firstAttribute="leading" secondItem="oWk-FX-HpA" secondAttribute="leading" id="c5X-lA-IYj"/>
                                         <constraint firstAttribute="trailing" secondItem="0VZ-2G-7hP" secondAttribute="trailing" id="cmw-5d-tfG"/>
+                                        <constraint firstItem="kwx-c6-mhO" firstAttribute="width" secondItem="b50-D1-K1S" secondAttribute="width" id="d4i-Z0-QVo"/>
                                         <constraint firstAttribute="trailing" secondItem="kwx-c6-mhO" secondAttribute="trailing" id="eou-pg-lFe"/>
+                                        <constraint firstItem="x0m-5V-xwF" firstAttribute="top" secondItem="3Ck-41-Qdd" secondAttribute="bottom" id="g5i-oi-1bb"/>
                                         <constraint firstItem="NXt-KF-ZdU" firstAttribute="top" secondItem="vcR-Um-zV6" secondAttribute="bottom" constant="12" id="gbu-fg-Kws"/>
                                         <constraint firstItem="vcR-Um-zV6" firstAttribute="leading" secondItem="oWk-FX-HpA" secondAttribute="leading" constant="4" id="hG6-Gb-FlT"/>
-                                        <constraint firstItem="x0m-5V-xwF" firstAttribute="top" secondItem="3Ck-41-Qdd" secondAttribute="bottom" id="i6X-Jk-L0g"/>
                                         <constraint firstItem="9Iz-Tu-VWB" firstAttribute="centerY" secondItem="NXt-KF-ZdU" secondAttribute="centerY" id="iFf-Wg-Pav"/>
+                                        <constraint firstItem="3Ck-41-Qdd" firstAttribute="top" secondItem="b50-D1-K1S" secondAttribute="bottom" id="kD6-iC-vdn"/>
                                         <constraint firstItem="kwx-c6-mhO" firstAttribute="top" secondItem="oWk-FX-HpA" secondAttribute="top" id="mnc-kC-zeQ"/>
                                         <constraint firstAttribute="trailing" secondItem="vcR-Um-zV6" secondAttribute="trailing" constant="4" id="rV4-1q-ucT"/>
                                         <constraint firstItem="NXt-KF-ZdU" firstAttribute="leading" secondItem="oWk-FX-HpA" secondAttribute="leading" constant="8" id="rzi-6R-a6q"/>
@@ -192,16 +212,20 @@
                                     <outlet property="addressIcon" destination="NS8-jZ-xVF" id="FpB-09-CIo"/>
                                     <outlet property="addressLabel" destination="KCb-wR-TnV" id="MaU-IH-QMG"/>
                                     <outlet property="addressLabelView" destination="3Ck-41-Qdd" id="NyA-HC-kdc"/>
+                                    <outlet property="addressViewHeightConstraint" destination="qth-15-gDt" id="s8A-NE-goF"/>
+                                    <outlet property="addressViewVerticalSpaceToUpView" destination="kD6-iC-vdn" id="kNK-wu-Gux"/>
                                     <outlet property="commentClickButton" destination="9Iz-Tu-VWB" id="z3l-Mi-ley"/>
                                     <outlet property="commentView" destination="vcR-Um-zV6" id="47Q-0B-yCK"/>
                                     <outlet property="commentViewHeightConstraint" destination="MUa-05-pWA" id="4Mq-0i-mwF"/>
                                     <outlet property="commentViewVerticalSpaceToUpView" destination="ABa-KO-eiR" id="94O-II-CwW"/>
                                     <outlet property="descriptionTextView" destination="x0m-5V-xwF" id="SID-SY-5vX"/>
                                     <outlet property="descriptionViewHeightConstraint" destination="hwt-yI-eqe" id="gXc-JM-Nnj"/>
-                                    <outlet property="descriptionViewVerticalSpaceToUpView" destination="i6X-Jk-L0g" id="BLf-cd-oDH"/>
                                     <outlet property="headView" destination="kwx-c6-mhO" id="EhO-w5-yWs"/>
                                     <outlet property="homeCellAvatorImageView" destination="1vk-Qy-jms" id="T93-RY-dfF"/>
                                     <outlet property="homeCellImageView" destination="Jvh-cR-bp1" id="9mD-Uh-uaK"/>
+                                    <outlet property="imagesContainerView" destination="b50-D1-K1S" id="r9R-bm-zsx"/>
+                                    <outlet property="imagesContainerViewHeightConstrant" destination="B3a-LD-F6H" id="JIX-cv-sLU"/>
+                                    <outlet property="imagesScrollView" destination="pwv-RQ-4EG" id="OgQ-Re-IKK"/>
                                     <outlet property="likeLabel" destination="Zm2-9u-LfA" id="3jC-fA-XpJ"/>
                                     <outlet property="likeLabelHeightConstraint" destination="pmA-5d-bzM" id="zvY-Kh-FIL"/>
                                     <outlet property="likeView" destination="0VZ-2G-7hP" id="jYR-7k-xOV"/>

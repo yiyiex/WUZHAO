@@ -15,6 +15,7 @@
 @end
 @interface AddressSearchTableViewController : UIViewController
 @property (strong, nonatomic) POI *poiInfo;
+@property (strong, nonatomic) POI *provincePoiInfo;
 @property (strong, nonatomic) CLLocation* location;
 @property (weak, nonatomic) id<AddressSearchTableViewControllerDelegate> delegate;
 @end

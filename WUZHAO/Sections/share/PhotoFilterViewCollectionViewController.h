@@ -12,13 +12,15 @@
 
 @interface PhotoFilterViewCollectionViewController : UIViewController<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
 
+
+
 @property (nonatomic, weak) IBOutlet FilteredImageView *filteredImageView;
+@property (nonatomic, strong) NSMutableArray *filteredImageViews;
 
+@property (nonatomic, strong) NSMutableArray *imagesAndInfo;
+@property (nonatomic, strong) NSMutableArray *filteredImages;
 
-@property (nonatomic, strong) UIImage *stillImage;
-
-
-@property (nonatomic, copy) void(^filterBlock)(UIImage *image,BOOL needSave);
+@property (nonatomic, copy) void(^filterBlock)(NSMutableArray *imagesAndInfo);
 
 
 @end

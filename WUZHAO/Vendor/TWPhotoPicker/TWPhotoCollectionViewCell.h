@@ -10,4 +10,5 @@
 
 @interface TWPhotoCollectionViewCell : UICollectionViewCell
 @property (strong, nonatomic) UIImageView *imageView;
+@property (strong, nonatomic) UIImageView *selectedIcon;
 @end

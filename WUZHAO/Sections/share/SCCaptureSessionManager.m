@@ -171,22 +171,6 @@
     
     self.stillImageOutput = tmpOutput;
 }
-
-/**
- *  拍完照片后预览图片
- */
-//- (void)addPreviewImageView {
-//    CGFloat headHeight = _previewLayer.bounds.size.height - SC_APP_SIZE.width;
-//    CGRect imageFrame = _previewLayer.bounds;
-//    imageFrame.origin.y = headHeight;
-//    
-//    UIImageView *imgView = [[UIImageView alloc] initWithFrame:imageFrame];
-//    imgView.contentMode = UIViewContentModeScaleAspectFill;
-//    [_preview addSubview:imgView];
-//    
-//    self.imageView = imgView;
-//}
-
 #pragma mark - actions
 /**
  *  拍照
@@ -214,21 +198,6 @@
         UIImage *image = [[UIImage alloc] initWithData:imageData];
         NSLog(@"originImage:%@", [NSValue valueWithCGSize:image.size]);
         UIImage *croppedImage = [self cropAndResizeImage:image withHead:0.0f];
-
-        /*
-        CGFloat squareLength = WZ_APP_SIZE.width;
-        CGFloat headHeight = _previewLayer.bounds.size.height - squareLength;//_previewLayer的frame是(0, 44, 320, 320 + 44)
-        CGSize size = CGSizeMake(squareLength * 2, squareLength * 2);
-        
-        UIImage *scaledImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:size interpolationQuality:kCGInterpolationHigh];
-        NSLog(@"scaledImage:%@", [NSValue valueWithCGSize:scaledImage.size]);
-        
-        CGRect cropFrame = CGRectMake((scaledImage.size.width - size.width) / 2, (scaledImage.size.height - size.height) / 2 + headHeight, size.width, size.height);
-        NSLog(@"cropFrame:%@", [NSValue valueWithCGRect:cropFrame]);
-        UIImage *croppedImage = [scaledImage croppedImage:cropFrame];
-        NSLog(@"croppedImage:%@", [NSValue valueWithCGSize:croppedImage.size]);
-        */
-        
         UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
         if (orientation != UIDeviceOrientationPortrait) {
             
@@ -286,11 +255,11 @@
 
 -(UIImage *)resizeImage:(UIImage *)image
 {
-    CGFloat width = WZ_APP_SIZE.width;
-    CGFloat height = WZ_APP_SIZE.height;
+    CGFloat width = image.size.width;
+    CGFloat height = image.size.height;
     CGSize size = CGSizeMake(width, height);
     
-    UIImage *scaledImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:size interpolationQuality:kCGInterpolationHigh];
+    UIImage *scaledImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:size interpolationQuality:kCGInterpolationMedium];
 
     return scaledImage;
     

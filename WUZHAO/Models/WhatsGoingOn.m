@@ -28,6 +28,14 @@
     }
     return _likeUserList;
 }
+-(NSMutableArray *)imageUrlList
+{
+    if (!_imageUrlList)
+    {
+        _imageUrlList = [[NSMutableArray alloc]init];
+    }
+    return _imageUrlList;
+}
 -(instancetype)initWithAttributes:(NSDictionary *)data
 {
     self = [super init];
@@ -46,10 +54,16 @@
     {
         self.photoUser.selfDescriptions = [data objectForKey:@"description"];
     }
-    
+
     
     self.postTime = [data objectForKey:@"create_time"];
     self.imageUrlString = [data objectForKey:@"photo"];
+    if ([data objectForKey:@"photoList"])
+    {
+        [[data objectForKey:@"photoList"]enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [self.imageUrlList addObject:obj];
+        }];
+    }
     if ([data objectForKey:@"thought"])
     {
         self.imageDescription = [data objectForKey:@"thought"];

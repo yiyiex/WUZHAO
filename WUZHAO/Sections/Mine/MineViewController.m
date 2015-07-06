@@ -538,13 +538,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         //NSLog(@"photolist %@",self.userInfo.photoList);
         [_myPhotosCollectionDatasource removeAllObjects];
        // self.photoCollectionCurrentPage = 1;
-        for (NSDictionary *i in self.userInfo.photoList)
+        for (WhatsGoingOn *item in self.userInfo.photoList)
         {
-            WhatsGoingOn *item = [[WhatsGoingOn alloc]init];
-            item.postId = [(NSNumber *)[i objectForKey:@"postId"] integerValue];
-            item.imageUrlString = [i objectForKey:@"photoUrl"];
-            item.postTime = [i objectForKey:@"time"];
-            item.photoUser = self.userInfo;
             [_myPhotosCollectionDatasource addObject:item];
         }
         
@@ -559,13 +554,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 
 -(void)addMorePhotoCollectionDataWith:(NSArray *)data
 {
-    for (NSDictionary *i in data)
+    for (WhatsGoingOn *item in data)
     {
-        WhatsGoingOn *item = [[WhatsGoingOn alloc]init];
-        item.postId = [(NSNumber *)[i objectForKey:@"postId"] integerValue];
-        item.imageUrlString = [i objectForKey:@"photoUrl"];
-        item.postTime = [i objectForKey:@"time"];
-        item.photoUser = self.userInfo;
         [_myPhotosCollectionDatasource addObject:item];
     }
     [self.userInfo.photoList addObjectsFromArray:data];
@@ -728,8 +718,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 {
     NSLog(@"%@",notification);
     NSInteger postId =[(NSNumber *) [[notification userInfo] objectForKey:@"postId"]integerValue];
-    [self.userInfo.photoList enumerateObjectsUsingBlock:^(NSDictionary * item, NSUInteger idx, BOOL *stop) {
-        if ([[item valueForKey:@"postId"]integerValue] == postId)
+    [self.userInfo.photoList enumerateObjectsUsingBlock:^(WhatsGoingOn * item, NSUInteger idx, BOOL *stop) {
+        if ( item.postId == postId)
         {
             [self.userInfo.photoList removeObject:item];
             *stop = YES;

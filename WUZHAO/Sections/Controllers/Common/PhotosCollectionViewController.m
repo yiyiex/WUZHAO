@@ -62,6 +62,15 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     [cell.cellImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
     [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:content.imageUrlString]];
     [cell setBackgroundColor:[UIColor whiteColor]];
+    [cell setAppearance];
+    if (content.imageUrlList.count <=1)
+    {
+        [cell hideImageCountLabel];
+    }
+    else
+    {
+        [cell showImageCountLabel:content.imageUrlList.count];
+    }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

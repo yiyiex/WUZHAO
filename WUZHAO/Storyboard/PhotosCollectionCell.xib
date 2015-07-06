@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
@@ -21,17 +21,30 @@
                             <constraint firstAttribute="width" secondItem="hre-OA-3JX" secondAttribute="height" multiplier="1:1" id="Q19-lD-CW9"/>
                         </constraints>
                     </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dw7-Yb-NFc">
+                        <rect key="frame" x="91" y="91" width="15" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="15" id="4HK-Mq-hyj"/>
+                            <constraint firstAttribute="height" constant="15" id="AfC-b3-l5x"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             </view>
             <constraints>
+                <constraint firstItem="hre-OA-3JX" firstAttribute="trailing" secondItem="dw7-Yb-NFc" secondAttribute="trailing" constant="4" id="3mZ-GO-sLs"/>
                 <constraint firstItem="hre-OA-3JX" firstAttribute="top" secondItem="RNT-J1-sU2" secondAttribute="top" id="6Ru-0t-HgB"/>
                 <constraint firstItem="hre-OA-3JX" firstAttribute="leading" secondItem="RNT-J1-sU2" secondAttribute="leading" id="G7j-pf-Txx"/>
                 <constraint firstAttribute="trailing" secondItem="hre-OA-3JX" secondAttribute="trailing" id="pZ8-Lo-xC7"/>
+                <constraint firstItem="hre-OA-3JX" firstAttribute="bottom" secondItem="dw7-Yb-NFc" secondAttribute="bottom" constant="4" id="qBh-dV-Nv3"/>
             </constraints>
             <size key="customSize" width="110" height="110"/>
             <connections>
                 <outlet property="cellImageView" destination="hre-OA-3JX" id="oiF-oQ-aJL"/>
+                <outlet property="imageCountLabel" destination="dw7-Yb-NFc" id="pkW-7J-25y"/>
             </connections>
             <point key="canvasLocation" x="-249" y="-231"/>
         </collectionViewCell>

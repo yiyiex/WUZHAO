@@ -12,10 +12,12 @@
 #import "POI.h"
 
 @interface AddImageInfoViewController : UIViewController <UITableViewDataSource,UITableViewDelegate ,UITextViewDelegate ,UIAlertViewDelegate>
+
 @property (strong,nonatomic) WhatsGoingOn *whatsGoingOnItem;
 
-@property (nonatomic,strong) UIImage *postImage;
-@property (nonatomic,strong) NSDictionary *postImageInfo;
+@property (nonatomic,strong) NSMutableArray *imagesAndInfo;
+@property (nonatomic, strong) NSDictionary *postImageInfo;
+
 - (IBAction)PostButtonPressed:(UIBarButtonItem *)sender;
 @end
 

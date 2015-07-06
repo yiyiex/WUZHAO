@@ -97,10 +97,9 @@ static NSInteger loginState = 1;
     [self activeCurrentTab];
     
     //register notification
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(finishPostImage) name:@"finishPostImage" object:Nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beginUploadPhotos) name:@"beginUploadPhotos" object:Nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(activeTargetTab:) name:@"activeTargetTab" object:Nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(cancelShare) name:@"cancelShare" object:Nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(refreshTabContent) name:@"uploadDataSuccess" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logoutCauseIllegalToken) name:@"tokenIllegal" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logOut) name:@"logOut" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNoticeInfo:) name:@"updateNotificationNum" object:nil];
@@ -206,7 +205,11 @@ static NSInteger loginState = 1;
     float tabbarWidth = tabbarFrame.size.width;
     float tabbarItemWidth = tabbarWidth/5;
     float tabbarHeight = tabbarFrame.size.height;
-    float buttonWidth = tabbarHeight >tabbarItemWidth?tabbarHeight - 20:tabbarItemWidth -20;
+    
+    UIView *backView = [[UIView alloc]initWithFrame:CGRectMake(tabbarItemWidth*2, 0, tabbarItemWidth, tabbarHeight)];
+    [self.tabBar addSubview:backView];
+
+    float buttonWidth = tabbarHeight - 4;
     _cameraButton = [[UIButton alloc]initWithFrame:CGRectMake((tabbarFrame.size.width - buttonWidth)/2,(tabbarHeight - buttonWidth)/2 , buttonWidth, buttonWidth)];
     [_cameraButton setBackgroundImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
       [_cameraButton setBackgroundImage:[UIImage imageNamed:@"camera_dark"] forState:UIControlStateHighlighted];
@@ -304,9 +307,10 @@ static NSInteger loginState = 1;
 }
 
 
--(void)finishPostImage
+-(void)beginUploadPhotos
 {
     [self dismissViewControllerAnimated:YES completion:^{
+        self.selectedIndex = self.currentTabIndex = WZ_HOME_TAB;
         [self activeCurrentTab];
     }];
 }
@@ -334,6 +338,12 @@ static NSInteger loginState = 1;
     {
         self.currentTabIndex = index;
         [self activeCurrentTab];
+        if (index == WZ_NOTICE_TAB)
+        {
+            [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
+            [ApplicationUtility setApplicationIconBadgeWithNum:0];
+        }
+        
     }
     else
     {

@@ -69,10 +69,10 @@
     
     
     //[self.addressLabelView setBackgroundColor:THEME_COLOR_DARK];
-    [self.addressLabelView setBackgroundColor:rgba_WZ(44, 44, 44, 0.8)];
-    [self.addressLabel setWhiteLabelAppearance];
-   // [self.addressLabel setBackgroundColor: [UIColor clearColor]];
-    //[self.addressLabel setThemeBoldLabelAppearance];
+    //[self.addressLabelView setBackgroundColor:rgba_WZ(44, 44, 44, 0.8)];
+    //[self.addressLabel setWhiteLabelAppearance];
+    [self.addressLabel setBackgroundColor: [UIColor clearColor]];
+    [self.addressLabel setThemeLabelAppearance];
     
     [self.homeCellImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
     [self.descriptionTextView setTextColor:THEME_COLOR_DARK_GREY_BIT_PARENT];
@@ -245,23 +245,9 @@
     [self.homeCellAvatorImageView sd_setImageWithURL:[NSURL URLWithString:self.content.photoUser.avatarImageURLString]];
     
     [self.homeCellImageView setFrame:CGRectMake(0, 48, WZ_APP_SIZE.width, WZ_APP_SIZE.width)];
+    
 
-    if ([self.content.poiName isEqualToString:@""])
-    {
-        self.addressLabel.text = @"";
-        [self.addressIcon setHidden:YES];
-        [self.addressLabelView setHidden:YES];
-        [self.addressLabel setHidden:YES];
-    }
-    else
-    {
-        self.addressLabel.text = self.content.poiName;
-        [self.addressIcon setHidden:NO];
-        [self.addressLabel setHidden:NO];
-        [self.addressLabelView setHidden:NO];
-        
-       
-    }
+    
     //description label
     self.descriptionTextView.text = self.content.imageDescription;
     [self updateFrameOfTextView:self.descriptionTextView heightConstraint:self.descriptionViewHeightConstraint];
@@ -276,6 +262,76 @@
    // if (imageUrl)
     [self.homeCellImageView sd_setImageWithURL:[NSURL URLWithString:self.content.imageUrlString]
                               placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    //clear image scroll view
+    
+    [self.imagesScrollView.subviews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
+        if ([view isKindOfClass:[UIImageView class]])
+        {
+            [view removeFromSuperview];
+        }
+    }];
+    float imageWidth = 70;
+    float spacing = 8;
+    if (self.content.imageUrlList.count>1)
+    {
+        [self.imagesContainerViewHeightConstrant setConstant:86];
+        CGRect frame = self.imagesContainerView.frame;
+        frame.size.height = 86;
+        self.imagesContainerView.frame = frame;
+        [self.imagesScrollView setContentSize:CGSizeMake(spacing +(imageWidth+spacing)*self.content.imageUrlList.count, 86)];
+        [self.imagesScrollView setDirectionalLockEnabled:YES];
+        [self.content.imageUrlList enumerateObjectsUsingBlock:^(NSString *urlString, NSUInteger idx, BOOL *stop) {
+            UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(spacing +(spacing+imageWidth)*idx, spacing, imageWidth, imageWidth)];
+            [self.imagesScrollView addSubview:imageView];
+            [imageView setBackgroundColor:THEME_COLOR_LIGHT_GREY];
+            [imageView.layer setCornerRadius:2.0f];
+            [imageView sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+            imageView.tag = idx;
+            UITapGestureRecognizer *imageTapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(smallImageViewClick:)];
+            [imageView addGestureRecognizer:imageTapGesture];
+            [imageView setUserInteractionEnabled:YES];
+        }];
+        
+    }
+    else
+    {
+        CGRect frame = self.imagesContainerView.frame;
+        frame.size.height = 0;
+        self.imagesContainerView.frame = frame;
+        [self.imagesContainerViewHeightConstrant setConstant:0];
+    }
+    //address
+    if ([self.content.poiName isEqualToString:@""])
+    {
+        self.addressLabel.text = @"";
+        [self.addressIcon setHidden:YES];
+        [self.addressLabelView setHidden:YES];
+        [self.addressLabel setHidden:YES];
+        [self.addressViewHeightConstraint setConstant:0.0f];
+        [self.addressViewVerticalSpaceToUpView setConstant:0];
+        CGRect frame = self.addressLabelView.frame;
+        frame.size.height = 0;
+        [self.addressLabelView setFrame:frame];
+    }
+    else
+    {
+        self.addressLabel.text = self.content.poiName;
+        [self.addressIcon setHidden:NO];
+        [self.addressLabel setHidden:NO];
+        [self.addressLabelView setHidden:NO];
+        [self.addressViewHeightConstraint setConstant:22.0f];
+        if (self.content.imageUrlList.count >1)
+        {
+            [self.addressViewVerticalSpaceToUpView setConstant:0];
+        }
+        else
+        {
+            [self.addressViewVerticalSpaceToUpView setConstant:8];
+        }
+        CGRect frame = self.addressLabelView.frame;
+        frame.size.height = 22.0f;
+        [self.addressLabelView setFrame:frame];
+    }
     //cell.homeCellImageView.backgroundColor = [UIColor blackColor];
     //like button
 
@@ -300,16 +356,6 @@
         UITapGestureRecognizer *avatarClick = [[UITapGestureRecognizer alloc]initWithTarget:self.parentViewController action:@selector(avatarClick:)];
         [self.homeCellAvatorImageView addGestureRecognizer:avatarClick];
     }
-    //点击图片 隐藏或者显示地址信息
-    UITapGestureRecognizer *imageviewTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapImage:)];
-    [self.homeCellImageView addGestureRecognizer:imageviewTap];
-    [self.homeCellImageView setUserInteractionEnabled:YES];
-    //点击照片描述，跳转照片详情页面
-    /*
-     UITapGestureRecognizer *thoughtClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(thoughtClick:)];
-     [cell.descriptionLabel setUserInteractionEnabled:YES];
-     [cell.descriptionLabel addGestureRecognizer:thoughtClick];
-     */
     //点击 “赞的数量” 跳转赞的用户列表
     if ([self.parentViewController respondsToSelector:@selector(likeLabelClick:)])
     {
@@ -369,6 +415,7 @@
 }
 
 #pragma mark - gesture
+/*
 -(void)tapImage:(UITapGestureRecognizer *)gesture
 {
     if (self.addressLabelView.hidden == YES)
@@ -390,6 +437,12 @@
             [self.addressIcon setHidden:YES];
             [self.addressLabel setHidden:YES];
     }
+}
+*/
+-(void)smallImageViewClick:(UITapGestureRecognizer *)gesture
+{
+    UIImageView *imageView = (UIImageView *)gesture.view;
+    self.homeCellImageView.image = imageView.image;
 }
 
 #pragma mark - textview utility

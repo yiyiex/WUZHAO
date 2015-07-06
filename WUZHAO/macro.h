@@ -61,6 +61,8 @@
 
 #define THEME_COLOR_WHITE rgba_WZ(255,255,255,1.0)
 
+#define THEME_COLOR_LIGHTER_GREY rgba_WZ(220,220,220,1.0)
+
 #define THEME_COLOR_LIGHT_GREY rgba_WZ(160,160,160,1.0)
 #define THEME_COLOR_LIGHT_GREY_PARENT rgba_WZ(200,200,200,0.5)
 #define THEME_COLOR_LIGHT_GREY_MORE_PARENT rgba_WZ(200,200,200,0.3)
@@ -70,6 +72,7 @@
 #define THEME_COLOR_DARK_GREY_PARENT rgba_WZ(40,45,50,0.5)
 
 #define THEME_COLOR_DARKER_GREY rgba_WZ(20,20,25,1.0)
+#define THEME_COLOR_DARKER_GREY_BIT_PARENT rgba_WZ(20,20,25,0.7)
 #define THEME_COLOR_DARKER_GREY_PARENT rgba_WZ(20,20,25,0.5)
 #define THEME_COLOR_BLACK rgba_WZ(0,0,0,1.0)
 #define THEME_COLOR_BLACK_PARENT rgba_WZ(0,0,0,0.8)
@@ -190,9 +193,6 @@
 #define UserListStyle3 @"UserListTableViewCellWithBigPhotoAndFollowButton"
 
 
-//homeTableViewStyle
-#define homeTableViewStyle1 @"myTimeLine"
-#define homeTableViewStyle2 @"photoDetail"
-
+#define GAODE_SDK_KEY @"2552aafe945c02ece19c41739007ca14"
 
 #endif
