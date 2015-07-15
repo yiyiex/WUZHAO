@@ -32,12 +32,13 @@
 
 #import "QDYHTTPClient.h"
 #import "macro.h"
+#import "UMSocial.h"
 
 #define ONEPAGEITEMS 10
 #define RecommendCellHeigh 100
 
 
-@interface HomeTableViewController ()<UIActionSheetDelegate,UIAlertViewDelegate,CommentTextViewDelegate>
+@interface HomeTableViewController ()<UIActionSheetDelegate,UIAlertViewDelegate,CommentTextViewDelegate,UMSocialDataDelegate,UMSocialUIDelegate>
 @property (nonatomic,strong) UIButton *loadMoreButton;
 @property (nonatomic,strong) UIActivityIndicatorView *aiv;
 //current page
@@ -614,6 +615,18 @@ static NSString *reuseIdentifier = @"HomeTableCell";
             UIAlertAction *delectAction = [UIAlertAction actionWithTitle:@"举报不良内容" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
                 [SVProgressHUD showInfoWithStatus:@"已举报"];
             }];
+          
+            UIAlertAction *shareAction = [UIAlertAction actionWithTitle:@"分享" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [UMSocialConfig setSupportedInterfaceOrientations:UIInterfaceOrientationMaskLandscape]; 
+                [UMSocialSnsService presentSnsIconSheetView:self
+                                                     appKey:nil
+                                                  shareText:@"你要分享的文字"
+                                                 shareImage:[UIImage imageNamed:@"icon.png"]
+                                            shareToSnsNames:[NSArray arrayWithObjects:UMShareToSina,UMShareToTencent,UMShareToWechatSession,UMShareToWechatTimeline,UMShareToQQ,UMShareToDouban,UMShareToEmail,nil]
+                                                   delegate:self];
+                
+            }];
+            //[alertController addAction:shareAction];
             [alertController addAction:delectAction];
         }
         [self presentViewController:alertController animated:YES completion:nil];

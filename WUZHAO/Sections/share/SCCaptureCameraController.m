@@ -13,7 +13,6 @@
 
 #import "SCNavigationController.h"
 #import "AddImageInfoViewController.h"
-#import "TWPhotoPickerController.h"
 #import "PhotosPickerViewController.h"
 #import "PhotoFilterViewCollectionViewController.h"
 

@@ -11,14 +11,17 @@
 
 #import "MainTabBarViewController.h"
 #import "LaunchViewController.h"
-#import "QDYHTTPClient.h"
-#import "BPush.h"
 
+#import "QDYHTTPClient.h"
 #import "POISearchAPI.h"
 
 #import "ApplicationUtility.h"
 
 #import "macro.h"
+#import "BPush.h"
+#import "UMSocial.h"
+//#import "UMSocialWechatHandler.h"
+
 @interface AppDelegate ()<BPushDelegate>
 {
     NSString *myDeviceToken;
@@ -55,16 +58,13 @@
     {
         [self getLatestNoticeNumber];
     }
-    
     //初始化百度推送
     NSString *pushKey= @"MXD0PZ8Qt9LD9ia3PWf41PSL";
     //[BPush registerChannel:launchOptions apiKey:pushKey pushMode:BPushModeDevelopment isDebug:YES];
-
     [BPush registerChannel:launchOptions apiKey:pushKey pushMode:BPushModeProduction isDebug:NO];
     [BPush setDelegate:self]; // 必须。参数对象必须实现onMethod: response:方法，本示例中为self
     
     // [BPush setAccessToken:@"3.ad0c16fa2c6aa378f450f54adb08039.2592000.1367133742.282335-602025"];  // 可选。api key绑定时不需要，也可在其它时机调用
-    
     if ([application respondsToSelector:@selector(registerForRemoteNotifications)])
     {
         UIUserNotificationSettings
@@ -75,11 +75,12 @@
         
      
     }
-    else
-    {
-         [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound];
-    }
-
+    
+    //设置友盟sdk key
+    //[UMSocialData setAppKey:@"55a5c86567e58ecd13000507"];
+   // [UMSocialWechatHandler setWXAppId:@"wxd930ea5d5a258f4f" appSecret:@"db426a9829e4b49a0dcac7b4162da6b6" url:@"http://www.placeapp.cn"];
+    
+    
     return YES;
 }
 
@@ -143,6 +144,7 @@
     
 }
 
+
 // 必须，如果正确调用了setDelegate，在bindChannel之后，结果在这个回调中返回。
 // 若绑定失败，请进行重新绑定，确保至少绑定成功一次
 - (void) onMethod:(NSString*)method response:(NSDictionary*)data
@@ -151,11 +153,11 @@
     {
         NSDictionary* res = [[NSDictionary alloc] initWithDictionary:data];
         
-        NSString *appid = [res valueForKey:BPushRequestAppIdKey];
+        //NSString *appid = [res valueForKey:BPushRequestAppIdKey];
         NSString *userid = [res valueForKey:BPushRequestUserIdKey];
         NSString *channelid = [res valueForKey:BPushRequestChannelIdKey];
-        int returnCode = [[res valueForKey:BPushRequestErrorCodeKey] intValue];
-        NSString *requestid = [res valueForKey:BPushRequestRequestIdKey];
+        //int returnCode = [[res valueForKey:BPushRequestErrorCodeKey] intValue];
+        //NSString *requestid = [res valueForKey:BPushRequestRequestIdKey];
         
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         [userDefaults setObject:userid forKey:@"bpUserId"];

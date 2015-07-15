@@ -110,6 +110,18 @@
 		7D09E7D61B4ABEF3002E0CF0 /* AddressMarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D09E7D51B4ABEF3002E0CF0 /* AddressMarkViewController.m */; };
 		7D0E30161B3BCE4600B23405 /* camera_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D0E30141B3BCE4600B23405 /* camera_dark.png */; };
 		7D0E30171B3BCE4600B23405 /* camera_dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D0E30151B3BCE4600B23405 /* camera_dark@2x.png */; };
+		7D11C1711B5601EA00C400D6 /* UMSocialLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D11C1561B5601EA00C400D6 /* UMSocialLocalizable.strings */; };
+		7D11C1721B5601EA00C400D6 /* libUMSocial_Sdk_4.2.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D11C1641B5601EA00C400D6 /* libUMSocial_Sdk_4.2.3.a */; };
+		7D11C1731B5601EA00C400D6 /* libUMSocial_Sdk_Comment_4.2.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D11C1651B5601EA00C400D6 /* libUMSocial_Sdk_Comment_4.2.3.a */; };
+		7D11C1741B5601EA00C400D6 /* UMSCommentDetailController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D11C1671B5601EA00C400D6 /* UMSCommentDetailController.xib */; };
+		7D11C1751B5601EA00C400D6 /* UMSCommentInputController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D11C1681B5601EA00C400D6 /* UMSCommentInputController.xib */; };
+		7D11C1761B5601EA00C400D6 /* UMSCommentInputControlleriPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D11C1691B5601EA00C400D6 /* UMSCommentInputControlleriPad.xib */; };
+		7D11C1771B5601EA00C400D6 /* UMShareEditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D11C16A1B5601EA00C400D6 /* UMShareEditViewController.xib */; };
+		7D11C1781B5601EA00C400D6 /* UMShareEditViewControlleriPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D11C16B1B5601EA00C400D6 /* UMShareEditViewControlleriPad.xib */; };
+		7D11C1791B5601EA00C400D6 /* UMSLoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D11C16C1B5601EA00C400D6 /* UMSLoginViewController.xib */; };
+		7D11C17A1B5601EA00C400D6 /* UMSnsAccountViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D11C16D1B5601EA00C400D6 /* UMSnsAccountViewController.xib */; };
+		7D11C17B1B5601EA00C400D6 /* UMSShareListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D11C16E1B5601EA00C400D6 /* UMSShareListController.xib */; };
+		7D11C17C1B5601EA00C400D6 /* UMSocialSDKResourcesNew.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7D11C16F1B5601EA00C400D6 /* UMSocialSDKResourcesNew.bundle */; };
 		7D1317CF1A5D35CA003A9D77 /* DAKeyboardControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1317CE1A5D35CA003A9D77 /* DAKeyboardControl.m */; };
 		7D1317D51A5E32DC003A9D77 /* CommentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1317D31A5E32DC003A9D77 /* CommentTableViewCell.m */; };
 		7D1359EC1A66B78E0058C02A /* NoticeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1359EB1A66B78E0058C02A /* NoticeViewController.m */; };
@@ -123,7 +135,6 @@
 		7D1502801A8B8D4000327DA5 /* QDYHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D15027F1A8B8D4000327DA5 /* QDYHTTPClient.m */; };
 		7D1673B71AFC5926006CB524 /* menuClose@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D1673B51AFC5926006CB524 /* menuClose@2x.png */; };
 		7D1673B81AFC5926006CB524 /* menuIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D1673B61AFC5926006CB524 /* menuIcon@2x.png */; };
-		7D1673BB1AFCA8FF006CB524 /* TWPhotoAlbumListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1673BA1AFCA8FF006CB524 /* TWPhotoAlbumListTableViewCell.m */; };
 		7D1673BD1AFCB8AD006CB524 /* AlbumListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D1673BC1AFCB8AD006CB524 /* AlbumListTableViewCell.xib */; };
 		7D17D8BE1A660B5600FD8713 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D17D8B21A660B5600FD8713 /* 37x-Checkmark.png */; };
 		7D17D8BF1A660B5600FD8713 /* 37x-Checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D17D8B31A660B5600FD8713 /* 37x-Checkmark@2x.png */; };
@@ -137,7 +148,6 @@
 		7D17D8C71A660B5600FD8713 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D17D8BB1A660B5600FD8713 /* Icon-Small@2x.png */; };
 		7D17D8C81A660B5600FD8713 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D17D8BC1A660B5600FD8713 /* Icon.png */; };
 		7D17D8C91A660B5600FD8713 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D17D8BD1A660B5600FD8713 /* Icon@2x.png */; };
-		7D17D8CD1A660BC300FD8713 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D17D8CC1A660BC300FD8713 /* MBProgressHUD.m */; };
 		7D17D8D01A6668F800FD8713 /* SVIndefiniteAnimatedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D17D8CF1A6668F800FD8713 /* SVIndefiniteAnimatedView.m */; };
 		7D1B495C1A467B1500C4CEC4 /* AddImageInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1B495B1A467B1500C4CEC4 /* AddImageInfoViewController.m */; };
 		7D1B495F1A467EC900C4CEC4 /* AddressPhotos.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1B495E1A467EC900C4CEC4 /* AddressPhotos.m */; };
@@ -236,9 +246,6 @@
 		7D7FADC01AC6C62300AC9BD1 /* cameraroll-picker-grip@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D7FADB41AC6C62300AC9BD1 /* cameraroll-picker-grip@3x.png */; };
 		7D7FADC11AC6C62300AC9BD1 /* straighten-grid@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D7FADB51AC6C62300AC9BD1 /* straighten-grid@2x.png */; };
 		7D7FADC21AC6C62300AC9BD1 /* straighten-grid@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D7FADB61AC6C62300AC9BD1 /* straighten-grid@3x.png */; };
-		7D7FADC31AC6C62300AC9BD1 /* TWImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7FADB81AC6C62300AC9BD1 /* TWImageScrollView.m */; };
-		7D7FADC41AC6C62300AC9BD1 /* TWPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7FADBA1AC6C62300AC9BD1 /* TWPhotoCollectionViewCell.m */; };
-		7D7FADC51AC6C62300AC9BD1 /* TWPhotoPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7FADBC1AC6C62300AC9BD1 /* TWPhotoPickerController.m */; };
 		7D7FADCC1AC6C7D600AC9BD1 /* back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D7FADC61AC6C7D600AC9BD1 /* back@2x.png */; };
 		7D7FADCD1AC6C7D600AC9BD1 /* back@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D7FADC71AC6C7D600AC9BD1 /* back@3x.png */; };
 		7D7FADCE1AC6C7D600AC9BD1 /* cameraroll-picker-grip@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D7FADC81AC6C7D600AC9BD1 /* cameraroll-picker-grip@2x.png */; };
@@ -347,8 +354,6 @@
 		7DB6D60F1A4BAD53005F1442 /* GlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB6D60E1A4BAD53005F1442 /* GlobalAppearance.m */; };
 		7DB731571B09C17E00972FBF /* DDScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB731561B09C17E00972FBF /* DDScrollViewController.m */; };
 		7DB7315A1B09C1AA00972FBF /* PhotoScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB731591B09C1AA00972FBF /* PhotoScrollViewController.m */; };
-		7DBA3F9B1AFB7C9F001B2BBA /* IGLDropDownItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBA3F981AFB7C9F001B2BBA /* IGLDropDownItem.m */; };
-		7DBA3F9C1AFB7C9F001B2BBA /* IGLDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBA3F9A1AFB7C9F001B2BBA /* IGLDropDownMenu.m */; };
 		7DBE50E41ADE53C000C1A3B3 /* FeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBE50E31ADE53C000C1A3B3 /* FeedbackViewController.m */; };
 		7DC29DA11A3F10450065BBD2 /* Search.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DC29DA01A3F10450065BBD2 /* Search.storyboard */; };
 		7DC29DA31A3F105D0065BBD2 /* Share.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DC29DA21A3F105D0065BBD2 /* Share.storyboard */; };
@@ -357,12 +362,6 @@
 		7DC29DAD1A3F13F30065BBD2 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DAA1A3F13F30065BBD2 /* User.m */; };
 		7DC29DAE1A3F13F30065BBD2 /* WhatsGoingOn.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DAC1A3F13F30065BBD2 /* WhatsGoingOn.m */; };
 		7DC29DB61A3F21230065BBD2 /* CommonContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DB51A3F21230065BBD2 /* CommonContainerViewController.m */; };
-		7DC29DC51A3F34BB0065BBD2 /* RBStoryboardLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DB91A3F34BB0065BBD2 /* RBStoryboardLink.m */; };
-		7DC29DC61A3F34BB0065BBD2 /* RBStoryboardModalSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DBC1A3F34BB0065BBD2 /* RBStoryboardModalSegue.m */; };
-		7DC29DC71A3F34BB0065BBD2 /* RBStoryboardPopoverSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DBE1A3F34BB0065BBD2 /* RBStoryboardPopoverSegue.m */; };
-		7DC29DC81A3F34BB0065BBD2 /* RBStoryboardPushSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DC01A3F34BB0065BBD2 /* RBStoryboardPushSegue.m */; };
-		7DC29DC91A3F34BB0065BBD2 /* RBStoryboardSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DC21A3F34BB0065BBD2 /* RBStoryboardSegue.m */; };
-		7DC29DCA1A3F34BB0065BBD2 /* UIViewController+RBStoryboardLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DC41A3F34BB0065BBD2 /* UIViewController+RBStoryboardLink.m */; };
 		7DC29DCD1A3F3AC90065BBD2 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC29DCC1A3F3AC90065BBD2 /* SearchViewController.m */; };
 		7DC451D71ABB24EE0040716A /* HMSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC451D51ABB24EE0040716A /* HMSegmentedControl.m */; };
 		7DC451D81ABB24EE0040716A /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DC451D61ABB24EE0040716A /* Launch Screen.xib */; };
@@ -555,6 +554,30 @@
 		7D09E7D51B4ABEF3002E0CF0 /* AddressMarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddressMarkViewController.m; path = WUZHAO/Sections/Mine/AddressMarkViewController.m; sourceTree = "<group>"; };
 		7D0E30141B3BCE4600B23405 /* camera_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_dark.png; sourceTree = "<group>"; };
 		7D0E30151B3BCE4600B23405 /* camera_dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camera_dark@2x.png"; sourceTree = "<group>"; };
+		7D11C1571B5601EA00C400D6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/UMSocialLocalizable.strings; sourceTree = "<group>"; };
+		7D11C1591B5601EA00C400D6 /* UMSocial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocial.h; sourceTree = "<group>"; };
+		7D11C15A1B5601EA00C400D6 /* UMSocialAccountManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocialAccountManager.h; sourceTree = "<group>"; };
+		7D11C15B1B5601EA00C400D6 /* UMSocialBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocialBar.h; sourceTree = "<group>"; };
+		7D11C15C1B5601EA00C400D6 /* UMSocialConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocialConfig.h; sourceTree = "<group>"; };
+		7D11C15D1B5601EA00C400D6 /* UMSocialControllerService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocialControllerService.h; sourceTree = "<group>"; };
+		7D11C15E1B5601EA00C400D6 /* UMSocialControllerServiceComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocialControllerServiceComment.h; sourceTree = "<group>"; };
+		7D11C15F1B5601EA00C400D6 /* UMSocialData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocialData.h; sourceTree = "<group>"; };
+		7D11C1601B5601EA00C400D6 /* UMSocialDataService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocialDataService.h; sourceTree = "<group>"; };
+		7D11C1611B5601EA00C400D6 /* UMSocialSnsData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocialSnsData.h; sourceTree = "<group>"; };
+		7D11C1621B5601EA00C400D6 /* UMSocialSnsPlatformManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocialSnsPlatformManager.h; sourceTree = "<group>"; };
+		7D11C1631B5601EA00C400D6 /* UMSocialSnsService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocialSnsService.h; sourceTree = "<group>"; };
+		7D11C1641B5601EA00C400D6 /* libUMSocial_Sdk_4.2.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUMSocial_Sdk_4.2.3.a; sourceTree = "<group>"; };
+		7D11C1651B5601EA00C400D6 /* libUMSocial_Sdk_Comment_4.2.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUMSocial_Sdk_Comment_4.2.3.a; sourceTree = "<group>"; };
+		7D11C1671B5601EA00C400D6 /* UMSCommentDetailController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UMSCommentDetailController.xib; sourceTree = "<group>"; };
+		7D11C1681B5601EA00C400D6 /* UMSCommentInputController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UMSCommentInputController.xib; sourceTree = "<group>"; };
+		7D11C1691B5601EA00C400D6 /* UMSCommentInputControlleriPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UMSCommentInputControlleriPad.xib; sourceTree = "<group>"; };
+		7D11C16A1B5601EA00C400D6 /* UMShareEditViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UMShareEditViewController.xib; sourceTree = "<group>"; };
+		7D11C16B1B5601EA00C400D6 /* UMShareEditViewControlleriPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UMShareEditViewControlleriPad.xib; sourceTree = "<group>"; };
+		7D11C16C1B5601EA00C400D6 /* UMSLoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UMSLoginViewController.xib; sourceTree = "<group>"; };
+		7D11C16D1B5601EA00C400D6 /* UMSnsAccountViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UMSnsAccountViewController.xib; sourceTree = "<group>"; };
+		7D11C16E1B5601EA00C400D6 /* UMSShareListController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UMSShareListController.xib; sourceTree = "<group>"; };
+		7D11C16F1B5601EA00C400D6 /* UMSocialSDKResourcesNew.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UMSocialSDKResourcesNew.bundle; sourceTree = "<group>"; };
+		7D11C1701B5601EA00C400D6 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/UMSocialLocalizable.strings"; sourceTree = "<group>"; };
 		7D1317CD1A5D35CA003A9D77 /* DAKeyboardControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DAKeyboardControl.h; path = WUZHAO/Sections/Controllers/Common/DAKeyboardControl.h; sourceTree = "<group>"; };
 		7D1317CE1A5D35CA003A9D77 /* DAKeyboardControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DAKeyboardControl.m; path = WUZHAO/Sections/Controllers/Common/DAKeyboardControl.m; sourceTree = "<group>"; };
 		7D1317D21A5E32DC003A9D77 /* CommentTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommentTableViewCell.h; path = WUZHAO/Sections/Views/CommentTableViewCell.h; sourceTree = "<group>"; };
@@ -579,8 +602,6 @@
 		7D15027F1A8B8D4000327DA5 /* QDYHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QDYHTTPClient.m; path = WUZHAO/General/QDYHTTPClient.m; sourceTree = "<group>"; };
 		7D1673B51AFC5926006CB524 /* menuClose@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "menuClose@2x.png"; sourceTree = "<group>"; };
 		7D1673B61AFC5926006CB524 /* menuIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "menuIcon@2x.png"; sourceTree = "<group>"; };
-		7D1673B91AFCA8FF006CB524 /* TWPhotoAlbumListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWPhotoAlbumListTableViewCell.h; sourceTree = "<group>"; };
-		7D1673BA1AFCA8FF006CB524 /* TWPhotoAlbumListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWPhotoAlbumListTableViewCell.m; sourceTree = "<group>"; };
 		7D1673BC1AFCB8AD006CB524 /* AlbumListTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AlbumListTableViewCell.xib; path = WUZHAO/Vendor/TWPhotoPicker/AlbumListTableViewCell.xib; sourceTree = "<group>"; };
 		7D17D8B21A660B5600FD8713 /* 37x-Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "37x-Checkmark.png"; path = "Hub/37x-Checkmark.png"; sourceTree = "<group>"; };
 		7D17D8B31A660B5600FD8713 /* 37x-Checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "37x-Checkmark@2x.png"; path = "Hub/37x-Checkmark@2x.png"; sourceTree = "<group>"; };
@@ -594,8 +615,6 @@
 		7D17D8BB1A660B5600FD8713 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "Hub/Icon-Small@2x.png"; sourceTree = "<group>"; };
 		7D17D8BC1A660B5600FD8713 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Hub/Icon.png; sourceTree = "<group>"; };
 		7D17D8BD1A660B5600FD8713 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "Hub/Icon@2x.png"; sourceTree = "<group>"; };
-		7D17D8CB1A660BC300FD8713 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
-		7D17D8CC1A660BC300FD8713 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		7D17D8CE1A6668F800FD8713 /* SVIndefiniteAnimatedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVIndefiniteAnimatedView.h; sourceTree = "<group>"; };
 		7D17D8CF1A6668F800FD8713 /* SVIndefiniteAnimatedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVIndefiniteAnimatedView.m; sourceTree = "<group>"; };
 		7D1B495A1A467B1500C4CEC4 /* AddImageInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddImageInfoViewController.h; path = WUZHAO/Sections/share/AddImageInfoViewController.h; sourceTree = "<group>"; };
@@ -766,12 +785,6 @@
 		7D7FADB41AC6C62300AC9BD1 /* cameraroll-picker-grip@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cameraroll-picker-grip@3x.png"; path = "../../../Vendor/TWPhotoPicker/Resources/cameraroll-picker-grip@3x.png"; sourceTree = "<group>"; };
 		7D7FADB51AC6C62300AC9BD1 /* straighten-grid@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "straighten-grid@2x.png"; path = "../../../Vendor/TWPhotoPicker/Resources/straighten-grid@2x.png"; sourceTree = "<group>"; };
 		7D7FADB61AC6C62300AC9BD1 /* straighten-grid@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "straighten-grid@3x.png"; path = "../../../Vendor/TWPhotoPicker/Resources/straighten-grid@3x.png"; sourceTree = "<group>"; };
-		7D7FADB71AC6C62300AC9BD1 /* TWImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWImageScrollView.h; sourceTree = "<group>"; };
-		7D7FADB81AC6C62300AC9BD1 /* TWImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWImageScrollView.m; sourceTree = "<group>"; };
-		7D7FADB91AC6C62300AC9BD1 /* TWPhotoCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWPhotoCollectionViewCell.h; sourceTree = "<group>"; };
-		7D7FADBA1AC6C62300AC9BD1 /* TWPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWPhotoCollectionViewCell.m; sourceTree = "<group>"; };
-		7D7FADBB1AC6C62300AC9BD1 /* TWPhotoPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWPhotoPickerController.h; sourceTree = "<group>"; };
-		7D7FADBC1AC6C62300AC9BD1 /* TWPhotoPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWPhotoPickerController.m; sourceTree = "<group>"; };
 		7D7FADC61AC6C7D600AC9BD1 /* back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back@2x.png"; sourceTree = "<group>"; };
 		7D7FADC71AC6C7D600AC9BD1 /* back@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back@3x.png"; sourceTree = "<group>"; };
 		7D7FADC81AC6C7D600AC9BD1 /* cameraroll-picker-grip@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraroll-picker-grip@2x.png"; sourceTree = "<group>"; };
@@ -906,10 +919,6 @@
 		7DB731561B09C17E00972FBF /* DDScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDScrollViewController.m; sourceTree = "<group>"; };
 		7DB731581B09C1AA00972FBF /* PhotoScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhotoScrollViewController.h; path = WUZHAO/Sections/Controllers/Common/PhotoScrollViewController.h; sourceTree = "<group>"; };
 		7DB731591B09C1AA00972FBF /* PhotoScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PhotoScrollViewController.m; path = WUZHAO/Sections/Controllers/Common/PhotoScrollViewController.m; sourceTree = "<group>"; };
-		7DBA3F971AFB7C9F001B2BBA /* IGLDropDownItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IGLDropDownItem.h; sourceTree = "<group>"; };
-		7DBA3F981AFB7C9F001B2BBA /* IGLDropDownItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IGLDropDownItem.m; sourceTree = "<group>"; };
-		7DBA3F991AFB7C9F001B2BBA /* IGLDropDownMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IGLDropDownMenu.h; sourceTree = "<group>"; };
-		7DBA3F9A1AFB7C9F001B2BBA /* IGLDropDownMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IGLDropDownMenu.m; sourceTree = "<group>"; };
 		7DBE50E21ADE53C000C1A3B3 /* FeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeedbackViewController.h; path = WUZHAO/Sections/Mine/FeedbackViewController.h; sourceTree = "<group>"; };
 		7DBE50E31ADE53C000C1A3B3 /* FeedbackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FeedbackViewController.m; path = WUZHAO/Sections/Mine/FeedbackViewController.m; sourceTree = "<group>"; };
 		7DC29DA01A3F10450065BBD2 /* Search.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Search.storyboard; path = WUZHAO/Storyboard/Search.storyboard; sourceTree = "<group>"; };
@@ -923,19 +932,6 @@
 		7DC29DAC1A3F13F30065BBD2 /* WhatsGoingOn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WhatsGoingOn.m; path = WUZHAO/Models/WhatsGoingOn.m; sourceTree = "<group>"; };
 		7DC29DB41A3F21230065BBD2 /* CommonContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommonContainerViewController.h; path = WUZHAO/Sections/Controllers/Common/CommonContainerViewController.h; sourceTree = "<group>"; };
 		7DC29DB51A3F21230065BBD2 /* CommonContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CommonContainerViewController.m; path = WUZHAO/Sections/Controllers/Common/CommonContainerViewController.m; sourceTree = "<group>"; };
-		7DC29DB81A3F34BB0065BBD2 /* RBStoryboardLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBStoryboardLink.h; sourceTree = "<group>"; };
-		7DC29DB91A3F34BB0065BBD2 /* RBStoryboardLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RBStoryboardLink.m; sourceTree = "<group>"; };
-		7DC29DBA1A3F34BB0065BBD2 /* RBStoryboardLinkSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBStoryboardLinkSource.h; sourceTree = "<group>"; };
-		7DC29DBB1A3F34BB0065BBD2 /* RBStoryboardModalSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBStoryboardModalSegue.h; sourceTree = "<group>"; };
-		7DC29DBC1A3F34BB0065BBD2 /* RBStoryboardModalSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RBStoryboardModalSegue.m; sourceTree = "<group>"; };
-		7DC29DBD1A3F34BB0065BBD2 /* RBStoryboardPopoverSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBStoryboardPopoverSegue.h; sourceTree = "<group>"; };
-		7DC29DBE1A3F34BB0065BBD2 /* RBStoryboardPopoverSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RBStoryboardPopoverSegue.m; sourceTree = "<group>"; };
-		7DC29DBF1A3F34BB0065BBD2 /* RBStoryboardPushSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBStoryboardPushSegue.h; sourceTree = "<group>"; };
-		7DC29DC01A3F34BB0065BBD2 /* RBStoryboardPushSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RBStoryboardPushSegue.m; sourceTree = "<group>"; };
-		7DC29DC11A3F34BB0065BBD2 /* RBStoryboardSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBStoryboardSegue.h; sourceTree = "<group>"; };
-		7DC29DC21A3F34BB0065BBD2 /* RBStoryboardSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RBStoryboardSegue.m; sourceTree = "<group>"; };
-		7DC29DC31A3F34BB0065BBD2 /* UIViewController+RBStoryboardLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+RBStoryboardLink.h"; sourceTree = "<group>"; };
-		7DC29DC41A3F34BB0065BBD2 /* UIViewController+RBStoryboardLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+RBStoryboardLink.m"; sourceTree = "<group>"; };
 		7DC29DCB1A3F3AC90065BBD2 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchViewController.h; path = WUZHAO/Sections/Controllers/Search/SearchViewController.h; sourceTree = "<group>"; };
 		7DC29DCC1A3F3AC90065BBD2 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchViewController.m; path = WUZHAO/Sections/Controllers/Search/SearchViewController.m; sourceTree = "<group>"; };
 		7DC451D41ABB24EE0040716A /* HMSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMSegmentedControl.h; sourceTree = "<group>"; };
@@ -1042,6 +1038,7 @@
 				7D928D191AE6483500C763F8 /* AssetsLibrary.framework in Frameworks */,
 				7D741BF21AB95CD2006C320A /* Photos.framework in Frameworks */,
 				7DD0E4291AA0115F002AF97D /* libicucore.dylib in Frameworks */,
+				7D11C1731B5601EA00C400D6 /* libUMSocial_Sdk_Comment_4.2.3.a in Frameworks */,
 				7DD0E4271AA0113D002AF97D /* libc++.dylib in Frameworks */,
 				7DA5BE7C1A9DBC6200C8BA4B /* Security.framework in Frameworks */,
 				7DA5BE971A9DBCEB00C8BA4B /* AMapSearchKit.framework in Frameworks */,
@@ -1049,6 +1046,7 @@
 				7DA5BE941A9DBCD800C8BA4B /* libstdc++.6.0.9.dylib in Frameworks */,
 				7DA5BE921A9DBCC200C8BA4B /* CoreTelephony.framework in Frameworks */,
 				7DA5BE901A9DBCBA00C8BA4B /* libz.dylib in Frameworks */,
+				7D11C1721B5601EA00C400D6 /* libUMSocial_Sdk_4.2.3.a in Frameworks */,
 				7DA5BE8E1A9DBCAD00C8BA4B /* CoreGraphics.framework in Frameworks */,
 				7DA5BE8C1A9DBCA300C8BA4B /* ImageIO.framework in Frameworks */,
 				7DA5BE8A1A9DBC9D00C8BA4B /* AVFoundation.framework in Frameworks */,
@@ -1188,6 +1186,52 @@
 			name = View;
 			sourceTree = "<group>";
 		};
+		7D11C1551B5601EA00C400D6 /* UMSocial_Sdk_4.2.3 */ = {
+			isa = PBXGroup;
+			children = (
+				7D11C1561B5601EA00C400D6 /* UMSocialLocalizable.strings */,
+				7D11C1581B5601EA00C400D6 /* Header */,
+				7D11C1641B5601EA00C400D6 /* libUMSocial_Sdk_4.2.3.a */,
+				7D11C1651B5601EA00C400D6 /* libUMSocial_Sdk_Comment_4.2.3.a */,
+				7D11C1661B5601EA00C400D6 /* SocialSDKXib */,
+				7D11C16F1B5601EA00C400D6 /* UMSocialSDKResourcesNew.bundle */,
+			);
+			path = UMSocial_Sdk_4.2.3;
+			sourceTree = "<group>";
+		};
+		7D11C1581B5601EA00C400D6 /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				7D11C1591B5601EA00C400D6 /* UMSocial.h */,
+				7D11C15A1B5601EA00C400D6 /* UMSocialAccountManager.h */,
+				7D11C15B1B5601EA00C400D6 /* UMSocialBar.h */,
+				7D11C15C1B5601EA00C400D6 /* UMSocialConfig.h */,
+				7D11C15D1B5601EA00C400D6 /* UMSocialControllerService.h */,
+				7D11C15E1B5601EA00C400D6 /* UMSocialControllerServiceComment.h */,
+				7D11C15F1B5601EA00C400D6 /* UMSocialData.h */,
+				7D11C1601B5601EA00C400D6 /* UMSocialDataService.h */,
+				7D11C1611B5601EA00C400D6 /* UMSocialSnsData.h */,
+				7D11C1621B5601EA00C400D6 /* UMSocialSnsPlatformManager.h */,
+				7D11C1631B5601EA00C400D6 /* UMSocialSnsService.h */,
+			);
+			path = Header;
+			sourceTree = "<group>";
+		};
+		7D11C1661B5601EA00C400D6 /* SocialSDKXib */ = {
+			isa = PBXGroup;
+			children = (
+				7D11C1671B5601EA00C400D6 /* UMSCommentDetailController.xib */,
+				7D11C1681B5601EA00C400D6 /* UMSCommentInputController.xib */,
+				7D11C1691B5601EA00C400D6 /* UMSCommentInputControlleriPad.xib */,
+				7D11C16A1B5601EA00C400D6 /* UMShareEditViewController.xib */,
+				7D11C16B1B5601EA00C400D6 /* UMShareEditViewControlleriPad.xib */,
+				7D11C16C1B5601EA00C400D6 /* UMSLoginViewController.xib */,
+				7D11C16D1B5601EA00C400D6 /* UMSnsAccountViewController.xib */,
+				7D11C16E1B5601EA00C400D6 /* UMSShareListController.xib */,
+			);
+			path = SocialSDKXib;
+			sourceTree = "<group>";
+		};
 		7D1359E91A66B75F0058C02A /* Notice */ = {
 			isa = PBXGroup;
 			children = (
@@ -1234,16 +1278,6 @@
 				7D17D8BD1A660B5600FD8713 /* Icon@2x.png */,
 			);
 			name = Hub;
-			sourceTree = "<group>";
-		};
-		7D17D8CA1A660BC300FD8713 /* MBProgressHUD */ = {
-			isa = PBXGroup;
-			children = (
-				7D17D8CB1A660BC300FD8713 /* MBProgressHUD.h */,
-				7D17D8CC1A660BC300FD8713 /* MBProgressHUD.m */,
-			);
-			name = MBProgressHUD;
-			path = WUZHAO/Vendor/MBProgressHUD;
 			sourceTree = "<group>";
 		};
 		7D21E9331A5CC43800815A33 /* Views */ = {
@@ -1674,22 +1708,6 @@
 			path = WUZHAO/Vendor/PureLayout;
 			sourceTree = "<group>";
 		};
-		7D7FADAF1AC6C62300AC9BD1 /* TWPhotoPicker */ = {
-			isa = PBXGroup;
-			children = (
-				7D7FADB71AC6C62300AC9BD1 /* TWImageScrollView.h */,
-				7D7FADB81AC6C62300AC9BD1 /* TWImageScrollView.m */,
-				7D7FADB91AC6C62300AC9BD1 /* TWPhotoCollectionViewCell.h */,
-				7D7FADBA1AC6C62300AC9BD1 /* TWPhotoCollectionViewCell.m */,
-				7D7FADBB1AC6C62300AC9BD1 /* TWPhotoPickerController.h */,
-				7D7FADBC1AC6C62300AC9BD1 /* TWPhotoPickerController.m */,
-				7D1673B91AFCA8FF006CB524 /* TWPhotoAlbumListTableViewCell.h */,
-				7D1673BA1AFCA8FF006CB524 /* TWPhotoAlbumListTableViewCell.m */,
-			);
-			name = TWPhotoPicker;
-			path = WUZHAO/Vendor/TWPhotoPicker;
-			sourceTree = "<group>";
-		};
 		7D8CA83A1AF9C249004D485F /* Cell */ = {
 			isa = PBXGroup;
 			children = (
@@ -1817,18 +1835,6 @@
 			path = WUZHAO/Sections/Controllers/Common/DDScrollViewController;
 			sourceTree = "<group>";
 		};
-		7DBA3F961AFB7C9F001B2BBA /* IGLDropDownMenu */ = {
-			isa = PBXGroup;
-			children = (
-				7DBA3F971AFB7C9F001B2BBA /* IGLDropDownItem.h */,
-				7DBA3F981AFB7C9F001B2BBA /* IGLDropDownItem.m */,
-				7DBA3F991AFB7C9F001B2BBA /* IGLDropDownMenu.h */,
-				7DBA3F9A1AFB7C9F001B2BBA /* IGLDropDownMenu.m */,
-			);
-			name = IGLDropDownMenu;
-			path = WUZHAO/Vendor/IGLDropDownMenu;
-			sourceTree = "<group>";
-		};
 		7DC29DB21A3F1FFC0065BBD2 /* WhatsNew */ = {
 			isa = PBXGroup;
 			children = (
@@ -1862,27 +1868,6 @@
 				7DA50DD11B0DD73B00CE8DDC /* PhotoDetailViewsController.m */,
 			);
 			name = Common;
-			sourceTree = "<group>";
-		};
-		7DC29DB71A3F34BB0065BBD2 /* RBStoryboardLink */ = {
-			isa = PBXGroup;
-			children = (
-				7DC29DB81A3F34BB0065BBD2 /* RBStoryboardLink.h */,
-				7DC29DB91A3F34BB0065BBD2 /* RBStoryboardLink.m */,
-				7DC29DBA1A3F34BB0065BBD2 /* RBStoryboardLinkSource.h */,
-				7DC29DBB1A3F34BB0065BBD2 /* RBStoryboardModalSegue.h */,
-				7DC29DBC1A3F34BB0065BBD2 /* RBStoryboardModalSegue.m */,
-				7DC29DBD1A3F34BB0065BBD2 /* RBStoryboardPopoverSegue.h */,
-				7DC29DBE1A3F34BB0065BBD2 /* RBStoryboardPopoverSegue.m */,
-				7DC29DBF1A3F34BB0065BBD2 /* RBStoryboardPushSegue.h */,
-				7DC29DC01A3F34BB0065BBD2 /* RBStoryboardPushSegue.m */,
-				7DC29DC11A3F34BB0065BBD2 /* RBStoryboardSegue.h */,
-				7DC29DC21A3F34BB0065BBD2 /* RBStoryboardSegue.m */,
-				7DC29DC31A3F34BB0065BBD2 /* UIViewController+RBStoryboardLink.h */,
-				7DC29DC41A3F34BB0065BBD2 /* UIViewController+RBStoryboardLink.m */,
-			);
-			name = RBStoryboardLink;
-			path = WUZHAO/Vendor/RBStoryboardLink;
 			sourceTree = "<group>";
 		};
 		7DC451D31ABB24EE0040716A /* HMSegmentedControl */ = {
@@ -1968,17 +1953,14 @@
 		7DE066AB1A3F060C008086BD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				7DBA3F961AFB7C9F001B2BBA /* IGLDropDownMenu */,
+				7D11C1551B5601EA00C400D6 /* UMSocial_Sdk_4.2.3 */,
 				7DF6063A1AECC574008DCEA4 /* JSONKit */,
 				7DF606361AEBE841008DCEA4 /* LibBPush */,
-				7D7FADAF1AC6C62300AC9BD1 /* TWPhotoPicker */,
 				7D7997451AC0129F00909D36 /* PureLayout */,
 				7DC451D31ABB24EE0040716A /* HMSegmentedControl */,
 				7D73A9D31A6F7D3C00353F39 /* VPImageCropper */,
-				7D17D8CA1A660BC300FD8713 /* MBProgressHUD */,
 				7D4577321A62C2C500786533 /* QiniuSDK */,
 				7D7047581A44204F00EC0D40 /* SVProgressHUD */,
-				7DC29DB71A3F34BB0065BBD2 /* RBStoryboardLink */,
 				7DE066B31A3F07AC008086BD /* AFNetworking */,
 				7DE067191A3F07AC008086BD /* SDWebImage */,
 			);
@@ -2271,6 +2253,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 7D65E2051A39701E00F84754;
 			productRefGroup = 7D65E20F1A39701E00F84754 /* Products */;
@@ -2335,6 +2318,7 @@
 				7DE62BE01AB19FF900F35E6D /* Feeds.storyboard in Resources */,
 				7D7047621A44204F00EC0D40 /* SVProgressHUD.bundle in Resources */,
 				7D9A78791AE9054500CD7287 /* trash@3x.png in Resources */,
+				7D11C1791B5601EA00C400D6 /* UMSLoginViewController.xib in Resources */,
 				7D00BE581B206AEC00374EC0 /* 高光.png in Resources */,
 				7D00BF761B2194FD00374EC0 /* 阴影@2x.png in Resources */,
 				7D7047E91A45CDFB00EC0D40 /* touch_focus_x.png in Resources */,
@@ -2350,6 +2334,7 @@
 				7D00BF711B2194FD00374EC0 /* 色相@3x.png in Resources */,
 				7D7047EA1A45CDFB00EC0D40 /* touch_focus_x@2x.png in Resources */,
 				7D9A78761AE9054400CD7287 /* map-marker@2x.png in Resources */,
+				7D11C1781B5601EA00C400D6 /* UMShareEditViewControlleriPad.xib in Resources */,
 				7D00BF781B2194FD00374EC0 /* 晕影@2x.png in Resources */,
 				7D00BF511B2194FD00374EC0 /* 饱和度@3x.png in Resources */,
 				7D00BF521B2194FD00374EC0 /* 裁剪@2x.png in Resources */,
@@ -2366,6 +2351,7 @@
 				7DAD6FDE1B4F76C50051221D /* back_arrow@2x.png in Resources */,
 				7D00BE141B205C5000374EC0 /* check@2x.png in Resources */,
 				7D7FADD01AC6C7D600AC9BD1 /* straighten-grid@2x.png in Resources */,
+				7D11C1741B5601EA00C400D6 /* UMSCommentDetailController.xib in Resources */,
 				7DEE7B121AB06EA100A38AA3 /* UserList.storyboard in Resources */,
 				7D00BE941B21508A00374EC0 /* 高斯模糊.png in Resources */,
 				7DA2CE911B54BAAC0016EAC6 /* intro1.png in Resources */,
@@ -2389,6 +2375,7 @@
 				7D9A78721AE9054400CD7287 /* magnifying-glass.png in Resources */,
 				7D00BF6B1B2194FD00374EC0 /* 柔和@3x.png in Resources */,
 				7D7FADBF1AC6C62300AC9BD1 /* cameraroll-picker-grip@2x.png in Resources */,
+				7D11C1771B5601EA00C400D6 /* UMShareEditViewController.xib in Resources */,
 				7D00BE551B206AEC00374EC0 /* 肤色.png in Resources */,
 				7D17D8BE1A660B5600FD8713 /* 37x-Checkmark.png in Resources */,
 				7D7047DC1A45CDFB00EC0D40 /* flashing_off@2x.png in Resources */,
@@ -2409,6 +2396,7 @@
 				7D00BF5C1B2194FD00374EC0 /* 工具_s@2x.png in Resources */,
 				7DB2605D1B540F57005AED71 /* intro2.png in Resources */,
 				7D09E7BA1B4640BA002E0CF0 /* 剪裁_s@2x.png in Resources */,
+				7D11C17B1B5601EA00C400D6 /* UMSShareListController.xib in Resources */,
 				7DAD6FDA1B4F747D0051221D /* history@2x.png in Resources */,
 				7DAD6FDF1B4F76C50051221D /* back_arrow@3x.png in Resources */,
 				7DAD6FD11B4D5EF10051221D /* map-marker-button_s@3x.png in Resources */,
@@ -2427,6 +2415,7 @@
 				7D17D8C21A660B5600FD8713 /* Default-iOS7@2x.png in Resources */,
 				7D7047D71A45CDFB00EC0D40 /* close_cha_h.png in Resources */,
 				7D9A78701AE9054400CD7287 /* home@2x.png in Resources */,
+				7D11C17C1B5601EA00C400D6 /* UMSocialSDKResourcesNew.bundle in Resources */,
 				7D00BF5E1B2194FD00374EC0 /* 工具@2x.png in Resources */,
 				7D9A78561AE9034C00CD7287 /* person@2x.png in Resources */,
 				7D00BE8B1B214E5C00374EC0 /* 色相.png in Resources */,
@@ -2440,6 +2429,7 @@
 				7D00BF8D1B21F58500374EC0 /* 工具_s@3x.png in Resources */,
 				7D00BE121B205C5000374EC0 /* cancel@3x.png in Resources */,
 				7D00BF211B218F8200374EC0 /* 柔和.png in Resources */,
+				7D11C1751B5601EA00C400D6 /* UMSCommentInputController.xib in Resources */,
 				7D00BE701B206AEC00374EC0 /* 阴影.png in Resources */,
 				7D7047DF1A45CDFB00EC0D40 /* shot.png in Resources */,
 				7D00BF721B2194FD00374EC0 /* 褪色@2x.png in Resources */,
@@ -2492,11 +2482,14 @@
 				7DC29DA51A3F106F0065BBD2 /* Mine.storyboard in Resources */,
 				7D00BF691B2194FD00374EC0 /* 曝光@3x.png in Resources */,
 				7DAD6FB71B4D1ADA0051221D /* map-marker-tabbar@2x.png in Resources */,
+				7D11C17A1B5601EA00C400D6 /* UMSnsAccountViewController.xib in Resources */,
 				7D00BF551B2194FD00374EC0 /* 对比度@3x.png in Resources */,
 				7DF6063F1AED0097008DCEA4 /* place_40.png in Resources */,
+				7D11C1761B5601EA00C400D6 /* UMSCommentInputControlleriPad.xib in Resources */,
 				7D00BF581B2194FD00374EC0 /* 高光@2X.png in Resources */,
 				7DAD6FB01B4D05B40051221D /* collectionView@2x.png in Resources */,
 				7D7047DE1A45CDFB00EC0D40 /* flashing_on@2x.png in Resources */,
+				7D11C1711B5601EA00C400D6 /* UMSocialLocalizable.strings in Resources */,
 				7D00BF641B2194FD00374EC0 /* 滤镜_s@2x.png in Resources */,
 				7D00BDFF1B204A6000374EC0 /* check@3x.png in Resources */,
 				7D7047D51A45CDFB00EC0D40 /* close_cha.png in Resources */,
@@ -2521,15 +2514,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DBA3F9B1AFB7C9F001B2BBA /* IGLDropDownItem.m in Sources */,
 				7DAD6FA41B4B76B20051221D /* AddressMarkAnnotationView.m in Sources */,
 				7D1B495C1A467B1500C4CEC4 /* AddImageInfoViewController.m in Sources */,
-				7DC29DCA1A3F34BB0065BBD2 /* UIViewController+RBStoryboardLink.m in Sources */,
 				7DE0677F1A3F07AC008086BD /* UIImageView+WebCache.m in Sources */,
 				7D1B49621A46F01F00C4CEC4 /* FootPrint.m in Sources */,
 				7D0290F41AD384C1003D8393 /* SearchResultViewController.m in Sources */,
 				7D14B11A1B1D782300DDF176 /* HUMSlider.m in Sources */,
-				7DBA3F9C1AFB7C9F001B2BBA /* IGLDropDownMenu.m in Sources */,
 				7D14B11E1B1D942300DDF176 /* PhotoEffectCollectionViewCell.m in Sources */,
 				7DE067771A3F07AC008086BD /* SDWebImageDownloaderOperation.m in Sources */,
 				7D1502801A8B8D4000327DA5 /* QDYHTTPClient.m in Sources */,
@@ -2551,16 +2541,13 @@
 				7D2BEBC61AFB074000F42F02 /* PopOverMenu.m in Sources */,
 				7D73A9D61A6F7D3C00353F39 /* VPImageCropperViewController.m in Sources */,
 				7D928D171AE4B04200C763F8 /* NSString+Verify.m in Sources */,
-				7DC29DC81A3F34BB0065BBD2 /* RBStoryboardPushSegue.m in Sources */,
 				7D72BD6F1ADCF9750013BCF4 /* FeedsFollowTableViewCell.m in Sources */,
 				7DE067791A3F07AC008086BD /* SDWebImagePrefetcher.m in Sources */,
 				7D7997501AC0129F00909D36 /* NSArray+PureLayout.m in Sources */,
 				7D21E9281A5A519500815A33 /* PhotosCollectionViewController.m in Sources */,
-				7DC29DC71A3F34BB0065BBD2 /* RBStoryboardPopoverSegue.m in Sources */,
 				7D45775B1A62C2C500786533 /* QNFileRecorder.m in Sources */,
 				7D5F5E761AFF5F9A00786066 /* CameraUtility.m in Sources */,
 				7DF606321AEBD71A008DCEA4 /* AddressTableViewCell.m in Sources */,
-				7D7FADC31AC6C62300AC9BD1 /* TWImageScrollView.m in Sources */,
 				7DE067731A3F07AC008086BD /* SDImageCache.m in Sources */,
 				7DE067751A3F07AC008086BD /* SDWebImageDecoder.m in Sources */,
 				7DC29DCD1A3F3AC90065BBD2 /* SearchViewController.m in Sources */,
@@ -2573,7 +2560,6 @@
 				7D93E48A1B4FD1B0001A106C /* AddressSuggestDistrictTableViewCell.m in Sources */,
 				7D6CDBDB1AA1FCCD00BD2597 /* UIImageView+ChangeAppearance.m in Sources */,
 				7D70473B1A43D73A00EC0D40 /* MainTabBarViewController.m in Sources */,
-				7DC29DC51A3F34BB0065BBD2 /* RBStoryboardLink.m in Sources */,
 				7D21E92E1A5A79F900815A33 /* UserListTableViewCell.m in Sources */,
 				7DE0677E1A3F07AC008086BD /* UIImageView+HighlightedWebCache.m in Sources */,
 				7D4577591A62C2C500786533 /* QNResponseInfo.m in Sources */,
@@ -2598,7 +2584,6 @@
 				7D8CA8461AFA027B004D485F /* LinkTextView.m in Sources */,
 				7D76FB0B1ACCE3C5003CCF64 /* PhotoDetailTableViewController.m in Sources */,
 				7DE0674D1A3F07AC008086BD /* AFURLResponseSerialization.m in Sources */,
-				7D1673BB1AFCA8FF006CB524 /* TWPhotoAlbumListTableViewCell.m in Sources */,
 				7D93BDFF1AFA171D008D206E /* CommentTextView.m in Sources */,
 				7DE0674B1A3F07AC008086BD /* AFURLConnectionOperation.m in Sources */,
 				7DE0677B1A3F07AC008086BD /* UIImage+GIF.m in Sources */,
@@ -2613,10 +2598,8 @@
 				7D4577541A62C2C500786533 /* QNConfig.m in Sources */,
 				7DC29DAD1A3F13F30065BBD2 /* User.m in Sources */,
 				7D686E721A5933B100A61E0A /* AddressViewController.m in Sources */,
-				7D7FADC51AC6C62300AC9BD1 /* TWPhotoPickerController.m in Sources */,
 				7DE067801A3F07AC008086BD /* UIView+WebCacheOperation.m in Sources */,
 				7DE0674A1A3F07AC008086BD /* AFSecurityPolicy.m in Sources */,
-				7D7FADC41AC6C62300AC9BD1 /* TWPhotoCollectionViewCell.m in Sources */,
 				7DE067781A3F07AC008086BD /* SDWebImageManager.m in Sources */,
 				7D17D8D01A6668F800FD8713 /* SVIndefiniteAnimatedView.m in Sources */,
 				7D6CDBD81AA0491800BD2597 /* POISearchAPI.m in Sources */,
@@ -2625,7 +2608,6 @@
 				7D14B1091B19760400DDF176 /* FilteredImageView.m in Sources */,
 				7DE067931A3F0FA9008086BD /* PhotoTableViewCell.m in Sources */,
 				7D79974F1AC0129F00909D36 /* ALView+PureLayout.m in Sources */,
-				7DC29DC61A3F34BB0065BBD2 /* RBStoryboardModalSegue.m in Sources */,
 				7D4577301A6244E900786533 /* UIViewController+ScrollingNavbar.m in Sources */,
 				7D09E7B31B45129F002E0CF0 /* progressImageView.m in Sources */,
 				7DB6D60F1A4BAD53005F1442 /* GlobalAppearance.m in Sources */,
@@ -2658,7 +2640,6 @@
 				7DE067721A3F07AC008086BD /* NSData+ImageContentType.m in Sources */,
 				7D09E7A61B4367AC002E0CF0 /* PhotoPickerCollectionViewCell.m in Sources */,
 				7D41F1391AA440A9003A4BB1 /* UIButton+ChangeAppearance.m in Sources */,
-				7D17D8CD1A660BC300FD8713 /* MBProgressHUD.m in Sources */,
 				7D45775A1A62C2C500786533 /* QNUserAgent.m in Sources */,
 				7D4577581A62C2C500786533 /* QNHttpManager.m in Sources */,
 				7DE0677A1A3F07AC008086BD /* UIButton+WebCache.m in Sources */,
@@ -2675,7 +2656,6 @@
 				7D1359EC1A66B78E0058C02A /* NoticeViewController.m in Sources */,
 				7D7997511AC0129F00909D36 /* NSLayoutConstraint+PureLayout.m in Sources */,
 				7DC29DAE1A3F13F30065BBD2 /* WhatsGoingOn.m in Sources */,
-				7DC29DC91A3F34BB0065BBD2 /* RBStoryboardSegue.m in Sources */,
 				7D928D0C1AE3CBA400C763F8 /* CaptureItemContainerUIView.m in Sources */,
 				7DA50DD21B0DD73B00CE8DDC /* PhotoDetailViewsController.m in Sources */,
 				7DAD6FA71B4B7AF70051221D /* AddressMarkAnnotation.m in Sources */,
@@ -2707,6 +2687,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		7D11C1561B5601EA00C400D6 /* UMSocialLocalizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7D11C1571B5601EA00C400D6 /* en */,
+				7D11C1701B5601EA00C400D6 /* zh-Hans */,
+			);
+			name = UMSocialLocalizable.strings;
+			sourceTree = "<group>";
+		};
 		7D65E21E1A39701E00F84754 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2816,6 +2805,7 @@
 					"$(PROJECT_DIR)/WUZHAO/Vendor",
 					"$(PROJECT_DIR)",
 					"/Users/yiyi/Downloads/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/TencentOpenAPI",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
@@ -2826,6 +2816,14 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/system",
 					"$(PROJECT_DIR)/WUZHAO/Vendor/LibBPush",
+					"$(PROJECT_DIR)/UMSocial_Sdk_4.2.3",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/Instagram",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/Sina",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/SinaSSO",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/TencentOpenAPI",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/UMSocial_ScreenShot_Sdk",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/UMSocial_Shake_Sdk",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/Wechat",
 				);
 				PRODUCT_NAME = Place;
 				PROVISIONING_PROFILE = "0d5464a8-8e7b-4825-889f-57dadb2ef517";
@@ -2845,6 +2843,7 @@
 					"$(PROJECT_DIR)/WUZHAO/Vendor",
 					"$(PROJECT_DIR)",
 					"/Users/yiyi/Downloads/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/TencentOpenAPI",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
@@ -2855,6 +2854,14 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/system",
 					"$(PROJECT_DIR)/WUZHAO/Vendor/LibBPush",
+					"$(PROJECT_DIR)/UMSocial_Sdk_4.2.3",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/Instagram",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/Sina",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/SinaSSO",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/TencentOpenAPI",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/UMSocial_ScreenShot_Sdk",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/UMSocial_Shake_Sdk",
+					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/Wechat",
 				);
 				PRODUCT_NAME = Place;
 				PROVISIONING_PROFILE = "0d5464a8-8e7b-4825-889f-57dadb2ef517";

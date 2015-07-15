@@ -19,7 +19,6 @@
 #import "MineViewController.h"
 #import "NoticeViewController.h"
 #import "SCCaptureCameraController.h"
-#import "RBStoryboardLink.h"
 #import "SVProgressHUD.h"
 
 #import "QDYHTTPClient.h"

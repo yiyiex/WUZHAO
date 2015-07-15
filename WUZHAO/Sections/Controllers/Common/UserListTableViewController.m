@@ -172,6 +172,13 @@
      {
          [self.dataSource updateUserListDatasource:self];
      }
+    else
+    {
+        if ([self.refreshControl isRefreshing])
+        {
+            [self.refreshControl endRefreshing];
+        }
+    }
 }
 
 -(void)gotoPersonalPageWithUserInfo:(User *)user

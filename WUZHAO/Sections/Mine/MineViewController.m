@@ -89,6 +89,10 @@
 
 @property (nonatomic,strong) UILabel *footLabel;
 
+@property (nonatomic, strong) UIImageView *placeHolderImageView;
+@property (nonatomic, strong) UIImage *coverImage;
+
+
 @property (nonatomic) BOOL shouldRefreshData;
 @property (nonatomic) BOOL shouldReloadData;
 @property (nonatomic) BOOL  shouldLoadMore;
@@ -122,7 +126,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     
     //notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMyPhotos:) name:@"deletePost" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearUserInfo)  name:@"deleteUserInfo" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(upDateUserInfo) name:@"updateUserInfo" object:nil];
 
     //默认显示照片列表
     [self.myPhotosNumLabel setHighlighted:YES];
@@ -145,6 +150,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     self.navigationController.navigationBarHidden = YES;
     self.tabBarController.navigationItem.backBarButtonItem.title = @"";
     self.tabBarController.navigationController.navigationBarHidden = NO;
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
 }
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -160,6 +166,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 {
     [super viewWillDisappear:animated];
     self.navigationController.navigationBarHidden = NO;
+     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
 }
 
 -(void)viewDidDisappear:(BOOL)animated
@@ -184,6 +191,24 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         _userInfo = [[User alloc]init];
     }
     _userInfo = [userInfo mutableCopy];
+}
+-(void)setCoverImage:(UIImage *)coverImage
+{
+    _coverImage = coverImage;
+    if (self.scrollView.blurCoverView)
+    {
+        [self.scrollView.blurCoverView setImage:coverImage];
+    }
+}
+-(UIImageView *)placeHolderImageView
+{
+    if (!_placeHolderImageView)
+    {
+        _placeHolderImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, -100, 20, 20)];
+        [self.view addSubview:_placeHolderImageView];
+        
+    }
+    return _placeHolderImageView;
 }
 
 -(float)scrollContentViewHeight
@@ -265,17 +290,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     float buttonWidth = 44;
     float labelHeight = 22;
     float navBarHeight = 49;
-    //navBar
-    /*
-    UIView *navBar = [[UIView alloc]initWithFrame:CGRectMake(0, 20, WZ_APP_SIZE.width, navBarHeight)];
-    self.navigationBar = navBar;
-    [self.view addSubview:navBar];*/
+
     [self.scrollView addBlurCoverWithImage:[UIImage imageNamed:@"cover.png"]];
-    NSString *backGroundImage =  [[NSUserDefaults standardUserDefaults]objectForKey:@"userBackGroundImageUrl"];
-    if (backGroundImage && ![backGroundImage isEqualToString:@""])
-    {
-        [self.scrollView.blurCoverView setImageWithUrl:backGroundImage];
-    }
     UITapGestureRecognizer *backGroundImageTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backGroundImageClick:)];
     [self.scrollView.blurCoverView addGestureRecognizer:backGroundImageTap];
     [self.scrollView.blurCoverView setUserInteractionEnabled:YES];
@@ -433,20 +449,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         {
             [setting setHidden:YES];
         }
-        
-        
-        
     }
-    
-    //[self.view bringSubviewToFront:self.navigationBar];
-    
-    //refreshcontrol
-    /*
-    self.refreshControl = [[UIRefreshControl alloc]init];
-    [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
-    [self.scrollView addSubview:self.refreshControl];
-    [self.refreshControl setHidden:YES];
-     */
 
 }
 
@@ -834,14 +837,13 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     }
     if (self.userInfo.avatarImageURLString)
     {
-        [self.avator sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString]];
+        [self.avator sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        }];
     }
     if (self.userInfo.backGroundImage && ![self.userInfo.backGroundImage isEqualToString:@""])
     {
-        UIImageView *view = [[UIImageView alloc]init];
-        [view sd_setImageWithURL:[NSURL URLWithString:self.userInfo.backGroundImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            self.scrollView.blurCoverView.image = image;
-            [self.scrollView setContentOffset:CGPointMake(0, -20) animated:YES];
+        [self.placeHolderImageView sd_setImageWithURL:[NSURL URLWithString:self.userInfo.backGroundImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            self.coverImage = image;
         }];
        // [self.scrollView.blurCoverView setImageWithUrl:self.userInfo.backGroundImage];
         
@@ -1108,7 +1110,18 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     self.myAddressListDatasource = nil;
     [self.myPhotoCollectionViewController loadData];
 }
-
+-(void)upDateUserInfo
+{
+    [self setPersonalInfo];
+}
+-(void)upDateFollows:(NSNotification *)no
+{
+    
+}
+-(void)upDateFollowers:(NSNotification *)no
+{
+    
+}
 #pragma mark - scrollview delegate
 -(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
 {
@@ -1200,7 +1213,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     {
         NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
         [[NSUserDefaults standardUserDefaults]setObject:@"" forKey:@"userBackGroundImageUrl"];
-        [self.scrollView.blurCoverView setImage:[UIImage imageNamed:@"cover.png"]];
+        self.coverImage = [UIImage imageNamed:@"cover.png"];
         [self.scrollView setContentOffset:CGPointMake(0, -20) animated:YES];
         [[QDYHTTPClient sharedInstance]PostBackGroundImageWithUserId:userId backgroundName:@"" whenComplete:^(NSDictionary *returnData)
          {
@@ -1238,8 +1251,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         }
         [_aiv startAnimating];
         UIImage *backGroundImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-        backGroundImage = [PhotoCommon imageByScalingToMaxSize:backGroundImage];
-        self.scrollView.blurCoverView.image = backGroundImage;
+        self.coverImage = [PhotoCommon imageByScalingToMaxSize:backGroundImage];
         [self.scrollView setContentOffset:CGPointMake(0, -20) animated:YES];
         NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
         [[QDYHTTPClient sharedInstance]GetQiNiuTokenWithUserId:userId type:3 whenComplete:^(NSDictionary *returnData) {

@@ -17,6 +17,8 @@
 #import "macro.h"
 
 @interface DistrictViewController ()
+@property (nonatomic, strong) UIImageView *defaultImageView;
+@property (nonatomic, strong) UIImage *defaultImage;
 
 @end
 
@@ -43,6 +45,7 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+
     if (!self.collectionView.blurCoverView)
     {
         if (![self.data.defaultImageUrl isEqualToString:@""])
@@ -50,6 +53,7 @@
             UIImageView *imageView = [[UIImageView alloc]init];
             [imageView sd_setImageWithURL:[NSURL URLWithString:self.data.defaultImageUrl] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [self.collectionView addBlurCoverWithImage:image];
+                [self.defaultImageView removeFromSuperview];
                 UILabel *districtNameLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, CHBlurCoverViewHeight - 50, WZ_APP_SIZE.width - 16, 40)];
                 [districtNameLabel setText:self.data.districtName];
                 [districtNameLabel setTextColor:[UIColor whiteColor]];
@@ -60,8 +64,7 @@
         }
         else
         {
-            UIImage *defaultImage = [PhotoCommon createImageWithColor:THEME_COLOR_DARK size:CGSizeMake(WZ_APP_SIZE.width, CHBlurCoverViewHeight)];
-            [self.collectionView addBlurCoverWithImage:defaultImage];
+            [self.collectionView addBlurCoverWithImage:self.defaultImage];
             UILabel *districtNameLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, CHBlurCoverViewHeight - 50, WZ_APP_SIZE.width - 16, 40)];
             [districtNameLabel setText:self.data.districtName];
             [districtNameLabel setTextColor:[UIColor whiteColor]];
@@ -77,6 +80,7 @@
 {
     [super viewWillDisappear:animated];
     self.navigationController.navigationBarHidden = NO;
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
 }
 -(UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -109,6 +113,16 @@
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
     
+    //default Image
+    UIView *statusBarBackGroundView = [[UIView alloc]initWithFrame:CGRectMake(0, -20, WZ_APP_SIZE.width, 20)];
+    statusBarBackGroundView.backgroundColor = THEME_COLOR_DARK;
+    [self.view addSubview:statusBarBackGroundView];
+    [self.view sendSubviewToBack:statusBarBackGroundView];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
+    _defaultImage = [PhotoCommon createImageWithColor:THEME_COLOR_DARK size:CGSizeMake(WZ_APP_SIZE.width, CHBlurCoverViewHeight)];
+    self.defaultImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, CHBlurCoverViewHeight)];
+    [self.defaultImageView setImage:_defaultImage];
+    [self.collectionView addSubview:self.defaultImageView];
 }
 
 - (UICollectionView *)collectionView {

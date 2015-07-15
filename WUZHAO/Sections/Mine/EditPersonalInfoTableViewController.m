@@ -200,6 +200,8 @@
             [SVProgressHUD showSuccessWithStatus:@"更新个人信息成功"];
             self.userInfo.UserName = newUserInfo.UserName;
             self.userInfo.selfDescriptions = newUserInfo.selfDescriptions;
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"updateUserInfo" object:nil];
+            [self.navigationController popViewControllerAnimated:YES];
         }
         else if ([returnData objectForKey:@"error"])
         {
@@ -299,7 +301,7 @@
                                  {
                                      //上传图片成功
                                          [SVProgressHUD showInfoWithStatus:@"上传头像成功"];
-                                         
+                                         [[NSNotificationCenter defaultCenter]postNotificationName:@"updateUserInfo" object:nil];
                                          [[QDYHTTPClient sharedInstance]GetPersonalSimpleInfoWithUserId:self.userInfo.UserID whenComplete:^(NSDictionary *returnData) {
                                              NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
                                              if ([returnData objectForKey:@"data"])

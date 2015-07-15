@@ -121,6 +121,7 @@
 
 -(void)configWithUser:(User *)user
 {
+    self.cellUser = user;
     self.userNameLabel.text = user.UserName;
     self.userDescriptionLabel.text = user.selfDescriptions;
     

@@ -85,6 +85,7 @@
                         [sender setHidden:NO];
                         [sender setTitle:@"已关注" forState:UIControlStateNormal];
                         [sender setThemeBackGroundAppearance];
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"updateUserInfo" object:nil];
                         
                     }
                     else if ([result objectForKey:@"error"])
@@ -109,6 +110,7 @@
                     [sender setHidden:NO];
                     [sender setTitle:@"关注" forState:UIControlStateNormal];
                     [sender setThemeFrameAppearence];
+                    [[NSNotificationCenter defaultCenter]postNotificationName:@"updateUserInfo" object:nil];
                     
                 }
                 else if ([result objectForKey:@"error"])
