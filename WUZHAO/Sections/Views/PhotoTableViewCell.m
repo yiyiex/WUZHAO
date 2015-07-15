@@ -35,9 +35,14 @@
     self = [super init];
     if (self)
     {
-        
+        [self initView];
     }
     return self;
+}
+- (void)awakeFromNib {
+    
+    [self initView];
+    // Initialization code
 }
 
 -(WhatsGoingOn *)content
@@ -55,22 +60,18 @@
     self.contentView.frame = self.bounds;
 }
 
--(void)setAppearance
+-(void)initView
 {
     self.backgroundColor = [UIColor clearColor];
     
     
     [self.homeCellAvatorImageView setRoundConerWithRadius:18];
     [self.homeCellAvatorImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
-
+    
     [self.postUserName setDarkGreyLabelAppearance];
     [self.postUserSelfDescription setSmallReadOnlyLabelAppearance];
     [self.postTimeLabel setBoldReadOnlyLabelAppearance];
     
-    
-    //[self.addressLabelView setBackgroundColor:THEME_COLOR_DARK];
-    //[self.addressLabelView setBackgroundColor:rgba_WZ(44, 44, 44, 0.8)];
-    //[self.addressLabel setWhiteLabelAppearance];
     [self.addressLabel setBackgroundColor: [UIColor clearColor]];
     [self.addressLabel setThemeLabelAppearance];
     
@@ -79,7 +80,7 @@
     [self.descriptionTextView setFont:WZ_FONT_COMMON_SIZE];
     [self.descriptionTextView setScrollEnabled:NO];
     [self.descriptionTextView setEditable:NO];
-
+    
     [self.likeLabel setThemeLabelAppearance];
     [self.likeLabel setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
     
@@ -89,17 +90,10 @@
     [self.commentClickButton setGreyBackGroundAppearance];
     [self.moreButton setNormalButtonWithBoldFontAppearance];
     [self.moreButton setGreyBackGroundAppearance];
-    
-    //self.backgroundColor = [UIColor clearColor];
-       
 }
--(void)setConstraints
-{
-    
-}
+
 -(void)configureCellWithData:(WhatsGoingOn *)content parentController:(UIViewController *)parentController
 {
-    [self setAppearance];
     self.content = content;
     self.parentViewController = parentController;
     [self configureBasicInfo];

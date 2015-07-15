@@ -12,6 +12,7 @@
 #import "User.h"
 #import "WhatsGoingOn.h"
 #import "Feeds.h"
+#import "SuggestAddress.h"
 
 
 @interface QDYHTTPClient :AFHTTPAPIClient
@@ -54,6 +55,8 @@
 //get current user photo followers list
 -(void)GetPersonalFollowersListWithUserId:(NSInteger)userId currentUserId:(NSInteger)currentUserId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 -(void)PostAvatorWithUserId:(NSInteger)userId avatorName:(NSString *)avatarName whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//update personal background image
+-(void)PostBackGroundImageWithUserId:(NSInteger)userId backgroundName:(NSString *)backgroundName whenComplete:(void (^)(NSDictionary *))whenComplete;
 
 
 
@@ -69,6 +72,9 @@
 
 //get whats going on with userId
 -(void) GetWhatsGoingOnWithUserId:(NSInteger)userId page:(NSInteger)page whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+
+//get recommend userList
+-(void)GetRecommendUserListWhenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
 //get addres info with POI id
 -(void)GetPOIInfoWithPoiId:(NSInteger)poiId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
@@ -96,6 +102,8 @@
 -(void)searchWithType:(NSString *)type keyword:(NSString *)keyword whenComplete:(void (^)(NSDictionary *))whenComplete;
 
 -(void)explorephotoWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete;
+-(void)exploreUserWhenComplete:(void (^)(NSDictionary *))whenComplete;
+-(void)explorePlaceWhenComplete:(void (^)(NSDictionary *))whenComplete;
 #pragma mark =====notice
 //get system notice list
 -(void)getNoticeWithUserId:(NSInteger)userId  whenComplete:(void (^)(NSDictionary *))whenComplete;

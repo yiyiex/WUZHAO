@@ -34,6 +34,7 @@ typedef NS_ENUM(NSUInteger, DETAIL_STYLE)
 @protocol PhotoCollectionViewControllerDataSource <NSObject>
 
 @required
+-(void)updatePhotoCollectionDatasource:(PhotosCollectionViewController *)collectionView;
 -(NSInteger)numberOfPhotos:(PhotosCollectionViewController *)collectionViews;
 -(WhatsGoingOn *)PhotosCollectionViewController:(PhotosCollectionViewController *)collectionView dataAtIndex:(NSInteger)index;
 @optional

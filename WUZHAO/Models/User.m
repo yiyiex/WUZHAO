@@ -14,8 +14,8 @@
 
 @end
 @implementation User
-@synthesize UserID,UserName,userToken,avatarImageURLString;
-@synthesize numFollowers,numFollows,photosNumber,selfDescriptions,followType;
+@synthesize UserID,UserName,userToken,avatarImageURLString,backGroundImage;
+@synthesize numFollowers,numFollows,photosNumber,selfDescriptions,followType,poiNum;
 @synthesize photoList;
 
 -(NSMutableArray *)photoList
@@ -64,6 +64,14 @@
     {
         self.followType =[(NSNumber *)[attributes objectForKey:@"followType"] integerValue];
     }
+    if ([attributes objectForKey:@"poiNum"])
+    {
+        self.poiNum = [[attributes objectForKey:@"poiNum"]integerValue];
+    }
+    if ([attributes objectForKey:@"background"])
+    {
+        self.backGroundImage = [attributes objectForKey:@"background"];
+    }
    // self.photoList = [[NSMutableArray alloc]init];
     if ([attributes objectForKey:@"simplepost_list"])
     {
@@ -86,11 +94,14 @@
     copy->userToken = [userToken copy];
     copy->selfDescriptions = [selfDescriptions copy];
     copy->avatarImageURLString = [avatarImageURLString copy];
+    copy->backGroundImage = [backGroundImage copy];
     
     copy->numFollowers = numFollowers;
     copy->numFollows = numFollows;
     copy->photosNumber = photosNumber;
     copy->followType = followType;
+    copy->poiNum = poiNum;
+
     
     copy->photoList = [photoList copy];
     return copy;
@@ -105,7 +116,8 @@
     copy->userToken = [userToken mutableCopy];
     copy->selfDescriptions = [selfDescriptions mutableCopy];
     copy->avatarImageURLString = [avatarImageURLString mutableCopy];
-    
+    copy->backGroundImage = [backGroundImage mutableCopy];
+    copy->poiNum = poiNum;
     copy->numFollowers = numFollowers;
     copy->numFollows = numFollows;
     copy->photosNumber = photosNumber;

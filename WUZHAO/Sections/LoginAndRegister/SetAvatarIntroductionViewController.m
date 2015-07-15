@@ -132,14 +132,10 @@
             if ([returnData objectForKey:@"data"])
             {
                 [SVProgressHUD dismiss];
-                
-                 //进入主页
-                 UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                 MainTabBarViewController *main = [mainStoryboard instantiateViewControllerWithIdentifier:@"mainTabBarController"];
-                 [self.navigationController pushViewController:main animated:YES];
-                 return ;
-                
-                
+                [self dismissViewControllerAnimated:YES completion:^{
+                     [[NSNotificationCenter defaultCenter]postNotificationName:@"finishIntroduction" object:nil];
+                }];
+               
             }
             else if ([returnData objectForKey:@"error"])
             {

@@ -12,5 +12,12 @@
 
 @property (nonatomic) NSInteger poiId;
 @property (nonatomic, strong) NSString *poiName;
+@property (nonatomic, strong) NSArray *poiLocation;
+
+
+@property (nonatomic,strong) NSMutableArray *photoCollectionDatasource;
+
+-(void)getLatestAddressPhoto;
+
 
 @end

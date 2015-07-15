@@ -7,10 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "POI.h"
 
-@interface AddressInfoList : NSObject
+@interface AddressPhotos : NSObject
 
-@property NSString *addressString;
+@property (nonatomic, strong) POI *poi;
+@property (nonatomic) NSInteger photoNum;
+@property (nonatomic , strong) NSMutableArray *photoList;
+
+-(instancetype )initWithData:(NSDictionary *)data;
 
 + (NSArray *) newDataSource;
 @end

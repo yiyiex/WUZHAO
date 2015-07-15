@@ -10,4 +10,10 @@
 
 @interface AddressMarkAnnotationView : MAAnnotationView
 
+@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UILabel *imageNumLabel;
+
+-(void)setImageWithImageUrl:(NSString*)url;
+-(void)setPhotoNumber:(NSInteger )num;
+
 @end

@@ -10,4 +10,8 @@
 
 @interface FootPrintTableViewCell : UITableViewCell
 
+@property (nonatomic, strong) UILabel *addressNameLabel;
+@property (nonatomic, strong) UILabel *photoNumLabel;
+
+-(void)setAppearance;
 @end

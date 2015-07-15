@@ -1,6 +1,6 @@
 //
-//  UIScrollView+TwitterCover.h
-//  TwitterCover
+//  UIScrollView+BlurCover.h
+//  BlurCover
 //
 //  Created by hangchen on 1/7/14.
 //  Copyright (c) 2014 Hang Chen (https://github.com/cyndibaby905)
@@ -24,19 +24,21 @@
 //  THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
-#define CHTwitterCoverViewHeight 200
+#define CHBlurCoverViewHeight 240
 
-@interface CHTwitterCoverView : UIImageView
+@interface CHBlurCoverView : UIImageView
 @property (nonatomic, weak) UIScrollView *scrollView;
 - (id)initWithFrame:(CGRect)frame andContentTopView:(UIView*)view;
+-(void)setImageWithUrl:(NSString *)imageUrl;
 @end
 
 
-@interface UIScrollView (TwitterCover)
-@property(nonatomic,weak)CHTwitterCoverView *twitterCoverView;
-- (void)addTwitterCoverWithImage:(UIImage*)image;
-- (void)addTwitterCoverWithImage:(UIImage*)image withTopView:(UIView*)topView;
-- (void)removeTwitterCoverView;
+@interface UIScrollView (BlurCover)
+@property(nonatomic,weak)CHBlurCoverView *blurCoverView;
+- (void)addBlurCoverWithImage:(UIImage*)image;
+- (void)addBlurCoverWithImage:(UIImage*)image withTopView:(UIView*)topView;
+- (void)removeBlurCoverView;
+
 @end
 
 @interface UIImage (Blur)

@@ -18,20 +18,28 @@ typedef  NS_ENUM(NSInteger, POI_TYPE)
 
 @interface POI : NSObject
 
-@property (nonatomic,strong) NSString *uid;
-@property (nonatomic,strong) NSString *name;
-@property (nonatomic,strong) NSString *classify;
-@property (nonatomic,strong) NSString *location;
-@property (nonatomic,strong) NSString *address;
-@property (nonatomic,strong) NSString *province;
-@property (nonatomic,strong) NSString *city;
-@property (nonatomic,strong) NSString *district;
-@property (nonatomic,strong) NSString *stamp;
+@property (nonatomic , strong) NSString *uid;
+@property (nonatomic) NSInteger poiId;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *classify;
+@property (nonatomic, strong) NSString *location;
+@property (nonatomic, strong) NSArray *locationArray;
+@property (nonatomic, strong) NSString *address;
+@property (nonatomic, strong) NSString *province;
+@property (nonatomic, strong) NSString *city;
+@property (nonatomic, strong) NSString *district;
+@property (nonatomic, strong) NSString *stamp;
+
+@property (nonatomic, strong) NSString *defaultImageUrl;
+@property (nonatomic, strong) NSString *poiInfo;
 @property (nonatomic) POI_TYPE type;
 
-- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+- (instancetype) initWithDictionary : (NSDictionary *)dictionary;
 
-- (void)configureWithGaodeSearchResult:(AMapPOI *)p;
-- (void)configureWithGoogleSearchResult:(NSDictionary *)result;
--(void)configureWithGaodeaddressComponent:(AMapAddressComponent *)component;
+- (void) configureWithGaodeSearchResult : (AMapPOI *)p;
+- (void) configureWithGoogleSearchResult : (NSDictionary *)result;
+- (void) configureWithGaodeaddressComponent : (AMapAddressComponent *)component;
+
++(POI *)newData;
++(NSMutableArray *)newDatas;
 @end

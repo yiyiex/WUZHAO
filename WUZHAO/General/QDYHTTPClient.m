@@ -637,6 +637,39 @@
         whenComplete(returnData);
     }];
 }
+
+
+-(void)PostBackGroundImageWithUserId:(NSInteger)userId backgroundName:(NSString *)backgroundName whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/userbackground"];
+    NSDictionary *param = @{@"userid":[NSNumber numberWithInteger:userId],@"background":backgroundName};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                if ([result objectForKey:@"data"])
+                {
+                    [returnData setValue:@"上传背景图片成功" forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器异常" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
 //photo info
 //http://192.168.1.103/wuzhao/api/newupdate/1
 
@@ -682,7 +715,42 @@
         whenComplete(returnData);
     }];
 }
-// data = {'post_id':'1','user_id':'11','comment':'用什么相机拍的这是？iphone么'}
+
+-(void)GetRecommendUserListWhenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/recommenduser"];
+
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSDictionary *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    User *user = [[User alloc]initWithAttributes:data];
+                    [returnData setObject:@[user] forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        
+        whenComplete(returnData);
+    }];
+}
+
 -(void)ZanPhotoWithUserId:(NSInteger)userId postId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *))whenComplete
 {
      NSString *api = [NSString stringWithFormat:@"api/like/%ld",(long)postId];
@@ -1082,6 +1150,83 @@
                         [poiInfo addObject:item];
                     }
                     [returnData setObject:poiInfo forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+            
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
+-(void)exploreUserWhenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/exploreuser";
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSArray *data = [result objectForKey:@"data"];
+                NSMutableArray *users = [[NSMutableArray alloc]init];
+                if (data)
+                {
+                    for (NSDictionary *u in data)
+                    {
+                        User *user  = [[User alloc]initWithAttributes:u];
+                        [users addObject:user];
+                    }
+                    [returnData setObject:users forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+            
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+-(void)explorePlaceWhenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/exploreplace";
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSArray *data = [result objectForKey:@"data"];
+                NSMutableArray *datas = [[NSMutableArray alloc]init];
+                if (data)
+                {
+                    for (NSDictionary *d in data)
+                    {
+                        SuggestAddress *address  = [[SuggestAddress alloc]initWithDictionary:d];
+                        [datas addObject:address];
+                    }
+                    [returnData setObject:datas forKey:@"data"];
                 }
             }
             else if ([result objectForKey:@"msg"])

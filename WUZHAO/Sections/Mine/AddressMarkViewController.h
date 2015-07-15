@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MAMapKit/MAMapKit.h>
+#import <AMapSearchKit/AMapSearchAPI.h>
 
 @interface AddressMarkViewController : UIViewController
+
+@property (nonatomic, strong) NSMutableArray *locations;
+
+-(void)addAnnotations;
 
 @end

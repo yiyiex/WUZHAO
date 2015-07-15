@@ -54,12 +54,13 @@
 
 #define THEME_COLOR_PARENT rgba_WZ(90,187,149, 0.5)
 #define THEME_COLOR_DARK_PARENT rgba_WZ(88,152,125,0.5)
+#define THEME_COLOR_DARK_BIT_PARENT rgba_WZ(88,152,125,0.8)
 
 #define THEME_COLOR_DARKER rgba_WZ(49,120,175, 1)
 #define THEME_COLOR_DARKER_PARENT rgba_WZ(49,120,175,0.5)
 
 
-#define THEME_COLOR_WHITE rgba_WZ(255,255,255,1.0)
+#define THEME_COLOR_WHITE rgba_WZ(240,240,240,1.0)
 
 #define THEME_COLOR_LIGHTER_GREY rgba_WZ(220,220,220,1.0)
 
@@ -68,8 +69,10 @@
 #define THEME_COLOR_LIGHT_GREY_MORE_PARENT rgba_WZ(200,200,200,0.3)
 
 #define THEME_COLOR_DARK_GREY rgba_WZ(40,45,50,1.0)
-#define THEME_COLOR_DARK_GREY_BIT_PARENT rgba_WZ(40,45,50,0.9)
+#define THEME_COLOR_DARK_GREY_BIT_PARENT rgba_WZ(40,45,50,0.75)
 #define THEME_COLOR_DARK_GREY_PARENT rgba_WZ(40,45,50,0.5)
+#define THEME_COLOR_DARK_GREY_BIT_MORE_PARENT rgba_WZ(40,45,50,0.4)
+#define THEME_COLOR_DARK_GREY_MORE_PARENT rgba_WZ(40,45,50,0.2)
 
 #define THEME_COLOR_DARKER_GREY rgba_WZ(20,20,25,1.0)
 #define THEME_COLOR_DARKER_GREY_BIT_PARENT rgba_WZ(20,20,25,0.7)
@@ -153,7 +156,11 @@
 #define WZ_FONT_NAME @"Helvetica"
 #define WZ_FONT_NAME_BOLD @"Helvetica-Bold"
 
+#define Hiragino_W3_Name @"HiraKakuProN-W3"
 
+#define WZ_FONT_HIRAGINO_LARGE_SIZE [UIFont fontWithName:Hiragino_W3_Name size:40]
+#define WZ_FONT_HIRAGINO_MID_SIZE [UIFont fontWithName:Hiragino_W3_Name size:22]
+#define WZ_FONT_HIRAGINO_SMALL_SIZE [UIFont fontWithName:Hiragino_W3_Name size:14]
 
 #define WZ_FONT_COMMON_SIZE [UIFont fontWithName:WZ_FONT_NAME size:14]
 #define WZ_FONT_COMMON_BOLD_SIZE [UIFont fontWithName:WZ_FONT_NAME_BOLD size:14]

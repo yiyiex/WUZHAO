@@ -41,9 +41,12 @@
 @property (strong, nonatomic) NSIndexPath *currentAddressTableSelectedIndex;
 @property (nonatomic ,strong)  NSMutableArray *addressDataSource;
 @property (nonatomic ,strong)  NSMutableArray *searchAddressDataSource;
+@property (nonatomic, strong) UITableView *historyAddressTableView;
+@property (nonatomic, strong) NSMutableArray *historyAddressDataSource;
 @property (nonatomic, strong) UIActivityIndicatorView *tableViewAiv;
 @property (nonatomic, strong) UIActivityIndicatorView *locationButtonAiv;
 @property (nonatomic) BOOL searchControllerWasActive;
+@property (nonatomic) BOOL historyAddressViewActive;
 
 
 @end
@@ -152,6 +155,34 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     [self.tableView addGestureRecognizer:swipGesture];
 }
 
+-(void)initHistoryAddressTableView
+{
+    self.historyAddressTableView = [[UITableView alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width, 94, WZ_APP_SIZE.width, WZ_APP_SIZE.height - 94)];
+    self.historyAddressTableView.delegate = self;
+    self.historyAddressTableView.dataSource = self;
+    [self.historyAddressTableView registerNib:[UINib nibWithNibName:@"AddressTableViewCell" bundle:nil] forCellReuseIdentifier:@"addressInfoCell"];
+    
+    [self.view addSubview:self.historyAddressTableView];
+}
+-(void)showHistoryAddressTableView
+{
+    _historyAddressViewActive = YES;
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.historyAddressTableView setFrame:CGRectMake(0, 96, WZ_APP_SIZE.width, WZ_APP_SIZE.height - 94)];
+    } completion:^(BOOL finished) {
+        
+        [self.historyAddressTableView reloadData];
+    }];
+}
+-(void)hideHistoryAddressTableView
+{
+    _historyAddressViewActive = NO;
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.historyAddressTableView setFrame:CGRectMake(WZ_APP_SIZE.width, 96, WZ_APP_SIZE.width, WZ_APP_SIZE.height - 94)];
+    } completion:^(BOOL finished) {
+        [self.tableView reloadData];
+    }];
+}
 #pragma mark -swipe gesture
 -(void)swipeUp:(UISwipeGestureRecognizer*)gesture
 {
@@ -234,9 +265,15 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 }
 -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
+    if (self.historyAddressViewActive)
+    {
+        [self hideHistoryAddressTableView];
+    }
+    
     NSLog(@"begin search");
     self.searchControllerWasActive = YES;
     [self startAiv];
+    
     
     NSLog(@"searchBy : %@",_searchBar.text);
     [self searchAddressWithKeyword:_searchBar.text];
@@ -361,6 +398,10 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if (self.historyAddressViewActive)
+    {
+        return self.historyAddressDataSource.count +1;
+    }
     if (self.searchControllerWasActive)
     {
         if (self.searchAddressDataSource.count == 0)
@@ -373,9 +414,9 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     {
         if (self.addressDataSource.count >0)
         {
-            return self.addressDataSource.count+1;
+            return self.addressDataSource.count+2;
         }
-        return 0;
+        return 1;
     }
 }
 
@@ -395,11 +436,31 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AddressTableViewCell *cell;
-    if (!self.poiInfo && indexPath.row == 0)
+    if (self.historyAddressViewActive)
     {
-        self.currentAddressTableSelectedIndex = indexPath;
+        if (indexPath.row == 0 )
+        {
+            cell = [[UITableViewCell alloc]init];
+            cell.textLabel.text = @"返回";
+            cell.imageView.image = [UIImage imageNamed:@"back_arrow.png"];
+            [cell.textLabel setFont:WZ_FONT_LARGE_SIZE];
+            [cell.textLabel setTextColor:THEME_COLOR_LIGHT_GREY];
+        }
+        else
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"addressInfoCell" forIndexPath:indexPath];
+            if (!cell)
+            {
+                cell = [[AddressTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"addressInfoCell"];
+            }
+            
+            POI *poiInfo = [self.historyAddressDataSource objectAtIndex:(indexPath.row-1)];
+            cell.addressLabel.text = [NSString stringWithFormat:@"%@",poiInfo.name];
+            cell.detailAddressLabel.text =[NSString stringWithFormat:@"%@%@",poiInfo.city,poiInfo.address];
+            [cell setAppearance];
+        }
     }
-    if (self.searchControllerWasActive)
+    else if (self.searchControllerWasActive)
     {
         if (indexPath.row == 0 && self.searchAddressDataSource.count ==0)
         {
@@ -433,15 +494,27 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     }
     else
     {
-        if (indexPath.row == 0)
+        if (indexPath.row == 1)
         {
             cell = [[AddressTableViewCell alloc]init];
             cell.textLabel.text = @"不显示位置";
             [cell.textLabel setFont:WZ_FONT_LARGE_BOLD_SIZE];
             [cell.textLabel setTextColor:THEME_COLOR_DARK];
+            if (self.poiInfo == nil)
+            {
+                self.currentAddressTableSelectedIndex = indexPath;
+            }
+        }
+        if (indexPath.row == 0)
+        {
+            cell = [[UITableViewCell alloc]init];
+            cell.textLabel.text = @"查看历史位置";
+            cell.imageView.image = [UIImage imageNamed:@"history"];
+            [cell.textLabel setFont:WZ_FONT_LARGE_SIZE];
+            [cell.textLabel setTextColor:THEME_COLOR_LIGHT_GREY];
         }
         
-        if (self.provincePoiInfo && indexPath.row == 1)
+        if (self.provincePoiInfo && indexPath.row == 2)
         {
             cell = [[AddressTableViewCell alloc]init];
             if (self.provincePoiInfo.type == POI_TYPE_GAODE)
@@ -463,14 +536,14 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
                 self.currentAddressTableSelectedIndex = indexPath;
             }
         }
-        else if (self.provincePoiInfo && indexPath.row >1)
+        else if (self.provincePoiInfo && indexPath.row >2)
         {
             cell = [tableView dequeueReusableCellWithIdentifier:@"addressInfoCell" forIndexPath:indexPath];
             if (!cell)
             {
                cell = [[AddressTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"addressInfoCell"];
             }
-            POI *poiInfo = [self.addressDataSource objectAtIndex:(indexPath.row-1)];
+            POI *poiInfo = [self.addressDataSource objectAtIndex:(indexPath.row-2)];
             if ([self.poiInfo.uid isEqualToString:poiInfo.uid])
             {
                 self.currentAddressTableSelectedIndex = indexPath;
@@ -480,14 +553,14 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
             [cell setAppearance];
             //return cell;
         }
-        else if (!self.provincePoiInfo && indexPath.row >0)
+        else if (!self.provincePoiInfo && indexPath.row >1)
         {
             cell = [tableView dequeueReusableCellWithIdentifier:@"addressInfoCell" forIndexPath:indexPath];
             if (!cell)
             {
                 cell = [[AddressTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"addressInfoCell"];
             }
-            POI *poiInfo = [self.addressDataSource objectAtIndex:(indexPath.row-1)];
+            POI *poiInfo = [self.addressDataSource objectAtIndex:(indexPath.row-2)];
             if ([self.poiInfo.uid isEqualToString:poiInfo.uid])
             {
                 self.currentAddressTableSelectedIndex = indexPath;
@@ -501,10 +574,15 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
         {
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }
+        else if (indexPath.row == 0)
+        {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
         else
         {
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
+        
         
         
     }
@@ -513,15 +591,35 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-    if (self.searchControllerWasActive)
+    if (self.historyAddressViewActive)
+    {
+        if (indexPath.row == 0)
+        {
+            [self hideHistoryAddressTableView];
+        }
+        else
+        {
+            self.currentAddressTableSelectedIndex = nil;
+            POI *poiInfo = [self.historyAddressDataSource objectAtIndex:(indexPath.row -1)];
+            self.poiInfo = poiInfo;
+            [self hideHistoryAddressTableView];
+            
+            if ([self.delegate respondsToSelector:@selector(finishSelectAddress:)])
+            {
+                [self.delegate finishSelectAddress:self.poiInfo];
+            }
+            [self dismissViewControllerAnimated:YES completion:^{
+                
+            }];
+        }
+    }
+    else if (self.searchControllerWasActive)
     {
         if (self.searchAddressDataSource.count == 0)
         {
             return;
         }
         POI *poiInfo = [self.searchAddressDataSource objectAtIndex:(indexPath.row)];
-        // self.whatsGoingOnItem.imageDescription = @"";
         self.poiInfo = poiInfo;
         [[self.tableView cellForRowAtIndexPath:self.currentAddressTableSelectedIndex] setAccessoryType:UITableViewCellAccessoryNone];
         self.currentAddressTableSelectedIndex = indexPath;
@@ -537,26 +635,60 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     }
     else
     {
-        if (indexPath.row >0)
+        if (indexPath.row == 0)
         {
-            POI *poiInfo = [self.addressDataSource objectAtIndex:(indexPath.row -1)];
+            if (!_historyAddressTableView)
+            {
+                [self initHistoryAddressTableView];
+            }
+            if (!_historyAddressDataSource)
+            {
+                NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+                [[POISearchAPI sharedInstance]getUserPOIHistory:userId whenComplete:^(NSDictionary *returnData) {
+                    if ([returnData objectForKey:@"data"])
+                    {
+                        self.historyAddressDataSource = [returnData objectForKey:@"data"];
+                        [self.historyAddressTableView reloadData];
+                    }
+                    else if ([returnData objectForKey:@"msg"])
+                    {
+                        [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"msg"]];
+                    }
+                }];
+            }
+            [self showHistoryAddressTableView];
+        }
+        else if (indexPath.row >2)
+        {
+            POI *poiInfo = [self.addressDataSource objectAtIndex:(indexPath.row -2)];
             // self.whatsGoingOnItem.imageDescription = @"";
             self.poiInfo = poiInfo;
+            if ([self.delegate respondsToSelector:@selector(finishSelectAddress:)])
+            {
+                [self.delegate finishSelectAddress:self.poiInfo];
+            }
+            [self dismissViewControllerAnimated:YES completion:^{
+                
+            }];
+            [[self.tableView cellForRowAtIndexPath:self.currentAddressTableSelectedIndex] setAccessoryType:UITableViewCellAccessoryNone];
+            self.currentAddressTableSelectedIndex = indexPath;
+            [[self.tableView cellForRowAtIndexPath:self.currentAddressTableSelectedIndex] setAccessoryType:UITableViewCellAccessoryCheckmark];
         }
-        else
+        else if(indexPath.row == 1)
         {
             self.poiInfo = nil;
+            if ([self.delegate respondsToSelector:@selector(finishSelectAddress:)])
+            {
+                [self.delegate finishSelectAddress:self.poiInfo];
+            }
+            [self dismissViewControllerAnimated:YES completion:^{
+                
+            }];
+            [[self.tableView cellForRowAtIndexPath:self.currentAddressTableSelectedIndex] setAccessoryType:UITableViewCellAccessoryNone];
+            self.currentAddressTableSelectedIndex = indexPath;
+            [[self.tableView cellForRowAtIndexPath:self.currentAddressTableSelectedIndex] setAccessoryType:UITableViewCellAccessoryCheckmark];
         }
-        if ([self.delegate respondsToSelector:@selector(finishSelectAddress:)])
-        {
-            [self.delegate finishSelectAddress:self.poiInfo];
-        }
-        [self dismissViewControllerAnimated:YES completion:^{
-            
-        }];
-        [[self.tableView cellForRowAtIndexPath:self.currentAddressTableSelectedIndex] setAccessoryType:UITableViewCellAccessoryNone];
-        self.currentAddressTableSelectedIndex = indexPath;
-        [[self.tableView cellForRowAtIndexPath:self.currentAddressTableSelectedIndex] setAccessoryType:UITableViewCellAccessoryCheckmark];
+
     }
     // self.currentAddressTableSelectedIndex = indexPath;
     

@@ -12,5 +12,7 @@
 
 -(void)setRoundCornerAppearance;
 
+-(void)setRoundAppearance;
+
 -(void)setEnableButtonAppearance;
 @end

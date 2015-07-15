@@ -14,6 +14,7 @@
 -(void)setBigButtonAppearance;
 -(void)setSmallButtonAppearance;
 
+
 -(void)setWhiteBackGroundAppearance;
 -(void)setDarkGreyBackGroundAppearance;
 -(void)setDarkGreyParentBackGroundAppearance;
@@ -22,6 +23,8 @@
 -(void)setThemeFrameAppearence;
 -(void)setThemeBackGroundAppearance;
 
+-(void)setWhiteFrameTransparentAppearence;
+-(void)setThemeBackGroundWhiteFrameAppearance;
 
 
 @end

@@ -15,6 +15,7 @@
 @implementation FeedsFollowTableViewCell
 
 - (void)awakeFromNib {
+    [self initView];
     // Initialization code
 }
 
@@ -24,11 +25,10 @@
     // Configure the view for the selected state
 }
 
--(void)setAppearance
+-(void)initView
 {
     [self.avatarImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
     [self.avatarImageView setRoundConerWithRadius:self.avatarImageView.frame.size.width/2];
-    
 }
 -(void)configureGesture
 {
@@ -38,19 +38,6 @@
         [self.avatarImageView addGestureRecognizer:avatarClick];
         [self.avatarImageView setUserInteractionEnabled:YES];
     }
-    /*
-    if ([self.parentController respondsToSelector:@selector(followButtonClick:)])
-    {
-        UITapGestureRecognizer *feedsPhotoClick = [[UITapGestureRecognizer alloc]initWithTarget:self.parentController action:@selector(followButtonClick:)];
-        [self.followButton addGestureRecognizer:feedsPhotoClick];
-    }*/
-    /*
-    if ([self.parentController respondsToSelector:@selector(feedsUserClick:)])
-    {
-        UITapGestureRecognizer *feedsUserClick = [[UITapGestureRecognizer alloc]initWithTarget:self.parentController action:@selector(feedsUserClick:)];
-        [self.contentLabel addGestureRecognizer:feedsUserClick];
-        [self.contentLabel setUserInteractionEnabled:YES];
-    }*/
 }
 -(void)configureFollowWithFeeds:(Feeds *)feeds parentController:(UIViewController *)parentController
 {
@@ -72,23 +59,8 @@
     self.contentTextView.delegate = (id<NoticeContentTextViewDelegate>)self.parentController;
     [self updateContentTextViewFrame];
     
-   // [self.followButton setNormalButtonAppearance];
-    /*
-    if (feeds.feedsUser.isFollowed)
-    {
-        [self.followButton setTitle:@"＋" forState:UIControlStateNormal];
-        [self.followButton setThemeBackGroundAppearance];
-    }
-    else
-    {
-        [self.followButton setTitle:@"－" forState:UIControlStateNormal];
-        [self.followButton setThemeFrameAppearence];
-    }*/
-    
     //添加手势
     [self configureGesture];
-    
-    [self setAppearance];
     
 }
 -(void)updateContentTextViewFrame

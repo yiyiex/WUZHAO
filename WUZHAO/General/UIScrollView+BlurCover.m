@@ -1,6 +1,6 @@
 //
-//  UIScrollView+TwitterCover.m
-//  TwitterCover
+//  UIScrollView+BlurCover.m
+//  BlurCover
 //
 //  Created by hangchen on 1/7/14.
 //  Copyright (c) 2014 Hang Chen (https://github.com/cyndibaby905)
@@ -23,36 +23,38 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "UIScrollView+TwitterCover.h"
+#import "UIScrollView+BlurCover.h"
 #import <objc/runtime.h>
 #import <QuartzCore/QuartzCore.h>
 #import <Accelerate/Accelerate.h>
+#import "UIImageView+WebCache.h"
+#import "macro.h"
 
 
-static char UIScrollViewTwitterCover;
+static char UIScrollViewBlurCover;
 
-@implementation UIScrollView (TwitterCover)
+@implementation UIScrollView (BlurCover)
 
-- (void)setTwitterCoverView:(CHTwitterCoverView *)twitterCoverView {
-    [self willChangeValueForKey:@"twitterCoverView"];
-    objc_setAssociatedObject(self, &UIScrollViewTwitterCover,
-                             twitterCoverView,
+- (void)setBlurCoverView:(CHBlurCoverView *)blurCoverView {
+    [self willChangeValueForKey:@"blurCoverView"];
+    objc_setAssociatedObject(self, &UIScrollViewBlurCover,
+                             blurCoverView,
                              OBJC_ASSOCIATION_ASSIGN);
-    [self didChangeValueForKey:@"twitterCoverView"];
+    [self didChangeValueForKey:@"blurCoverView"];
 }
 
-- (CHTwitterCoverView *)twitterCoverView {
-    return objc_getAssociatedObject(self, &UIScrollViewTwitterCover);
+- (CHBlurCoverView *)blurCoverView {
+    return objc_getAssociatedObject(self, &UIScrollViewBlurCover);
 }
 
-- (void)addTwitterCoverWithImage:(UIImage*)image
+- (void)addBlurCoverWithImage:(UIImage*)image
 {
-    [self addTwitterCoverWithImage:image withTopView:nil];
+    [self addBlurCoverWithImage:image withTopView:nil];
 }
 
-- (void)addTwitterCoverWithImage:(UIImage*)image withTopView:(UIView*)topView
+- (void)addBlurCoverWithImage:(UIImage*)image withTopView:(UIView*)topView
 {
-    CHTwitterCoverView *view = [[CHTwitterCoverView alloc] initWithFrame:CGRectMake(0,0, 320, CHTwitterCoverViewHeight) andContentTopView:topView];
+    CHBlurCoverView *view = [[CHBlurCoverView alloc] initWithFrame:CGRectMake(0,0, WZ_APP_SIZE.width, CHBlurCoverViewHeight) andContentTopView:topView];
     
     view.backgroundColor = [UIColor clearColor];
     view.image = image;
@@ -62,19 +64,19 @@ static char UIScrollViewTwitterCover;
     if (topView) {
         [self addSubview:topView];
     }
-    self.twitterCoverView = view;
+    self.blurCoverView = view;
 }
 
-- (void)removeTwitterCoverView
+- (void)removeBlurCoverView
 {
-    [self.twitterCoverView removeFromSuperview];
-    self.twitterCoverView = nil;
+    [self.blurCoverView removeFromSuperview];
+    self.blurCoverView = nil;
 }
 
 @end
 
 
-@implementation CHTwitterCoverView
+@implementation CHBlurCoverView
 {
     NSMutableArray *blurImages_;
     UIView *topView;
@@ -91,7 +93,7 @@ static char UIScrollViewTwitterCover;
     if (self) {
         self.contentMode = UIViewContentModeScaleAspectFill;
         self.clipsToBounds = YES;
-        blurImages_ = [[NSMutableArray alloc] initWithCapacity:16];
+        blurImages_ = [[NSMutableArray alloc] initWithCapacity:12];
         topView = view;
     }
     return self;
@@ -102,19 +104,26 @@ static char UIScrollViewTwitterCover;
     [super setImage:image];
     [blurImages_ removeAllObjects];
     [self prepareForBlurImages];
-    
+}
+-(void)setImageWithUrl:(NSString *)imageUrl
+{
+    UIImageView *view = [[UIImageView alloc]init];
+    [view sd_setImageWithURL:[NSURL URLWithString:imageUrl] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        [self setImage:image];
+    }];
 }
 
 - (void)prepareForBlurImages
 {
-    CGFloat factor = 0.24;
+    CGFloat factor = 0.36;
  
     for (NSInteger i = 12; i >= 0; i--) {
         [blurImages_ addObject:[self.image boxblurImageWithBlur:factor]];
-        factor -= 0.02;
+        factor -= 0.03;
         factor = MAX(0, factor);
     }
     [blurImages_ addObject:self.image];
+    [super setImage:blurImages_[0]];
 }
 
 - (void)setScrollView:(UIScrollView *)scrollView
@@ -138,9 +147,9 @@ static char UIScrollViewTwitterCover;
     if (self.scrollView.contentOffset.y < 0) {
 
         CGFloat offset = -self.scrollView.contentOffset.y;
-        topView.frame = CGRectMake(0, -offset, 320, topView.bounds.size.height);
+        topView.frame = CGRectMake(0, -offset, WZ_APP_SIZE.width, topView.bounds.size.height);
 
-        self.frame = CGRectMake(-offset,-offset + topView.bounds.size.height, 320+ offset * 2, CHTwitterCoverViewHeight + offset);
+        self.frame = CGRectMake(-offset,-offset + topView.bounds.size.height, WZ_APP_SIZE.width+ offset * 2, CHBlurCoverViewHeight + offset);
         NSInteger index = offset / 6;
         if (index < 0) {
             index = 0;
@@ -155,9 +164,9 @@ static char UIScrollViewTwitterCover;
         
     }
     else {
-        topView.frame = CGRectMake(0, 0, 320, topView.bounds.size.height);
+        topView.frame = CGRectMake(0, 0, WZ_APP_SIZE.width, topView.bounds.size.height);
 
-        self.frame = CGRectMake(0,topView.bounds.size.height, 320, CHTwitterCoverViewHeight);
+        self.frame = CGRectMake(0,topView.bounds.size.height, WZ_APP_SIZE.width, CHBlurCoverViewHeight);
         
         UIImage *image = blurImages_[0];
 

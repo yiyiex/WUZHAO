@@ -78,7 +78,25 @@
     [self setTitleColor:THEME_COLOR_WHITE forState:UIControlStateHighlighted];
     
 }
+-(void)setWhiteFrameTransparentAppearence
+{
+    [self clearFrame];
+    self.layer.borderWidth = 1.0;
+    self.layer.borderColor = [[UIColor whiteColor] CGColor];
+    [self setBackgroundImage:[UIImage imageWithColor:[UIColor clearColor]] forState:UIControlStateNormal];
+    [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+}
 
+-(void)setThemeFrameTransparentAppearence
+{
+    [self clearFrame];
+    self.layer.borderWidth = 1.0;
+    self.layer.borderColor = [THEME_COLOR_DARK CGColor];
+    [self setBackgroundImage:[UIImage imageWithColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+    [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+}
 
 -(void)setThemeFrameAppearence
 {
@@ -88,6 +106,16 @@
     [self setBackgroundImage:[UIImage imageWithColor:[UIColor whiteColor]] forState:UIControlStateNormal];
     [self setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
     [self setTitleColor:THEME_COLOR_DARKER forState:UIControlStateHighlighted];
+}
+-(void)setThemeBackGroundWhiteFrameAppearance
+{
+    [self clearFrame];
+    [self.layer setShadowColor:[THEME_COLOR_DARK_GREY CGColor ]];
+    [self.layer setShadowOffset:CGSizeMake(10, 10)];
+    [self setBackgroundImage:[UIImage imageWithColor:THEME_COLOR_DARK] forState:UIControlStateNormal];
+    
+    [self setTitleColor:THEME_COLOR_WHITE forState:UIControlStateNormal];
+    [self setTitleColor:THEME_COLOR_WHITE forState:UIControlStateHighlighted];
 }
 
 -(void)setThemeBackGroundAppearance

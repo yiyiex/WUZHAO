@@ -19,10 +19,12 @@ typedef NS_ENUM(NSInteger, USERFOLLOW_TYPE)
 @property (readwrite,nonatomic ) NSInteger UserID;
 @property (readwrite,nonatomic,strong) NSString *UserName;
 @property (readwrite,nonatomic,strong) NSString *avatarImageURLString;
+@property (readwrite,nonatomic,strong) NSString *backGroundImage;
 
 @property (readwrite,nonatomic) NSInteger numFollows;
 @property (readwrite,nonatomic) NSInteger numFollowers;
 @property (readwrite,nonatomic) NSInteger photosNumber;
+@property (readwrite,nonatomic) NSInteger poiNum;
 @property (readwrite,nonatomic) NSString *phoneNum;
 @property (readwrite,nonatomic) NSString *email;
 @property (readwrite,nonatomic) NSString *selfDescriptions;

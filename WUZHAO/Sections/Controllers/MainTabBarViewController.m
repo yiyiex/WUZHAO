@@ -71,6 +71,7 @@ static NSInteger loginState = 1;
 
 - (void)viewDidLoad
 {
+    loginState = 1;
     [super viewDidLoad];
 
     [self initViewControllers];
@@ -80,7 +81,10 @@ static NSInteger loginState = 1;
     firstEntryFlag =[NSMutableArray arrayWithArray:@[@0,@0,@0,@0,@0]];
     
     self.delegate = self;
-    self.selectedIndex = self.currentTabIndex = WZ_HOME_TAB;
+    
+    self.currentTabIndex = WZ_HOME_TAB;
+    [self setSelectedIndex:self.currentTabIndex];
+    firstEntryFlag[0] = @1;
     
     
     //重绘拍照按钮
@@ -407,14 +411,18 @@ static NSInteger loginState = 1;
 {
     if (loginState == 1)
     {
-        loginState = 0;
+        
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults removeObjectForKey:@"userId"];
         [defaults removeObjectForKey:@"userName"];
         [defaults removeObjectForKey:@"token"];
         [defaults removeObjectForKey:@"avatarUrl"];
         [defaults synchronize];
+        
+        //reset entry flag
+        firstEntryFlag =[NSMutableArray arrayWithArray:@[@0,@0,@0,@0,@0]];
         self.selectedIndex = self.currentTabIndex =  WZ_HOME_TAB;
+        firstEntryFlag[0] = @1;
         UIStoryboard *launchStoryboard = [UIStoryboard storyboardWithName:@"Launch" bundle:nil];
         LaunchViewController *launch = [launchStoryboard instantiateViewControllerWithIdentifier:@"launchView"];
        // [self.navigationController popToRootViewControllerAnimated:YES];
@@ -426,6 +434,7 @@ static NSInteger loginState = 1;
             [weakSelf_WZ refreshTabContent];
         };
         [self presentViewController:launch animated:YES completion:^{
+            loginState = 0;
             // [SVProgressHUD showInfoWithStatus:@"登录态失效，请重新登录"];
         }];
        
@@ -435,6 +444,7 @@ static NSInteger loginState = 1;
 }
 - (void)logOut
 {
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSInteger userId = [defaults integerForKey:@"userId"];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -457,8 +467,8 @@ static NSInteger loginState = 1;
     
     //reset entry flag
     firstEntryFlag =[NSMutableArray arrayWithArray:@[@0,@0,@0,@0,@0]];
-    
     self.selectedIndex = self.currentTabIndex = WZ_HOME_TAB;
+    firstEntryFlag[0] = @1;
     UIStoryboard *launchStoryboard = [UIStoryboard storyboardWithName:@"Launch" bundle:nil];
     LaunchViewController *launch = [launchStoryboard instantiateViewControllerWithIdentifier:@"launchView"];
     WEAKSELF_WZ
@@ -466,9 +476,12 @@ static NSInteger loginState = 1;
     {
         weakSelf_WZ.selectedIndex = weakSelf_WZ.currentTabIndex = WZ_HOME_TAB;
         [weakSelf_WZ activeCurrentTab];
+
         NSLog(@"test");
     };
-    [self presentViewController:launch animated:YES completion:nil];
+    [self presentViewController:launch animated:YES completion:^{
+        loginState = 0;
+    }];
    // [self.navigationController popToRootViewControllerAnimated:YES];
     
 }

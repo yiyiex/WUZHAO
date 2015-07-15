@@ -225,6 +225,7 @@
                 if ( [[QDYHTTPClient sharedInstance] IsAuthenticated])
                 {
                     [self dismissViewControllerAnimated:YES completion:^{
+                        
                         [[NSNotificationCenter defaultCenter]postNotificationName:@"registSuccess" object:nil];
                     }];
                 }

@@ -7,10 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+@protocol UserListViewControllerDataSource;
 
 @interface UserListTableViewController : UITableViewController
 @property (nonatomic,strong) NSString *userListStyle;
 @property (nonatomic,strong) NSArray *datasource;
+@property (nonatomic, weak ) id<UserListViewControllerDataSource>dataSource;
 
-@property (nonatomic,strong) void(^setUserList)(void);
+-(void)loadData;
+@end
+
+@protocol UserListViewControllerDataSource <NSObject>
+
+@required
+
+-(void)updateUserListDatasource:(UserListTableViewController *)userList;
+
+@optional
 @end

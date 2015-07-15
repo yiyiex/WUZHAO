@@ -7,7 +7,18 @@
 //
 
 #import <MAMapKit/MAMapKit.h>
+#import "POI.h"
+#import "WhatsGoingOn.h"
 
-@interface AddressMarkAnnotation : MAPointAnnotation
+@interface AddressMarkAnnotation :  NSObject<MAAnnotation>
+
+@property (nonatomic, assign) CLLocationCoordinate2D coordinate;
+
+@property (nonatomic, strong) POI *poi;
+@property (nonatomic, strong) NSString *showImageUrl;
+@property (nonatomic) NSInteger photoNum;
+@property (nonatomic, strong) NSArray *photoList;
+
+- (id)initWithCoordinate:(CLLocationCoordinate2D)coordinate;
 
 @end

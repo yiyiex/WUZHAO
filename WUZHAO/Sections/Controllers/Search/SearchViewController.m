@@ -1,4 +1,4 @@
-//
+    //
 //  SearchViewController.m
 //  WUZHAO
 //
@@ -10,6 +10,7 @@
 #import "CommonContainerViewController.h"
 #import "PhotosCollectionViewController.h"
 #import "UserListTableViewController.h"
+#import "AddressSuggestViewController.h"
 #import "SearchResultViewController.h"
 #import "SearchResultTableViewController2.h"
 
@@ -20,18 +21,22 @@
 
 #import "User.h"
 #import "WhatsGoingOn.h"
+#import "SuggestAddress.h"
 #import "macro.h"
 
 #define SEGUEFIRST @"segueForSuggestPhotos"
 #define SEGUESECOND @"segueForSuggestAddress"
 #define SEGUETHIRD @"segueForSuggestUsers"
 
-@interface SearchViewController () <UISearchBarDelegate,UISearchControllerDelegate,UISearchResultsUpdating,CommonContainerViewControllerDelegate>
+@interface SearchViewController () <UISearchBarDelegate,UISearchControllerDelegate,UISearchResultsUpdating,CommonContainerViewControllerDelegate,UserListViewControllerDataSource,AddressSuggestViewControllerDataSource,PhotoCollectionViewControllerDataSource>
 @property (nonatomic, strong) CommonContainerViewController *containerViewController;
 @property (nonatomic, strong) PhotosCollectionViewController *suggestPhotoCollectionViewController;
+@property (nonatomic, strong) AddressSuggestViewController *suggestAddressViewController;
 @property (nonatomic, strong) UserListTableViewController *suggestUserListViewConstroller;
-@property (nonatomic,strong) NSMutableArray *suggestPhotoData;
-@property (nonatomic,strong) NSMutableArray *suggestUserListData;
+
+@property (nonatomic, strong) NSMutableArray *suggestPhotoData;
+@property (nonatomic, strong) NSMutableArray *suggestAddressData;
+@property (nonatomic, strong) NSMutableArray *suggestUserListData;
 
 @property (nonatomic, strong) SearchResultViewController *searchResultTableView;
 @property (nonatomic, strong) NSMutableArray *searchResult;
@@ -56,7 +61,7 @@
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
     
-   // [self initSwipGesture];
+    [self initSwipGesture];
     [self initSearchControllerAndSegmentController];
 }
 
@@ -100,18 +105,19 @@
 
 -(void)initSearchControllerAndSegmentController
 {
-    /*
-    _segmentControl.sectionTitles = @[@"照片",@"地点",@"用户"];
-    _segmentControl.selectedSegmentIndex = 0;
+    
+    _segmentControl.sectionTitles = @[@" 照 片 ",@" 地 点 ",@" 用 户 "];
+    //_segmentControl.selectedSegmentIndex = 0;
     _segmentControl.backgroundColor = [UIColor whiteColor];
     _segmentControl.titleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
-    _segmentControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE};
-    [_segmentControl setSelectionIndicatorColor:THEME_COLOR_DARK_GREY];
-    _segmentControl.selectionIndicatorHeight = 2.0f;
+    _segmentControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE};
+    [_segmentControl setSelectionIndicatorColor:THEME_COLOR_DARK_BIT_PARENT];
+    _segmentControl.selectionIndicatorHeight = 2.50f;
     
-    _segmentControl.selectionStyle = HMSegmentedControlSelectionStyleFullWidthStripe;
-    _segmentControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationUp;
+    _segmentControl.selectionStyle = HMSegmentedControlSelectionStyleTextWidthStripe;
+    _segmentControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationDown;
     [_segmentControl addTarget:self action:@selector(segmentValueChanged) forControlEvents:UIControlEventValueChanged];
+    [_segmentControl setSelectedSegmentIndex:0 animated:YES];
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Search" bundle:nil];
     _searchResultTableView = [storyboard instantiateViewControllerWithIdentifier:@"SearchResult"];
@@ -131,7 +137,7 @@
     
     self.searchController.dimsBackgroundDuringPresentation = NO;
     self.searchController.searchBar.delegate = self;
-     */
+     
     self.searchButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchResultView)];
     
     //[self.navigationItem setTitle:@"发现"];
@@ -241,15 +247,49 @@
     if ([childController isKindOfClass: [PhotosCollectionViewController class]])
     {
         self.suggestPhotoCollectionViewController = (PhotosCollectionViewController *)childController;
+        self.suggestPhotoCollectionViewController.dataSource = self;
         [self.suggestPhotoCollectionViewController.collectionView setBackgroundColor:[UIColor whiteColor]];
-        [self setSuggestPhotoCollectionData];
+        if (!self.suggestPhotoData)
+        {
+            [self setSuggestPhotoCollectionData];
+        }
+        else
+        {
+            [self.suggestPhotoCollectionViewController setDatasource:self.suggestPhotoData];
+            [self.suggestPhotoCollectionViewController loadData];
+        }
+        
+    }
+    else if ([childController isKindOfClass:[AddressSuggestViewController class]])
+    {
+        self.suggestAddressViewController = (AddressSuggestViewController *)childController;
+        self.suggestAddressViewController.dataSource = self;
+        if (!self.suggestAddressData)
+        {
+            [self setSuggestAddressListData];
+        }
+        else
+        {
+
+            self.suggestAddressViewController.datasource = self.suggestAddressData;
+            [self.suggestAddressViewController loadData];
+        }
         
     }
     else if( [childController isKindOfClass:[UserListTableViewController class]])
     {
         self.suggestUserListViewConstroller = (UserListTableViewController *)childController;
+        self.suggestUserListViewConstroller.dataSource = self;
         [self.suggestUserListViewConstroller setUserListStyle:UserListStyle3];
-        [self setSuggestUserListData];
+        if (!self.suggestUserListData)
+        {
+            [self setSuggestUserListData];
+        }
+        else
+        {
+            [self.suggestUserListViewConstroller setDatasource:self.suggestUserListData];
+            [self.suggestUserListViewConstroller loadData];
+        }
     }
 }
 
@@ -263,7 +303,8 @@
                 {
                     self.suggestPhotoData = [[returnData objectForKey:@"data"]mutableCopy];
                     [self.suggestPhotoCollectionViewController setDatasource:self.suggestPhotoData];
-                    [self.suggestPhotoCollectionViewController.collectionView reloadData];
+                    [self.suggestPhotoCollectionViewController loadData];
+                    
                 }
                 else if ([returnData objectForKey:@"error"])
                 {
@@ -276,15 +317,55 @@
 
 
 }
+-(void)setSuggestAddressListData
+{
+   // self.suggestAddressData = [[SuggestAddress newDatas]mutableCopy];
+    [[QDYHTTPClient sharedInstance]explorePlaceWhenComplete:^(NSDictionary *returnData) {
+        if ([returnData objectForKey:@"data"])
+        {
+            self.suggestAddressData = [[returnData objectForKey:@"data"]mutableCopy];
+            [self.suggestAddressViewController setDatasource:self.suggestAddressData];
+            [self.suggestAddressViewController loadData];
+            
+        }
+        else if ([returnData objectForKey:@"error"])
+        {
+            [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+        }
+    }];
+}
 -(void)setSuggestUserListData
 {
-    self.suggestUserListData = [[User userList]mutableCopy];
-    [self.suggestUserListViewConstroller setDatasource:self.suggestUserListData];
-    [self.suggestUserListViewConstroller.tableView reloadData];
+    //self.suggestUserListData = [[User userList]mutableCopy];
+    [[QDYHTTPClient sharedInstance]exploreUserWhenComplete:^(NSDictionary *returnData) {
+        if ([returnData objectForKey:@"data"])
+        {
+            self.suggestUserListData = [[returnData objectForKey:@"data"]mutableCopy];
+            [self.suggestUserListViewConstroller setDatasource:self.suggestUserListData];
+            [self.suggestUserListViewConstroller loadData];
+            
+        }
+        else if ([returnData objectForKey:@"error"])
+        {
+            [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+        }
+    }];
+
 }
 -(void)getLatestData
 {
-    [self setSuggestPhotoCollectionData];
+    if ([self.containerViewController.currentViewController isKindOfClass:[PhotosCollectionViewController class]])
+    {
+        [self setSuggestPhotoCollectionData];
+    }
+    else if ([self.containerViewController.currentViewController isKindOfClass:[AddressSuggestViewController class]])
+    {
+        [self setSuggestAddressListData];
+    }
+    else if ([self.containerViewController.currentViewController isKindOfClass:[UserListTableViewController class]])
+    {
+        [self setSuggestUserListData];
+    }
 }
 /*
 #pragma mark - Navigation
@@ -295,8 +376,25 @@
     // Pass the selected object to the new view controller.
 }
 */
+#pragma mark - userlist delegate
+-(void )updateUserListDatasource:(UserListTableViewController *)userList
+{
+    [self setSuggestUserListData];
+}
+#pragma mark - address suggest delegate
+-(void)updateAddressDatasource:(AddressSuggestViewController *)addressList
+{
+    [self setSuggestAddressListData];
+}
+#pragma mark - photoCollection delegate
+-(void)updatePhotoCollectionDatasource:(PhotosCollectionViewController *)collectionView
+{
+    [self setSuggestPhotoCollectionData];
+}
+
+
 #pragma mark -HMSegment action
-/*
+
 - (void)segmentValueChanged
 {
     NSString *swapIdentifier ;
@@ -326,7 +424,6 @@
         }
     }];
     
-}*/
-
+}
 
 @end

@@ -23,6 +23,7 @@ typedef NS_ENUM(NSInteger, WZ_TABLEVIEWSTYLE) {
 @interface HomeTableViewController : UITableViewController
 @property (nonatomic ,strong) User *currentUser;
 @property (nonatomic ,strong) NSMutableArray *dataSource;
+@property (nonatomic, strong) NSMutableArray *recommandDatasource;
 @property (nonatomic)  BOOL shouldRefreshData;
 @property (nonatomic) NSInteger tableStyle;
 

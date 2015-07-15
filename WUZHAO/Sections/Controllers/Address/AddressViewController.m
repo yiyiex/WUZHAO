@@ -32,7 +32,7 @@
 
 @property (nonatomic, strong) IBOutlet CommonContainerViewController *containerViewController;
 @property (nonatomic,strong) PhotosCollectionViewController *photoCollectionViewCon;
-@property (nonatomic,strong) NSMutableArray *photoCollectionDatasource;
+
 @property (nonatomic) BOOL shouldRefresh;
 @end
 
@@ -62,9 +62,18 @@
 {
     
 }
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+}
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+   // [self clearMapView];
+}
+-(void)dealloc
+{
     [self clearMapView];
 }
 - (void)didReceiveMemoryWarning {
@@ -82,6 +91,12 @@
         self.containerViewController.ChildrenName = @[SEGUEFIRST,SEGUESECOND];
         
     }
+}
+
+-(void)setPoiName:(NSString *)poiName
+{
+    [self.navigationItem setTitle:poiName];
+    _poiName = poiName;
 }
 
 -(CommonContainerViewController *)containerViewController
@@ -119,29 +134,41 @@
 -(void)initAnnocations
 {
     self.annotation = [[MAPointAnnotation alloc]init];
-    [[POISearchAPI sharedInstance]getPOILocationWithPoiId:self.poiId whenComplete:^(NSDictionary *reuslt) {
-        if ([reuslt objectForKey:@"data"])
-        {
-            NSDictionary *data = [reuslt objectForKey:@"data"];
-            NSString *locationString = [data objectForKey:@"locationString"];
-            NSArray *location = [locationString componentsSeparatedByString:@","];
-            self.annotation.coordinate = CLLocationCoordinate2DMake([location[0] floatValue], [location[1] floatValue]);
-            self.annotation.title = self.poiName;
-            [self.addressMapView addAnnotation:self.annotation];
-            self.addressMapView.centerCoordinate = self.annotation.coordinate;
-            
-            [self.addressMapView setZoomLevel:14.2 animated:YES];
-            
-        }
-        else if ([reuslt objectForKey:@"error"])
-        {
-            [SVProgressHUD showErrorWithStatus:[reuslt objectForKey:@"error"]];
-        }
-        else
-        {
-            [SVProgressHUD showErrorWithStatus:@"地址定位失败"];
-        }
-    }];
+    if (self.poiLocation)
+    {
+        self.annotation.coordinate = CLLocationCoordinate2DMake([self.poiLocation[0] floatValue], [self.poiLocation[1] floatValue]);
+        self.annotation.title = self.poiName;
+        [self.addressMapView addAnnotation:self.annotation];
+        self.addressMapView.centerCoordinate = self.annotation.coordinate;
+        
+        [self.addressMapView setZoomLevel:14.2 animated:YES];
+    }
+    else if (self.poiId)
+    {
+        [[POISearchAPI sharedInstance]getPOILocationWithPoiId:self.poiId whenComplete:^(NSDictionary *reuslt) {
+            if ([reuslt objectForKey:@"data"])
+            {
+                NSDictionary *data = [reuslt objectForKey:@"data"];
+                NSString *locationString = [data objectForKey:@"locationString"];
+                NSArray *location = [locationString componentsSeparatedByString:@","];
+                self.annotation.coordinate = CLLocationCoordinate2DMake([location[0] floatValue], [location[1] floatValue]);
+                self.annotation.title = self.poiName;
+                [self.addressMapView addAnnotation:self.annotation];
+                self.addressMapView.centerCoordinate = self.annotation.coordinate;
+                
+                [self.addressMapView setZoomLevel:14.2 animated:YES];
+                
+            }
+            else if ([reuslt objectForKey:@"error"])
+            {
+                [SVProgressHUD showErrorWithStatus:[reuslt objectForKey:@"error"]];
+            }
+            else
+            {
+                [SVProgressHUD showErrorWithStatus:@"地址定位失败"];
+            }
+        }];
+    }
     //self.annotation.coordinate = CLLocationCoordinate2DMake(29.797155 , 119.69141);
     
     
@@ -243,7 +270,17 @@
 -(void)getLatestAddressPhoto
 {
     if (self.poiId <=0)
-        return;
+    {
+        if (self.photoCollectionDatasource)
+        {
+            [self setPhotoCollectionData];
+            return;
+        }
+        else
+        {
+            return;
+        }
+    }
     if (self.poiName)
     {
         [self.navigationItem setTitle:self.poiName];

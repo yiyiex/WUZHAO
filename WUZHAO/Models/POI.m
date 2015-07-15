@@ -26,11 +26,36 @@
     self.stamp = [[NSString alloc]init];
     return self;
 }
++(POI *)newData
+{
+    POI *poi = [[POI alloc]initWithDictionary:@{
+                                                @"poi_id":@"1",
+                                                @"uid":@"1111",
+                                                @"name":@"上海外滩",
+                                                @"defaultImage":@"http://photos.tuchong.com/274591/f/3090526.jpg",
+                                                @"description":@"看景上海的繁华"}];
+    return poi;
+}
++(NSMutableArray *)newDatas
+{
+    NSMutableArray *data = [[NSMutableArray alloc]init];
+    [data addObject:[POI newData]];
+    [data addObject:[POI newData]];
+    [data addObject:[POI newData]];
+    [data addObject:[POI newData]];
+    [data addObject:[POI newData]];
+    [data addObject:[POI newData]];
+    return data;
+}
 -(instancetype)initWithDictionary:(NSDictionary *)dictionary
 {
     self = [super init];
     if (self)
     {
+        if ([dictionary objectForKey:@"poi_id"])
+        {
+            self.poiId = [[dictionary objectForKey:@"poi_id"]integerValue];
+        }
         if ([dictionary objectForKey:@"uid"])
         {
             self.uid = [dictionary objectForKey:@"uid"];
@@ -46,6 +71,7 @@
         if ([dictionary objectForKey:@"location"])
         {
             self.location = [dictionary objectForKey:@"location"];
+            self.locationArray = [self.location componentsSeparatedByString:@","];
         }
         if ([dictionary objectForKey:@"address"])
         {
@@ -66,6 +92,14 @@
         if ([dictionary objectForKey:@"stamp"])
         {
             self.stamp = [dictionary objectForKey:@"stamp"];
+        }
+        if ([dictionary objectForKey:@"defaultImage"])
+        {
+            self.defaultImageUrl = [dictionary objectForKey:@"defaultImage"];
+        }
+        if ([dictionary objectForKey:@"description"])
+        {
+            self.poiInfo = [dictionary objectForKey:@"description"];
         }
         
     }

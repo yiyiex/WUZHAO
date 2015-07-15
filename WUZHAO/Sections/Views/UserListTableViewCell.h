@@ -19,6 +19,10 @@
 @property (nonatomic,strong) IBOutlet UIImageView *photo1;
 @property (nonatomic,strong) IBOutlet UIImageView *photo2;
 @property (nonatomic,strong) IBOutlet UIImageView *photo3;
+@property (nonatomic,strong) IBOutlet UIImageView *photo4;
+@property (nonatomic,strong) IBOutlet UIImageView *photo5;
+@property (nonatomic,strong) IBOutlet UIImageView *photo6;
+@property (nonatomic, strong) NSArray *photoImageViews;
 
 - (IBAction)followButtonPressed:(UIButton *)sender;
 

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Edh-Jy-mJC">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Edh-Jy-mJC">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -31,7 +30,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F5a-ke-Y58">
-                                <rect key="frame" x="307" y="517" width="275.5" height="48"/>
+                                <rect key="frame" x="307.5" y="537" width="275.5" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="120" id="ewS-8f-IZF"/>
                                     <constraint firstAttribute="height" constant="48" id="iKm-CY-E3N"/>
@@ -51,7 +50,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rhZ-W3-7aJ">
-                                <rect key="frame" x="17" y="517" width="275.5" height="48"/>
+                                <rect key="frame" x="17" y="537" width="276" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="PuM-gZ-U0a"/>
                                     <constraint firstAttribute="width" constant="120" id="fEi-8m-ip9"/>
@@ -75,10 +74,10 @@
                         <constraints>
                             <constraint firstAttribute="centerY" secondItem="XHa-2e-Fjb" secondAttribute="centerY" constant="86" id="8eE-5w-ze6"/>
                             <constraint firstItem="A89-55-5YW" firstAttribute="top" secondItem="XHa-2e-Fjb" secondAttribute="bottom" constant="8" id="CgT-sR-jJm"/>
-                            <constraint firstItem="R24-Dw-fUS" firstAttribute="top" secondItem="F5a-ke-Y58" secondAttribute="bottom" constant="35" id="Fln-7J-3iL"/>
+                            <constraint firstItem="R24-Dw-fUS" firstAttribute="top" secondItem="F5a-ke-Y58" secondAttribute="bottom" constant="15" id="Fln-7J-3iL"/>
                             <constraint firstAttribute="centerX" secondItem="XHa-2e-Fjb" secondAttribute="centerX" id="Lzs-Sq-BC1"/>
                             <constraint firstAttribute="centerX" secondItem="A89-55-5YW" secondAttribute="centerX" id="ZbW-N3-QmT"/>
-                            <constraint firstItem="R24-Dw-fUS" firstAttribute="top" secondItem="rhZ-W3-7aJ" secondAttribute="bottom" constant="35" id="aOt-52-oMq"/>
+                            <constraint firstItem="R24-Dw-fUS" firstAttribute="top" secondItem="rhZ-W3-7aJ" secondAttribute="bottom" constant="15" id="aOt-52-oMq"/>
                             <constraint firstAttribute="trailingMargin" secondItem="F5a-ke-Y58" secondAttribute="trailing" constant="1" id="atr-SJ-LDk"/>
                             <constraint firstItem="F5a-ke-Y58" firstAttribute="leading" secondItem="rhZ-W3-7aJ" secondAttribute="trailing" constant="80" id="cTP-SK-gq0"/>
                             <constraint firstItem="F5a-ke-Y58" firstAttribute="leading" secondItem="rhZ-W3-7aJ" secondAttribute="trailing" constant="15" id="djo-qc-51K"/>
@@ -95,6 +94,7 @@
                     <connections>
                         <outlet property="LoginButton" destination="F5a-ke-Y58" id="NTn-V8-Z2d"/>
                         <outlet property="QDYLabel" destination="XHa-2e-Fjb" id="Zho-Mz-KQb"/>
+                        <outlet property="QDYLabel2" destination="A89-55-5YW" id="KIw-Vo-2wn"/>
                         <outlet property="RegisterButton" destination="rhZ-W3-7aJ" id="1hU-gE-b8N"/>
                     </connections>
                 </viewController>
@@ -311,7 +311,6 @@
         <!--Navigation Controller-->
         <scene sceneID="C7k-Di-1M3">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="VzR-3n-gPc" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="RXc-Ia-2Hl" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="DLq-TG-0fR">
@@ -323,13 +322,13 @@
                         <segue destination="ue8-o7-uce" kind="relationship" relationship="rootViewController" id="1Bs-M2-E42"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VzR-3n-gPc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2673" y="356"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="drm-ab-Cm0">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="uv6-Ys-G2o" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="7uv-Ec-Iaw" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="fzy-pU-Btj">
@@ -341,6 +340,7 @@
                         <segue destination="dCr-AG-4aG" kind="relationship" relationship="rootViewController" id="aGp-Fg-8aJ"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uv6-Ys-G2o" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1154" y="1086"/>
         </scene>

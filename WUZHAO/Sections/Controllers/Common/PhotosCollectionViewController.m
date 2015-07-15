@@ -26,6 +26,7 @@
 
 @interface PhotosCollectionViewController ()
 @property (nonatomic,strong) UIView *infoView;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 @end
 
@@ -40,8 +41,12 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     self.navigationItem.backBarButtonItem = backBarItem;
     
     [self.collectionView registerNib:[UINib nibWithNibName:@"PhotosCollectionCell" bundle:nil] forCellWithReuseIdentifier:reuseIdentifier];
-    [self.collectionView.layer setBorderWidth:0.5f];
-    [self.collectionView.layer setBorderColor: [THEME_COLOR_LIGHT_GREY_PARENT CGColor]];
+    
+    self.refreshControl = [[UIRefreshControl alloc]init];
+    [self.collectionView addSubview:self.refreshControl];
+    [self.refreshControl  addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
+   // [self.collectionView.layer setBorderWidth:0.5f];
+   // [self.collectionView.layer setBorderColor: [THEME_COLOR_LIGHT_GREY_PARENT CGColor]];
    // [self loadData];
 }
 
@@ -86,6 +91,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 -(void)loadData
 {
     [self.collectionView reloadData];
+    [self.collectionView setContentOffset:CGPointMake(0, 0) animated:YES];
     if (self.datasource.count == 0)
     {
         if (![self.infoView superview])
@@ -107,19 +113,27 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
             [self.infoView removeFromSuperview];
         }
     }
+    if ([self.refreshControl isRefreshing])
+    {
+        [self.refreshControl endRefreshing];
+    }
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 #pragma mark <UICollectionViewDataSource>
+-(WhatsGoingOn *)dataAtIndexPath:(NSIndexPath *)indexPath
+{
+    WhatsGoingOn *item;
+    if ([self.dataSource respondsToSelector:@selector(objectAtIndex:)])
+    {
+        item = [self.datasource objectAtIndex:indexPath.row];
+    }
+    //WhatsGoingOn * item = [self.datasource objectAtIndex:indexPath.row];
+    else
+    {
+        item = [self.datasource objectAtIndex:indexPath.row];
+    }
+    return item;
+}
+
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
@@ -128,7 +142,12 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
+    if ([self.dataSource respondsToSelector:@selector(numberOfPhotos:)])
+    {
+        return [self.dataSource numberOfPhotos:self];
+    }
     return [self.datasource count];
+    
 }
 
 
@@ -139,10 +158,8 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     {
         cell = [[PhotoCollectionViewCell alloc]init];
     }
-   
-    //cell.cellWhatsGoingOnItem = [self.myPhotosCollectionDatasource objectAtIndex:indexPath.row];
-    WhatsGoingOn * item = [self.datasource objectAtIndex:indexPath.row];
-    [self configureCell:cell forContent:item atIndexPath:indexPath];    
+    
+    [self configureCell:cell forContent:[self dataAtIndexPath:indexPath] atIndexPath:indexPath];
     return cell;
 }
 
@@ -171,25 +188,25 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     //[self performSegueWithIdentifier:@"showDetail" sender:self];
     if (self.detailStyle == DETAIL_STYLE_SINGLEPAGE)
     {
-        WhatsGoingOn *item = [self.datasource objectAtIndex:indexPath.row];
+        WhatsGoingOn *item = [self dataAtIndexPath:indexPath];
     
         UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
         HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
         [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];
         [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
-        [detailPhotoController GetLatestDataList];
         [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
+        //[detailPhotoController GetLatestDataList];
     }
     else
     {
-        WhatsGoingOn *item = [self.datasource objectAtIndex:indexPath.row];
+        WhatsGoingOn *item = [self dataAtIndexPath:indexPath];
         
         UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
         HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
         [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];
         [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
-        [detailPhotoController GetLatestDataList];
         [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
+       // [detailPhotoController GetLatestDataList];
         
     }
 
@@ -199,16 +216,17 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 #pragma mark - photoDetailViewsControllerDelegate
 -(WhatsGoingOn *)photoDetailViewsController:(PhotoDetailViewsController *)detailViews dataAtIndex:(NSInteger)index
 {
-    if (index <self.datasource.count)
+    NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
+    return [self dataAtIndexPath:indexPath];
+}
+
+#pragma mark - gesture and action
+-(void)refreshByPullingTable:(id)sender
+{
+    if ([self.dataSource respondsToSelector:@selector(updatePhotoCollectionDatasource:)])
     {
-        return self.datasource[index];
+        [self.dataSource updatePhotoCollectionDatasource:self];
     }
-    else if ([self.dataSource respondsToSelector:@selector(PhotosCollectionViewController:dataAtIndex:)])
-    {
-        WhatsGoingOn *item = [self.dataSource PhotosCollectionViewController:self dataAtIndex:index];
-        return item;
-    }
-    return nil;
 }
 
 /*

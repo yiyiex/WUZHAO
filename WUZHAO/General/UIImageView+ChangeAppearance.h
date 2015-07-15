@@ -11,4 +11,7 @@
 @interface UIImageView (ChangeAppearance)
 
 -(void)setRoundConerWithRadius:(float)radius;
+
+-(void)setRoundAppearanceWithBorder:(UIColor *)borderColor borderWidth:(float)borderWidth;
+
 @end

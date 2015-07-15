@@ -31,11 +31,13 @@
     self = [super init];
     if (self)
     {
-        
+        [self initView];
     }
     return self;
 }
 - (void)awakeFromNib {
+    
+    [self initView];
     // Initialization code
 }
 
@@ -51,6 +53,22 @@
         _cellUser = [[User alloc]init];
     }
     return _cellUser;
+}
+-(NSArray *)photoImageViews
+{
+    if (!_photoImageViews)
+    {
+        _photoImageViews = [[NSArray alloc]initWithObjects:_photo1,_photo2,_photo3,_photo4,_photo5,_photo6,nil];
+    }
+    return _photoImageViews;
+}
+-(void)initView
+{
+    [self.avatorImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    [self.userNameLabel setDarkGreyLabelAppearance];
+    [self.userNameLabel setFont:WZ_FONT_LARGE_SIZE];
+    [self.userDescriptionLabel setSmallReadOnlyLabelAppearance];
+    [self.userDescriptionLabel setFont:WZ_FONT_LARGE_SIZE];
 }
 #pragma mark - gesture and action
 - (IBAction)followButtonPressed:(UIButton *)sender
@@ -109,12 +127,9 @@
 
 -(void)setAppearance
 {
-    [self.avatorImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
-    [self.userNameLabel setDarkGreyLabelAppearance];
-    [self.userDescriptionLabel setSmallReadOnlyLabelAppearance];
     if ([self.userDescriptionLabel.text isEqualToString:@""])
     {
-        [self.userNameLabelTopAlignment setConstant:10.0f];
+        [self.userNameLabelTopAlignment setConstant:16.0f];
     }
     else
     {
@@ -164,17 +179,15 @@
     if ([style isEqualToString:UserListStyle3])
         
     {
-        if([user.photoList objectAtIndex:0])
+        [self.photoImageViews enumerateObjectsUsingBlock:^(UIImageView *obj, NSUInteger idx, BOOL *stop) {
+            [obj setImage:nil];
+        }];
+        if (user.photoList &&  user.photoList.count >0)
         {
-            [self.photo1 sd_setImageWithURL:user.photoList[0] placeholderImage:[UIImage imageNamed:@"空白图片"]];
-        }
-        if([user.photoList objectAtIndex:1])
-        {
-            [self.photo2 sd_setImageWithURL:user.photoList[1] placeholderImage:[UIImage imageNamed:@"空白图片"]];
-        }
-        if([user.photoList objectAtIndex:2])
-        {
-            [self.photo3 sd_setImageWithURL:user.photoList[2] placeholderImage:[UIImage imageNamed:@"空白图片"]];
+            [user.photoList enumerateObjectsUsingBlock:^(WhatsGoingOn *item, NSUInteger idx, BOOL *stop) {
+                [self.photoImageViews[idx] sd_setImageWithURL:[NSURL URLWithString:item.imageUrlString] placeholderImage:[UIImage imageNamed:@"空白图片"]];
+                [self.photoImageViews[idx] setUserInteractionEnabled:YES];
+            }];
         }
     }
     [self setAppearance];

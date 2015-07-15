@@ -16,6 +16,8 @@
 
 #import "UIImageView+WebCache.h"
 #import "UIImageView+ChangeAppearance.h"
+#import "UIViewController+HideBottomBar.h"
+#import "HomeTableViewController.h"
 
 #import "MineViewController.h"
 
@@ -25,7 +27,7 @@
 #import "User.h"
 
 #define REUSEIDENTIFIER @"userListCell"
-#define CELL_HEADERHEIGHT 52.0
+#define CELL_HEADERHEIGHT 64.0
 
 @interface UserListTableViewController ()
 @property (nonatomic, strong) UserListTableViewCell *prototypeCell;
@@ -40,23 +42,10 @@
     //self.userListStyle = UserListStyle3;
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
-
-    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)])
-    {
-        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
-    }
-    [self configCellWithStyle];
-    if (self.setUserList)
-    {
-        [self setUserList];
-        NSLog(@"SET USERLIST IN USER LIST OUT OF THE BLOCK");
-    }
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    //refresh control
+    self.refreshControl = [[UIRefreshControl alloc]init];
+    [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -71,27 +60,6 @@
     }
     return _prototypeCell;
 }
-
-#pragma mark - basic method
-
--(void)configCellWithStyle
-{
-    if ([self.userListStyle isEqualToString:UserListStyle1])
-    {
-        self.tableView.rowHeight = CELL_HEADERHEIGHT;
-    }
-    else if ([self.userListStyle isEqualToString:UserListStyle2])
-    {
-        self.tableView.rowHeight = CELL_HEADERHEIGHT;
-        
-    }
-    else if ([self.userListStyle isEqualToString:UserListStyle3])
-    {
-        self.tableView.rowHeight = CELL_HEADERHEIGHT + WZ_DEVICE_SIZE.width/3 ;
-        [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    }
-}
-
 
 
 #pragma mark - Table view data source
@@ -110,7 +78,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    float height = 44;
+    float height ;
     if ([self.userListStyle isEqualToString:UserListStyle1] || [self.userListStyle isEqualToString:UserListStyle2])
     {
         height = CELL_HEADERHEIGHT;
@@ -118,14 +86,14 @@
     
     else if ([self.userListStyle isEqualToString:UserListStyle3])
     {
-        height =  CELL_HEADERHEIGHT + WZ_DEVICE_SIZE.width/3;
+        height =  CELL_HEADERHEIGHT + (WZ_DEVICE_SIZE.width-2)/3*2+1;
     }
     return height;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    float height = 44;
+    float height ;
     if ([self.userListStyle isEqualToString:UserListStyle1] || [self.userListStyle isEqualToString:UserListStyle2])
     {
         height = CELL_HEADERHEIGHT;
@@ -133,7 +101,7 @@
     
     else if ([self.userListStyle isEqualToString:UserListStyle3])
     {
-        height =  CELL_HEADERHEIGHT + WZ_DEVICE_SIZE.width/3;
+        height =  CELL_HEADERHEIGHT -4 + (WZ_DEVICE_SIZE.width-2)/3*2+1;
     }
     return height;
 }
@@ -145,83 +113,85 @@
     {
         cell = [[UserListTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:self.userListStyle];
     }
-
+    if ([self.userListStyle  isEqual: UserListStyle3])
+    {
+        [cell.photoImageViews enumerateObjectsUsingBlock:^(UIImageView *imageView, NSUInteger idx, BOOL *stop) {
+            UITapGestureRecognizer *imageClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(photoClick:)];
+            [imageView addGestureRecognizer:imageClick];
+            [imageView setUserInteractionEnabled:NO];
+        }];
+    }
     [cell configWithUser:self.datasource[indexPath.row] style:self.userListStyle];
+    
+    //gesture
     UITapGestureRecognizer *avatarClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(avatarClick:)];
     [cell.avatorImageView addGestureRecognizer:avatarClick];
     [cell.avatorImageView setUserInteractionEnabled:YES];
-    // Configure the cell...
+
+    
     return cell;
     
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
-    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
-    [personalViewCon setUserInfo:[self.datasource objectAtIndex:indexPath.row]];
-    [personalViewCon.navigationController setNavigationBarHidden:YES];
-    [self.navigationController pushViewController:personalViewCon animated:YES];
-    
+    [self gotoPersonalPageWithUserInfo:self.datasource[indexPath.row]];
 }
 
 
 #pragma mark - gesture and action
 -(void)avatarClick:(UITapGestureRecognizer *)gesture
 {
-    
-    NSIndexPath *indexpath = [self.tableView indexPathForCell:(UserListTableViewCell *)[[gesture.view superview]superview]];
-    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
-    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
-    [personalViewCon setUserInfo:[self.datasource objectAtIndex:indexpath.row]];
-    [personalViewCon.navigationController setNavigationBarHidden:YES];
-    [self.navigationController pushViewController:personalViewCon animated:YES];
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:(UserListTableViewCell *)[[gesture.view superview]superview]];
+    [self gotoPersonalPageWithUserInfo:[self.datasource[indexPath.row]mutableCopy]];
      
 }
-
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+-(void)photoClick:(UITapGestureRecognizer *)gesture
+{
+    UIImageView *imageView = (UIImageView *)gesture.view;
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:(UserListTableViewCell *)[[gesture.view superview]superview]];
+    User *user = [self.datasource [indexPath.row]mutableCopy];
+    [self gotoPhotoDetailPageWithPhotoInfo:user.photoList[imageView.tag]];
+    
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+-(void)loadData
+{
+    [self.tableView reloadData];
+    [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
+    if ([self.refreshControl isRefreshing])
+    {
+        [self.refreshControl endRefreshing];
+    }
+        
 }
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+-(void)refreshByPullingTable:(id)sender
+{
+     if ([self.dataSource respondsToSelector:@selector(updateUserListDatasource:)])
+     {
+         [self.dataSource updateUserListDatasource:self];
+     }
 }
-*/
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
+-(void)gotoPersonalPageWithUserInfo:(User *)user
+{
+    user.photoList = nil;
+    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
+    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
+    [personalViewCon setUserInfo:user];
+    [self pushToViewController:personalViewCon animated:YES hideBottomBar:YES];
 }
-*/
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+-(void)gotoPhotoDetailPageWithPhotoInfo:(WhatsGoingOn *)item
+{
+    UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
+    HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
+    [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];
+    [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
+    [detailPhotoController GetLatestDataList];
+    [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
 }
-*/
+
 
 @end

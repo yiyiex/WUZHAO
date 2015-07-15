@@ -7,7 +7,6 @@
 //
 #import "captureMacro.h"
 #import "AddImageInfoViewController.h"
-#import "AddressInfoList.h"
 #import "AddressSearchTableViewController.h"
 
 #import "QDYHTTPClient.h"
@@ -30,7 +29,7 @@
 
 //#define PIOTKEYWORDS @"餐饮|购物|生活|体育|住宿|风景|地名|商务|科教|公司";
 #define POIKEYWORDS @"餐饮"
-#define PHOTOWIDTH  (WZ_APP_SIZE.width-32)/3
+#define PHOTOWIDTH  (WZ_APP_SIZE.width-24)/5
 @interface AddImageInfoViewController()<UITableViewDataSource,UITableViewDelegate,AddressSearchTableViewControllerDelegate,UITextViewDelegate,UITextFieldDelegate,AMapSearchDelegate,CLLocationManagerDelegate>
 {
     AMapSearchAPI *_search;
@@ -306,9 +305,14 @@
     [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [photos addObject:[obj objectForKey:@"image"]];
     }];
+    __block NSInteger photoNum  = 0;
     [[NSNotificationCenter defaultCenter]postNotificationName:@"beginUploadPhotos" object:nil userInfo:@{@"photos":photos}];
    // [SVProgressHUD showWithStatus:@"图片上传中..."];
     NSMutableArray *photoNames = [[NSMutableArray alloc]init];
+    for (int i = 0;i<photos.count;i++)
+    {
+        [photoNames  addObject:[NSNull null]];
+    }
     
     NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -334,39 +338,32 @@
                      NSLog(@"%@",info);
                      if (info.error)
                      {
-                         
                          //重传逻辑
                          NSData *imageData = UIImageJPEGRepresentation([obj objectForKey:@"image"], 0.7f);
                          [upLoadManager putData:imageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
                           {
                               NSLog(@"%@",info);
+                              photoNum ++;
                               if (info.error)
                               {
                                   
                                   dispatch_async(dispatch_get_main_queue(), ^{
                                       [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadPhotoFail" object:nil userInfo:@{@"photoIndex":[NSNumber numberWithInteger:idx]}];
-                                      
-                                      //用户端提示
-                                      [photoNames addObject:[data objectForKey:@"imageName"]];
-                                      if (photoNames.count == self.imagesAndInfo.count)
-                                      {
-                                          [self uploadPhotoInfosToServer:photoNames];
-                                          [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadAllPhotosSuccess" object:nil];
-                                      }
                                   });
                                   
                               }
                               else
                               {
+                                  [photoNames replaceObjectAtIndex:idx withObject:[data objectForKey:@"imageName"]];
                                   //用户端提示
-                                  [photoNames addObject:[data objectForKey:@"imageName"]];
                                   [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadPhotoSuccess" object:nil userInfo:@{@"photoIndex":[NSNumber numberWithInteger:idx]}];
-                                  if (photoNames.count == self.imagesAndInfo.count)
-                                  {
-                                      [self uploadPhotoInfosToServer:photoNames];
-                                      [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadAllPhotosSuccess" object:nil];
-                                  }
+                    
                                   
+                              }
+                              if (photoNum== self.imagesAndInfo.count)
+                              {
+                                  [self uploadPhotoInfosToServer:photoNames];
+                                  [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadAllPhotosSuccess" object:nil];
                               }
                               
                               
@@ -375,9 +372,10 @@
                      else
                      {
                          //用户端提示
-                         [photoNames addObject:[data objectForKey:@"imageName"]];
+                         photoNum ++;
+                         [photoNames replaceObjectAtIndex:idx withObject:[data objectForKey:@"imageName"]];
                          [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadPhotoSuccess" object:nil userInfo:@{@"photoIndex":[NSNumber numberWithInteger:idx]}];
-                         if (photoNames.count == self.imagesAndInfo.count)
+                         if (photoNum == self.imagesAndInfo.count)
                          {
                              [self uploadPhotoInfosToServer:photoNames];
                                 [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadAllPhotosSuccess" object:nil];
@@ -398,18 +396,16 @@
 -(void)uploadPhotoInfosToServer:(NSArray *)photoNames
 {
     
-   __block  NSString *photosNameString;
+   __block  NSString *photosNameString = @"";
     
     [photoNames enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if (idx == 0)
-        {
-            photosNameString = [NSString stringWithFormat:@"%@",obj];
-        }
-        else
+        if (![obj isEqual:[NSNull null]])
         {
             photosNameString = [NSString stringWithFormat:@"%@;%@",photosNameString,obj];
         }
+       
     }];
+    photosNameString = [photosNameString substringFromIndex:1];
     NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
     NSString *photoDescription = self.postImageDescription.text;
     POI *uploadPoi;
@@ -483,7 +479,7 @@
 {
     if (indexPath.section == 0)
     {
-        return ceil((float)self.imagesAndInfo.count/3)*(PHOTOWIDTH + 8) + 8;
+        return ceil((float)self.imagesAndInfo.count/5)*(PHOTOWIDTH + 4) + 4;
     }
     else if (indexPath.section == 1)
     {
@@ -502,9 +498,9 @@
     UITableViewCell *cell = [[UITableViewCell alloc]init];
     if (indexPath.section == 0 && indexPath.row ==0)
     {
-        float spacing = 10;
+        float spacing = 4;
         [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(spacing+ (PHOTOWIDTH+spacing)*(idx%3) , spacing+(PHOTOWIDTH+spacing)*(idx/3), PHOTOWIDTH, PHOTOWIDTH)];
+            UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(spacing+ (PHOTOWIDTH+spacing)*(idx%5) , spacing+(PHOTOWIDTH+spacing)*(idx/5), PHOTOWIDTH, PHOTOWIDTH)];
             [imageView setImage:[obj objectForKey:@"image"]];
             [imageView.layer setMasksToBounds:YES];
             [imageView.layer setCornerRadius:4.0f];
@@ -512,6 +508,7 @@
             [imageView addGestureRecognizer:imageClick];
             [imageView setUserInteractionEnabled:YES];
             [cell.contentView addSubview:imageView];
+            [cell setBackgroundColor:[UIColor clearColor]];
         }];
     }
     else if (indexPath.section == 1 && indexPath.row == 0 )

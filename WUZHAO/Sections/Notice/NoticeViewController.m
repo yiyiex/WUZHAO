@@ -48,6 +48,12 @@
     [self initNavigationItem];
     
 }
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
+
 -(void)initNavigationItem
 {
     self.navigationItem.title = @"通 知";

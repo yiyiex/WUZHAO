@@ -11,9 +11,10 @@ typedef void (^dismissBlock)(void);
 
 @interface LaunchViewController : UIViewController
 
-@property (strong, nonatomic) IBOutlet UILabel *QDYLabel;
+@property (weak, nonatomic) IBOutlet UILabel *QDYLabel;
+@property (nonatomic, weak) IBOutlet UILabel *QDYLabel2;
 
-@property (strong, nonatomic) IBOutlet UIButton *RegisterButton;
+@property (weak, nonatomic) IBOutlet UIButton *RegisterButton;
 @property (strong, nonatomic) IBOutlet UIButton *LoginButton;
 
 @property (nonatomic, strong) dismissBlock dismiss;

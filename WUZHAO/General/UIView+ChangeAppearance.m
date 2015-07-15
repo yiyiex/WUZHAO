@@ -28,6 +28,11 @@
     [self setRoundCornerWithRadius:2.0];
 }
 
+-(void)setRoundAppearance
+{
+    [self setRoundCornerWithRadius:self.frame.size.width/2];
+}
+
 -(void)setRoundCornerWithRadius:(float)radius
 {
     self.layer.cornerRadius = radius;

@@ -20,4 +20,14 @@
     layer.cornerRadius = radius;
 }
 
+-(void)setRoundAppearanceWithBorder:(UIColor *)borderColor borderWidth:(float)borderWidth
+{
+    CALayer *layer = self.layer;
+    [layer setMasksToBounds:YES];
+    [layer setBorderWidth:borderWidth];
+    layer.borderColor = [borderColor CGColor];
+    layer.cornerRadius = self.frame.size.width/2;
+    
+}
+
 @end

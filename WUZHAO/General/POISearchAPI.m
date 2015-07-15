@@ -10,6 +10,7 @@
 #define POIAPIHOST @"http://placeapp.cn/"
 
 #import "POI.h"
+#import "AddressPhotos.h"
 
 @implementation POISearchAPI
 
@@ -105,7 +106,7 @@
 
 - (void)regeoGoogleLocation:(float)latitude longitude:(float)longtitude whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = @"api/gpoidefault?location=-33.8670522,151.1957362";
+    NSString *api = @"api/gpoidefault";
     NSDictionary *param = @{@"location":[NSString stringWithFormat:@"%f,%f",latitude,longtitude]};
     
     [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError * error) {
@@ -138,7 +139,108 @@
 
 
 
+-(void)getUserPOIsWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/userpois";
+    NSDictionary *param = @{@"userid":[NSNumber numberWithInteger:userId]};
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+        if (result )
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSMutableArray *data = [[NSMutableArray alloc]init];
+                [[result objectForKey:@"data"]enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL *stop) {
+                    AddressPhotos *address = [[AddressPhotos alloc]initWithData:obj];
+                    [data addObject:address];
+                }];
+                
+                [returnData setValue:data forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器异常" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
 
+-(void)getPOIDetail:(NSInteger)poiId userId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/userpoidetail";
+    NSDictionary *param = @{@"userid":[NSNumber numberWithInteger:userId],@"poiid":[NSNumber numberWithInteger:poiId]};
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+        if (result )
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                AddressPhotos *address = [[AddressPhotos alloc]initWithData:[result objectForKey:@"data"]];
+                [returnData setValue:address forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器异常" forKey:@"error"];
+        }
+        whenComplete(returnData);
+        
+    }];
+}
+
+-(void)getUserPOIHistory:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/userpoihistory";
+    NSDictionary *param = @{@"userid":[NSNumber numberWithInteger:userId]};
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+        if (result )
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSMutableArray *data  = [[NSMutableArray alloc]init];
+                [[result objectForKey:@"data"]enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL *stop) {
+                    POI *poi = [[POI alloc]initWithDictionary:obj];
+                    [data addObject:poi];
+                }];
+                
+                [returnData setValue:data forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器异常" forKey:@"error"];
+        }
+        whenComplete(returnData);
+        
+    }];
+    
+}
 
 
 
