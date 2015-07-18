@@ -39,10 +39,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     //配置评论样式
     [cell configureCellWithData:content parentController:self];
     
-    [cell setAppearance];
-    [cell setNeedsLayout];
-    [cell layoutIfNeeded];
-    
 }
 #pragma mark - Table view data source
 

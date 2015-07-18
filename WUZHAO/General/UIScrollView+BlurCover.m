@@ -47,6 +47,11 @@ static char UIScrollViewBlurCover;
     return objc_getAssociatedObject(self, &UIScrollViewBlurCover);
 }
 
+- (void)addBlurCover
+{
+    [self addBlurCoverWithImage:nil];
+}
+
 - (void)addBlurCoverWithImage:(UIImage*)image
 {
     [self addBlurCoverWithImage:image withTopView:nil];
@@ -57,7 +62,10 @@ static char UIScrollViewBlurCover;
     CHBlurCoverView *view = [[CHBlurCoverView alloc] initWithFrame:CGRectMake(0,0, WZ_APP_SIZE.width, CHBlurCoverViewHeight) andContentTopView:topView];
     
     view.backgroundColor = [UIColor clearColor];
-    view.image = image;
+    if (image)
+    {
+        view.image = image;
+    }
     view.scrollView = self;
     
     [self addSubview:view];
@@ -93,7 +101,7 @@ static char UIScrollViewBlurCover;
     if (self) {
         self.contentMode = UIViewContentModeScaleAspectFill;
         self.clipsToBounds = YES;
-        blurImages_ = [[NSMutableArray alloc] initWithCapacity:12];
+        blurImages_ = [[NSMutableArray alloc] initWithCapacity:24];
         topView = view;
     }
     return self;
@@ -115,11 +123,11 @@ static char UIScrollViewBlurCover;
 
 - (void)prepareForBlurImages
 {
-    CGFloat factor = 0.36;
+    CGFloat factor = 0.24;
  
-    for (NSInteger i = 12; i >= 0; i--) {
+    for (NSInteger i = 24; i >= 0; i--) {
         [blurImages_ addObject:[self.image boxblurImageWithBlur:factor]];
-        factor -= 0.03;
+        factor -= 0.01;
         factor = MAX(0, factor);
     }
     [blurImages_ addObject:self.image];
@@ -144,6 +152,8 @@ static char UIScrollViewBlurCover;
 - (void)layoutSubviews
 {
     [super layoutSubviews];
+    if (self.image == nil)
+        return;
     if (self.scrollView.contentOffset.y < 0) {
 
         CGFloat offset = -self.scrollView.contentOffset.y;

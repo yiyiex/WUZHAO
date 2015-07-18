@@ -47,6 +47,7 @@
 {
     [super viewWillAppear:animated];
     [self setNavigationAppearance];
+    [self initIntroView];
      NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     if ([userDefaults objectForKey:@"token"])
     {
@@ -80,11 +81,6 @@
     }
     else
     {
-        
-        if (!_scrollview)
-        {
-            [self initIntroView];
-        }
         [self showViews];
     }
     

@@ -69,6 +69,10 @@
         self.imageDescription = [data objectForKey:@"thought"];
     }
     self.isLike = [(NSNumber *)[data objectForKey:@"isliked"] integerValue] == 1?true:false;
+    if ([data objectForKey:@"isRecommend"] )
+    {
+        self.isRecommend = [(NSNumber *)[data objectForKey:@"isRecommend"] integerValue] == 1?true:false;
+    }
     self.likeCount = [(NSNumber *)[data objectForKey:@"like_num"] integerValue];
     
     self.commentNum = [(NSNumber *)[data objectForKey:@"comment_num"]integerValue];

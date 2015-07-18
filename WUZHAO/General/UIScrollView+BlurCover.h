@@ -35,6 +35,7 @@
 
 @interface UIScrollView (BlurCover)
 @property(nonatomic,weak)CHBlurCoverView *blurCoverView;
+- (void)addBlurCover;
 - (void)addBlurCoverWithImage:(UIImage*)image;
 - (void)addBlurCoverWithImage:(UIImage*)image withTopView:(UIView*)topView;
 - (void)removeBlurCoverView;

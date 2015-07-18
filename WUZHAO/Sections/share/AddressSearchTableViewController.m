@@ -465,7 +465,7 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
         if (indexPath.row == 0 && self.searchAddressDataSource.count ==0)
         {
             cell = [[AddressTableViewCell alloc]init];
-            cell.textLabel.text = @"未搜索到结果，建议输入更详细一点";
+            cell.textLabel.text = @"未搜索到结果，建议输入更详细一点。如添加城市名称";
             [cell.textLabel setFont:WZ_FONT_LARGE_BOLD_SIZE];
             [cell.textLabel setTextColor:THEME_COLOR_DARKER_GREY];
         }

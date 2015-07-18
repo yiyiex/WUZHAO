@@ -87,6 +87,8 @@
 -(void)addAnnotations
 {
     __block AddressMarkAnnotation *centerAnnotation;
+    [self.mapView removeAnnotations:self.annotations];
+    [self.annotations removeAllObjects];
     [self.locations enumerateObjectsUsingBlock:^(AddressPhotos *obj, NSUInteger idx, BOOL *stop) {
         if (obj.poi.locationArray.count == 2)
         {

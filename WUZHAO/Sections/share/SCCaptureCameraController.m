@@ -16,7 +16,7 @@
 #import "PhotosPickerViewController.h"
 #import "PhotoFilterViewCollectionViewController.h"
 
-#import "CaptureItemContainerUIView.h"
+//#import "UIView.h"
 
 #import "VPImageCropperViewController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
@@ -44,10 +44,10 @@
 
 @property (nonatomic, strong) SCCaptureSessionManager *captureManager;
 
-@property (nonatomic, strong) IBOutlet CaptureItemContainerUIView *topContainerView;//顶部view
+@property (nonatomic, strong) IBOutlet UIView *topContainerView;//顶部view
 
-@property (nonatomic, strong) IBOutlet CaptureItemContainerUIView *bottomContainerView;//除了顶部标题、拍照区域剩下的所有区域
-@property (nonatomic, strong) IBOutlet CaptureItemContainerUIView *cameraMenuView;//网格、闪光灯、前后摄像头等按钮
+@property (nonatomic, strong) IBOutlet UIView *bottomContainerView;//除了顶部标题、拍照区域剩下的所有区域
+@property (nonatomic, strong) IBOutlet UIView *cameraMenuView;//网格、闪光灯、前后摄像头等按钮
 
 @property (nonatomic, strong)  UIImageView *selectPhotoImageView;
 @property (nonatomic, strong) NSMutableSet *cameraBtnSet;
@@ -189,14 +189,14 @@
         topViewHeight = 50;
     //[self.view setBackgroundColor:[UIColor clearColor]];
    // NSLog(@"topview height:%f",CAMERA_TOPVIEW_HEIGHT);
-    self.topContainerView = [[CaptureItemContainerUIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, topViewHeight)];
+    self.topContainerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, topViewHeight)];
     [self.topContainerView setBackgroundColor:MENU_CONTAINER_COLOR];
     [self.view addSubview:self.topContainerView];
-    self.cameraMenuView = [[CaptureItemContainerUIView alloc]initWithFrame:CGRectMake(0, topViewHeight + WZ_APP_SIZE.width, WZ_APP_SIZE.width, CAMERA_MENU_VIEW_HEIGH)];
+    self.cameraMenuView = [[UIView alloc]initWithFrame:CGRectMake(0, topViewHeight + WZ_APP_SIZE.width, WZ_APP_SIZE.width, CAMERA_MENU_VIEW_HEIGH)];
     [self.cameraMenuView setBackgroundColor:MENU_CONTAINER_COLOR];
     [self.view addSubview:self.cameraMenuView];
     float bottomContainerViewY = topViewHeight + WZ_APP_SIZE.width + CAMERA_MENU_VIEW_HEIGH;
-    self.bottomContainerView = [[CaptureItemContainerUIView alloc]initWithFrame:CGRectMake(0,bottomContainerViewY, WZ_APP_SIZE.width, WZ_DEVICE_SIZE.height - bottomContainerViewY)];
+    self.bottomContainerView = [[UIView alloc]initWithFrame:CGRectMake(0,bottomContainerViewY, WZ_APP_SIZE.width, WZ_DEVICE_SIZE.height - bottomContainerViewY)];
     [self.bottomContainerView setBackgroundColor:BOTTOM_CONTAINER_COLOR];
     [self.view addSubview:self.bottomContainerView];
     //self.bottomContainerView = [UIView alloc]initWithFrame:

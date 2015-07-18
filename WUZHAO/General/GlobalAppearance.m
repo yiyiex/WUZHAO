@@ -9,9 +9,6 @@
 #import "GlobalAppearance.h"
 #import "macro.h"
 
-
-#import "CaptureItemContainerUIView.h"
-
 #import "SVProgressHUD.h"
 
 
@@ -68,7 +65,7 @@
     
     [[UIButton appearanceWhenContainedIn:[UINavigationBar class], nil]setBackgroundColor:[UIColor clearColor]];
     [[UIButton appearanceWhenContainedIn:[UITableViewCell class], nil] setBackgroundColor:[UIColor clearColor]];
-    [[UIButton appearanceWhenContainedIn:[CaptureItemContainerUIView class], nil] setBackgroundColor:[UIColor blackColor]];
+    //[[UIButton appearanceWhenContainedIn:[CaptureItemContainerUIView class], nil] setBackgroundColor:[UIColor blackColor]];
     
    
     

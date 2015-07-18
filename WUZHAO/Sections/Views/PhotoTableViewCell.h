@@ -30,12 +30,14 @@
 @property (nonatomic, weak) IBOutlet UILabel *postUserSelfDescription;
 
 @property (nonatomic, weak) IBOutlet UILabel *postTimeLabel;
+@property (nonatomic, weak) IBOutlet UIButton *followButton;
 
 //photo
 @property (nonatomic, weak) IBOutlet UIImageView *homeCellImageView;
 
 //photos
 @property (nonatomic, weak) IBOutlet UIView *imagesContainerView;
+@property (nonatomic, weak) IBOutlet UICollectionView *imagesCollectionView;
 @property (nonatomic, weak) IBOutlet UIScrollView *imagesScrollView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *imagesContainerViewHeightConstrant;
 
@@ -67,8 +69,6 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *moreButton;
 
-
--(void)setAppearance;
 -(void)configureCellWithData:(WhatsGoingOn *)content parentController:(UIViewController *)parentController;
 -(void)configureLikeViewWithData:(WhatsGoingOn *)content parentController:(UIViewController *)parentController;
 -(void)configureComment;

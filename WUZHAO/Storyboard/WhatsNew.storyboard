@@ -44,6 +44,16 @@
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jRx-uJ-oCD" userLabel="follow button">
+                                                    <rect key="frame" x="118" y="6" width="60" height="36"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="X33-ld-RUE"/>
+                                                        <constraint firstAttribute="width" constant="64" id="oFH-vW-Yi4"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Button">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="self description" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NYo-F6-ywp">
                                                     <rect key="frame" x="52" y="27" width="164" height="13"/>
                                                     <fontDescription key="fontDescription" name="Courier" family="Courier" pointSize="13"/>
@@ -53,6 +63,8 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="1vk-Qy-jms" firstAttribute="leading" secondItem="kwx-c6-mhO" secondAttribute="leading" constant="8" id="1qb-B0-CMr"/>
+                                                <constraint firstItem="jRx-uJ-oCD" firstAttribute="centerY" secondItem="k6S-JX-yPB" secondAttribute="centerY" id="CoP-cU-HZY"/>
+                                                <constraint firstAttribute="trailing" secondItem="jRx-uJ-oCD" secondAttribute="trailing" constant="8" id="Dzy-Ce-UPe"/>
                                                 <constraint firstAttribute="centerY" secondItem="k6S-JX-yPB" secondAttribute="centerY" id="F6e-6n-I1W"/>
                                                 <constraint firstItem="Y5a-2R-4pO" firstAttribute="top" secondItem="1vk-Qy-jms" secondAttribute="top" constant="2" id="LEd-Kc-rsj"/>
                                                 <constraint firstAttribute="centerY" secondItem="1vk-Qy-jms" secondAttribute="centerY" id="MwO-CR-T9e"/>
@@ -73,7 +85,7 @@
                                         <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b50-D1-K1S" userLabel="ImagesContainerView">
                                             <rect key="frame" x="0.0" y="336" width="288" height="0.0"/>
                                             <subviews>
-                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pwv-RQ-4EG">
+                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pwv-RQ-4EG" customClass="UICollectionView">
                                                     <rect key="frame" x="0.0" y="0.0" width="288" height="0.0"/>
                                                 </scrollView>
                                             </subviews>
@@ -219,12 +231,13 @@
                                     <outlet property="commentViewVerticalSpaceToUpView" destination="ABa-KO-eiR" id="94O-II-CwW"/>
                                     <outlet property="descriptionTextView" destination="x0m-5V-xwF" id="SID-SY-5vX"/>
                                     <outlet property="descriptionViewHeightConstraint" destination="hwt-yI-eqe" id="gXc-JM-Nnj"/>
+                                    <outlet property="followButton" destination="jRx-uJ-oCD" id="iSw-Sv-CIU"/>
                                     <outlet property="headView" destination="kwx-c6-mhO" id="EhO-w5-yWs"/>
                                     <outlet property="homeCellAvatorImageView" destination="1vk-Qy-jms" id="T93-RY-dfF"/>
                                     <outlet property="homeCellImageView" destination="Jvh-cR-bp1" id="9mD-Uh-uaK"/>
+                                    <outlet property="imagesCollectionView" destination="pwv-RQ-4EG" id="6lm-rD-QsW"/>
                                     <outlet property="imagesContainerView" destination="b50-D1-K1S" id="r9R-bm-zsx"/>
                                     <outlet property="imagesContainerViewHeightConstrant" destination="B3a-LD-F6H" id="JIX-cv-sLU"/>
-                                    <outlet property="imagesScrollView" destination="pwv-RQ-4EG" id="OgQ-Re-IKK"/>
                                     <outlet property="likeLabel" destination="Zm2-9u-LfA" id="3jC-fA-XpJ"/>
                                     <outlet property="likeLabelHeightConstraint" destination="pmA-5d-bzM" id="zvY-Kh-FIL"/>
                                     <outlet property="likeView" destination="0VZ-2G-7hP" id="jYR-7k-xOV"/>

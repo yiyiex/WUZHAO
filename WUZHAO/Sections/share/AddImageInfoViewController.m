@@ -25,6 +25,7 @@
 #import "Geodetic.h"
 
 #import <ImageIO/ImageIO.h>
+#import "UMSocial.h"
 
 
 //#define PIOTKEYWORDS @"餐饮|购物|生活|体育|住宿|风景|地名|商务|科教|公司";
@@ -42,7 +43,7 @@
    
     
 }
-@property (strong, nonatomic)  IBOutlet UITableView *imageInfoTableView;
+@property (strong, nonatomic)  UITableView *imageInfoTableView;
 
 @property (strong, nonatomic) UITableViewCell *postImagesCell;
 
@@ -59,6 +60,12 @@
 
 @property (strong, nonatomic) UIButton *postButton;
 @property (strong, nonatomic) UIView *topBarView;
+
+@property (nonatomic, strong) UIImageView *shareToWeChatTimeLine;
+@property (nonatomic, strong) UIImageView *shareToSinaWebo;
+@property (nonatomic, strong) UIImageView *shareToWeChatFriend;
+@property (nonatomic, strong) UIImageView *shareToQQZone;
+
 
 
 
@@ -101,6 +108,7 @@
         self.addressTableViewCell.textLabel.text = @"标记位置";
     }
 }
+
 
 #pragma mark -datas
 
@@ -167,20 +175,6 @@
     UISwipeGestureRecognizer *swipUpGesture = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(tableviewSwipeUp:)];
     [swipUpGesture setDirection:UISwipeGestureRecognizerDirectionUp];
     [self.imageInfoTableView addGestureRecognizer:swipUpGesture];
-    
-    [self initPostImagesCell];
-}
--(void)initPostImagesCell
-{
-    
-    /*
-    self.postImageView.image = self.postImage;
-    [self.postImageView.layer setMasksToBounds:YES];
-    [self.postImageView.layer setCornerRadius:4.0f];
-    UITapGestureRecognizer *imageClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showImageDetail:)];
-    [self.postImageView addGestureRecognizer:imageClick];
-    [self.postImageView setUserInteractionEnabled:YES];
-     */
 }
 -(void)initTopBar
 {
@@ -238,8 +232,8 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self uploadPhotoToQiNiu];
     });
-
-
+    [self shareAction];
+    
     
 }
 
@@ -489,6 +483,11 @@
     {
         return 50.0f;
     }
+    /*
+    else if (indexPath.section == 3)
+    {
+        return 80.0f;
+    }*/
     return 44.0f;
 }
 
@@ -532,6 +531,39 @@
         UITapGestureRecognizer *addressCellClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addressCellClick:)];
         [self.addressTableViewCell addGestureRecognizer:addressCellClick];
     }
+    /*
+    else if (indexPath.section == 3)
+    {
+        if (!_shareToSinaWebo)
+        {
+            _shareToSinaWebo = [[UIImageView alloc ]initWithImage:[UIImage imageNamed:@"sina_off"] highlightedImage:[UIImage imageNamed:@"sina_icon"]];
+            [self.shareToSinaWebo setFrame:CGRectMake(20, 24, 36, 36)];
+            UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(shareToSinaWeboClick:)];
+            [_shareToSinaWebo addGestureRecognizer:gesture];
+            [_shareToSinaWebo setUserInteractionEnabled:YES];
+            [_shareToSinaWebo setFrame:CGRectMake(20  , 24, 36, 36)];
+        }
+        if (!_shareToWeChatTimeLine)
+        {
+            _shareToWeChatTimeLine = [[UIImageView alloc ]initWithImage:[UIImage imageNamed:@"wechat_off"] highlightedImage:[UIImage imageNamed:@"wechat_icon"]];
+            UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(shareToWeChatTimeLineClick:)];
+            [_shareToWeChatTimeLine addGestureRecognizer:gesture];
+            [_shareToWeChatTimeLine setUserInteractionEnabled:YES];
+            [_shareToWeChatTimeLine setFrame:CGRectMake(20 + 60 , 24, 36, 36)];
+        }
+        if (!_shareToQQZone)
+        {
+            _shareToQQZone = [[UIImageView alloc ]initWithImage:[UIImage imageNamed:@"qzone_off"] highlightedImage:[UIImage imageNamed:@"qzone_icon"]];
+            UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(shareToQQZoneClick:)];
+            [_shareToQQZone addGestureRecognizer:gesture];
+            [_shareToQQZone setUserInteractionEnabled:YES];
+            [_shareToQQZone setFrame:CGRectMake(20 + 60*2 , 24, 36, 36)];
+            
+        }
+        [cell addSubview:_shareToSinaWebo];
+        [cell addSubview:_shareToWeChatTimeLine];
+        [cell addSubview:_shareToQQZone];
+    }*/
     return cell;
 }
 
@@ -664,7 +696,66 @@
 }
 
 #pragma mark - gesture actions
+-(void)shareAction
+{
+    /*
+    if ([self.shareToSinaWebo isHighlighted])
+    {
+        [self shareToPlatform:UMShareToSina next:nil];
+    }*/
+    if ([self.shareToWeChatTimeLine isHighlighted])
+    {
+        if ([self.shareToQQZone isHighlighted])
+        {
+            [self shareToPlatform:UMShareToWechatTimeline next:UMShareToQzone];
+        }
+        else
+        {
+            [self shareToPlatform:UMShareToWechatTimeline next:nil];
+        }
+    }
+}
 
+-(void)shareToPlatform:(NSString *)platformName next:(NSString *)nextPlatformName
+{
+    [UMSocialData defaultData].extConfig.wxMessageType = UMSocialWXMessageTypeImage;
+    [UMSocialData defaultData].extConfig.qqData.title = @"";
+    [UMSocialData defaultData].extConfig.qqData.qqMessageType = UMSocialQQMessageTypeImage;
+    NSString *shareContent = self.postImageDescription.text;
+    UIImage *shareImage = [self.imagesAndInfo[0] objectForKey:@"image"];
+    [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[platformName] content:shareContent image:shareImage location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
+        if (nextPlatformName != nil)
+        {
+            [self shareToPlatform:nextPlatformName next:nil];
+        }
+        if (response.responseCode == UMSResponseCodeSuccess) {
+            NSLog(@"分享成功！");
+        }
+    }];
+    
+}
+-(void)shareToWeChatTimeLineClick:(UITapGestureRecognizer *)gesture
+{
+    UIImageView *imageView = (UIImageView *)gesture.view;
+    [imageView setHighlighted:!imageView.highlighted];
+}
+-(void)shareToQQMessage:(UITapGestureRecognizer *)gesture
+{
+    
+}
+-(void)shareToQQZoneClick:(UITapGestureRecognizer *)gesture
+{
+    UIImageView *imageView = (UIImageView *)gesture.view;
+    [imageView setHighlighted:!imageView.highlighted];
+}
+-(void)shareToSinaWeboClick:(UITapGestureRecognizer *)gesture
+{
+    UIImageView *imageView = (UIImageView *)gesture.view;
+    [imageView setHighlighted:!imageView.highlighted];
+    
+    //检查新浪微博授权
+    //[self shareToPlatform:UMShareToSina];
+}
 -(void)addressCellClick:(UITapGestureRecognizer *)gesture
 {
     AddressSearchTableViewController *searchCon = [[AddressSearchTableViewController alloc]init];

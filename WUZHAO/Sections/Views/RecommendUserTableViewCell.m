@@ -54,6 +54,7 @@
                         [sender setHidden:NO];
                         [sender setTitle:@"已关注" forState:UIControlStateNormal];
                         [sender setThemeBackGroundAppearance];
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"updateUserInfo" object:nil];
                         
                     }
                     else if ([result objectForKey:@"error"])
@@ -78,6 +79,7 @@
                         [sender setHidden:NO];
                         [sender setTitle:@"关注" forState:UIControlStateNormal];
                         [sender setThemeFrameAppearence];
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"updateUserInfo" object:nil];
                         
                     }
                     else if ([result objectForKey:@"error"])
@@ -100,7 +102,7 @@
     [self.titleLabel setFont:WZ_FONT_SMALL_SIZE];
     [self.titleLabel setTextColor:THEME_COLOR_DARKER_GREY_PARENT];
     [self.titleLabel setText:@"可能感兴趣的人"];
-    [PhotoCommon drawALineWithFrame:CGRectMake(0, 88 , self.contentView.frame.size.width, 12) andColor:THEME_COLOR_LIGHT_GREY_MORE_PARENT inLayer:self.contentView.layer];
+    [PhotoCommon drawALineWithFrame:CGRectMake(0, 84 , self.contentView.frame.size.width, 12) andColor:THEME_COLOR_LIGHT_GREY_MORE_PARENT inLayer:self.contentView.layer];
     
     [self.avatorImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
     [self.userNameLabel setDarkGreyLabelAppearance];

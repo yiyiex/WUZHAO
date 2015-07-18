@@ -22,6 +22,7 @@
 @property (nonatomic) NSInteger likeCount;
 @property (nonatomic,strong) NSMutableArray *likeUserList;
 @property (nonatomic) BOOL isLike;
+@property (nonatomic) BOOL isRecommend;
 @property (nonatomic,copy) NSString *comment;
 @property (nonatomic,copy) NSMutableArray  *commentList;
 @property (nonatomic,copy) NSMutableArray  *commentStringList;

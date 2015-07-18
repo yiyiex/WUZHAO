@@ -38,6 +38,7 @@
 #define RecommendCellHeigh 100
 
 
+
 @interface HomeTableViewController ()<UIActionSheetDelegate,UIAlertViewDelegate,CommentTextViewDelegate,UMSocialDataDelegate,UMSocialUIDelegate>
 @property (nonatomic,strong) UIButton *loadMoreButton;
 @property (nonatomic,strong) UIActivityIndicatorView *aiv;
@@ -409,8 +410,10 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
         //各控件单击效果
         //点击头像，跳转个人主页
+        
         [self configureCell:cell forContent:item atIndexPath:indexPath];
-        [self.tableView.panGestureRecognizer requireGestureRecognizerToFail:cell.imagesScrollView.panGestureRecognizer];
+        [cell.imagesScrollView.panGestureRecognizer requireGestureRecognizerToFail:self.tableView.panGestureRecognizer];
+       // [self.tableView.panGestureRecognizer requireGestureRecognizerToFail:cell.imagesScrollView.panGestureRecognizer];
         return cell;
     }
     else
@@ -420,8 +423,9 @@ static NSString *reuseIdentifier = @"HomeTableCell";
             PhotoTableViewCell *cell;
             WhatsGoingOn *item = self.dataSource[indexPath.row-1];
             cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
+            cell.content = nil;
             [self configureCell:cell forContent:item atIndexPath:indexPath];
-            [self.tableView.panGestureRecognizer requireGestureRecognizerToFail:cell.imagesScrollView.panGestureRecognizer];
+            [cell.imagesScrollView.panGestureRecognizer requireGestureRecognizerToFail:self.tableView.panGestureRecognizer];
             return cell;
         }
         else
@@ -617,16 +621,24 @@ static NSString *reuseIdentifier = @"HomeTableCell";
             }];
           
             UIAlertAction *shareAction = [UIAlertAction actionWithTitle:@"分享" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                [UMSocialConfig setSupportedInterfaceOrientations:UIInterfaceOrientationMaskLandscape]; 
+                NSString *shareText = item.imageDescription;
+                UIImage *shareImage = cell.homeCellImageView.image;
+                [UMSocialData defaultData].extConfig.wxMessageType = UMSocialWXMessageTypeImage;
+                
+                [UMSocialData defaultData].extConfig.qqData.title = @"来自Place的分享";
+                [UMSocialData defaultData].extConfig.qzoneData.title = @"来自Place的分享";
+                [UMSocialData defaultData].extConfig.qqData.qqMessageType = UMSocialQQMessageTypeImage;
+                
                 [UMSocialSnsService presentSnsIconSheetView:self
                                                      appKey:nil
-                                                  shareText:@"你要分享的文字"
-                                                 shareImage:[UIImage imageNamed:@"icon.png"]
-                                            shareToSnsNames:[NSArray arrayWithObjects:UMShareToSina,UMShareToTencent,UMShareToWechatSession,UMShareToWechatTimeline,UMShareToQQ,UMShareToDouban,UMShareToEmail,nil]
+                                                  shareText:shareText
+                                                 shareImage:shareImage
+                                            shareToSnsNames:[NSArray arrayWithObjects:UMShareToSina,UMShareToWechatSession,UMShareToWechatTimeline,UMShareToWechatFavorite,UMShareToQQ,UMShareToQzone,UMShareToDouban,UMShareToEmail,nil]
                                                    delegate:self];
+            
                 
             }];
-            //[alertController addAction:shareAction];
+          //  [alertController addAction:shareAction];
             [alertController addAction:delectAction];
         }
         [self presentViewController:alertController animated:YES completion:nil];
@@ -966,6 +978,19 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         }
     }];
 }
+-(void)GetLatestDataListWithAnimation
+{
+    [self.refreshControl beginRefreshing];
+    double delayInseconds = 1;
+    dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^{
+        [self GetLatestDataList];
+        
+        
+    });
+   
+    
+}
 
 -(void)GetLatestDataList
 {
@@ -981,6 +1006,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         }
         if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
         {
+            self.recommandDatasource = nil;
             [self getRecommandUser];
             self.currentPage = 1;
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -1021,7 +1047,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                      {
                          [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
                      }
-                     [self.tableView setContentOffset:CGPointMake(0, -64) animated:NO];
+                     [self.tableView setContentOffset:CGPointMake(0, -64) animated:YES];
                      
                      self.shouldRefreshData = true;
                      //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
@@ -1197,6 +1223,17 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 {
     progressImageView *imageView = self.uploadImageProgressViews[index];
     [imageView setProgress:process];
+}
+
+#pragma mark - UMSocialData delegate
+-(void)didFinishGetUMSocialDataInViewController:(UMSocialResponseEntity *)response
+{
+    //根据`responseCode`得到发送结果,如果分享成功
+    if(response.responseCode == UMSResponseCodeSuccess)
+    {
+        //得到分享到的微博平台名
+        NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
+    }
 }
 
 

@@ -14,15 +14,17 @@
 #import "UILabel+ChangeAppearance.h"
 #import "UIButton+ChangeAppearance.h"
 #import "UIImageView+WebCache.h"
+#import "HomeSmallImagesCollectionViewCell.h"
+#import "QDYHTTPClient.h"
+#import "SVProgressHUD.h"
 
 #import "macro.h"
 
 #define AvatorImageWidth 38
+#define smallImagesWidth 70
 
-#define HorizontalInsets 10.0
-#define VerticalInsets 10.0
 
-@interface PhotoTableViewCell()
+@interface PhotoTableViewCell()<UICollectionViewDataSource,UICollectionViewDelegate>
 
 
 
@@ -44,7 +46,6 @@
     [self initView];
     // Initialization code
 }
-
 -(WhatsGoingOn *)content
 {
     if (!_content)
@@ -72,6 +73,10 @@
     [self.postUserSelfDescription setSmallReadOnlyLabelAppearance];
     [self.postTimeLabel setBoldReadOnlyLabelAppearance];
     
+    [self.followButton setTitle:@"" forState:UIControlStateNormal];
+    [self.followButton setBackgroundImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+    [self.followButton addTarget:self action:@selector(followButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
     [self.addressLabel setBackgroundColor: [UIColor clearColor]];
     [self.addressLabel setThemeLabelAppearance];
     
@@ -90,6 +95,23 @@
     [self.commentClickButton setGreyBackGroundAppearance];
     [self.moreButton setNormalButtonWithBoldFontAppearance];
     [self.moreButton setGreyBackGroundAppearance];
+    
+    [self initImagesCollectionView];
+}
+-(void)initImagesCollectionView
+{
+    UICollectionViewFlowLayout *collectionLayout = [[UICollectionViewFlowLayout alloc]init];
+    collectionLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    collectionLayout.itemSize = CGSizeMake(smallImagesWidth,smallImagesWidth);
+    collectionLayout.minimumInteritemSpacing = 8;
+    collectionLayout.sectionInset = UIEdgeInsetsMake(8, 8, 8, 0);
+    [_imagesCollectionView setCollectionViewLayout:collectionLayout];
+    _imagesCollectionView.dataSource = self;
+    _imagesCollectionView.delegate = self;
+    [_imagesCollectionView setBackgroundColor:[UIColor whiteColor]];
+    [_imagesCollectionView registerClass:[HomeSmallImagesCollectionViewCell class] forCellWithReuseIdentifier:@"smallImageCell"];
+    _imagesCollectionView.showsHorizontalScrollIndicator = NO;
+    
 }
 
 -(void)configureCellWithData:(WhatsGoingOn *)content parentController:(UIViewController *)parentController
@@ -100,7 +122,6 @@
     [self configureLikeView];
     [self configureComment];
     [self configureGesture];
-    
 }
 
 
@@ -224,9 +245,23 @@
 
 -(void)configureBasicInfo
 {
+    //判断时间线内容类别
+    //1 -- 好友数据
     self.postTimeLabel.text = self.content.postTime;
     self.postUserName.text = self.content.photoUser.UserName;
+    if ( self.content.isRecommend)
+    {
+        [self.followButton setHidden:NO];
+        [self.postTimeLabel setHidden:YES];
+    }
+    else
+    {
+        [self.postTimeLabel setHidden:NO];
+        [self.followButton setHidden:YES];
 
+    }
+    
+    //2 -- 推荐数据
     self.postUserSelfDescription.text = [self.content.photoUser.selfDescriptions stringByReplacingOccurrencesOfString:@"\\n" withString:@"\n"];
     if ([self.postUserSelfDescription.text isEqualToString:@""])
     {
@@ -256,7 +291,22 @@
    // if (imageUrl)
     [self.homeCellImageView sd_setImageWithURL:[NSURL URLWithString:self.content.imageUrlString]
                               placeholderImage:[UIImage imageNamed:@"placeholder"]];
-    //clear image scroll view
+    if (self.content.imageUrlList.count >1)
+    {
+        [self.imagesContainerViewHeightConstrant setConstant:86];
+        CGRect frame = self.imagesContainerView.frame;
+        frame.size.height = 86;
+        self.imagesContainerView.frame = frame;
+    }
+    else
+    {
+        CGRect frame = self.imagesContainerView.frame;
+        frame.size.height = 0;
+        self.imagesContainerView.frame = frame;
+        [self.imagesContainerViewHeightConstrant setConstant:0];
+    }
+    [self.imagesCollectionView reloadData];
+    /*
     
     [self.imagesScrollView.subviews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
         if ([view isKindOfClass:[UIImageView class]])
@@ -273,7 +323,7 @@
         frame.size.height = 86;
         self.imagesContainerView.frame = frame;
         [self.imagesScrollView setContentSize:CGSizeMake(spacing +(imageWidth+spacing)*self.content.imageUrlList.count, 86)];
-        [self.imagesScrollView setDirectionalLockEnabled:YES];
+        //[self.imagesScrollView setDirectionalLockEnabled:YES];
         [self.content.imageUrlList enumerateObjectsUsingBlock:^(NSString *urlString, NSUInteger idx, BOOL *stop) {
             UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(spacing +(spacing+imageWidth)*idx, spacing, imageWidth, imageWidth)];
             [self.imagesScrollView addSubview:imageView];
@@ -293,7 +343,7 @@
         frame.size.height = 0;
         self.imagesContainerView.frame = frame;
         [self.imagesContainerViewHeightConstrant setConstant:0];
-    }
+    }*/
     //address
     if ([self.content.poiName isEqualToString:@""])
     {
@@ -342,6 +392,7 @@
 
     
 }
+
 -(void)configureGesture
 {
     
@@ -408,35 +459,33 @@
     // Configure the view for the selected state
 }
 
-#pragma mark - gesture
-/*
--(void)tapImage:(UITapGestureRecognizer *)gesture
-{
-    if (self.addressLabelView.hidden == YES)
-    {
-        if ([self.addressLabel.text isEqualToString:@""])
-        {
-            return;
-        }
-        else
-        {
-            [self.addressLabelView setHidden:NO];
-            [self.addressIcon setHidden:NO];
-            [self.addressLabel setHidden:NO];
-        }
-    }
-    else
-    {
-            [self.addressLabelView setHidden:YES];
-            [self.addressIcon setHidden:YES];
-            [self.addressLabel setHidden:YES];
-    }
-}
-*/
+#pragma mark - gesture and action
 -(void)smallImageViewClick:(UITapGestureRecognizer *)gesture
 {
     UIImageView *imageView = (UIImageView *)gesture.view;
     self.homeCellImageView.image = imageView.image;
+}
+- (void)followButtonPressed:(UIButton *)sender
+{
+    NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [[QDYHTTPClient sharedInstance]followUser:self.content.photoUser.UserID withUserId:myUserId whenComplete:^(NSDictionary *result) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([result objectForKey:@"data"])
+                {
+                    [sender setHidden:YES];
+                    [self.postTimeLabel setHidden:NO];
+                    [[NSNotificationCenter defaultCenter]postNotificationName:@"updateUserInfo" object:nil];
+                    
+                }
+                else if ([result objectForKey:@"error"])
+                {
+                    [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+                }
+            });
+            
+        }];
+    });
 }
 
 #pragma mark - textview utility
@@ -466,6 +515,32 @@
     }
     
 
+}
+
+#pragma mark - collection view delegate
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    if (self.content && self.content.imageUrlList.count >1)
+    {
+        return self.content.imageUrlList.count;
+    }
+    return 0;
+}
+-(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+-(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    HomeSmallImagesCollectionViewCell *cell =(HomeSmallImagesCollectionViewCell *) [collectionView dequeueReusableCellWithReuseIdentifier:@"smallImageCell" forIndexPath:indexPath];
+    [cell.imageView sd_setImageWithURL:[NSURL URLWithString:self.content.imageUrlList[indexPath.item]]];
+    return cell;
+}
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    [collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+    HomeSmallImagesCollectionViewCell *cell =(HomeSmallImagesCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
+    self.homeCellImageView.image = cell.imageView.image;
 }
 
 @end
