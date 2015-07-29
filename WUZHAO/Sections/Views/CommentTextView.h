@@ -9,6 +9,7 @@
 #import "LinkTextView.h"
 #import "User.h"
 #import "WhatsGoingOn.h"
+#import "Comment.h"
 
 @protocol CommentTextViewDelegate;
 
@@ -18,13 +19,9 @@
 
 -(void)reset;
 
--(void)setTextWithoutUserNameWithCommentItem:(NSDictionary *)commentItem;
-
--(void)setTextWithCommentStringList:(NSArray *)commentStringList CommentList:(NSArray *)commentList;
-
--(void)setTextWithCommentString:(NSString *)CommentString CommentItem:(NSDictionary *)commentItem;
-
-
+-(void)setTextWithoutUserNameWithCommentItem:(Comment *)commentItem;
+-(void)setTextWithCommentList:(NSArray *)commentList withMoreItem:(NSInteger)moreCount;
+-(void)setTextWithComment:(Comment *)comment;
 @end
 
 @protocol CommentTextViewDelegate <NSObject>

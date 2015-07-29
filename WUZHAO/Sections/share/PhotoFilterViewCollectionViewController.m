@@ -53,6 +53,7 @@ typedef NS_ENUM(NSInteger, EDIT_TYPE)
 
 @property (nonatomic, weak) IBOutlet UIView *topBarView;
 @property (nonatomic, strong) UIScrollView *imageSelectScrollView;
+@property (nonatomic, strong) NSMutableArray *imageSelectIcon;
 @property (nonatomic, strong) FilterSelectImageView *selectedImageView;
 @property (nonatomic, strong) UILabel *topBarTitleLabel;
 
@@ -503,16 +504,29 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     CGRect rect = CGRectMake(40, 0, scrollViewWidth, CGRectGetHeight(self.topBarView.bounds));
     self.imageSelectScrollView = [[UIScrollView alloc]initWithFrame:rect];
     [self.topBarView addSubview:self.imageSelectScrollView];
+    self.imageSelectIcon = [[NSMutableArray alloc]init];
     float imageWidth = 52;
     float imageSpacing =  (self.imageSelectScrollView.frame.size.height - imageWidth)/2;
-    [self.imageSelectScrollView setContentSize:CGSizeMake((imageWidth+imageSpacing)*self.imagesAndInfo.count ,self.imageSelectScrollView.frame.size.height)];
+    NSInteger contentNum = MIN(9, self.imagesAndInfo.count+1);
+    [self.imageSelectScrollView setContentSize:CGSizeMake((imageWidth+imageSpacing)*contentNum ,self.imageSelectScrollView.frame.size.height)];
     [self.filteredImages enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         FilterSelectImageView *imageView = [[FilterSelectImageView alloc]initWithFrame:CGRectMake((imageWidth+imageSpacing)*idx, imageSpacing, imageWidth, imageWidth)];
         imageView.tag = idx;
         imageView.image = (UIImage *)obj;
         UITapGestureRecognizer *selectImageViewTapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(selectImage:)];
+        UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(beginDeleteImages:)];
+        [imageView addGestureRecognizer:longPressGesture];
         [imageView addGestureRecognizer:selectImageViewTapGesture];
         [imageView setUserInteractionEnabled:YES];
+        
+        UIImageView *deleteImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 24, 24)];
+        deleteImageView.image = [UIImage imageNamed:@"delete_info_red"];
+        UITapGestureRecognizer *deleteImageViewTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(deleteImageView:)];
+        [deleteImageView addGestureRecognizer:deleteImageViewTap];
+        [deleteImageView setUserInteractionEnabled:YES];
+        [deleteImageView setHidden:YES];
+        [imageView addSubview:deleteImageView];
+        
         if (idx == 0)
         {
             [self.filteredImageView removeFromSuperview];
@@ -524,9 +538,22 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         }
         
         [self.imageSelectScrollView addSubview:imageView];
+        [self.imageSelectIcon addObject:imageView];
         
       
     }];
+    if (self.imagesAndInfo.count <9)
+    {
+        UIImageView *addImageView = [[UIImageView alloc]initWithFrame:CGRectMake( (imageWidth+imageSpacing)*self.imagesAndInfo.count, imageSpacing,imageWidth, imageWidth)];
+        addImageView.image = [UIImage imageNamed:@"filter_addImage"];
+        [addImageView.layer setCornerRadius:2.0f];
+        addImageView.backgroundColor = THEME_COLOR_DARK_GREY;
+        UITapGestureRecognizer *addImageViewTapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addImage:)];
+        [addImageView addGestureRecognizer:addImageViewTapGesture];
+        [addImageView setUserInteractionEnabled:YES];
+        [self.imageSelectScrollView addSubview:addImageView];
+        [self.imageSelectIcon addObject:addImageView];
+    }
     
     [self.view addSubview:self.topBarView];
 
@@ -820,41 +847,43 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         [self filterButtonClick:self.filterButton];
     }];
 }
-
 #pragma mark - method
-
+-(void)saveAllImagesInfo
+{
+    NSMutableArray *newImagesAndInfo = [[NSMutableArray alloc]init];
+    [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        
+        FilteredImageView *filterImageView = self.filteredImageViews[idx];
+        BOOL filterUsed = [[filterImageView.filter.attributes objectForKey:kCIAttributeFilterName] isEqualToString: @"CIColorControls"] ? NO : YES;
+        BOOL effectUsed = filterImageView.preEffectFilters.count ==0?NO:YES;
+        NSString *needSave = filterUsed || effectUsed?@"true":@"false";
+        
+        NSMutableDictionary *imageAndInfo = [[NSMutableDictionary alloc]init];
+        [imageAndInfo setObject:filterImageView.outputImage forKey:@"image"];
+        [imageAndInfo setObject:needSave forKey:@"needSave"];
+        [imageAndInfo setObject:[obj objectForKey:@"imageInfo"] forKey:@"imageInfo"];
+        [newImagesAndInfo addObject:imageAndInfo];
+    }];
+    self.imagesAndInfo = newImagesAndInfo;
+}
 
 #pragma mark - button action
 -(void)backBarButtonClick:(UIButton *)sender
 {
+    self.imagesAndInfo = [[NSMutableArray alloc]init];
     [self dismissViewControllerAnimated:YES completion:nil];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"addPhotoFromAlubm" object:nil userInfo:@{@"imagesAndInfo":self.imagesAndInfo}];
 }
 
 -(void)nextButtonPressed:(UIButton *)sender
 {
-    [self backBarButtonClick:nil];
-    if (self.filterBlock)
-    {
-        NSMutableArray *newImagesAndInfo = [[NSMutableArray alloc]init];
-        [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            
-            FilteredImageView *filterImageView = self.filteredImageViews[idx];
-            BOOL filterUsed = [[filterImageView.filter.attributes objectForKey:kCIAttributeFilterName] isEqualToString: @"CIColorControls"] ? NO : YES;
-            BOOL effectUsed = filterImageView.preEffectFilters.count ==0?NO:YES;
-            NSString *needSave = filterUsed || effectUsed?@"true":@"false";
-            
-            NSMutableDictionary *imageAndInfo = [[NSMutableDictionary alloc]init];
-            [imageAndInfo setObject:filterImageView.outputImage forKey:@"image"];
-            [imageAndInfo setObject:needSave forKey:@"needSave"];
-            [imageAndInfo setObject:[obj objectForKey:@"imageInfo"] forKey:@"imageInfo"];
-            [newImagesAndInfo addObject:imageAndInfo];
-            
-            
-        }];
-        self.filterBlock(newImagesAndInfo);
-    }
-
-
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (self.filterBlock)
+        {
+            [self saveAllImagesInfo];
+            self.filterBlock(self.imagesAndInfo);
+        }
+    }];
 }
 
 -(void)filterButtonClick:(UIButton *)sender
@@ -957,6 +986,23 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     }
     [self hideSliderEditView];
 }
+-(void)selectImageSelectIcon:(FilterSelectImageView *)selectedImageView
+{
+    NSInteger oldSelectIndex = self.selectedImageView.tag;
+    [self.selectedImageView setSelected:NO];
+    self.filteredImages[oldSelectIndex] = self.filteredImageView.inputImage;
+    self.selectedImageView.image = self.filteredImageView.outputImage;
+    [self.filteredImageView removeFromSuperview];
+    
+    NSInteger newSelectIndex = selectedImageView.tag;
+    self.filteredImageView = self.filteredImageViews[newSelectIndex];
+    self.selectedImageView = selectedImageView;
+    [self.selectedImageView setSelected:YES];
+    self.filteredImageView.inputImage = self.filteredImages[newSelectIndex];
+    [self.view addSubview:self.filteredImageView];
+    [self filterButtonClick:nil];
+    [self.photoFilterCollectionView reloadData];
+}
 
 -(void)selectImage:(UITapGestureRecognizer *)gesture
 {
@@ -975,6 +1021,13 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self.view addSubview:self.filteredImageView];
     [self filterButtonClick:nil];
     [self.photoFilterCollectionView reloadData];
+}
+-(void)addImage:(UIGestureRecognizer *)gesture
+{
+    [self dismissViewControllerAnimated:YES completion:^{
+    }];
+    [self saveAllImagesInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"addPhotoFromAlubm" object:nil userInfo:@{@"imagesAndInfo":self.imagesAndInfo}];
 }
 
 -(void)cropButtonClick:(UIButton *)sender
@@ -1044,9 +1097,6 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self hideCropView];
     self.filteredImages[self.selectedImageView.tag] = self.selectedImageView.image = [self.cropScrollView capture];
     self.filteredImageView.inputImage = self.selectedImageView.image;
-   
-   
-    
 }
 
 -(void)cropEditCancelClick:(id)sender
@@ -1054,6 +1104,154 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self hideCropView];
     self.filteredImageView.inputImage = self.selectedImageView.image;
    
+}
+
+#pragma mark - images add and delete
+-(void)beginDeleteImages:(UIGestureRecognizer *)gesture
+{
+    UIImageView *imageView =(UIImageView*)gesture.view;
+    [self BeginWobble:imageView];
+}
+-(void)endDeleteImages
+{
+    [self EndWobble];
+}
+-(void)deleteImageView:(UIGestureRecognizer *)gesture
+{
+    FilterSelectImageView *imageView =(FilterSelectImageView *)[gesture.view superview];
+    //最后一张图，直接返回选择页面
+    if (self.imagesAndInfo.count == 1)
+    {
+        [self backBarButtonClick:nil];
+        return;
+    }
+    //delete image
+    [self removeImageFromTheScrollView:imageView];
+}
+-(void)removeImageFromTheScrollView:(FilterSelectImageView *)imageView
+{
+    
+    NSInteger tag = imageView.tag;
+    if (tag <0 || tag >9)
+    {
+        return;
+    }
+    float imageWidth = 52;
+    float imageSpacing =  (self.imageSelectScrollView.frame.size.height - imageWidth)/2;
+    float transWidth = imageWidth + imageSpacing;
+    if (imageView.selected)
+    {
+        FilterSelectImageView *selectImageView;
+        if (imageView.tag<self.imageSelectIcon.count-1 && imageView.tag>0)
+        {
+            selectImageView = self.imageSelectIcon[imageView.tag-1];
+        }
+        {
+            selectImageView = self.imageSelectIcon[1];
+        }
+        [self selectImageSelectIcon:selectImageView];
+        
+    }
+    [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        imageView.transform = CGAffineTransformMakeScale(0.1, 0.1);
+    } completion:^(BOOL finished) {
+        [imageView removeFromSuperview];
+    }];
+    for (NSInteger i = tag+1;i <self.imageSelectIcon.count;i++)
+    {
+        UIImageView *imageView = self.imageSelectIcon[i];
+        CGRect frame = imageView.frame;
+        frame.origin.x -= transWidth;
+        CFTimeInterval delayT = 0.2*(i - tag);
+        [UIView animateWithDuration:0.2 delay:delayT options:UIViewAnimationOptionTransitionNone animations:^{
+            imageView.frame = frame;
+        } completion:nil];
+    }
+    
+    
+    //delete the view and the image
+    [self.imageSelectIcon removeObject:imageView];
+    [self.filteredImageViews removeObjectAtIndex:tag];
+    [self.filteredImages removeObjectAtIndex:tag];
+    [self.imagesAndInfo removeObjectAtIndex:tag];
+    
+
+    //reset tag
+    for (NSInteger i = 0;i<self.imagesAndInfo.count;i++)
+    {
+        UIImageView *imageView = self.imageSelectIcon[i];
+        imageView.tag = i;
+    }
+    
+    CGSize contentSize = self.imageSelectScrollView.contentSize;
+    if ((self.imagesAndInfo.count < 8))
+    {
+        contentSize.width -= transWidth;
+        [self.imageSelectScrollView setContentSize:contentSize];
+
+    }
+    else
+    {
+
+        UIImageView *addImageView = [[UIImageView alloc]initWithFrame:CGRectMake( contentSize.width - imageWidth -imageSpacing, imageSpacing,imageWidth, imageWidth)];
+        addImageView.image = [UIImage imageNamed:@"filter_addImage"];
+        [addImageView.layer setCornerRadius:2.0f];
+        addImageView.backgroundColor = THEME_COLOR_DARK_GREY;
+        UITapGestureRecognizer *addImageViewTapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addImage:)];
+        [addImageView addGestureRecognizer:addImageViewTapGesture];
+        [addImageView setUserInteractionEnabled:YES];
+        [self.imageSelectScrollView addSubview:addImageView];
+        [self.imageSelectIcon addObject:addImageView];
+    }
+    
+    
+}
+
+-(void)BeginWobble:(UIImageView *)view
+{
+    for (UIView *v in view.subviews)
+    {
+        if ([v isKindOfClass:[UIImageView class]])
+        {
+            [v setHidden:NO];
+        }
+    }
+    view.transform = CGAffineTransformMakeRotation(-0.1);
+    
+    [UIView animateWithDuration:0.15
+                          delay:0.0
+                        options:UIViewAnimationOptionRepeat|UIViewAnimationOptionAutoreverse|UIViewAnimationOptionAllowUserInteraction
+                     animations:^{
+                         view.transform = CGAffineTransformMakeRotation(0.1);
+                     } completion:nil];
+}
+
+-(void)EndWobble
+{
+    for (UIView *view in self.imageSelectScrollView.subviews)
+    {
+        if ([view isKindOfClass:[FilterSelectImageView class]])
+        {
+            for (UIView *v in view.subviews)
+            {
+                if ([v isMemberOfClass:[UIImageView class]])
+                    [v setHidden:YES];
+            }
+            [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState animations:^
+             {
+                 view.transform=CGAffineTransformIdentity;
+   
+             } completion:nil];
+        }
+    }
+}
+#pragma mark -touch delegate
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+   if (![self.imageSelectScrollView isExclusiveTouch])
+   {
+       [self EndWobble];
+   }
 }
 
 @end

@@ -43,5 +43,4 @@
     self.selectedIcon.image = selected? [UIImage imageNamed:@"check_small"]:nil;
     
 }
-
 @end

@@ -213,6 +213,7 @@
 -(void)backBarButtonClick:(UIBarButtonItem *)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"backToFilterPage" object:nil userInfo:@{@"imagesAndInfo":self.imagesAndInfo}];
 }
 -(void)PostButtonPressed:(UIBarButtonItem *)sender
 {
@@ -448,7 +449,7 @@
 -(void)finishSelectAddress:(POI *)addressInfo
 {
     self.poiInfo = addressInfo;
-    if ([self.poiInfo.name isEqualToString:@""])
+    if (self.poiInfo == nil || [self.poiInfo.name isEqualToString:@""])
     {
         self.hasPoi = NO;
         self.addressTableViewCell.textLabel.text = @"标记位置";
@@ -467,7 +468,7 @@
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 3;
+    return 4;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -483,11 +484,11 @@
     {
         return 50.0f;
     }
-    /*
+    
     else if (indexPath.section == 3)
     {
         return 80.0f;
-    }*/
+    }
     return 44.0f;
 }
 
@@ -531,9 +532,10 @@
         UITapGestureRecognizer *addressCellClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addressCellClick:)];
         [self.addressTableViewCell addGestureRecognizer:addressCellClick];
     }
-    /*
+    
     else if (indexPath.section == 3)
     {
+        /*
         if (!_shareToSinaWebo)
         {
             _shareToSinaWebo = [[UIImageView alloc ]initWithImage:[UIImage imageNamed:@"sina_off"] highlightedImage:[UIImage imageNamed:@"sina_icon"]];
@@ -542,14 +544,14 @@
             [_shareToSinaWebo addGestureRecognizer:gesture];
             [_shareToSinaWebo setUserInteractionEnabled:YES];
             [_shareToSinaWebo setFrame:CGRectMake(20  , 24, 36, 36)];
-        }
+        }*/
         if (!_shareToWeChatTimeLine)
         {
             _shareToWeChatTimeLine = [[UIImageView alloc ]initWithImage:[UIImage imageNamed:@"wechat_off"] highlightedImage:[UIImage imageNamed:@"wechat_icon"]];
             UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(shareToWeChatTimeLineClick:)];
             [_shareToWeChatTimeLine addGestureRecognizer:gesture];
             [_shareToWeChatTimeLine setUserInteractionEnabled:YES];
-            [_shareToWeChatTimeLine setFrame:CGRectMake(20 + 60 , 24, 36, 36)];
+            [_shareToWeChatTimeLine setFrame:CGRectMake(32 , 18, 48, 48)];
         }
         if (!_shareToQQZone)
         {
@@ -557,13 +559,13 @@
             UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(shareToQQZoneClick:)];
             [_shareToQQZone addGestureRecognizer:gesture];
             [_shareToQQZone setUserInteractionEnabled:YES];
-            [_shareToQQZone setFrame:CGRectMake(20 + 60*2 , 24, 36, 36)];
+            [_shareToQQZone setFrame:CGRectMake(32*2+48 , 18, 48, 48)];
             
         }
         [cell addSubview:_shareToSinaWebo];
         [cell addSubview:_shareToWeChatTimeLine];
         [cell addSubview:_shareToQQZone];
-    }*/
+    }
     return cell;
 }
 
@@ -613,8 +615,7 @@
 
 -(void)regeoLocation
 {
-    //-33.8670522,151.1957362
-    //searchLocation = [[CLLocation alloc]initWithLatitude:-33.8670522 longitude:151.1957362];
+    // searchLocation = [[CLLocation alloc]initWithLatitude:29.646064 longitude:91.00334];
     if ([Geodetic isInsideChina:searchLocation])
     {
         CLLocation *marsLocation = [Geodetic transFromGPSToMars:searchLocation];
@@ -662,7 +663,15 @@
         self.provinceInfo = [[POI alloc]init];
         self.hasPoi = YES;
         [self.poiInfo configureWithGaodeaddressComponent:addressComponent];
+        if ([self.poiInfo.location isEqualToString:@"0.000000,0.000000"])
+        {
+            self.poiInfo.location = [NSString stringWithFormat:@"%f,%f",request.location.latitude,request.location.longitude];
+        }
         [self.provinceInfo configureWithGaodeaddressComponent:addressComponent];
+        if ([self.provinceInfo.location isEqualToString:@"0.000000,0.000000"])
+        {
+            self.provinceInfo.location = [NSString stringWithFormat:@"%f,%f",request.location.latitude,request.location.longitude];
+        }
         self.addressTableViewCell.textLabel.text = [NSString stringWithFormat:@"%@ · %@",self.poiInfo.city,self.poiInfo.name];
     }
 }
@@ -713,6 +722,10 @@
         {
             [self shareToPlatform:UMShareToWechatTimeline next:nil];
         }
+    }
+    else if ([self.shareToQQZone isHighlighted])
+    {
+         [self shareToPlatform:UMShareToQzone next:nil];
     }
 }
 

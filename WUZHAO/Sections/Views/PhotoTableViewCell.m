@@ -140,8 +140,7 @@
     //评论内容显示样式
     [self.commentView reset];
     self.commentView.delegate = (id<CommentTextViewDelegate>)self.parentViewController;
-   
-    [self.commentView setTextWithCommentStringList:self.content.commentStringList CommentList:self.content.commentList];
+    [self.commentView setTextWithCommentList:self.content.commentList withMoreItem:self.content.commentNum];
     [self updateFrameOfTextView:self.commentView heightConstraint:self.commentViewHeightConstraint];
     if (self.commentView.frame.size.height>0)
     {

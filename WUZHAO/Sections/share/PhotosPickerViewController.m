@@ -16,7 +16,6 @@
 
 @interface PhotosPickerViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UITableViewDelegate,UITableViewDataSource>
 {
-    NSInteger selectedImageCount;
     NSString *currentSelectAlbumName;
 }
 
@@ -30,7 +29,7 @@
 @property (strong, nonatomic) UILabel *titleLabel;
 @property (strong, nonatomic) UIImageView *titleLabelIcon;
 
-@property (strong, nonatomic) NSMutableArray *imagesAndInfo;
+
 @property (strong, nonatomic) UILabel *imageCountLabel;
 @property (strong, nonatomic) UIButton *nextButton;
 @property (strong, nonatomic) NSMutableArray *albumMenuItems;
@@ -49,7 +48,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    selectedImageCount = 0;
     [self getAllAlbumList];
     // Do any additional setup after loading the view.
     [self loadPhotos];
@@ -217,6 +215,12 @@
                  forState:UIControlStateNormal];
         [backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
         [self.topView addSubview:backBtn];
+        self.backButton = backBtn;
+        //从滤镜页面返回，当前已有选择图像，隐藏后退入口
+        if (self.imagesAndInfo.count >0)
+        {
+            [self.backButton setHidden:YES];
+        }
         
         rect = CGRectMake((CGRectGetWidth(self.topView.bounds)-100)/2-10, (CGRectGetHeight(self.topView.bounds) -20)/2, 100,20);
         
@@ -242,7 +246,7 @@
         //selected images count label
         rect = CGRectMake(CGRectGetWidth(self.topView.bounds)-75, 0, 22, CGRectGetHeight(self.topView.bounds));
         self.imageCountLabel= [[UILabel alloc]initWithFrame:rect];
-        self.imageCountLabel.text = [NSString stringWithFormat:@"%ld/9",(long)selectedImageCount];
+        self.imageCountLabel.text = [NSString stringWithFormat:@"%ld/9",(long)self.imagesAndInfo.count?self.imagesAndInfo.count:0];
         self.imageCountLabel.font = [UIFont systemFontOfSize:14.0f];
         self.imageCountLabel.textColor = [UIColor whiteColor];
         [self.topView addSubview:self.imageCountLabel];
@@ -282,6 +286,7 @@
         _collectionView.allowsMultipleSelection = YES;
         
         [_collectionView registerClass:[PhotoPickerCollectionViewCell class] forCellWithReuseIdentifier:@"PhotoCollectionViewCell"];
+        
 
     }
     return _collectionView;
@@ -360,28 +365,27 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if (selectedImageCount ==9)
+    if (self.imagesAndInfo.count ==9)
     {
         [collectionView deselectItemAtIndexPath:indexPath animated:NO];
         return;
     }
-    selectedImageCount ++;
     [self.nextButton setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
     [self.nextButton setEnabled:YES];
-    self.imageCountLabel.text = [NSString stringWithFormat:@"%ld/9",(long)selectedImageCount];
+
     ALAsset * asset = [self.assets objectAtIndex:indexPath.row];
     UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage scale:1.0f orientation:UIImageOrientationUp];
    // UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
     ALAssetRepresentation *rep = [[self.assets objectAtIndex:indexPath.row]defaultRepresentation];
     NSDictionary *imageInfo = rep.metadata;
     [self.imagesAndInfo addObject:@{@"image":image,@"imageInfo":imageInfo,@"indexPath":indexPath}];
+    self.imageCountLabel.text = [NSString stringWithFormat:@"%ld/9",(long)self.imagesAndInfo.count];
     
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    selectedImageCount --;
-    if (selectedImageCount == 0)
+    if (self.imagesAndInfo.count == 1)
     {
         [self.nextButton setTitleColor:THEME_COLOR_LIGHT_GREY forState:UIControlStateNormal];
         [self.nextButton setEnabled:NO];
@@ -393,7 +397,7 @@
             *stop = YES;
         }
     }];
-    self.imageCountLabel.text = [NSString stringWithFormat:@"%ld/9",(long)selectedImageCount];
+    self.imageCountLabel.text = [NSString stringWithFormat:@"%ld/9",(long)self.imagesAndInfo.count];
 }
 
 #pragma mark - TableView Delegate

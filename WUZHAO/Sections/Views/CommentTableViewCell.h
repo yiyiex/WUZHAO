@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "CommentTextView.h"
+#import "Comment.h"
 
 
 
@@ -17,8 +18,9 @@
 @property (strong, nonatomic) IBOutlet UILabel *userName;
 @property (strong, nonatomic) IBOutlet CommentTextView *commentContent;
 @property (strong, nonatomic) IBOutlet UILabel *commentTime;
+@property (strong, nonatomic) IBOutlet UIImageView *infoImage;
 
 @property (nonatomic, weak) UIViewController *parentController;
--(void)configureDataWith:(NSDictionary *)cellData parentController:(UIViewController *)parentController;
+-(void)configureDataWith:(Comment *)cellData parentController:(UIViewController *)parentController;
 -(void)setAppearance;
 @end

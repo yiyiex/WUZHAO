@@ -13,6 +13,8 @@
 #import "UIImageView+WebCache.h"
 #import "UIImageView+ChangeAppearance.h"
 
+#import "SWSnapshotStackView.h"
+
 #import "HomeTableViewController.h"
 #import "AddressViewController.h"
 #import "PhotosCollectionViewController.h"
@@ -61,7 +63,27 @@
 {
     float basicHeight = 20 + 8*2;
     NSInteger photoNum = photoList.count;
+    SWSnapshotStackView *snapshotView = [[SWSnapshotStackView alloc]initWithFrame: CGRectMake( 0, basicHeight +  spacing, photoWidth, photoWidth)];
+    if (photoNum ==1)
+    {
+        snapshotView.displayAsStack = NO;
+    }
+    else
+    {
+        snapshotView.displayAsStack = YES;
+    }
+    WhatsGoingOn *item = photoList[0];
+    CGRect frame = CGRectMake( 0, basicHeight +  spacing , photoWidth, photoWidth);
+    UIImageView *imageView = [[UIImageView alloc]initWithFrame:frame];
+    [imageView sd_setImageWithURL:[NSURL URLWithString:item.imageUrlString] placeholderImage:[UIImage imageNamed:@"placeholder"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        [snapshotView setImage:image];
+        [cell addSubview:snapshotView];
+        UITapGestureRecognizer *tapgesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(imageViewTaped:)];
+        [snapshotView addGestureRecognizer:tapgesture];
+        [snapshotView setUserInteractionEnabled:YES];
+    }];
     //NSInteger showNum = photoNum<=3?photoNum:3*(photoNum/3);
+    /*
     for (NSInteger i = 0;i<photoNum;i++)
     {
         WhatsGoingOn *item = photoList[i];
@@ -74,7 +96,7 @@
         [imageView setUserInteractionEnabled:YES];
         [cell addSubview:imageView];
 
-    }
+    }*/
     UITapGestureRecognizer *photoNumLabelTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(photoNumLabelClick:)];
     [cell.photoNumLabel addGestureRecognizer:photoNumLabelTap];
     [cell.photoNumLabel setUserInteractionEnabled:YES];
@@ -142,8 +164,6 @@
     cell.addressNameLabel.text = content.poi.name;
     cell.photoNumLabel.text = [NSString stringWithFormat:@"%ld张",(long)content.photoNum];
     [self ConfigureCell:cell WithPhotoList:content.photoList];
-    [cell setAppearance];
-
     return cell;
 }
 

@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DynamicResizingTableViewCell.h"
 #import "LinkTextView.h"
 #import "WhatsGoingOn.h"
 
@@ -15,7 +14,7 @@
 
 
 
-@interface PhotoTableViewCell :DynamicResizingTableViewCell
+@interface PhotoTableViewCell :UITableViewCell
 @property (nonatomic, strong) WhatsGoingOn *content;
 
 @property (nonatomic, weak) UIViewController *parentViewController;

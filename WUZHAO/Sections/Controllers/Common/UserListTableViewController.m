@@ -46,6 +46,14 @@
     //refresh control
     self.refreshControl = [[UIRefreshControl alloc]init];
     [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
+    if ([self.userListStyle isEqual: UserListStyle3])
+    {
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    }
+    else
+    {
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    }
 }
 
 - (void)didReceiveMemoryWarning {

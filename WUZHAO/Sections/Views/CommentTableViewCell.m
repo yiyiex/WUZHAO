@@ -26,11 +26,11 @@
     [self.commentTime setTextAlignment:NSTextAlignmentRight];
 }
 
--(void)configureDataWith:(NSDictionary *)cellData parentController:(UIViewController *)parentController
+-(void)configureDataWith:(Comment *)cellData parentController:(UIViewController *)parentController
 {
     self.parentController = parentController;
-    [self.userAvatorView sd_setImageWithURL:[NSURL URLWithString:[cellData objectForKey:@"avatarUrl"]]];
-    self.userName.text = [NSString stringWithFormat:@"%@",[cellData objectForKey:@"userName"]];
+    [self.userAvatorView sd_setImageWithURL:[NSURL URLWithString:cellData.commentUser.avatarImageURLString]];
+    self.userName.text = [NSString stringWithFormat:@"%@",cellData.commentUser.UserName];
     self.commentContent.delegate = (id<CommentTextViewDelegate>)self;
     [self.commentContent setTextWithoutUserNameWithCommentItem:cellData];
     CGRect frame = self.commentContent.frame;
@@ -40,7 +40,18 @@
     self.commentContent.frame = frame;
     
     NSLog(@"comment content height%f",self.commentContent.frame.size.height);
-    self.commentTime.text =  [cellData objectForKey:@"time"];
+    self.commentTime.text =  cellData.createTime;
+    if(cellData.isFailed && cellData.commentUser.UserID == [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
+    {
+        [self.infoImage setHidden:NO];
+        [self.commentTime setHidden:YES];
+    }
+    else
+    {
+        [self.infoImage setHidden:YES];
+        [self.commentTime setHidden:NO];
+    }
+    
     self.commentContent.delegate =(id<CommentTextViewDelegate>) self.parentController;
     [self setAppearance];
     [self configureGesture];
@@ -55,6 +66,12 @@
         [self.userAvatorView setUserInteractionEnabled:YES];
         [self.userName addGestureRecognizer:userNameTap];
         [self.userName setUserInteractionEnabled:YES];
+    }
+    if ([self.parentController respondsToSelector:@selector(infoImageClick:)])
+    {
+        UITapGestureRecognizer *infoImageTap = [[UITapGestureRecognizer alloc]initWithTarget:self.parentController action:@selector(infoImageClick:)];
+        [self.infoImage addGestureRecognizer:infoImageTap];
+        [self.infoImage setUserInteractionEnabled:YES];
     }
 }
 

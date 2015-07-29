@@ -7,9 +7,10 @@
 //
 
 #import "QDYHTTPClient.h"
-
+#import "ApplicationUtility.h"
 
 #define KAPIHOST @"http://placeapp.cn/"
+//#define KAPIHOST @"http://192.168.0.104/"
 
 
 @implementation QDYHTTPClient
@@ -1286,7 +1287,12 @@
         {
             if ([result objectForKey:@"success"])
             {
-                [returnData setValue:(NSNumber *)[result objectForKey:@"unreadNum"] forKey:@"data"];
+                NSMutableDictionary *data = [[NSMutableDictionary alloc]init];
+                NSDictionary *d = [result objectForKey:@"data"];
+                [data setObject:(NSNumber *)[d objectForKey:@"unReadNoticeNum"] forKey:@"noticeNum"];
+                [data setObject:(NSNumber *)[d objectForKey:@"unReadMsgNum"] forKey:@"messageNum"];
+                [data setObject:(NSNumber *)[result objectForKey:@"unreadNum"] forKey:@"unreadNum"];
+                [returnData setObject:data forKey:@"data"];
                 
             }
             else if ([result objectForKey:@"msg"])
@@ -1337,6 +1343,131 @@
     }];
 }
 
+-(void)getConversationWithUserId:(NSInteger)myUserId otherUserId:(NSInteger)otherUserId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/msglist";
+    NSDictionary *param = @{@"meid":[NSNumber numberWithInteger:myUserId],@"otherid":[NSNumber numberWithInteger:otherUserId]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([result objectForKey:@"success"])
+            {
+                Conversation *conversation = [[Conversation alloc]initWithDictionary:[result objectForKey:@"data"]];
+                [returnData setObject:conversation forKey:@"data"];
+                
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"网络请求失败" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+-(void)getLetterListWithUserId:(NSInteger)myUserId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/msgpersons";
+    NSDictionary *param = @{@"userid":[NSNumber numberWithInteger:myUserId]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([result objectForKey:@"success"])
+            {
+                NSMutableArray *conversations = [[NSMutableArray alloc]init];
+                NSArray *data = [result objectForKey:@"data"];
+                [data enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL *stop) {
+                    Conversation *conversation = [[Conversation alloc]initWithDictionary:obj];
+                    [conversations addObject:conversation];
+                    
+                }];
+                [returnData setObject:conversations forKey:@"data"];
+                
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"网络请求失败" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
+-(void)sendMessageWithMyUserId:(NSInteger)myUserId toUserId:(NSInteger)toUserId content:(NSString *)content whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/sendmsg";
+    NSDictionary *param = @{@"fromid":[NSNumber numberWithInteger:myUserId],@"toid":[NSNumber numberWithInteger:toUserId],@"content":content};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([result objectForKey:@"success"])
+            {
+                [returnData setObject:@"success" forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"网络请求失败" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+    
+}
+-(void)deleteMessageWithMyUserId:(NSInteger)myUserId toUserId:(NSInteger)toUserId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/deletemsgs";
+    NSDictionary *param = @{@"meid":[NSNumber numberWithInteger:myUserId],@"otherid":[NSNumber numberWithInteger:toUserId]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([result objectForKey:@"success"])
+            {
+                [returnData setObject:@"success" forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"网络请求失败" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];}
+
+
 #pragma mark - basic method
 -(void)setDefaultUserInfoWithUser:(User *)user
 {
@@ -1352,6 +1483,7 @@
     NSLog(@"%lu",(long)[userDefaults integerForKey:@"userId"]);
     [userDefaults synchronize];
 }
+
 -(void)updateLocalUserInfo
 {
     
@@ -1373,6 +1505,46 @@
         [userDefaults synchronize];
     }];
 }
+
+
+#pragma mark - get latest notice number
+-(void)getLatestNoticeNumber
+{
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        
+        NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+        [[QDYHTTPClient sharedInstance]getNoticeNumWithUserId:userId whenComplete:^(NSDictionary *returnData) {
+            if ([returnData objectForKey:@"data"])
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([returnData objectForKey:@"data"]>0)
+                    {
+                        
+                        NSDictionary *data = [returnData objectForKey:@"data"];
+                        NSNumber *num = [data valueForKey:@"unreadNum"];
+                        NSNumber *noticeNum = [data valueForKey:@"noticeNum"];
+                        NSNumber *messageNum = [data valueForKey:@"messageNum"];
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"updateNotificationNum" object:nil userInfo:@{@"notificationNum":num,@"noticeNum":noticeNum,@"messageNum":messageNum}];
+                        [ApplicationUtility setApplicationIconBadgeWithNum:num.integerValue];
+                        
+                    }
+                    else
+                    {
+                        [ApplicationUtility setApplicationIconBadgeWithNum:0];
+                    }
+                    
+                });
+                
+                
+            }
+            else
+            {
+                NSLog(@"get the notice nummber failed");
+            }
+        }];
+    });
+}
+#pragma mark - baidu push update
 -(void)updateUserPushInfo
 {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];

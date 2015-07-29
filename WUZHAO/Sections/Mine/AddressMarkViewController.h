@@ -7,13 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <MAMapKit/MAMapKit.h>
-#import <AMapSearchKit/AMapSearchAPI.h>
+#import <MapKit/MapKit.h>
+#import "User.h"
 
 @interface AddressMarkViewController : UIViewController
 
 @property (nonatomic, strong) NSMutableArray *locations;
-
+@property (nonatomic, strong) User *userInfo;
 -(void)addAnnotations;
 
 @end

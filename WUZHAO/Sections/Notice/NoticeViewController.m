@@ -1,171 +1,349 @@
 //
-//  NoticeViewController.m
+//  SystemNoticeViewController.m
 //  WUZHAO
 //
-//  Created by yiyi on 15-1-14.
+//  Created by yiyi on 15/7/25.
 //  Copyright (c) 2015年 yiyi. All rights reserved.
 //
 
+#import "SystemNoticeViewController.h"
+#import "CommonContainerViewController.h"
 #import "NoticeViewController.h"
-#import "FeedsFollowTableViewCell.h"
-#import "FeedsZanAndCommentTableViewCell.h"
-#import "HomeTableViewController.h"
-#import "MineViewController.h"
-#import "SVProgressHUD.h"
-
-#import "NoticeContentTextView.h"
-
-#import "UIViewController+HideBottomBar.h"
-#import "UILabel+ChangeAppearance.h"
-#import "UIImageView+WebCache.h"
-#import "Feeds.h"
+#import "SystemNoticeViewController.h"
+#import "PrivateLetterViewController.h"
+#import "HMSegmentedControl.h"
 
 #import "QDYHTTPClient.h"
+#import "SVProgressHUD.h"
+
+#import "UILabel+ChangeAppearance.h"
+
 #import "macro.h"
 
+#define SEGUEFIRST @"segueNotice"
+#define SEGUESECOND @"seguePrivateLetter"
 
-@interface NoticeViewController ()<NoticeContentTextViewDelegate>
-
-@property (nonatomic,strong) NSMutableArray *dataSource;
+@interface NoticeViewController ()<CommonContainerViewControllerDelegate>
+@property (nonatomic, strong) HMSegmentedControl *segmentControl;
 @property (nonatomic,strong) UIView *infoView;
+@property (nonatomic, strong) CommonContainerViewController *containerViewController;
+@property (nonatomic, strong) SystemNoticeViewController *noticeViewController;
+@property (nonatomic, strong) PrivateLetterViewController *privateLetterViewController;
+
+@property (nonatomic, strong) NSMutableArray *noticeViewDatasouce;
+@property (nonatomic, strong) NSMutableArray *privateLetterViewDatasource;
+
+@property (nonatomic, strong) UIView *LetterIndicator;
+@property (nonatomic, strong) UIView *NoticeIndicator;
+
+@property (nonatomic) BOOL shouldRefreshNoticeData;
+@property (nonatomic) BOOL shouldRefreshLettersData;
+
+@property (nonatomic, strong) UIActivityIndicatorView *aiv;
 
 @end
 
 @implementation NoticeViewController
 
 - (void)viewDidLoad {
+
+    
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
+    [self initSegment];
+    [self initNavigationBar];
+
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNoticeInfo:) name:@"updateNotificationNum" object:nil];
+     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updatePageContent:) name:@"updateNoticePage" object:nil];
+    // Do any additional setup after loading the view.
+}
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    NSInteger loadIndex;
+    if ([[NSUserDefaults standardUserDefaults]valueForKey:@"noticeIndex"])
+    {
+        loadIndex = [[[NSUserDefaults standardUserDefaults]valueForKey:@"noticeIndex"]integerValue];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"noticeIndex"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [self.segmentControl setSelectedSegmentIndex:loadIndex animated:YES];
+        [self segmentValueChanged];
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
--(void)viewWillAppear:(BOOL)animated
+
+
+
+-(void)initSegment
 {
-    [super viewWillAppear:animated];
-    [self initNavigationItem];
+    _segmentControl = [[HMSegmentedControl alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width-100, 44)];
+    _segmentControl.backgroundColor = [UIColor clearColor];
+    _segmentControl.sectionTitles = @[@"通 知",@"私 信"];
+    _segmentControl.titleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_LARGE_SIZE};
+    _segmentControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_LARGE_SIZE};
+    [_segmentControl setSelectionIndicatorColor:THEME_COLOR_DARK_GREY_BIT_PARENT];
+    _segmentControl.selectionIndicatorHeight = 2.50f;
+    
+    _segmentControl.selectionStyle = HMSegmentedControlSelectionStyleTextWidthStripe;
+    _segmentControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationDown;
+    [_segmentControl addTarget:self action:@selector(segmentValueChanged) forControlEvents:UIControlEventValueChanged];
+    [_segmentControl setSelectedSegmentIndex:0];
+
+    [_segmentControl setSelectedSegmentIndex:0];
+    
+    float indicatorWidth = 8;
+    float indicatorOffset;
+    if (isIPHONE_4s || isIPHONE_5)
+    {
+        indicatorOffset = _segmentControl.frame.size.width/6;
+    }
+    else if (isIPHONE_6)
+    {
+        indicatorOffset = _segmentControl.frame.size.width/7+8;
+    }
+    else if (isIPHONE_6P)
+    {
+        indicatorOffset = _segmentControl.frame.size.width/7+10;
+    }
+    
+    _NoticeIndicator = [[UIView alloc]initWithFrame:CGRectMake(_segmentControl.frame.size.width/2-indicatorOffset, 12, indicatorWidth, indicatorWidth)];
+    _NoticeIndicator.layer.cornerRadius = indicatorWidth/2;
+    _NoticeIndicator.layer.masksToBounds = YES;
+    _NoticeIndicator.backgroundColor = THEME_COLOR_DARK;
+    
+    _LetterIndicator = [[UIView alloc]initWithFrame:CGRectMake(_segmentControl.frame.size.width-indicatorOffset, 12, indicatorWidth, indicatorWidth)];
+    _LetterIndicator.layer.cornerRadius = indicatorWidth/2;
+    _LetterIndicator.layer.masksToBounds = YES;
+    _LetterIndicator.backgroundColor = THEME_COLOR_DARK;
+    
+    [_segmentControl addSubview:_NoticeIndicator];
+    [_segmentControl addSubview:_LetterIndicator];
+    [_NoticeIndicator setHidden:YES];
+    [_LetterIndicator setHidden:YES];
+    
+    
+   
     
 }
-
--(void)dealloc
+-(void)initNavigationBar
 {
-    [[NSNotificationCenter defaultCenter]removeObserver:self];
-}
 
--(void)initNavigationItem
-{
-    self.navigationItem.title = @"通 知";
-    self.navigationController.navigationBarHidden = NO;
-    self.navigationItem.hidesBackButton = YES;
+    //self.navigationItem.titleView = self.segmentControl;
+    self.tabBarController.navigationItem.title = @"通 知";
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
+    
+    _aiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc]initWithCustomView:_aiv];
+    self.navigationItem.rightBarButtonItem = rightBarItem;
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+    self.navigationItem.titleView = self.segmentControl;
+}
+-(void)viewWillDisappear:(BOOL)animated
+{
+    self.navigationItem.titleView = nil;
 }
 
-#pragma mark - tableview delegate
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    Feeds *feeds = [self.dataSource objectAtIndex:indexPath.row];
-    UITableViewCell *cell;
-    if (feeds.type == WZ_FEEDSTYPE_ZAN)
+    self.shouldRefreshLettersData = YES;
+    self.shouldRefreshNoticeData = YES;
+    if ([segue.identifier isEqualToString:@"embedContainer"])
     {
-        cell = (FeedsZanAndCommentTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"zanAndCommentCell" forIndexPath:indexPath];
-        if (!cell)
-        {
-            cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
-        }
-        [self configureZanCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
+        self.containerViewController = segue.destinationViewController;
+        self.containerViewController.delegate = self;
         
-        
+        self.containerViewController.ChildrenName = @[SEGUEFIRST,SEGUESECOND];
+        self.containerViewController.isInteractive = NO;
     }
-    else if (feeds.type == WZ_FEEDSTYPE_COMMENT)
-    {
-        cell = (FeedsZanAndCommentTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"zanAndCommentCell" forIndexPath:indexPath];
-        if (!cell)
-        {
-            cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
-        }
-        [self configureCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
-    }
-    else if (feeds.type == WZ_FEEDSTYPE_REPLYCOMMENT)
-    {
-        cell = (FeedsZanAndCommentTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"zanAndCommentCell" forIndexPath:indexPath];
-        if (!cell)
-        {
-            cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
-        }
-        [self configureReplyCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
-    }
-    else if (feeds.type == WZ_FEEDSTYPE_FOLLOW)
-    {
-        cell = (FeedsFollowTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"followCell" forIndexPath:indexPath];
-        if (!cell)
-        {
-            cell = [[FeedsFollowTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"followCell"];
-        }
-        [self configureFollowCell:(FeedsFollowTableViewCell *)cell WithFeeds:feeds];
-    }
-    
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    return cell;
-    
-    
-}
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return self.dataSource.count;
-}
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
 }
 
 
--(float)caculateProtoCellHeightWithData:(Feeds *)feeds
+-(CommonContainerViewController *)containerViewController
 {
-    float height;
-    if (feeds.type == WZ_FEEDSTYPE_ZAN)
+    if (!_containerViewController)
     {
-        height =  64;
-    }
-    else if (feeds.type == WZ_FEEDSTYPE_COMMENT)
-    {
-       FeedsZanAndCommentTableViewCell * cell = (FeedsZanAndCommentTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"zanAndCommentCell" ];
-        if (!cell)
-        {
-            cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
-        }
-        [self configureCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
-        height = cell.contentTextView.frame.size.height >60?cell.contentTextView.frame.size.height:64;
+        _containerViewController = [[CommonContainerViewController alloc]initWithChildren:@[SEGUEFIRST,SEGUESECOND]];
         
     }
-    else if (feeds.type == WZ_FEEDSTYPE_REPLYCOMMENT)
+    return _containerViewController;
+}
+
+
+#pragma mark - control the model
+
+-(void)getLatestDataOfSystemNotice
+{
+    if ((!self.shouldRefreshNoticeData))
     {
-        FeedsZanAndCommentTableViewCell * cell = (FeedsZanAndCommentTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"zanAndCommentCell" ];
-        if (!cell)
+        return;
+    }
+    [self startAiv];
+    self.shouldRefreshNoticeData = NO;
+    self.noticeViewController.shouldRefreshData = NO;
+    NSInteger userId = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
+    //获取最新数据
+    [[QDYHTTPClient sharedInstance]getNoticeWithUserId:userId whenComplete:^(NSDictionary *returnData) {
+        self.shouldRefreshNoticeData = YES;
+        self.noticeViewController.shouldRefreshData = YES;
+        if ([returnData objectForKey:@"data"])
         {
-            cell = [[FeedsZanAndCommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"zanAndCommentCell"];
+            [[QDYHTTPClient sharedInstance] getLatestNoticeNumber];
+            self.noticeViewDatasouce = [returnData objectForKey:@"data"];
+            if (self.noticeViewDatasouce.count == 0)
+            {
+                if (![self.infoView superview])
+                {
+                    self.infoView = [[UIView alloc]initWithFrame:self.view.frame];
+                    UILabel *infoLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, WZ_APP_SIZE.width-20, 30)];
+                    infoLabel.text = @"暂无数据";
+                    infoLabel.textAlignment = NSTextAlignmentCenter;
+                    [infoLabel setReadOnlyLabelAppearance];
+                    [self.infoView addSubview:infoLabel];
+                }
+                [self.view addSubview:self.infoView];
+            }
+            else
+            {
+                if (self.infoView)
+                {
+                    [self.infoView removeFromSuperview];
+                }
+                self.noticeViewController.dataSource = self.noticeViewDatasouce;
+                [self.noticeViewController loadData];
+            }
         }
-        [self configureReplyCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:feeds];
-         height = cell.contentTextView.frame.size.height >60?cell.contentTextView.frame.size.height:64;
-    }
-    else if (feeds.type == WZ_FEEDSTYPE_FOLLOW)
+        else
+        {
+            [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+        }
+
+        [self stopAiv];
+    }];
+    //self.dataSource = [[Feeds getLatestFeeds]mutableCopy];;
+}
+-(void)getLatestDataOfPrivateLetter
+{
+    if ((!self.shouldRefreshLettersData) )
     {
-        height = 64;
+        return ;
     }
-    return height;
-}
--(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return[ self caculateProtoCellHeightWithData:self.dataSource[indexPath.row]];
+    [self startAiv];
+    self.shouldRefreshLettersData = NO;
+    self.privateLetterViewController.shouldRefreshData = NO;
+    [[QDYHTTPClient sharedInstance]getLetterListWithUserId:[[NSUserDefaults standardUserDefaults] integerForKey:@"userId"] whenComplete:^(NSDictionary *returnData) {
+        self.shouldRefreshLettersData = YES;
+        self.privateLetterViewController.shouldRefreshData = YES;
+        if ([returnData objectForKey:@"data"])
+        {
+
+            [[QDYHTTPClient sharedInstance] getLatestNoticeNumber];
+            self.privateLetterViewDatasource = [returnData objectForKey:@"data"];
+            if (self.privateLetterViewDatasource.count == 0)
+            {
+                if (![self.infoView superview])
+                {
+                    self.infoView = [[UIView alloc]initWithFrame:self.view.frame];
+                    UILabel *infoLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, WZ_APP_SIZE.width-20, 30)];
+                    infoLabel.text = @"暂无数据";
+                    infoLabel.textAlignment = NSTextAlignmentCenter;
+                    [infoLabel setReadOnlyLabelAppearance];
+                    [self.infoView addSubview:infoLabel];
+                }
+                [self.view addSubview:self.infoView];
+            }
+            else
+            {
+                if (self.infoView)
+                {
+                    [self.infoView removeFromSuperview];
+                }
+                self.privateLetterViewController.letterListData = self.privateLetterViewDatasource;
+                [self.privateLetterViewController loadData];
+            }
+        }
+        else
+        {
+            [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+        }
+ 
+        [self stopAiv];
+        
+    }];
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)getLatestData
 {
-    return [self caculateProtoCellHeightWithData:self.dataSource[indexPath.row]];
+    if ([self.containerViewController.currentViewController isKindOfClass:[SystemNoticeViewController class]])
+    {
+        [self getLatestDataOfSystemNotice];
+    }
+    else  if ([self.containerViewController.currentViewController isKindOfClass:[PrivateLetterViewController class]])
+    {
+        [self getLatestDataOfPrivateLetter];
+    }
 }
 
+#pragma mark - commencontainerviewcontroller delegate
+-(void)beginLoadChildController:(UIViewController *)childController
+{
+    if ([childController isKindOfClass: [SystemNoticeViewController class]])
+    {
+        self.noticeViewController = (SystemNoticeViewController *)childController;
+        self.noticeViewController.shouldRefreshData = YES;
+ 
+    }
+    else if ([childController isKindOfClass:[PrivateLetterViewController class]])
+    {
+        self.privateLetterViewController = (PrivateLetterViewController *)childController;
+        self.privateLetterViewController.shouldRefreshData = YES;
+    }
+}
+-(void)finishLoadChildController:(UIViewController *)childController
+{
+    [self.segmentControl setUserInteractionEnabled:YES];
+    if ([childController isKindOfClass: [SystemNoticeViewController class]])
+    {
+        [self.segmentControl setSelectedSegmentIndex:0 animated:YES];
+        if (self.NoticeIndicator.hidden == NO)
+        {
+            [self getLatestDataOfSystemNotice];
+        }
+        else if (self.noticeViewDatasouce.count >0)
+        {
+            self.noticeViewController.dataSource =self.noticeViewDatasouce;
+            [self.noticeViewController loadData];
+        }
+        else
+        {
+            [self getLatestDataOfSystemNotice];
+        }
+    }
+    else if ([childController isKindOfClass:[PrivateLetterViewController class]])
+    {
+        [self.segmentControl setSelectedSegmentIndex:1 animated:YES];
+        if (self.LetterIndicator.hidden == NO)
+        {
+            [self getLatestDataOfPrivateLetter];
+        }
+        else  if (self.privateLetterViewDatasource.count >0)
+        {
+            self.privateLetterViewController.letterListData = self.privateLetterViewDatasource;
+            [self.privateLetterViewController loadData];
+        }
+        else
+        {
+            [self getLatestDataOfPrivateLetter];
+        }
+
+    }
+}
 /*
 #pragma mark - Navigation
 
@@ -175,118 +353,75 @@
     // Pass the selected object to the new view controller.
 }
 */
--(void)configureZanCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:(Feeds *)feeds
+#pragma mark - segment delegate
+- (void)segmentValueChanged
 {
-    [cell configureZanWithFeeds:feeds parentController:self];
-}
--(void)configureCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:(Feeds *)feeds
-{
-    [cell configureCommentWithFeeds:feeds parentController:self];
-}
--(void)configureReplyCommentCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:(Feeds *)feeds
-{
-    [cell configureReplyCommentWithFeeds:feeds parentController:self];
-}
--(void)configureFollowCell:(FeedsFollowTableViewCell *)cell WithFeeds:(Feeds *)feeds
-{
-    [cell configureFollowWithFeeds:feeds parentController:self];
+    [self.segmentControl setUserInteractionEnabled:NO];
+    NSString *swapIdentifier ;
+    switch (self.segmentControl.selectedSegmentIndex) {
+        case 0:
+            swapIdentifier = SEGUEFIRST;
+            break;
+        case 1:
+            swapIdentifier = SEGUESECOND;
+            break;
+        default:
+            swapIdentifier = SEGUEFIRST;
+            break;
+    }
+    [self.containerViewController swapViewControllersWithIdentifier:swapIdentifier];
 }
 
--(void)getLatestData
+-(void)updatePageContent:(NSNotification *)notification
 {
-    NSInteger userId = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
-    //获取最新数据
-    [[QDYHTTPClient sharedInstance]getNoticeWithUserId:userId whenComplete:^(NSDictionary *returnData) {
-        if ([returnData objectForKey:@"data"])
+    NSDictionary *userInfo = notification.userInfo;
+    if ([[userInfo objectForKey:@"type"] isEqualToString:@"message"] )
+    {
+        [self getLatestDataOfPrivateLetter];
+    }
+    /*
+    else if ([[userInfo objectForKey:@"type"]isEqualToString:@"notice"])
+    {
+        [self getLatestDataOfSystemNotice];
+    }*/
+}
+
+-(void)updateNoticeInfo:(NSNotification *)notification
+{
+    NSDictionary *userInfo = notification.userInfo;
+    if ([(NSNumber *)[userInfo objectForKey:@"messageNum"]integerValue]>0)
+    {
+        [self.LetterIndicator setHidden:NO];
+    }
+    else
+    {
+        [self.LetterIndicator setHidden:YES];
+    }
+    if ([(NSNumber *)[userInfo objectForKey:@"noticeNum"]integerValue]>0)
+    {
+        [self.NoticeIndicator setHidden:NO];
+    }
+    else
+    {
+        [self.NoticeIndicator setHidden:YES];
+    }
+}
+
+
+-(void)startAiv
+{
+    [_aiv startAnimating];
+}
+-(void)stopAiv
+{
+    if (_aiv)
+    {
+        if ([_aiv isAnimating])
         {
-            self.dataSource = [returnData objectForKey:@"data"];
-            if (self.dataSource.count == 0)
-            {
-                if (![self.infoView superview])
-                {
-                    self.infoView = [[UIView alloc]initWithFrame:self.view.frame];
-                    UILabel *infoLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, WZ_APP_SIZE.width-20, 30)];
-                    infoLabel.text = @"暂时没有通知";
-                    infoLabel.textAlignment = NSTextAlignmentCenter;
-                    [infoLabel setReadOnlyLabelAppearance];
-                    [self.infoView addSubview:infoLabel];                    
-                    [self.view addSubview:self.infoView];
-                }
-            }
-            else
-            {
-                if (self.infoView)
-                {
-                    [self.infoView removeFromSuperview];
-                }
-                [self.tableView reloadData];
-            }
+            [_aiv stopAnimating];
         }
-        else
-        {
-            [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-        }
-    }];
-    //self.dataSource = [[Feeds getLatestFeeds]mutableCopy];;
+    }
 }
 
-#pragma mark- gesture action
--(void)feedsPhotoClick:(UIGestureRecognizer *)gesture
-{
-    UITableViewCell *cell = (UITableViewCell *)[[gesture.view superview]superview];
-    NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
-    Feeds *feeds = [self.dataSource objectAtIndex:selectedIndexPath.row];
-
-    UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
-    HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
-    [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:feeds.feedsPhoto]];
-    [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
-    [detailPhotoController GetLatestDataList];
-    [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
-    
-}
--(void)avatarClick:(UIGestureRecognizer *)gesture
-{
-    UITableViewCell *cell = (UITableViewCell *)[[gesture.view superview]superview];
-    NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
-    Feeds *feeds = [self.dataSource objectAtIndex:selectedIndexPath.row];
-    
-    [self goToUserPageWithUserInfo:feeds.feedsUser];
-    
-}
--(void)feedsUserClick:(UIGestureRecognizer *)gesture
-{
-    UITableViewCell *cell = (UITableViewCell *)[[gesture.view superview]superview];
-    NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
-    Feeds *feeds = [self.dataSource objectAtIndex:selectedIndexPath.row];
-    [self goToUserPageWithUserInfo:feeds.feedsUser];
-    
-}
--(void)goToUserPageWithUserInfo:(User *)user
-{
-    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
-    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
-    [personalViewCon setUserInfo:user];
-    [personalViewCon.navigationController setNavigationBarHidden:YES];
-    [self pushToViewController:personalViewCon animated:YES hideBottomBar:YES];
-}
-/*
--(void)followButtonClick:(UIGestureRecognizer *)gesture
-{
-    
-}*/
-
-
-#pragma mark - noticeTextViewDelegate
--(void)noticeContentTextView:(NoticeContentTextView *)noticeContentTextView didClickLinkUser:(User *)user
-{
-    [self goToUserPageWithUserInfo:user];
-}
-
-#pragma mark - notification selector
--(void)clearUserInfo
-{
-    self.dataSource = nil;
-    [self.tableView reloadData];
-}
 @end
+

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "User.h"
+#import "Comment.h"
 @interface WhatsGoingOn : NSObject
 
 @property (nonatomic,copy) User *photoUser;
@@ -25,7 +26,6 @@
 @property (nonatomic) BOOL isRecommend;
 @property (nonatomic,copy) NSString *comment;
 @property (nonatomic,copy) NSMutableArray  *commentList;
-@property (nonatomic,copy) NSMutableArray  *commentStringList;
 @property (nonatomic,copy) NSAttributedString *attributedComment;
 @property (nonatomic) BOOL hasMoreComments;
 @property (nonatomic) NSInteger poiId;

@@ -19,6 +19,26 @@
 
 - (void)awakeFromNib {
     // Initialization code
+    [self initView];
+}
+
+-(instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self)
+    {
+        [self initView];
+    }
+    return self;
+}
+-(instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        [self initView];
+    }
+    return self;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -41,13 +61,16 @@
     if (!_photoNumLabel)
     {
         _photoNumLabel = [[UILabel alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width - spacing - photoNumWidth, spacing, photoNumWidth, labelHeight)];
-        [self addSubview:_photoNumLabel];
     }
     return _photoNumLabel;
 }
 
--(void)setAppearance
+-(void)initView
 {
+    self.layer.borderColor = (__bridge CGColorRef)(THEME_COLOR_DARK);
+    self.layer.borderWidth = 2.0f;
+    [self addSubview:self.addressNameLabel];
+    [self addSubview:self.photoNumLabel];
     [self.addressNameLabel setFont:WZ_FONT_COMMON_SIZE];
     [self.addressNameLabel setThemeLabelAppearance];
     

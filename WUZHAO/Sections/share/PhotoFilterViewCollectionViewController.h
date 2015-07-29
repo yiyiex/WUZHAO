@@ -22,5 +22,5 @@
 
 @property (nonatomic, copy) void(^filterBlock)(NSMutableArray *imagesAndInfo);
 
-
+@property (nonatomic, copy) void(^addImageBlock)(NSMutableArray *imagesAndInfo);
 @end

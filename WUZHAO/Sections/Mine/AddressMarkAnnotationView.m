@@ -26,7 +26,11 @@
 
 -(void)setImageWithImageUrl:(NSString*)url
 {
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:url]];
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:url] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        [self.snapshotStackView setImage:image];
+       // [self.imageView setHidden:YES];
+       // [self.snapshotStackView setHidden:NO];
+    }];
 }
 -(void)setPhotoNumber:(NSInteger )num
 {
@@ -39,10 +43,13 @@
         frame.size.width = MAX(frame.size.width, kLabelWidth);
         frame.size.height = kLabelHeight;
         [self.imageNumLabel setFrame:frame];
+        self.snapshotStackView.displayAsStack = YES;
+        
     }
     else
     {
         [self.imageNumLabel setHidden:YES];
+        self.snapshotStackView.displayAsStack = NO;
     }
     
    // [self.imageNumLabel sizeToFit];
@@ -69,26 +76,19 @@
 
 #pragma mark - Life Cycle
 
-- (id)initWithAnnotation:(id<MAAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier
+- (id)initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
     
     if (self)
     {
         self.bounds = CGRectMake(0.f, 0.f, kWidth, kHeight);
-        
-        self.backgroundColor = [UIColor whiteColor];
-       // [self.layer setBorderWidth:0.5f];
-       // [self.layer setBorderColor:[THEME_COLOR_LIGHT_GREY CGColor]];
-        [self.layer setShadowColor:[THEME_COLOR_DARK_GREY CGColor]];
-        [self.layer setShadowOpacity:0.5];
-        [self.layer setShadowOffset:CGSizeMake(0, 2.0f)];
-        
-        /* Create portrait image view and add to view hierarchy. */
+        self.backgroundColor = [UIColor clearColor];
         self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(kHoriMargin, kVertMargin, kPortraitWidth, kPortraitHeight)];
-        [self addSubview:self.imageView];
+        self.snapshotStackView = [[SWSnapshotStackView alloc]initWithFrame:CGRectMake(0, 0, kWidth+20, kHeight+20)];
+        [self addSubview:self.snapshotStackView];
         
-        self.imageNumLabel = [[UILabel alloc]initWithFrame:CGRectMake(kWidth - kLabelHeight/2 - kHoriMargin/2 , -kLabelHeight/2+kHoriMargin/2, kLabelWidth, kLabelHeight)];
+        self.imageNumLabel = [[UILabel alloc]initWithFrame:CGRectMake(kWidth , 0, kLabelWidth, kLabelHeight)];
         [self.imageNumLabel setBackgroundColor:THEME_COLOR_DARK];
         [self.imageNumLabel setTextColor:THEME_COLOR_WHITE];
         [self.imageNumLabel setFont:WZ_FONT_SMALL_SIZE];

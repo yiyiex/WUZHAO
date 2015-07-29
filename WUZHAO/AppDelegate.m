@@ -22,6 +22,7 @@
 #import "UMSocial.h"
 #import "UMSocialWechatHandler.h"
 #import "UMSocialSinaSSOHandler.h"
+#import "UMSocialSinaHandler.h"
 #import "UMSocialQQHandler.h"
 
 @interface AppDelegate ()<BPushDelegate>
@@ -44,13 +45,24 @@
             NSInteger  noticeType  = [[userInfo valueForKey:@"noticeType"]integerValue];
             if (noticeType == 1 || noticeType == 2 ||noticeType == 3 || noticeType ==4)
             {
+                //3-notice tab
                 [[NSUserDefaults standardUserDefaults]setObject:@3 forKey:@"launchIndex"];
+                //0 -- system notice tab  1-- private letter tab
+                [[NSUserDefaults standardUserDefaults]setObject:@0 forKey:@"noticeIndex"];
                 [[NSUserDefaults standardUserDefaults]synchronize];
                 
             }
+            else if (noticeType == 5)
+            {
+                //3-notice tab
+                [[NSUserDefaults standardUserDefaults]setObject:@3 forKey:@"launchIndex"];
+                //0 -- system notice tab  1-- private letter tab
+                [[NSUserDefaults standardUserDefaults]setObject:@1 forKey:@"noticeIndex"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+            }
             else
             {
-                [self getLatestNoticeNumber];
+                [[QDYHTTPClient sharedInstance] getLatestNoticeNumber];
             }
         }
         
@@ -58,11 +70,11 @@
     else
         
     {
-        [self getLatestNoticeNumber];
+        [[QDYHTTPClient sharedInstance] getLatestNoticeNumber];
     }
     //初始化百度推送
     NSString *pushKey= @"MXD0PZ8Qt9LD9ia3PWf41PSL";
-    //[BPush registerChannel:launchOptions apiKey:pushKey pushMode:BPushModeDevelopment isDebug:YES];
+   // [BPush registerChannel:launchOptions apiKey:pushKey pushMode:BPushModeDevelopment isDebug:YES];
     [BPush registerChannel:launchOptions apiKey:pushKey pushMode:BPushModeProduction isDebug:NO];
     [BPush setDelegate:self]; // 必须。参数对象必须实现onMethod: response:方法，本示例中为self
     
@@ -80,12 +92,11 @@
     
     //设置友盟sdk key
     [UMSocialData setAppKey:@"55a5c86567e58ecd13000507"];
-    [UMSocialWechatHandler setWXAppId:@"wxd930ea5d5a258f4f" appSecret:@"db426a9829e4b49a0dcac7b4162da6b6" url:nil];
-    [UMSocialSinaSSOHandler openNewSinaSSOWithRedirectURL:nil];
-    [UMSocialQQHandler setQQWithAppId:@"100424468" appKey:@"c7394704798a158208a74ab60104f0ba" url:@"http://www.umeng.com/social"];
+    [UMSocialWechatHandler setWXAppId:@"wx439fd7dddb2fccd0" appSecret:@"745a38ee5cbad3948d7b353e24f1e637" url:nil];
+   //  [UMSocialSinaSSOHandler openNewSinaSSOWithRedirectURL:nil];
+   // [UMSocialSinaHandler openSSOWithRedirectURL:@"http://sns.whalecloud.com/sina2/callback"];
+    [UMSocialQQHandler setQQWithAppId:@"1104705877" appKey:@"xaYJeCHCVxI3yVT1" url:@"http://placeapp.cn"];
     [UMSocialConfig hiddenNotInstallPlatforms:@[UMShareToQQ,UMShareToQzone,UMShareToWechatSession,UMShareToWechatTimeline]];
-    
-    
     return YES;
 }
 
@@ -112,14 +123,14 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    [self getLatestNoticeNumber];
+    [[QDYHTTPClient sharedInstance] getLatestNoticeNumber];
     
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    [self getLatestNoticeNumber];
+    [[QDYHTTPClient sharedInstance] getLatestNoticeNumber];
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
@@ -194,58 +205,28 @@
 {
     //处理接受的消息
     [BPush handleNotification:userInfo];
-    if (application.applicationState == UIApplicationStateActive)
+    UILocalNotification *localNotification = [[UILocalNotification alloc]init];
+    localNotification.userInfo = userInfo;
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
+    localNotification.alertBody = [[userInfo objectForKey:@"aps"]objectForKey:@"alert"];
+    localNotification.fireDate = [NSDate date];
+    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    [[QDYHTTPClient sharedInstance] getLatestNoticeNumber];
+    if(userInfo)
     {
-        UILocalNotification *localNotification = [[UILocalNotification alloc]init];
-        localNotification.userInfo = userInfo;
-        localNotification.soundName = UILocalNotificationDefaultSoundName;
-        localNotification.alertBody = [[userInfo objectForKey:@"aps"]objectForKey:@"alert"];
-        localNotification.fireDate = [NSDate date];
-        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-        [self getLatestNoticeNumber];
-        
-    }
-    else
-    {
-        
+        //通知notice页面更新
+        NSInteger  noticeType  = [[userInfo valueForKey:@"noticeType"]integerValue];
+        if (noticeType == 1 || noticeType == 2 ||noticeType == 3 || noticeType ==4)
+        {
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"updateNoticePage" object:nil userInfo:@{@"type":@"notice"}];
+            
+        }
+        else if (noticeType == 5)
+        {
+           [[NSNotificationCenter defaultCenter]postNotificationName:@"updateNoticePage" object:nil userInfo:@{@"type":@"message"}];
+        }
     }
 }
-
-#pragma mark - get latest notice number
--(void)getLatestNoticeNumber
-{
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-    
-        NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-        [[QDYHTTPClient sharedInstance]getNoticeNumWithUserId:userId whenComplete:^(NSDictionary *returnData) {
-            if ([returnData objectForKey:@"data"])
-            {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if ([[returnData valueForKey:@"data"]integerValue]>0)
-                    {
-                        
-                        NSNumber *num = [returnData valueForKey:@"data"];
-                        [[NSNotificationCenter defaultCenter]postNotificationName:@"updateNotificationNum" object:nil userInfo:@{@"notificationNum":num}];
-                        [ApplicationUtility setApplicationIconBadgeWithNum:num.integerValue];
-                        
-                    }
-                    else
-                    {
-                        [ApplicationUtility setApplicationIconBadgeWithNum:0];
-                    }
-
-                });
-                
-                
-            }
-            else
-            {
-                NSLog(@"get the notice nummber failed");
-            }
-        }];
-    });
-}
-
 
 
 @end

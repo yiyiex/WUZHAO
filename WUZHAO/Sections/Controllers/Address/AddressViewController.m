@@ -13,6 +13,8 @@
 
 #import <MAMapKit/MAMapKit.h>
 #import <AMapSearchKit/AMapSearchAPI.h>
+#import "MKMapView+MapViewUtil.h"
+#import <MapKit/MapKit.h>
 #import "POIAnnotation.h"
 
 #import "SVProgressHUD.h"
@@ -23,10 +25,10 @@
 #define SEGUEFIRST @"photoCollectionViewSegue"
 #define SEGUESECOND @"sharedPeopleTableViewSegue"
 
-@interface AddressViewController () <CommonContainerViewControllerDelegate,MAMapViewDelegate,AMapSearchDelegate>
+@interface AddressViewController () <CommonContainerViewControllerDelegate,MAMapViewDelegate,MKMapViewDelegate,AMapSearchDelegate>
 
-@property (nonatomic, strong) MAMapView *addressMapView;
-@property (nonatomic, strong) MAPointAnnotation *annotation;
+@property (nonatomic, strong) MKMapView *addressMapView;
+@property (nonatomic, strong) MKPointAnnotation *annotation;
 @property (nonatomic, strong) AMapSearchAPI *search;
 @property (nonatomic) AMapSearchType searchType;
 
@@ -114,15 +116,11 @@
 {
     [MAMapServices sharedServices].apiKey = GAODE_SDK_KEY;
     self.search.delegate = self;
-    self.addressMapView = [[MAMapView alloc]initWithFrame:CGRectMake(0,64, WZ_APP_SIZE.width, 110)];
+    self.addressMapView = [[MKMapView alloc]initWithFrame:CGRectMake(0,64, WZ_APP_SIZE.width, 110)];
     self.addressMapView.delegate = self;
-    self.addressMapView.showsScale = NO;
-    self.addressMapView.showsCompass = NO;
 
-    self.addressMapView.logoCenter = CGPointMake(CGRectGetWidth(self.addressMapView.frame)-28, CGRectGetHeight(self.addressMapView.frame)-8);
-    
-    self.addressMapView.showsUserLocation = YES;
-    self.addressMapView.userTrackingMode = MAUserTrackingModeFollow;
+    //self.addressMapView.showsUserLocation = YES;
+    //self.addressMapView.userTrackingMode = MAUserTrackingModeFollow;
     [self.view addSubview:self.addressMapView];
     
     UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 174, WZ_APP_SIZE.width, 30)];
@@ -133,15 +131,12 @@
 }
 -(void)initAnnocations
 {
-    self.annotation = [[MAPointAnnotation alloc]init];
+    self.annotation = [[MKPointAnnotation alloc]init];
     if (self.poiLocation)
     {
         self.annotation.coordinate = CLLocationCoordinate2DMake([self.poiLocation[0] floatValue], [self.poiLocation[1] floatValue]);
         self.annotation.title = self.poiName;
-        [self.addressMapView addAnnotation:self.annotation];
-        self.addressMapView.centerCoordinate = self.annotation.coordinate;
-        
-        [self.addressMapView setZoomLevel:14.2 animated:YES];
+        [self addAnnotationToMapView:self.annotation];
     }
     else if (self.poiId)
     {
@@ -153,11 +148,7 @@
                 NSArray *location = [locationString componentsSeparatedByString:@","];
                 self.annotation.coordinate = CLLocationCoordinate2DMake([location[0] floatValue], [location[1] floatValue]);
                 self.annotation.title = self.poiName;
-                [self.addressMapView addAnnotation:self.annotation];
-                self.addressMapView.centerCoordinate = self.annotation.coordinate;
-                
-                [self.addressMapView setZoomLevel:14.2 animated:YES];
-                
+                [self addAnnotationToMapView:self.annotation];
             }
             else if ([reuslt objectForKey:@"error"])
             {
@@ -170,7 +161,11 @@
         }];
     }
     //self.annotation.coordinate = CLLocationCoordinate2DMake(29.797155 , 119.69141);
-    
+}
+-(void)addAnnotationToMapView:(MKPointAnnotation *)annotation
+{
+    [self.addressMapView addAnnotation:annotation];
+    [self.addressMapView setCenterCoordinate:annotation.coordinate zoomLevel:10 animated:YES];
     
 }
 -(void)clearMapView
@@ -220,20 +215,20 @@
 }
 
 #pragma mark - MAMapViewDelegate
--(MAAnnotationView *)mapView:(MAMapView *)mapView viewForAnnotation:(id<MAAnnotation>)annotation
+-(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
     if ([annotation isKindOfClass:[MAPointAnnotation class]])
     {
         static NSString *pointReuseIdentifier = @"pointReuseIdentifier";
-        MAPinAnnotationView *annotationView = (MAPinAnnotationView *)[self.addressMapView dequeueReusableAnnotationViewWithIdentifier:pointReuseIdentifier];
+        MKPinAnnotationView *annotationView = (MKPinAnnotationView *)[self.addressMapView dequeueReusableAnnotationViewWithIdentifier:pointReuseIdentifier];
         if (annotationView == nil)
         {
-            annotationView = [[MAPinAnnotationView alloc]initWithAnnotation:annotation reuseIdentifier:pointReuseIdentifier];
+            annotationView = [[MKPinAnnotationView alloc]initWithAnnotation:annotation reuseIdentifier:pointReuseIdentifier];
         }
         annotationView.canShowCallout = YES;
         annotationView.animatesDrop = YES;
         annotationView.draggable = YES;
-        annotationView.pinColor = MAPinAnnotationColorGreen;
+        annotationView.pinColor = MKPinAnnotationColorGreen;
         return annotationView;
     }
     return nil;

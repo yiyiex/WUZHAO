@@ -17,7 +17,7 @@
 {
     if (self = [super init])
     {
-        self.coordinate = coordinate;
+        _coordinate = coordinate;
     }
     return self;
 }

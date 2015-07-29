@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
@@ -31,7 +31,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qVT-qB-st5" userLabel="time">
-                        <rect key="frame" x="352" y="8" width="44" height="21"/>
+                        <rect key="frame" x="352" y="8" width="44" height="20.5"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="44" id="rhf-Z6-aNx"/>
                         </constraints>
@@ -45,27 +45,48 @@
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="info_red.png" translatesAutoresizingMaskIntoConstraints="NO" id="Kid-Pm-SWM">
+                        <rect key="frame" x="358" y="29" width="32" height="32"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="32" id="VoM-Rw-UeN"/>
+                            <constraint firstAttribute="height" constant="32" id="bPs-2L-Zdn"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="U7b-3J-oDn" firstAttribute="centerY" secondItem="Kid-Pm-SWM" secondAttribute="centerY" constant="-19" id="1zr-Aq-Kfd"/>
                     <constraint firstItem="0uN-4e-D9D" firstAttribute="top" secondItem="WTJ-7a-2Xu" secondAttribute="bottom" constant="-2" id="2Ah-Gx-lGY"/>
                     <constraint firstItem="0uN-4e-D9D" firstAttribute="leading" secondItem="U7b-3J-oDn" secondAttribute="trailing" constant="4" id="3KR-za-qNE"/>
                     <constraint firstItem="WTJ-7a-2Xu" firstAttribute="top" secondItem="U7b-3J-oDn" secondAttribute="top" id="EoY-an-pvF"/>
                     <constraint firstItem="U7b-3J-oDn" firstAttribute="top" secondItem="kWt-Fs-MrN" secondAttribute="top" constant="8" id="H8L-vi-AEW"/>
+                    <constraint firstItem="qVT-qB-st5" firstAttribute="leading" secondItem="Kid-Pm-SWM" secondAttribute="trailing" constant="-38" id="QCs-dW-1jM"/>
                     <constraint firstAttribute="bottom" secondItem="0uN-4e-D9D" secondAttribute="bottom" constant="2" id="a4z-5W-LEH"/>
                     <constraint firstItem="qVT-qB-st5" firstAttribute="top" secondItem="kWt-Fs-MrN" secondAttribute="top" constant="8" id="bqX-rk-m9p"/>
+                    <constraint firstItem="Kid-Pm-SWM" firstAttribute="centerX" secondItem="qVT-qB-st5" secondAttribute="centerX" id="dv7-Rv-zEb"/>
                     <constraint firstItem="qVT-qB-st5" firstAttribute="leading" secondItem="0uN-4e-D9D" secondAttribute="trailing" constant="8" id="l7r-Kw-kh2"/>
                     <constraint firstItem="U7b-3J-oDn" firstAttribute="leading" secondItem="kWt-Fs-MrN" secondAttribute="leading" constant="8" id="nxf-fe-25d"/>
+                    <constraint firstItem="Kid-Pm-SWM" firstAttribute="top" secondItem="qVT-qB-st5" secondAttribute="bottom" constant="0.5" id="ph6-h4-Qjq"/>
                     <constraint firstAttribute="trailing" secondItem="qVT-qB-st5" secondAttribute="trailing" constant="8" id="vbS-lw-Dmp"/>
                     <constraint firstItem="WTJ-7a-2Xu" firstAttribute="leading" secondItem="U7b-3J-oDn" secondAttribute="trailing" constant="8" id="zIu-On-rlv"/>
                 </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="1zr-Aq-Kfd"/>
+                        <exclude reference="QCs-dW-1jM"/>
+                    </mask>
+                </variation>
             </tableViewCellContentView>
             <connections>
                 <outlet property="commentContent" destination="0uN-4e-D9D" id="S81-BE-iob"/>
                 <outlet property="commentTime" destination="qVT-qB-st5" id="Cig-iM-82y"/>
+                <outlet property="infoImage" destination="Kid-Pm-SWM" id="rwh-Mu-oXp"/>
                 <outlet property="userAvatorView" destination="U7b-3J-oDn" id="3qb-pv-wAS"/>
                 <outlet property="userName" destination="WTJ-7a-2Xu" id="26N-Rf-AWw"/>
             </connections>
             <point key="canvasLocation" x="179" y="-469"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="info_red.png" width="32" height="32"/>
+    </resources>
 </document>

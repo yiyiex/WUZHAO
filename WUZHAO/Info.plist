@@ -31,7 +31,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>wxd9a39c7122aa6516</string>
+				<string>wx439fd7dddb2fccd0</string>
 			</array>
 		</dict>
 		<dict>
@@ -39,15 +39,22 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>wb126663232</string>
+				<string>QQ41d87955</string>
+				<string>tencent1104705877</string>
 			</array>
 		</dict>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.yiyi.placeapp</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>QQ05FC5B14</string>
+				<string>PlaceApp19890502</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>sina.55a5c86567e58ecd13000507</string>
 			</array>
 		</dict>
 	</array>

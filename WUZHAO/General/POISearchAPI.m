@@ -137,6 +137,42 @@
     }];
 }
 
+-(void)SearchAroundPOIWithKeyWord:(NSString *)keyword whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/gpoisearch";
+    NSDictionary *param = @{@"keyword":keyword};
+    
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSMutableDictionary *data = [[NSMutableDictionary alloc]init];
+                if ([result objectForKey:@"nextPageToken"] )
+                {
+                    [data setValue:[result objectForKey:@"nextPageToken"] forKey:@"nextPageToken"];
+                }
+                [data setValue:[result objectForKey:@"data"] forKey:@"POIs"];
+                [returnData setValue:data forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器异常" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
 
 
 -(void)getUserPOIsWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete

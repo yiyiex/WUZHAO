@@ -31,26 +31,25 @@
     
 }
 
--(void)setTextWithoutUserNameWithCommentItem:(NSDictionary *)commentItem
+-(void)setTextWithoutUserNameWithCommentItem:(Comment *)commentItem
 {
     [self setTextColor:THEME_COLOR_DARK_GREY_PARENT];
     [self setFont:WZ_FONT_COMMON_SIZE];
     
     defaultAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
     highlightedAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
-    
-    NSString *commentString;
-    if ([[commentItem objectForKey:@"replyUserId"]integerValue]>0)
+    Comment *newComment = [commentItem mutableCopy];
+    if (newComment.replyUser && newComment.replyUser.UserID >0)
     {
-        commentString = [NSString stringWithFormat:@"回复 %@ : %@",[commentItem objectForKey:@"replyUserName"],[commentItem objectForKey:@"content"]];
+        newComment.commentString = [NSString stringWithFormat:@"回复 %@ : %@",newComment.replyUser.UserName,newComment.content];
     }
     else
     {
-        commentString = [NSString stringWithFormat:@"%@",[commentItem objectForKey:@"content"]];
+        newComment.commentString = [NSString stringWithFormat:@"%@",newComment.content];
     }
-    [self setTextWithCommentString:commentString CommentItem:commentItem];
+    [self linkUserNamesWithComment:newComment];
 }
--(void)setTextWithCommentStringList:(NSArray *)commentStringList CommentList:(NSArray *)commentList
+-(void)setTextWithCommentList:(NSArray *)commentList withMoreItem:(NSInteger)moreCount
 {
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
     paragraphStyle.lineSpacing = 6;
@@ -60,34 +59,28 @@
 
     for (NSInteger i = 0;i <commentList.count;i++)
     {
+        Comment *comment = commentList[i];
         NSMutableArray *linkStrings = [[NSMutableArray alloc]init];
         NSMutableArray *taphandlers = [[NSMutableArray alloc]init];
-        if ([commentList[i] objectForKey:@"userName"])
+        if (comment.commentUser.UserName)
         {
-            [linkStrings addObject:[commentList[i] objectForKey:@"userName"]];
+            [linkStrings addObject:comment.commentUser.UserName];
             LinkedStringRangeTapHandler taphandler = ^(NSRange linkStringRange) {
-                User *user = [[User alloc]init];
-                user.UserID = [[commentList[i] objectForKey:@"userId"]integerValue];
-                user.UserName = [commentList[i] objectForKey:@"userName"];
                 if ([self.delegate respondsToSelector:@selector(commentTextView:didClickLinkUser:)])
                 {
-                    [self.delegate commentTextView:self didClickLinkUser:user];
+                    [self.delegate commentTextView:self didClickLinkUser:comment.commentUser];
                 }};
-
             [taphandlers addObject:taphandler];
             
         }
     
-        if ([commentList[i] objectForKey:@"replyUserName"])
+        if (comment.replyUser.UserName)
         {
-            [linkStrings addObject:[commentList[i] objectForKey:@"replyUserName"]];
+            [linkStrings addObject:comment.replyUser.UserName];
             LinkedStringRangeTapHandler taphandler = ^(NSRange linkStringRange) {
-                User *user = [[User alloc]init];
-                user.UserID = [[commentList[i] objectForKey:@"replyUserId"]integerValue];
-                user.UserName = [commentList[i] objectForKey:@"replyUserName"];
                 if ([self.delegate respondsToSelector:@selector(commentTextView:didClickLinkUser:)])
                 {
-                    [self.delegate commentTextView:self didClickLinkUser:user];
+                    [self.delegate commentTextView:self didClickLinkUser:comment.replyUser];
                 }};
             
             [taphandlers addObject:taphandler];
@@ -95,19 +88,20 @@
         }
         if (i == 0)
         {
-            NSAttributedString *attributedString = [[NSAttributedString alloc]initWithString:commentStringList[i] attributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY_PARENT,NSFontAttributeName:WZ_FONT_COMMON_SIZE}];
+            NSAttributedString *attributedString = [[NSAttributedString alloc]initWithString:comment.commentString attributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY_PARENT,NSFontAttributeName:WZ_FONT_COMMON_SIZE}];
             [self setText:attributedString linkStrings:linkStrings defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:taphandlers];
         }
         else
         {
             
-            NSString *appendString = [NSString stringWithFormat:@"\n%@",commentStringList[i]];
+            NSString *appendString = [NSString stringWithFormat:@"\n%@",comment.commentString];
             NSAttributedString *attributedString = [[NSAttributedString alloc]initWithString:appendString attributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY_PARENT,NSFontAttributeName:WZ_FONT_COMMON_SIZE}];
             [self appendText:attributedString linkStrings:linkStrings defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:taphandlers];
         }
+
         
     }
-    if (commentStringList.count == 6)
+    if (moreCount>5)
     {
         LinkedStringRangeTapHandler taphandler = ^(NSRange linkStringRange) {
             
@@ -117,45 +111,35 @@
             }
         };
         
-        NSString *commentString = [NSString stringWithFormat:@"\n%@",commentStringList[5]];
+        NSString *commentString = [NSString stringWithFormat:@"\n查看全部%ld条评论",(long)moreCount];
         NSAttributedString *appendString = [[NSAttributedString alloc]initWithString:commentString attributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY_PARENT,NSFontAttributeName:WZ_FONT_COMMON_SIZE}];
-        [self appendText:appendString linkStrings:@[commentStringList[5]] defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:@[taphandler]];
+        [self appendText:appendString linkStrings:@[commentString] defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:@[taphandler]];
     }
 
+
 }
 
--(void)setTextWithCommentString:(NSString *)commentString CommentItem:(NSDictionary *)commentItem
+-(void)linkUserNamesWithComment:(Comment *)comment
 {
-    self.text = commentString;
-    [self linkUserNamesWithCommentItem:commentItem];
-}
-
--(void)linkUserNamesWithCommentItem:(NSDictionary *)item
-{
-    if ([item objectForKey:@"userId"])
+    self.text = comment.commentString;
+    if (comment.commentUser.UserName)
     {
-        [self linkTextWithString:[item objectForKey:@"userName"]  defaultAttributes:defaultAttributes highlightAttributes:highlightedAttributes tabHandler:^(NSRange linkStringRange) {
-            User *user = [[User alloc]init];
-            user.UserID = [[item objectForKey:@"userId"]integerValue];
-            user.UserName = [item objectForKey:@"userName"];
+        [self linkTextWithString:comment.commentUser.UserName defaultAttributes:defaultAttributes highlightAttributes:highlightedAttributes tabHandler:^(NSRange linkStringRange) {
             if ([self.delegate respondsToSelector:@selector(commentTextView:didClickLinkUser:)])
             {
                 NSLog(@"comment textview username click");
-                [self.delegate commentTextView:self didClickLinkUser:user];
+                [self.delegate commentTextView:self didClickLinkUser:comment.commentUser];
             }
         }];
 
     }
-    if (![[item objectForKey:@"replyUserName"]isEqualToString:@""])
+    if (comment.replyUser && ![comment.replyUser.UserName isEqualToString:@""])
     {
-        [self linkTextWithString:[item objectForKey:@"replyUserName"]  defaultAttributes:defaultAttributes highlightAttributes:highlightedAttributes tabHandler:^(NSRange linkStringRange) {
-            User *user = [[User alloc]init];
-            user.UserID = [[item objectForKey:@"replyUserId"]integerValue];
-            user.UserName = [item objectForKey:@"relpyUserName"];
+        [self linkTextWithString:comment.replyUser.UserName  defaultAttributes:defaultAttributes highlightAttributes:highlightedAttributes tabHandler:^(NSRange linkStringRange) {
             if ([self.delegate respondsToSelector:@selector(commentTextView:didClickLinkUser:)])
             {
                 NSLog(@"comment textview reply username click");
-                [self.delegate commentTextView:self didClickLinkUser:user];
+                [self.delegate commentTextView:self didClickLinkUser:comment.replyUser];
             }
         }];
     }

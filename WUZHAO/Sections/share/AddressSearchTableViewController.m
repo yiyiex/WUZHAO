@@ -346,20 +346,42 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 -(void)searchAddressWithKeyword:(NSString *)keyword
 {
     _search = [[AMapSearchAPI alloc]initWithSearchKey:GAODE_SDK_KEY Delegate:self];
+    _search.timeOut = 5;
     
     AMapPlaceSearchRequest *poiRequest = [[AMapPlaceSearchRequest alloc]init];
     poiRequest.searchType = AMapSearchType_PlaceKeyword;
     poiRequest.keywords = keyword;
-    //poiRequest.types = @"050000";
     poiRequest.sortrule = 1;
-    //poiRequest.offset = 30;
     poiRequest.requireExtension = YES;
     [_search AMapPlaceSearch:poiRequest];
+}
+
+-(void)searchAddressByGoogleWithKeyword:(NSString *)keyword
+{
+    [[POISearchAPI sharedInstance]SearchAroundPOIWithKeyWord:keyword whenComplete:^(NSDictionary *returnData) {
+        [self stopAiv];
+        if ([returnData objectForKey:@"data"])
+        {
+            if (self.searchControllerWasActive)
+            {
+                [self.searchAddressDataSource removeAllObjects];
+                NSDictionary *data = [returnData objectForKey:@"data"];
+                for (NSDictionary *p in [data objectForKey:@"POIs"]) {
+                    POI *poiInfo = [[POI alloc]init];
+                    [poiInfo configureWithGoogleSearchResult:p];
+                    [self.searchAddressDataSource addObject:poiInfo];
+                }
+                
+            }
+        }
+        [self.tableView reloadData];
+        
+    }];
 }
 #pragma mark -amapSearch delegate
 -(void)onPlaceSearchDone:(AMapPlaceSearchRequest *)request response:(AMapPlaceSearchResponse *)response
 {
-    [self stopAiv];
+ 
     NSLog(@"on place search Done %@",response);
     if (self.searchControllerWasActive)
     {
@@ -368,6 +390,15 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
             POI *poiInfo = [[POI alloc]init];
             [poiInfo configureWithGaodeSearchResult:p];
             [self.searchAddressDataSource addObject:poiInfo];
+        }
+        if (self.searchAddressDataSource.count == 0)
+        {
+            [self searchAddressByGoogleWithKeyword:request.keywords];
+        }
+        else
+        {
+            [self stopAiv];
+            [self.tableView reloadData];
         }
     }
     else
@@ -387,12 +418,23 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
             [poiInfo configureWithGaodeSearchResult:p];
             [self.addressDataSource addObject:poiInfo];
         }
+        [self stopAiv];
+        [self.tableView reloadData];
         
         
         
     }
-    [self.tableView reloadData];
     
+    
+}
+
+-(void)searchRequest:(AMapPlaceSearchRequest *)request didFailWithError:(NSError *)error
+{
+    if (error)
+    {
+        [self searchAddressByGoogleWithKeyword:request.keywords];
+ 
+    }
 }
 #pragma mark -tableview delegate
 
@@ -658,7 +700,7 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
             }
             [self showHistoryAddressTableView];
         }
-        else if (indexPath.row >2)
+        else if (indexPath.row >=2)
         {
             POI *poiInfo = [self.addressDataSource objectAtIndex:(indexPath.row -2)];
             // self.whatsGoingOnItem.imageDescription = @"";

@@ -10,6 +10,9 @@
 
 @interface PhotosPickerViewController : UIViewController
 
+@property (nonatomic, strong) UIButton *backButton;
+@property (strong, nonatomic) NSMutableArray *imagesAndInfo;
+
 @property (nonatomic, copy) void(^selectedImagesBlock)(NSMutableArray *imagesAndInfo);
 
 @end

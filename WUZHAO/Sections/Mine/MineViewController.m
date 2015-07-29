@@ -16,7 +16,10 @@
 
 #import "PhotosCollectionViewController.h"
 #import "FootPrintTableViewController.h"
+#import "FootPrintCollectionViewController.h"
 #import "AddressMarkViewController.h"
+
+#import "PrivateLetterDetailViewController.h"
 
 #import "UserListTableViewController.h"
 #import "EditPersonalInfoTableViewController.h"
@@ -41,22 +44,21 @@
 #import "macro.h"
 #import "PhotoCommon.h"
 #import "CameraUtility.h"
+#import "PrivateLetter.h"
 
 #import "QiniuSDK.h"
 
 #define SEGUEFIRST @"segueForPhotosColletion"
 #define SEGUESECOND @"segueForAddressTable"
-#define SEGUETHIRD @"segueForThird"
-#define SEGUEFORTH @"segueForForth"
 
 @interface MineViewController () <CommonContainerViewControllerDelegate,UIScrollViewDelegate,UIActionSheetDelegate ,UIImagePickerControllerDelegate>
 {
     CGPoint scrollViewInitContentOffset;
-    UIActivityIndicatorView *_aiv;
 }
 
 @property (nonatomic, strong) UIView *navigationBar;
 @property (strong, nonatomic) UIButton *mineButton;
+@property (strong, nonatomic) UIButton *sendMessageButton;
 
 @property (strong, nonatomic) UILabel *followsNumLabel;
 @property (strong, nonatomic) UILabel *followsLabel;
@@ -72,6 +74,7 @@
 //@property (nonatomic, strong) UIButton *myPhotosButton;
 //@property (nonatomic, strong) UIButton *myAddressButton;
 @property (nonatomic, strong) UIButton *myMapButton;
+@property (nonatomic, strong) UIActivityIndicatorView *aiv;
 
 @property (nonatomic, strong) CommonContainerViewController *containerViewController;
 
@@ -79,7 +82,8 @@
 @property (nonatomic) NSInteger photoCollectionCurrentPage;
 @property (nonatomic)float currentCollectionViewOffset;
 
-@property (nonatomic, weak) FootPrintTableViewController *myFootPrintViewController;
+@property (nonatomic, weak) FootPrintCollectionViewController *myFootPrintViewController;
+//@property (nonatomic, weak) FootPrintTableViewController *myFootPrintViewController;
 @property (nonatomic) NSInteger footPrintCurrentPage;
 @property (nonatomic) float currentFootPrintViewOffset;
 
@@ -221,6 +225,16 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     return _placeHolderImageView;
 }
 
+-(UIActivityIndicatorView *)aiv
+{
+    if (!_aiv)
+    {
+        _aiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        [self.view addSubview:_aiv];
+    }
+    return _aiv;
+}
+
 -(float)scrollContentViewHeight
 {
     float topHeight = TOPCOVERHEIGHT ;
@@ -229,7 +243,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     {
         if (_myPhotosCollectionDatasource.count >6)
         {
-             bottomHeight += (ceil ((float)_myPhotosCollectionDatasource.count/3)) * WZ_APP_SIZE.width/3 ;
+             bottomHeight += (ceil((float)_myPhotosCollectionDatasource.count/3)) * WZ_APP_SIZE.width/3 ;
         }
         else
         {
@@ -239,11 +253,9 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     }
     else if (self.myAddressLabel.highlighted)
     {
-        if (self.myAddressListDatasource.count>1)
+        if (self.myAddressListDatasource.count>2)
         {
-            [self.myAddressListDatasource enumerateObjectsUsingBlock:^(AddressPhotos *address, NSUInteger idx, BOOL *stop) {
-                bottomHeight += ceilf((float)address.photoList.count/3)*(WZ_APP_SIZE.width/3) +36;
-            }];
+            bottomHeight += (ceil((float)_myAddressListDatasource.count/2))*((WZ_APP_SIZE.width-24)/2+24+8);
         }
         else
         {
@@ -324,6 +336,15 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.avator setUserInteractionEnabled:YES];
     
     [self.scrollView addSubview:self.avator];
+    
+    //private letter button
+    self.sendMessageButton = [[UIButton alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width- avatarViewWidth)/2 - 64,avatarVerticalOffset + (avatarViewWidth -36)/2, 36,36)];
+    [self.sendMessageButton setHidden:YES];
+    [self.sendMessageButton setNormalButtonAppearance];
+    [self.sendMessageButton addTarget:self action:@selector(sendMessageButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.sendMessageButton setImage:[UIImage imageNamed:@"letter"] forState:UIControlStateNormal];
+    //[self.sendMessageButton setTitle:@"私信" forState:UIControlStateNormal];
+    [self.scrollView addSubview:self.sendMessageButton];
     
     //myButton
     self.mineButton = [[UIButton alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width + avatarViewWidth)/2 + 28, avatarVerticalOffset + (avatarViewWidth - 24)/2, 64, 24)];
@@ -469,6 +490,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 {
     [self.mineButton setTitle:@"正在加载..." forState:UIControlStateNormal];
     self.shouldRefreshData = false;
+    
     [self.scrollView setContentOffset:CGPointMake(0, -20) animated:NO];
     if (!_userInfo)
     {
@@ -476,10 +498,23 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         _userInfo.UserID = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
         _userInfo.UserName = [[NSUserDefaults standardUserDefaults] objectForKey:@"userName"];
     }
+    [self.aiv setCenter:CGPointMake(self.myPhotosLabel.center.x,  self.myPhotosLabel.center.y+10)];
+    [self.myPhotosLabel setHidden:YES];
+    [self.myPhotosNumLabel setHidden:YES];
+    [self.aiv startAnimating];
+    
     self.photoCollectionCurrentPage = 1;
     NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [[QDYHTTPClient sharedInstance]GetPersonalInfoWithUserId:self.userInfo.UserID currentUserId:myUserId page:self.photoCollectionCurrentPage whenComplete:^(NSDictionary *returnData) {
+            [self.aiv stopAnimating];
+            [self.myPhotosLabel setHidden:NO];
+            [self.myPhotosNumLabel setHidden:NO];
+            if ([self.refreshControl isRefreshing])
+            {
+                [self.refreshControl endRefreshing];
+            }
+            self.shouldRefreshData = true;
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([returnData objectForKey:@"data"])
                 {
@@ -499,11 +534,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                 {
                     [SVProgressHUD showErrorWithStatus:@"获取个人信息失败"];
                 }
-                if ([self.refreshControl isRefreshing])
-                {
-                    [self.refreshControl endRefreshing];
-                }
-                self.shouldRefreshData = true;
+
                 
             });
         }];
@@ -645,6 +676,17 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     }
 }
 
+-(void)sendMessageButtonClick:(id)sender
+{
+    UIStoryboard *feedStoryboard = [UIStoryboard storyboardWithName:@"Feeds" bundle:nil];
+    PrivateLetterDetailViewController *conversationPage = [feedStoryboard instantiateViewControllerWithIdentifier:@"conversationView"];
+    Conversation *conversation = [[Conversation alloc]init];
+    conversation.me.UserID = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    conversation.other = self.userInfo;
+    conversationPage.conversation = conversation;
+    [self pushToViewController:conversationPage animated:YES hideBottomBar:YES];
+}
+
 - (IBAction)MineButtonClick:(id)sender {
     if ( [sender isKindOfClass:[UIButton class]])
     {
@@ -730,7 +772,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     {
         self.containerViewController = segue.destinationViewController;
         self.containerViewController.delegate = self;
-        self.containerViewController.ChildrenName = @[SEGUEFIRST,SEGUESECOND,SEGUETHIRD,SEGUEFORTH];
+        self.containerViewController.ChildrenName = @[SEGUEFIRST,SEGUESECOND];
+        self.containerViewController.isInteractive = NO;
     }
     else if ([segue.identifier isEqualToString:@"editPersonInfo"])
     {
@@ -800,14 +843,14 @@ static NSString * const minePhotoCell = @"minePhotosCell";
          
      }];
     self.navigationController.navigationBarHidden = YES;
+    self.addressMarkViewController.userInfo = self.userInfo;
     [self pushToViewController:self.addressMarkViewController animated:YES hideBottomBar:YES];
 
     
 }
 
 #pragma mark - commonContainerViewController delegate
-
--(void)finishLoadChildController:(UIViewController *)childController
+-(void)beginLoadChildController:(UIViewController *)childController
 {
     if ([childController isKindOfClass: [PhotosCollectionViewController class]])
     {
@@ -818,16 +861,29 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         self.myPhotoCollectionViewController.detailStyle = DETAIL_STYLE_SINGLEPAGE;
         self.myPhotoCollectionViewController.dataSource = self;
         [self SetPhotosCollectionData];
-  
+        
         
     }
-    else if( [childController isKindOfClass:[FootPrintTableViewController class]])
+    else if( [childController isKindOfClass:[FootPrintCollectionViewController class]])
     {
-        
-        self.myFootPrintViewController = (FootPrintTableViewController *)childController;
-        [self.myFootPrintViewController.tableView setScrollEnabled:NO];
+       
+       // self.myFootPrintViewController = (FootPrintTableViewController *)childController;
+        self.myFootPrintViewController = (FootPrintCollectionViewController *)childController;
+        [self.myFootPrintViewController.collectionView setScrollEnabled:NO];
         self.myFootPrintViewController.currentUser = self.userInfo;
         [self SetAddressListData];
+    }
+}
+-(void)finishLoadChildController:(UIViewController *)childController
+{
+    if ([childController isKindOfClass: [PhotosCollectionViewController class]])
+    {
+        [self myPhotosButtonClick:nil];
+        
+    }
+    else if( [childController isKindOfClass:[FootPrintCollectionViewController class]])
+    {
+        [self myAddressButtonClick:nil];
     }
 }
 
@@ -856,12 +912,14 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     {
         [self.placeHolderImageView sd_setImageWithURL:[NSURL URLWithString:self.userInfo.backGroundImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             self.coverImage = image;
+            [self.scrollView setContentOffset:CGPointMake(0, -18) animated:YES];
         }];
        // [self.scrollView.blurCoverView setImageWithUrl:self.userInfo.backGroundImage];
     }
     else
     {
         self.coverImage = [UIImage imageNamed:@"cover.png"];
+        
     }
 
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
@@ -869,10 +927,12 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     if (myUserId == self.userInfo.UserID)
     {
         [self.mineButton setHidden:YES];
+        [self.sendMessageButton setHidden:YES];
     }
     else
     {
         [self.mineButton setHidden:NO];
+        [self.sendMessageButton setHidden:NO];
         if (self.userInfo.followType == UNFOLLOW)
         {
             
@@ -1049,15 +1109,16 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     //根据个人信息，获取更多信息
     if (!_myAddressListDatasource)
     {
-        UIActivityIndicatorView *aiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        [aiv setCenter:CGPointMake(WZ_APP_SIZE.width/2, TOPCOVERHEIGHT +36)];
-        [self.view addSubview:aiv];
-        [aiv startAnimating];
+        [self.aiv setCenter:CGPointMake(self.myAddressLabel.center.x, self.myAddressLabel.center.y+10)];
+        [self.myAddressNumLabel setHidden:YES];
+        [self.myAddressLabel setHidden:YES];
+        [self.aiv startAnimating];
         self.shouldRefreshData = false;
         NSInteger userId = self.userInfo.UserID;
         [[POISearchAPI sharedInstance]getUserPOIsWithUserId:userId whenComplete:^(NSDictionary *returnData) {
-            [aiv stopAnimating];
-            [aiv removeFromSuperview];
+            [self.aiv stopAnimating];
+            [self.myAddressNumLabel setHidden:NO];
+            [self.myAddressLabel setHidden:NO];
               self.shouldRefreshData = true;
             if ([returnData objectForKey:@"data"])
             {
@@ -1066,16 +1127,13 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                 [self.scrollContentView setNeedsLayout];
                 [self.scrollContentView layoutIfNeeded];
                 [self.myFootPrintViewController setDatasource:_myAddressListDatasource];
+                self.myAddressNumLabel.text = [NSString stringWithFormat:@"%ld",(long)_myAddressListDatasource.count];
                 [self.myFootPrintViewController loadData];
                 [self.scrollView setContentOffset:CGPointMake(0, -20) animated:YES];
             }
             else if ([returnData objectForKey:@"error"])
             {
                 [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-            }
-            if ([self.refreshControl isRefreshing])
-            {
-                [self.refreshControl endRefreshing];
             }
         }];
         
@@ -1262,14 +1320,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     [picker dismissViewControllerAnimated:YES completion:^{
-        if(!_aiv)
-        {
-            _aiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-            [_aiv setFrame:CGRectMake(WZ_APP_SIZE.width - _aiv.frame.size.width -8, 48, _aiv.frame.size.width, _aiv.frame.size.height)];
-            [self.scrollView addSubview:_aiv];
-           
-        }
-        [_aiv startAnimating];
+        [self.aiv setCenter:CGPointMake(WZ_APP_SIZE.width - 20 , CHBlurCoverViewHeight - 50)];
+        [self.aiv startAnimating];
         UIImage *backGroundImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
         self.coverImage = [UIImage imageWithCGImage:[backGroundImage CGImage] scale:0.6f orientation:UIImageOrientationUp];
         [self.scrollView setContentOffset:CGPointMake(0, -20) animated:YES];
@@ -1306,7 +1358,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                       {
                           
                           dispatch_async(dispatch_get_main_queue(), ^{
-                               [_aiv stopAnimating];
+                               [self.aiv stopAnimating];
                               if ([returnData objectForKey:@"data"])
                               {
                                   [SVProgressHUD showInfoWithStatus:@"修改背景图片成功"];

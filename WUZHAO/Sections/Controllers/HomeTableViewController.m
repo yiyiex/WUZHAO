@@ -42,6 +42,7 @@
 @interface HomeTableViewController ()<UIActionSheetDelegate,UIAlertViewDelegate,CommentTextViewDelegate,UMSocialDataDelegate,UMSocialUIDelegate>
 @property (nonatomic,strong) UIButton *loadMoreButton;
 @property (nonatomic,strong) UIActivityIndicatorView *aiv;
+@property (nonatomic,strong) UIActivityIndicatorView *refreshaiv;
 //current page
 @property (nonatomic,assign) NSInteger currentPage;
 
@@ -162,6 +163,10 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         self.automaticallyAdjustsScrollViewInsets = NO;
         [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
     }
+    
+    _refreshaiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc]initWithCustomView:_refreshaiv];
+    self.navigationItem.rightBarButtonItem = rightBarItem;
     
     //[self.navigationItem.backBarButtonItem setTitle:@""];
 }
@@ -348,22 +353,23 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     }
     float basicheight = 48 + WZ_APP_SIZE.width + (12+24+12);
     float height = basicheight + imageScrollHeight + addressHeight + descriptionHieght+ commentViewHeight+likeViewHeight ;
-    return height;
+     return (!isnan(height))?height:300;
 }
 -(float)caculateHeightAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.tableStyle !=WZ_TABLEVIEWSTYLE_HOME ||self.recommandDatasource == nil)
     {
-        float height;
+        float height= 0;
         WhatsGoingOn *item = [self.dataSource objectAtIndex:indexPath.row];
         height = [self caculateProtoCellHeightWithData:item];
+        
         return height;
     }
     else
     {
         if (indexPath.row > 0)
         {
-            float height;
+            float height = 0;
             WhatsGoingOn *item = [self.dataSource objectAtIndex:indexPath.row-1];
             height = [self caculateProtoCellHeightWithData:item];
             return height;
@@ -373,6 +379,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
             return RecommendCellHeigh;
         }
     }
+    return 300;
   
 }
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -380,7 +387,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     //NSLog(@"estimate height of tableview  at indexpath %@ %@",indexPath,self);
     float height = [self caculateHeightAtIndexPath:indexPath];
     NSLog(@"estimate height of tableview  at indexpath %@ %f",indexPath,height);
-    return height;
+    return (!isnan(height))?height:UITableViewAutomaticDimension;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -388,7 +395,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
    // NSLog(@" height of tableview  at indexpath %@ %@",indexPath,self);
     float height = [self caculateHeightAtIndexPath:indexPath];
     NSLog(@" height of tableview  at indexpath %@ %f",indexPath,height);
-    return height;
+    return (!isnan(height))?height:UITableViewAutomaticDimension;
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
@@ -623,22 +630,25 @@ static NSString *reuseIdentifier = @"HomeTableCell";
             UIAlertAction *shareAction = [UIAlertAction actionWithTitle:@"分享" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 NSString *shareText = item.imageDescription;
                 UIImage *shareImage = cell.homeCellImageView.image;
+                NSString *shareUrl =[NSString stringWithFormat:@"http://placeapp.cn/post/detail?postid=%ld",(long)item.postId];
                 [UMSocialData defaultData].extConfig.wxMessageType = UMSocialWXMessageTypeImage;
                 
                 [UMSocialData defaultData].extConfig.qqData.title = @"来自Place的分享";
                 [UMSocialData defaultData].extConfig.qzoneData.title = @"来自Place的分享";
                 [UMSocialData defaultData].extConfig.qqData.qqMessageType = UMSocialQQMessageTypeImage;
+                [UMSocialData defaultData].extConfig.qzoneData.url = shareUrl;
+                [UMSocialData defaultData].extConfig.qqData.url = shareUrl;
                 
                 [UMSocialSnsService presentSnsIconSheetView:self
                                                      appKey:nil
                                                   shareText:shareText
                                                  shareImage:shareImage
-                                            shareToSnsNames:[NSArray arrayWithObjects:UMShareToSina,UMShareToWechatSession,UMShareToWechatTimeline,UMShareToWechatFavorite,UMShareToQQ,UMShareToQzone,UMShareToDouban,UMShareToEmail,nil]
+                                            shareToSnsNames:[NSArray arrayWithObjects:UMShareToWechatSession,UMShareToWechatTimeline,UMShareToWechatFavorite,UMShareToQQ,UMShareToEmail,nil]
                                                    delegate:self];
             
                 
             }];
-          //  [alertController addAction:shareAction];
+            [alertController addAction:shareAction];
             [alertController addAction:delectAction];
         }
         [self presentViewController:alertController animated:YES completion:nil];
@@ -994,121 +1004,125 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 
 -(void)GetLatestDataList
 {
-        //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
-        if (self.shouldRefreshData == false)
-        {
-            return;
-        }
-        self.shouldRefreshData = false;
-        if (![self.refreshControl isRefreshing])
-        {
-            [self.tableView setContentOffset:CGPointMake(0, -64) animated:YES];
-        }
-        if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
-        {
-            self.recommandDatasource = nil;
-            [self getRecommandUser];
-            self.currentPage = 1;
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                [[QDYHTTPClient sharedInstance]GetWhatsGoingOnWithUserId:self.currentUser.UserID page:self.currentPage whenComplete:^(NSDictionary *result) {
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     if ([result objectForKey:@"data"])
-                     {
-                         
-                         self.dataSource = [result objectForKey:@"data"];
-                         [self.tableView reloadData];
-                         if (self.dataSource.count == 0)
-                         {
-                             [self addIntroductionButton];
-                         }
-                         else
-                         {
-                             if (self.introductionView)
-                             {
-                                 [self.introductionView removeFromSuperview];
-                             }
-                             [self addFooterLoadMore];
-                         }
-                         if (self.refreshControl.isRefreshing)
-                         {
-                             double delayInseconds = 0.2;
-                             dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
-                             dispatch_after(popTime, dispatch_get_main_queue(), ^{
-                                 [self.refreshControl endRefreshing];
-                               
-                                 
-                             });
-                         }
-                         
-                         
-                         
-                     }
-                     else if ([result objectForKey:@"error"])
-                     {
-                         [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
-                     }
-                     [self.tableView setContentOffset:CGPointMake(0, -64) animated:YES];
+    //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
+    if (self.shouldRefreshData == false)
+    {
+        return;
+    }
+    self.shouldRefreshData = false;
+    if (![self.refreshControl isRefreshing])
+    {
+        [self.tableView setContentOffset:CGPointMake(0, -64) animated:YES];
+    }
+    if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
+    {
+        self.recommandDatasource = nil;
+        [self getRecommandUser];
+        self.currentPage = 1;
+        [self startAiv];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [[QDYHTTPClient sharedInstance]GetWhatsGoingOnWithUserId:self.currentUser.UserID page:self.currentPage whenComplete:^(NSDictionary *result) {
+             self.shouldRefreshData = true;
+            [self stopAiv];
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 
+                 if ([result objectForKey:@"data"])
+                 {
                      
-                     self.shouldRefreshData = true;
-                     //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-                 });
+                     self.dataSource = [result objectForKey:@"data"];
+                     [self.tableView reloadData];
+                     if (self.dataSource.count == 0)
+                     {
+                         [self addIntroductionButton];
+                     }
+                     else
+                     {
+                         if (self.introductionView)
+                         {
+                             [self.introductionView removeFromSuperview];
+                         }
+                         [self addFooterLoadMore];
+                     }
+                     if (self.refreshControl.isRefreshing)
+                     {
+                         double delayInseconds = 0.2;
+                         dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
+                         dispatch_after(popTime, dispatch_get_main_queue(), ^{
+                             [self.refreshControl endRefreshing];
+                           
+                             
+                         });
+                     }
+                 }
+                 else if ([result objectForKey:@"error"])
+                 {
+                     [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+                 }
+                 [self.tableView setContentOffset:CGPointMake(0, -64) animated:YES];
+                 //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+             });
 
-                    
-                }];
-            });
+                
+            }];
+        });
 
-        }
-        else if (self.tableStyle == WZ_TABLEVIEWSTYLE_DETAIL)
-        {
-            self.currentPage = 1;
-            WhatsGoingOn *item = [self.dataSource objectAtIndex:0];
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                [[QDYHTTPClient sharedInstance ]GetPhotoInfoWithPostId:item.postId userId:self.currentUser.UserID whenComplete:^(NSDictionary *result) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if ([result objectForKey:@"data"])
+    }
+    else if (self.tableStyle == WZ_TABLEVIEWSTYLE_DETAIL)
+    {
+        self.currentPage = 1;
+        WhatsGoingOn *item = [self.dataSource objectAtIndex:0];
+        [self startAiv];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [[QDYHTTPClient sharedInstance ]GetPhotoInfoWithPostId:item.postId userId:self.currentUser.UserID whenComplete:^(NSDictionary *result) {
+                  self.shouldRefreshData = true;
+                [self stopAiv];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([result objectForKey:@"data"])
+                    {
+                        WhatsGoingOn *newItem = [result objectForKey:@"data"];
+                        //[self.dataSource addObject:newItem];
+                        self.dataSource = [NSMutableArray arrayWithObject:newItem];
+                        [self.tableView reloadData];
+                        //[self addFooterLoadMore];
+                        if (self.refreshControl.isRefreshing)
                         {
-                            WhatsGoingOn *newItem = [result objectForKey:@"data"];
-                            //[self.dataSource addObject:newItem];
-                            self.dataSource = [NSMutableArray arrayWithObject:newItem];
-                            [self.tableView reloadData];
-                            //[self addFooterLoadMore];
-                            if (self.refreshControl.isRefreshing)
-                            {
-                                double delayInseconds = 0.2;
-                                dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
-                                dispatch_after(popTime, dispatch_get_main_queue(), ^{
-                                    [self.refreshControl endRefreshing];
-                                    
-                                });
-                            }
-                          
+                            double delayInseconds = 0.2;
+                            dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
+                            dispatch_after(popTime, dispatch_get_main_queue(), ^{
+                                [self.refreshControl endRefreshing];
+                                
+                            });
                         }
-                        else if ([result objectForKey:@"error"])
-                        {
-                            [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
-                        }
-                         [self.tableView setContentOffset:CGPointMake(0, -64) animated:NO];
-                        
-                        self.shouldRefreshData = true;
-                    });
+                      
+                    }
+                    else if ([result objectForKey:@"error"])
+                    {
+                        [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+                    }
+                     [self.tableView setContentOffset:CGPointMake(0, -64) animated:NO];
                     
-                }];
-            });
-
-        }
-        else
-        {
-            if (self.refreshControl.isRefreshing)
-            {
-                double delayInseconds = 0.2;
-                dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
-                dispatch_after(popTime, dispatch_get_main_queue(), ^{
-                    [self.refreshControl endRefreshing];
-                     [self.tableView setContentOffset:CGPointMake(0, -64) animated:YES];
-                    
+                  
                 });
-            }
+                
+            }];
+        });
+
+    }
+    else
+    {
+        if (self.refreshControl.isRefreshing)
+        {
+            double delayInseconds = 0.2;
+            dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^{
+                [self.refreshControl endRefreshing];
+                 [self.tableView setContentOffset:CGPointMake(0, -64) animated:YES];
+                
+            });
         }
+    }
+    
+    
 }
 
 #pragma mark - commentTextView Delegate
@@ -1133,7 +1147,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     WhatsGoingOn *item = [self getDataAtIndexPath:selectItemIndexPath];
     CommentListViewController *commentListView = [[CommentListViewController alloc]init];
     [commentListView setPoiItem:item];
-    [commentListView setCommentList:[item.commentList mutableCopy]];
     [self pushToViewController:commentListView animated:YES hideBottomBar:YES];
 }
 
@@ -1203,7 +1216,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 {
     CGRect rect = CGRectMake(0, -64, WZ_APP_SIZE.width, 64);
     
-    [UIView animateWithDuration:0.3 delay:3.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+    [UIView animateWithDuration:0.3 delay:2.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         
         self.uploadPhotoIndicatorView.frame = rect;
         
@@ -1223,6 +1236,21 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 {
     progressImageView *imageView = self.uploadImageProgressViews[index];
     [imageView setProgress:process];
+}
+
+-(void)startAiv
+{
+    [_refreshaiv startAnimating];
+}
+-(void)stopAiv
+{
+    if (_refreshaiv)
+    {
+        if ([_refreshaiv isAnimating])
+        {
+            [_refreshaiv stopAnimating];
+        }
+    }
 }
 
 #pragma mark - UMSocialData delegate

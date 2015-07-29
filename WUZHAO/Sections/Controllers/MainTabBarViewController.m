@@ -22,7 +22,6 @@
 #import "SVProgressHUD.h"
 
 #import "QDYHTTPClient.h"
-
 #import "ApplicationUtility.h"
 
 #import "macro.h"
@@ -93,6 +92,7 @@ static NSInteger loginState = 1;
     if ([[NSUserDefaults standardUserDefaults]valueForKey:@"launchIndex"])
     {
         self.selectedIndex  = self.currentTabIndex = [[[NSUserDefaults standardUserDefaults]valueForKey:@"launchIndex"]integerValue];
+        
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"launchIndex"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
@@ -260,7 +260,10 @@ static NSInteger loginState = 1;
     if(self.currentTabIndex == WZ_NOTICE_TAB)
     {
         [self.noticeViewController getLatestData];
+        /*
         [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
+        [ApplicationUtility setApplicationIconBadgeWithNum:0];*/
+        
     }
     if (!self.shoudlRefreshCon)
     {
@@ -341,11 +344,12 @@ static NSInteger loginState = 1;
     {
         self.currentTabIndex = index;
         [self activeCurrentTab];
+        /*
         if (index == WZ_NOTICE_TAB)
         {
             [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
             [ApplicationUtility setApplicationIconBadgeWithNum:0];
-        }
+        }*/
         
     }
     else
@@ -382,8 +386,8 @@ static NSInteger loginState = 1;
             break;
         case WZ_NOTICE_TAB:
             [self.noticeViewController getLatestData];
-            [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
-            [ApplicationUtility setApplicationIconBadgeWithNum:0];
+           // [[self.tabBar.items objectAtIndex:3]setBadgeValue:nil];
+           // [ApplicationUtility setApplicationIconBadgeWithNum:0];
             break;
         default:
             break;
@@ -395,7 +399,14 @@ static NSInteger loginState = 1;
 -(void)updateNoticeInfo:(NSNotification *)notification
 {
     NSNumber *index =(NSNumber *) [[notification userInfo]objectForKey:@"notificationNum"];
-    [self setTabarBadgeWithData:index.stringValue atIndex:3];
+    if (index.integerValue >0)
+    {
+        [self setTabarBadgeWithData:index.stringValue atIndex:3];
+    }
+    else
+    {
+        [self setTabarBadgeWithData:nil atIndex:3];
+    }
 }
 
 -(void)setTabarBadgeWithData:(NSString *)data atIndex:(NSInteger)tabBarItemIndex
@@ -484,6 +495,7 @@ static NSInteger loginState = 1;
    // [self.navigationController popToRootViewControllerAnimated:YES];
     
 }
+
 
 
 

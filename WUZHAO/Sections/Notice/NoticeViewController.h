@@ -1,15 +1,15 @@
 //
-//  NoticeViewController.h
+//  SystemNoticeViewController.h
 //  WUZHAO
 //
-//  Created by yiyi on 15-1-14.
+//  Created by yiyi on 15/7/25.
 //  Copyright (c) 2015年 yiyi. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-@interface NoticeViewController : UITableViewController
-
+@interface NoticeViewController : UIViewController
 
 -(void)getLatestData;
+
 @end

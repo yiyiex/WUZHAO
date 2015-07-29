@@ -45,7 +45,7 @@
    // self.automaticallyAdjustsScrollViewInsets = NO;
     //[self.commentListTableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
     
-    [self addCommentListTableView];
+    [self initCommentListTableView];
     [self addToolBar];
     [self setKeyboard];
     //[self setKeyboard];
@@ -87,8 +87,12 @@
     }
     return  _replyUser;
 }
-
--(NSArray *)commentList
+-(void)setPoiItem:(WhatsGoingOn *)poiItem
+{
+    _poiItem = poiItem;
+    _commentList = [poiItem.commentList mutableCopy];
+}
+-(NSMutableArray *)commentList
 {
     if (!_commentList)
     {
@@ -110,10 +114,8 @@
     
 }
 #pragma mark - draw the compoment
-
-
 //绘制评论列表 commentListTableView
--(void)addCommentListTableView
+-(void)initCommentListTableView
 {
     if (!_commentListTableView)
     {
@@ -125,6 +127,7 @@
       //  [_commentListTableView registerClass:[CommentTableViewCell class] forCellReuseIdentifier:@"commentTableCell"];
         [_commentListTableView setDelegate:self];
         [_commentListTableView setDataSource:self];
+        [_commentListTableView setDirectionalLockEnabled:YES];
         [_commentListTableView setSectionIndexBackgroundColor:[UIColor clearColor]];
         [self.view addSubview:_commentListTableView];
         
@@ -216,15 +219,68 @@
     CommentTableViewCell *cell = (CommentTableViewCell *)[[gesture.view superview]superview];
     NSIndexPath *indexpath = [self.commentListTableView indexPathForCell:cell];
     User *user = [[User alloc]init];
-    NSDictionary *cellData = self.commentList[indexpath.row];
-    user.UserID = [[cellData objectForKey:@"userId"]integerValue];
-    user.UserName = [cellData objectForKey:@"userName"];
+    Comment *commentItem = self.commentList[indexpath.row];
+    user.UserID = commentItem.commentUser.UserID;
+    user.UserName = commentItem.commentUser.UserName;
     [self goToPersonalPageWithUserInfo:user];
     
     
 }
-#pragma mark -  action
 
+-(void)infoImageClick:(UIGestureRecognizer *)gesture
+{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    }];
+    [alertController addAction:cancelAction];
+    
+    CommentTableViewCell *cell = (CommentTableViewCell *)[[gesture.view superview]superview];
+    NSIndexPath *indexpath = [self.commentListTableView indexPathForCell:cell];
+
+    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+
+        [self.commentList removeObjectAtIndex:indexpath.row];
+        [self loadData];
+        
+    }];
+    [alertController addAction:deleteAction];
+    
+    UIAlertAction *retryAction = [UIAlertAction actionWithTitle:@"重新发送" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self resendCommentAtIndexPath:indexpath];
+    }];
+    [alertController addAction:retryAction];
+    [self presentViewController:alertController animated:YES completion:nil];
+    
+}
+#pragma mark -  action
+-(void)resendCommentAtIndexPath:(NSIndexPath *)indexPath
+{
+    Comment *comment = [self.commentList objectAtIndex:indexPath.row];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [[QDYHTTPClient sharedInstance]CommentPhotoWithUserId:comment.commentUser.UserID postId:comment.postId comment:comment.content replyUserId:comment.replyUser.UserID whenComplete:^(NSDictionary *returnData) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([returnData objectForKey:@"data"])
+                {
+                    // [SVProgressHUD showInfoWithStatus:@"评论成功"];
+                    NSLog(@"评论成功");
+                    comment.isFailed = NO;
+                    [self loadData];
+                    //更新主页显示内容
+                    [self updateHomePageCommentContentAfterCommentSuccess:comment];
+                }
+                else if ([returnData objectForKey:@"error"])
+                {
+                    [SVProgressHUD showErrorWithStatus:@"评论失败，请检查网络设置"];
+                    comment.isFailed = YES;
+                    [self loadData];
+                }
+            });
+            
+        }];
+        
+    });
+
+}
 -(void)sendComment:(id)sender
 {
     NSString *commentContent = self.commentTextField.text;
@@ -236,98 +292,45 @@
     [self updateCommentViewFrame];
     [self setCommentTextFieldPlaceHolder];
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-    NSInteger userId = [userDefault integerForKey:@"userId"];
-    NSString *userName = [userDefault objectForKey:@"userName"];
-    NSString *avatarUrl = [userDefault objectForKey:@"avatarUrl"];
-    NSInteger postId = self.poiItem.postId;
-    NSInteger replyUserId = 0;
-    if (self.replyUser.UserID != userId)
+    Comment *comment = [[Comment alloc]init];
+    comment.commentUser.UserID = [userDefault integerForKey:@"userId"];
+    comment.commentUser.UserName = [userDefault objectForKey:@"userName"];
+    comment.commentUser.avatarImageURLString = [userDefault objectForKey:@"avatarUrl"];
+    comment.postId = self.poiItem.postId;
+    comment.content = commentContent;
+    if ( self.replyUser.UserName && self.replyUser.UserID != comment.commentUser.UserID)
     {
-        replyUserId = self.replyUser.UserID;
+        comment.replyUser = self.replyUser;
+        comment.commentString = [NSString stringWithFormat:@"%@ 回复 %@: %@",comment.commentUser.UserName,comment.replyUser.UserName,comment.content];
     }
+    else
+    {
+        comment.commentString = [NSString stringWithFormat:@"%@: %@",comment.commentUser.UserName,comment.content];
+    }
+    comment.createTime = @"刚刚";
     
+    //恢复replyuser
+    self.replyUser = nil;
+    [self.commentList addObject:comment];
+    [self loadData];
+   
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [[QDYHTTPClient sharedInstance]CommentPhotoWithUserId:userId postId:postId comment:commentContent replyUserId:replyUserId whenComplete:^(NSDictionary *returnData) {
+        [[QDYHTTPClient sharedInstance]CommentPhotoWithUserId:comment.commentUser.UserID postId:comment.postId comment:comment.content replyUserId:comment.replyUser.UserID whenComplete:^(NSDictionary *returnData) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([returnData objectForKey:@"data"])
                 {
                    // [SVProgressHUD showInfoWithStatus:@"评论成功"];
                     NSLog(@"评论成功");
-                    
                     //更新主页显示内容
-                    NSString *commentString;
-                    NSMutableDictionary *myCommentItem = [[NSMutableDictionary alloc]init];
-                    [myCommentItem setObject:commentContent forKey:@"content"];
-                    [myCommentItem setObject:[returnData objectForKey:@"data"]  forKey:@"commentId"];
-                    [myCommentItem setObject:@"刚刚" forKey:@"time"];
-                    [myCommentItem setObject:[NSNumber numberWithInteger:postId] forKey:@"postId"];
-                    [myCommentItem setObject:userName forKey:@"userName"];
-                    [myCommentItem setObject:[NSNumber numberWithInteger:userId] forKey:@"userId"];
-                    if (replyUserId >0)
-                    {
-                        [myCommentItem setObject:[NSNumber numberWithInteger:self.replyUser.UserID] forKey:@"replyUserId"];
-                        [myCommentItem setObject:self.replyUser.UserName forKey:@"replyUserName"];
-                    }
-                    if(avatarUrl)
-                    {
-                        [myCommentItem setObject:avatarUrl forKey:@"avatarUrl"];
-                    }
-                    commentString =[NSString stringWithFormat:@"%@: %@",[myCommentItem objectForKey:@"userName"],[myCommentItem objectForKey:@"content"]];
-                    NSMutableArray *newpoiCommentList = [NSMutableArray arrayWithArray:self.poiItem.commentList];
-                    NSMutableArray *newCommentStringList = [NSMutableArray arrayWithArray:self.poiItem.commentStringList];
-                    if (newpoiCommentList.count ==5 && newCommentStringList.count ==6)
-                    {
-                        [newpoiCommentList removeObjectAtIndex:0];
-                        [newCommentStringList removeObjectAtIndex:0];
-                        if (replyUserId >0)
-                        {
-                            [newCommentStringList insertObject:[NSString stringWithFormat:@"%@ 回复 %@: %@",userName,self.replyUser.UserName,commentContent] atIndex:newCommentStringList.count -1];
-                        }
-                        else
-                        {
-                            [newCommentStringList insertObject:[NSString stringWithFormat:@"%@: %@",userName,commentContent] atIndex:newCommentStringList.count-1];
-                        }
-                        [newCommentStringList removeLastObject];
-                          [newCommentStringList addObject:[NSString stringWithFormat:@"查看全部%ld条评论",(long)self.poiItem.commentNum+1]];
-                    }
-                    else   if (newpoiCommentList.count ==5 && newCommentStringList.count ==5)
-                    {
-                        [newpoiCommentList removeObjectAtIndex:0];
-                        [newCommentStringList removeObjectAtIndex:0];
-                        if (replyUserId >0)
-                        {
-                            [newCommentStringList addObject:[NSString stringWithFormat:@"%@ 回复 %@: %@",userName,self.replyUser.UserName,commentContent] ];
-                        }
-                        else
-                        {
-                            [newCommentStringList addObject:[NSString stringWithFormat:@"%@: %@",userName,commentContent] ];
-                            
-                        }
-                        [newCommentStringList addObject:[NSString stringWithFormat:@"查看全部%ld条评论",(long)self.poiItem.commentNum+1]];
-                    }
-                    else
-                    {
-                        if (replyUserId >0)
-                        {
-                            [newCommentStringList addObject:[NSString stringWithFormat:@"%@ 回复 %@: %@",userName,self.replyUser.UserName,commentContent]];
-                        }
-                        else
-                        {
-                            [newCommentStringList addObject:[NSString stringWithFormat:@"%@: %@",userName,commentContent]];
-                        }
-                    }
-                    [newpoiCommentList addObject:myCommentItem];
-           
-
-                    self.poiItem.commentList = newpoiCommentList;
-                    self.poiItem.commentStringList = newCommentStringList;
-                    self.poiItem.commentNum ++;
-                    [self getLatestCommentList];
+                    [self updateHomePageCommentContentAfterCommentSuccess:comment];
+ 
+                    //[self getLatestCommentList];
                 }
                 else if ([returnData objectForKey:@"error"])
                 {
-                    [SVProgressHUD showErrorWithStatus:@"评论失败，请检查网络设置"];
-                    self.commentTextField.text = commentContent;
+                    //[SVProgressHUD showErrorWithStatus:@"评论失败，请检查网络设置"];
+                    comment.isFailed = YES;
+                    [self loadData];
                 }
             });
             
@@ -335,6 +338,19 @@
 
     });
     
+}
+
+-(void)updateHomePageCommentContentAfterCommentSuccess:(Comment *)comment
+{
+    //更新主页显示内容
+    NSMutableArray *newpoiCommentList = [NSMutableArray arrayWithArray:self.poiItem.commentList];
+    if (newpoiCommentList.count ==5)
+    {
+        [newpoiCommentList removeObjectAtIndex:0];
+    }
+    [newpoiCommentList addObject:comment];
+    self.poiItem.commentList = newpoiCommentList;
+    self.poiItem.commentNum ++;
 }
 /*
 #pragma mark - Navigation
@@ -346,9 +362,11 @@
 }
 */
 
+#pragma mark - tableview delegate
+
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *cellData = [self.commentList objectAtIndex:indexPath.row];
+    Comment *cellData = [self.commentList objectAtIndex:indexPath.row];
     CommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"commentTableCell" forIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     if (!cell)
@@ -356,6 +374,7 @@
         cell = [[CommentTableViewCell alloc]init];
     }
     [cell configureDataWith:cellData parentController:self];
+
     return cell;
     /*
     if (self.commentList.count <=4)
@@ -437,11 +456,12 @@
         //TO DO
         //加载更多评论
     }
+
     else
     {
-        NSDictionary *commentItem = self.commentList[indexPath.row];
-        self.replyUser.UserID =  [[commentItem valueForKey:@"userId"]integerValue];
-        self.replyUser.UserName = [commentItem objectForKey:@"userName"];
+        Comment *commentItem = self.commentList[indexPath.row];
+        self.replyUser.UserID =  commentItem.commentUser.UserID;
+        self.replyUser.UserName = commentItem.commentUser.UserName;
         [self setCommentTextFieldPlaceHolder];
         if (self.replyUser.UserID != [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
         {
@@ -457,8 +477,8 @@
 {
     //[tableView setEditing:YES animated:YES];
     NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-    NSDictionary *comment = [self.commentList objectAtIndex:indexPath.row];
-    if ([(NSNumber *)[comment objectForKey:@"userId"] integerValue] == myUserId)
+    Comment *comment = [self.commentList objectAtIndex:indexPath.row];
+    if (comment.commentUser.UserID == myUserId)
     {
         return UITableViewCellEditingStyleDelete;
     }
@@ -479,10 +499,11 @@
     }
 }
 
+
 -(void)deleteCommentAtIndex:(NSIndexPath *)indexPath
 {
-
-    NSInteger commentIdToDelete = [(NSNumber *)[[self.commentList objectAtIndex:indexPath.row] objectForKey:@"commentId"] integerValue];
+    
+    Comment *commentToDelete = [self.commentList objectAtIndex:indexPath.row];
     [self.commentListTableView beginUpdates];
     [self.commentList removeObjectAtIndex:indexPath.row];
     [self.commentListTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -490,22 +511,17 @@
     self.poiItem.commentNum --;
     for (NSInteger i = 0;i <self.poiItem.commentList.count;i++)
     {
-        NSInteger oldCommentId = [(NSNumber *)[self.poiItem.commentList[i] objectForKey:@"commentId"] integerValue];
-        if (oldCommentId == commentIdToDelete)
+        Comment *oldComment = self.poiItem.commentList[i];
+        if (oldComment.commentId == commentToDelete.commentId)
         {
             NSMutableArray *newpoiCommentList = [NSMutableArray arrayWithArray:self.poiItem.commentList];
-            NSMutableArray *newCommentStringList = [NSMutableArray arrayWithArray:self.poiItem.commentStringList];
             [newpoiCommentList removeObjectAtIndex:i];
             self.poiItem.commentList = newpoiCommentList;
-            [newCommentStringList removeObjectAtIndex:i];
-            self.poiItem.commentStringList = newCommentStringList;
             break;
         }
-        
-        
     }
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [[QDYHTTPClient sharedInstance]DeleteCommentPhotoWithCommentId:commentIdToDelete  whenComplete:^(NSDictionary *returnData) {
+        [[QDYHTTPClient sharedInstance]DeleteCommentPhotoWithCommentId:commentToDelete.commentId  whenComplete:^(NSDictionary *returnData) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([returnData objectForKey:@"data"])
                 {
@@ -531,18 +547,7 @@
                     if (returnItem)
                     {
                         self.commentList = [returnItem.commentList mutableCopy];
-                        [self.commentListTableView reloadData];
-                      //  [self.commentListTableView setContentOffset:CGPointMake(0, FLT_MAX)];
-                        NSLog(@"content size  %f",self.commentListTableView.contentSize.height);
-                        NSLog(@"bounds size  %f",self.commentListTableView.bounds.size.height);
-                        NSLog(@"frame size  %f",self.commentListTableView.frame.size.height);
-                        NSLog(@"keyboard frame  %f",self.view.keyboardFrameInView.size.height);
-                        if (self.commentListTableView.contentSize.height >self.commentListTableView.bounds.size.height)
-                        {
-                            [self.commentListTableView setContentOffset:CGPointMake(0,self.commentListTableView.contentSize.height -self.commentListTableView.bounds.size.height) animated:YES];
-                        }
-               
-                  
+                        [self loadData];
                     }
                     else
                     {
@@ -561,6 +566,16 @@
     });
  }
 
+-(void)loadData
+{
+    [self.commentListTableView reloadData];
+    float tableViewVisibleHeight = self.view.keyboardFrameInView.origin.y- self.toolbar.frame.size.height;
+    if (self.commentListTableView.contentSize.height >tableViewVisibleHeight)
+    {
+        [self.commentListTableView setContentOffset:CGPointMake(0,self.commentListTableView.contentSize.height - tableViewVisibleHeight) animated:YES];
+    }
+}
+
 
 
 #pragma mark - textView delegate
@@ -569,6 +584,7 @@
 {
     NSLog(@"return key click");
 }
+
 -(void)textViewDidChange:(UITextView *)textView
 {
     if ([textView isEqual:self.commentTextField])
@@ -600,9 +616,9 @@
 {
     CommentTableViewCell *cell = (CommentTableViewCell *)[[commentTextView superview]superview];
     NSIndexPath *indexpath = [self.commentListTableView indexPathForCell:cell];
-    NSDictionary *commentItem = self.commentList[indexpath.row];
-    self.replyUser.UserID =  [[commentItem valueForKey:@"userId"]integerValue];
-    self.replyUser.UserName = [commentItem objectForKey:@"userName"];
+    Comment *commentItem = self.commentList[indexpath.row];
+    self.replyUser.UserID =  commentItem.commentUser.UserID;
+    self.replyUser.UserName = commentItem.commentUser.UserName;
     [self setCommentTextFieldPlaceHolder];
     if (self.replyUser.UserID != [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
     {
@@ -622,12 +638,10 @@
     self.replyUser.UserName = [[NSUserDefaults standardUserDefaults] objectForKey:@"userName"];
     [self setCommentTextFieldPlaceHolder];
     //[[NSNotificationCenter defaultCenter]postNotificationName:UIKeyboardWillHideNotification object:nil];
-    
                              
 }
 -(void)updateCommentViewFrame
 {
-    
     UITextView *textView = self.commentTextField;
     CGRect textViewFrame = textView.frame;
     // 计算 text view 的高度
@@ -636,10 +650,6 @@
     if (newSize.height <90 )
     {
         textViewFrame.size.height = newSize.height;
-        
-        
-        
-        
         // 让 table view 重新计算高度
         UIToolbar *toolbar = self.toolbar;
         CGRect toolBarFrame = toolbar.frame;

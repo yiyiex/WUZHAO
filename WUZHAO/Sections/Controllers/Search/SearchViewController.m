@@ -61,7 +61,6 @@
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
     
-    [self initSwipGesture];
     [self initSearchControllerAndSegmentController];
 }
 
@@ -72,11 +71,10 @@
     self.navigationController.navigationBarHidden = NO;
     self.navigationItem.rightBarButtonItem = self.searchButton;
     self.navigationItem.hidesBackButton = YES;
-
-    self.navigationItem.hidesBackButton = YES;
 }
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
 
     // restore the searchController's active state
     if (self.searchControllerWasActive) {
@@ -106,8 +104,8 @@
 -(void)initSearchControllerAndSegmentController
 {
     
-    _segmentControl.sectionTitles = @[@" 照 片 ",@" 地 点 ",@" 用 户 "];
-    //_segmentControl.selectedSegmentIndex = 0;
+    _segmentControl.sectionTitles = @[@"照 片 ",@"地 点 ",@"用 户 "];
+ 
     _segmentControl.backgroundColor = [UIColor whiteColor];
     _segmentControl.titleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
     _segmentControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE};
@@ -117,7 +115,6 @@
     _segmentControl.selectionStyle = HMSegmentedControlSelectionStyleTextWidthStripe;
     _segmentControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationDown;
     [_segmentControl addTarget:self action:@selector(segmentValueChanged) forControlEvents:UIControlEventValueChanged];
-    [_segmentControl setSelectedSegmentIndex:0 animated:YES];
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Search" bundle:nil];
     _searchResultTableView = [storyboard instantiateViewControllerWithIdentifier:@"SearchResult"];
@@ -141,72 +138,19 @@
     self.searchButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchResultView)];
     
     //[self.navigationItem setTitle:@"发现"];
-    self.tabBarController.navigationItem.title = @"发现";
+    //self.tabBarController.navigationItem.title = @"发现";
     self.tabBarController.navigationItem.rightBarButtonItem = self.searchButton;
+    
+    _segmentControl.selectedSegmentIndex = 0;
     
 }
 -(void)showSearchResultView
 {
-    /*
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Search" bundle:nil];
-    
-    SearchResultViewController *searchResult = [storyboard instantiateViewControllerWithIdentifier:@"SearchResult"]; 
-     */
     SearchResultTableViewController2 *searchResult = [[SearchResultTableViewController2 alloc]init];
     [self pushToViewController:searchResult animated:YES hideBottomBar:YES];
 }
--(void)initSwipGesture
-{
-    UISwipeGestureRecognizer *recognizer;
-    recognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipToRight:)];
-    [recognizer setDirection:UISwipeGestureRecognizerDirectionRight];
-    [self.view addGestureRecognizer:recognizer];
-    recognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipToLeft:)];
-    [recognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
-    [self.view addGestureRecognizer:recognizer];
-}
--(void)swipToRight:(UISwipeGestureRecognizer *)gesture
-{
-    if (self.containerViewController.currentSegueIdentifier == [self.containerViewController.ChildrenName firstObject])
-    {
-        return;
-    }
-    else
-    {
-        // NSLog(@"swip to right");
-        for (int i = 1;i <self.containerViewController.ChildrenName.count;i++)
-        {
-            if ([self.containerViewController.ChildrenName[i] isEqualToString:self.containerViewController.currentSegueIdentifier])
-            {
-                self.containerViewController.currentSegueIdentifier = self.containerViewController.ChildrenName[i-1];
-                [self.containerViewController performSegueWithIdentifier:self.containerViewController.currentSegueIdentifier sender:nil];
-                                [self.segmentControl setSelectedSegmentIndex:self.segmentControl.selectedSegmentIndex-1 animated:YES];
-                break;
-            }
-        }
-    }
-}
--(void)swipToLeft:(UISwipeGestureRecognizer *)gesture
-{
-    if (self.containerViewController.currentSegueIdentifier == [self.containerViewController.ChildrenName lastObject])
-    {
-        return;
-    }
-    else
-    {
-        // NSLog(@"swip to left");
-        for (int i = 0;i <self.containerViewController.ChildrenName.count-1;i++)
-        {
-            if ([self.containerViewController.ChildrenName[i] isEqualToString:self.containerViewController.currentSegueIdentifier])
-            {
-                self.containerViewController.currentSegueIdentifier = self.containerViewController.ChildrenName[i+1];
-                [self.containerViewController performSegueWithIdentifier:self.containerViewController.currentSegueIdentifier sender:nil];
-                [self.segmentControl setSelectedSegmentIndex:self.segmentControl.selectedSegmentIndex+1 animated:YES];
-                break;
-            }
-        }
-    }
-}
+
+
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"embedContainer"])
@@ -214,6 +158,7 @@
         self.containerViewController = segue.destinationViewController;
         self.containerViewController.delegate = self;
         self.containerViewController.ChildrenName = @[SEGUEFIRST,SEGUESECOND,SEGUETHIRD];
+        self.containerViewController.isInteractive = YES;
     }
 }
 
@@ -242,11 +187,13 @@
 
 #pragma mark - commonContainerViewController delegate
 
--(void)finishLoadChildController:(UIViewController *)childController
+-(void)beginLoadChildController:(UIViewController *)childController
 {
     if ([childController isKindOfClass: [PhotosCollectionViewController class]])
     {
         self.suggestPhotoCollectionViewController = (PhotosCollectionViewController *)childController;
+       // [self.containerViewController.interactiveTransitionGestureRecognizer requireGestureRecognizerToFail:self.suggestPhotoCollectionViewController.collectionView.panGestureRecognizer];
+        //[self.suggestPhotoCollectionViewController.collectionView.panGestureRecognizer requireGestureRecognizerToFail:self.containerViewController.interactiveTransitionGestureRecognizer];
         self.suggestPhotoCollectionViewController.dataSource = self;
         [self.suggestPhotoCollectionViewController.collectionView setBackgroundColor:[UIColor whiteColor]];
         if (!self.suggestPhotoData)
@@ -263,6 +210,8 @@
     else if ([childController isKindOfClass:[AddressSuggestViewController class]])
     {
         self.suggestAddressViewController = (AddressSuggestViewController *)childController;
+        //[self.containerViewController.interactiveTransitionGestureRecognizer requireGestureRecognizerToFail:self.suggestAddressViewController.tableView.panGestureRecognizer];
+        //[self.suggestAddressViewController.tableView.panGestureRecognizer requireGestureRecognizerToFail:self.containerViewController.interactiveTransitionGestureRecognizer];
         self.suggestAddressViewController.dataSource = self;
         if (!self.suggestAddressData)
         {
@@ -270,7 +219,7 @@
         }
         else
         {
-
+            
             self.suggestAddressViewController.datasource = self.suggestAddressData;
             [self.suggestAddressViewController loadData];
         }
@@ -279,6 +228,8 @@
     else if( [childController isKindOfClass:[UserListTableViewController class]])
     {
         self.suggestUserListViewConstroller = (UserListTableViewController *)childController;
+        // [self.suggestUserListViewConstroller.tableView.panGestureRecognizer requireGestureRecognizerToFail:self.containerViewController.interactiveTransitionGestureRecognizer];
+        //[self.containerViewController.interactiveTransitionGestureRecognizer requireGestureRecognizerToFail:self.suggestUserListViewConstroller.tableView.panGestureRecognizer];
         self.suggestUserListViewConstroller.dataSource = self;
         [self.suggestUserListViewConstroller setUserListStyle:UserListStyle3];
         if (!self.suggestUserListData)
@@ -291,6 +242,24 @@
             [self.suggestUserListViewConstroller loadData];
         }
     }
+}
+
+-(void)finishLoadChildController:(UIViewController *)childController
+{
+    [self.segmentControl setUserInteractionEnabled:YES];
+    if ([childController isKindOfClass: [PhotosCollectionViewController class]])
+    {
+        [self.segmentControl setSelectedSegmentIndex:0 animated:YES];
+    }
+    else if ([childController isKindOfClass:[AddressSuggestViewController class]])
+    {
+        [self.segmentControl setSelectedSegmentIndex:1 animated:YES];
+    }
+    else if( [childController isKindOfClass:[UserListTableViewController class]])
+    {
+        [self.segmentControl setSelectedSegmentIndex:2 animated:YES];
+    }
+   
 }
 
 -(void)setSuggestPhotoCollectionData
@@ -394,9 +363,9 @@
 
 
 #pragma mark -HMSegment action
-
 - (void)segmentValueChanged
 {
+    [self.segmentControl setUserInteractionEnabled:NO];
     NSString *swapIdentifier ;
     switch (self.segmentControl.selectedSegmentIndex) {
         case 0:

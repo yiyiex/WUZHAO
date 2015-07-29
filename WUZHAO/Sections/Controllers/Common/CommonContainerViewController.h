@@ -7,14 +7,26 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Animator.h"
+#import "PanGestureInteractiveTransition.h"
+#import "SwipeGestureInteractiveTransition.h"
 
 @protocol CommonContainerViewControllerDelegate <NSObject>
 -(void)finishLoadChildController:(UIViewController *)childController;
+-(void)beginLoadChildController:(UIViewController *)childController;
 @end
 
 @interface CommonContainerViewController : UIViewController
+
+/// The gesture recognizer responsible for changing view controllers. (read-only)
+@property (nonatomic, strong) UIGestureRecognizer *interactiveTransitionGestureRecognizer;
+
+@property (nonatomic) BOOL isInteractive;
+
 @property (strong ,nonatomic) NSArray *ChildrenName;
+
 @property (nonatomic,strong) NSString * currentSegueIdentifier;
+
 @property (nonatomic,strong) UIViewController *currentViewController;
 @property (nonatomic,weak) id<CommonContainerViewControllerDelegate> delegate;
 

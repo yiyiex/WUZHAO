@@ -36,6 +36,14 @@
     }
     return _imageUrlList;
 }
+-(NSMutableArray *)commentList
+{
+    if (!_commentList)
+    {
+        _commentList = [[NSMutableArray alloc]init];
+    }
+    return _commentList;
+}
 -(instancetype)initWithAttributes:(NSDictionary *)data
 {
     self = [super init];
@@ -114,45 +122,11 @@
 
 -(void)configureWithCommentList:(NSArray *)commentListInData commentNum:(NSInteger)num
 {
-    NSMutableArray *commentStringList = [[NSMutableArray alloc]init];
-    NSMutableArray *commentList = [[NSMutableArray alloc]init];
     for (NSDictionary *comment in commentListInData)
     {
-        NSMutableDictionary *commentItem = [[NSMutableDictionary alloc]init];
-        NSString *commentString ;
-        [commentItem setObject:[comment objectForKey:@"comment"] forKey:@"content"];
-        [commentItem setObject:[comment objectForKey:@"comment_id"] forKey:@"commentId"];
-        [commentItem setObject:[comment objectForKey:@"create_time"] forKey:@"time"];
-        [commentItem setObject:[comment objectForKey:@"post_id"] forKey:@"postId"];
-        [commentItem setObject:[comment objectForKey:@"nick"] forKey:@"userName"];
-        [commentItem setObject:[comment objectForKey:@"user_id"] forKey:@"userId"];
-        [commentItem setObject:[comment objectForKey:@"avatar"] forKey:@"avatarUrl"];
-       // NSString *isWriterString = [[comment objectForKey:@"user_id"]integerValue] == self.photoUser.UserID?@"(作者)":@"" ;
-        if ([[comment objectForKey:@"replyUserNick"]isEqualToString:@""])
-        {
-            commentString =[NSString stringWithFormat:@"%@: %@",[commentItem objectForKey:@"userName"],[commentItem objectForKey:@"content"]];
-  
-        }
-        else
-        {
-            [commentItem setObject:[comment objectForKey:@"replyUserNick"] forKey:@"replyUserName"];
-            [commentItem setObject:[comment objectForKey:@"replyUserId"] forKey:@"replyUserId"];
-            commentString =[NSString stringWithFormat:@"%@ 回复 %@: %@",[commentItem objectForKey:@"userName"],[commentItem objectForKey:@"replyUserName"],[commentItem objectForKey:@"content"]];
-        }
-        
-        [commentList addObject:commentItem];
-      
-        [commentStringList addObject:commentString];
-        
-        
+        Comment *commentItem = [[Comment alloc]initWithDictionary:comment];
+        [self.commentList addObject:commentItem];
     }
-    if (self.hasMoreComments)
-    {
-        [commentStringList addObject:[NSString stringWithFormat:@"查看全部%ld条评论",(long)num]];
-    }
-    self.commentList = commentList;
-    self.commentStringList = commentStringList;
-    
 }
 
 -(void)configureIWithLikeList:(NSArray *)likeList

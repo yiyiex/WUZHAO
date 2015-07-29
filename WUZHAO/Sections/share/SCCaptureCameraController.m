@@ -117,6 +117,11 @@
     
     [_captureManager.session startRunning];
     
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(addPhotoFromAlubm:) name:@"addPhotoFromAlubm" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(backToFilterPage:) name:@"backToFilterPage" object:nil];
+    
+    
+    
 #if SWITCH_SHOW_DEFAULT_IMAGE_FOR_NONE_CAMERA
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         [SVProgressHUD showErrorWithStatus:@"设备不支持拍照功能"];
@@ -155,6 +160,7 @@
     }
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationOrientationChange object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
     
 #if SWITCH_SHOW_FOCUSVIEW_UNTIL_FOCUS_DONE
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
@@ -590,44 +596,80 @@ void c_slideAlpha() {
             [strongSelf presentViewController:filterController animated:YES completion:^{
                 
             }];
-            
-            //[[NSNotificationCenter defaultCenter] postNotificationName:@"hideBar" object:nil];
         });
-        /*
-        VPImageCropperViewController *imgCropperVC = [[VPImageCropperViewController alloc]initWithImage:self.stillImage cropFrame:CGRectMake(0, 100, self.view.frame.size.width, self.view.frame.size.width) limitScaleRatio:3.0];
-        imgCropperVC.delegate = self;
-        [self presentViewController:imgCropperVC animated:YES completion:^{
-            
-            
-            
-        }];
-         */
-        
-        //直接进入发布页面
-        //[self showViewController:addImageInfoCon sender:self];
-        //[self presentViewController:addImageInfoCon animated:YES completion:nil];
-        
-        //暂时屏蔽滤镜
-       // WZFilterUIViewController *editor = [[WZFilterUIViewController alloc]initWithImage:stillImage delegate:self];
-        //[self.navigationController showViewController:editor sender:self];
-       // [self presentViewController:editor animated:YES completion:nil];
-        
         
     }];
 }
 
+-(void)backToFilterPage:(NSNotification *)notification
+{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
+    PhotoFilterViewCollectionViewController *filterController = [storyboard instantiateViewControllerWithIdentifier:@"filterViewController"];
+    filterController.imagesAndInfo = [notification.userInfo objectForKey:@"imagesAndInfo"];
+    //filterController.stillImage = strongSelf.stillImage;
+    WEAKSELF_WZ
+    filterController.filterBlock = ^(NSMutableArray *imagesAndInfo)
+    
+    {
+        __strong typeof(weakSelf_WZ)strongSelf = weakSelf_WZ;
+        strongSelf.imagesAndInfo = imagesAndInfo;
+        [imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([[obj objectForKey:@"needSave"] isEqualToString:@"true"])
+            {
+                [PhotoCommon saveImageToPhotoAlbumWithExif:[obj objectForKey:@"imageInfo"] image:[obj objectForKey:@"image"]];
+            }
+        }];
+        AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
+        addImageInfoCon.imagesAndInfo = strongSelf.imagesAndInfo;
+        
+        [strongSelf presentViewController:addImageInfoCon animated:YES completion:nil];
+    };
+    [self presentViewController:filterController animated:YES completion:^{
+        
+    }];
+
+}
+
+-(void)addPhotoFromAlubm:(NSNotification *)notification
+{
+
+    NSDictionary *userInfo = notification.userInfo;
+    PhotosPickerViewController *photoPicker = [[PhotosPickerViewController alloc] init];
+    photoPicker.imagesAndInfo = [userInfo objectForKey:@"imagesAndInfo"];
+    //******** my first retain cycle!!!!!!!!
+    WEAKSELF_WZ
+    photoPicker.selectedImagesBlock = ^(NSMutableArray *imagesAndInfo) {
+        //do something
+        __strong typeof(weakSelf_WZ)strongSelf = weakSelf_WZ;
+        strongSelf.imagesAndInfo = imagesAndInfo;
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
+        PhotoFilterViewCollectionViewController *filterController = [storyboard instantiateViewControllerWithIdentifier:@"filterViewController"];
+        filterController.imagesAndInfo = strongSelf.imagesAndInfo;
+        filterController.filterBlock = ^(NSMutableArray *imagesAndInfo)
+        
+        {
+            strongSelf.imagesAndInfo = imagesAndInfo;
+            [imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                if ([[obj objectForKey:@"needSave"] isEqualToString:@"true"])
+                {
+                    [PhotoCommon saveImageToPhotoAlbumWithExif:[obj objectForKey:@"imageInfo"] image:[obj objectForKey:@"image"]];
+                }
+            }];
+            AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
+            addImageInfoCon.imagesAndInfo = strongSelf.imagesAndInfo;
+            
+            [strongSelf presentViewController:addImageInfoCon animated:YES completion:nil];
+        };
+        [strongSelf presentViewController:filterController animated:YES completion:^{
+            
+        }];
+    };
+    [self presentViewController:photoPicker animated:YES completion:NULL];
+
+}
+
 -(void)selectPhotoFromAlubm:(UITapGestureRecognizer *)gesture
 {
-    /*
-    NSLog(@"select photo library");
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary])
-    {
-        UIImagePickerController *controller = [[UIImagePickerController alloc]init];
-        controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        controller.delegate = self;
-        //[self presentViewController:controller animated:YES completion:^{NSLog(@"picker view controller  is presented");}];
-        [self showViewController:controller sender:self];
-    }*/
     if (!self.selectPhotoImageView.image)
     {
         UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"您已设置拒绝Place访问照片，请到设置中心设置允许Place访问照片。" delegate:self cancelButtonTitle:@"好的" otherButtonTitles:nil];
@@ -643,15 +685,6 @@ void c_slideAlpha() {
         //do something
         __strong typeof(weakSelf_WZ)strongSelf = weakSelf_WZ;
         strongSelf.imagesAndInfo = imagesAndInfo;
-        //__block NSMutableArray *newImagesAndInfo = [[NSMutableArray alloc]init];
-        /*[imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            UIImage *originImage = [obj objectForKey:@"image"];
-            UIImage *resizeImage = [strongSelf.captureManager resizeImage:originImage];
-            
-            NSDictionary *imageAndInfo = @{@"image":resizeImage,@"imageInfo":[obj objectForKey:@"imageInfo"]};
-            [newImagesAndInfo addObject:imageAndInfo];
-        }];*/
-        //strongSelf.imagesAndInfo = newImagesAndInfo;
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Share" bundle:nil];
         PhotoFilterViewCollectionViewController *filterController = [storyboard instantiateViewControllerWithIdentifier:@"filterViewController"];
         filterController.imagesAndInfo = strongSelf.imagesAndInfo;

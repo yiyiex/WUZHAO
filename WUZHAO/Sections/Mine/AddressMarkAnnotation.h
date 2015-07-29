@@ -6,11 +6,12 @@
 //  Copyright (c) 2015年 yiyi. All rights reserved.
 //
 
-#import <MAMapKit/MAMapKit.h>
+//#import <MAMapKit/MAMapKit.h>
+#import <MapKit/MapKit.h>
 #import "POI.h"
 #import "WhatsGoingOn.h"
 
-@interface AddressMarkAnnotation :  NSObject<MAAnnotation>
+@interface AddressMarkAnnotation :  NSObject<MKAnnotation>
 
 @property (nonatomic, assign) CLLocationCoordinate2D coordinate;
 
