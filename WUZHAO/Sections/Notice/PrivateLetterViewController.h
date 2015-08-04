@@ -7,13 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PagerViewController.h"
+#import "BasicTableViewController.h"
 
-@interface PrivateLetterViewController : UIViewController
-@property (nonatomic, strong) NSMutableArray *letterListData;
-
-@property (nonatomic) BOOL shouldRefreshData;
+@interface PrivateLetterViewController : BasicTableViewController
 
 -(void)getLatestData;
--(void)loadData;
 
 @end

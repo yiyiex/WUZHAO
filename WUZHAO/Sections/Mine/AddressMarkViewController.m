@@ -18,7 +18,7 @@
 #import "AddressMarkCollectionViewCell.h"
 #import "AddressMarkCollectionView.h"
 
-#import "UIViewController+HideBottomBar.h"
+#import "UIViewController+Basic.h"
 #import "HomeTableViewController.h"
 
 
@@ -107,8 +107,9 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
     [self.view bringSubviewToFront:backButton];
     
     //share button
-    UIButton *shareButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width - 60, 28, 50, 30)];
-    [shareButton setTitle:@"分享" forState:UIControlStateNormal];
+    UIButton *shareButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width - 44, 26, 35, 35)];
+    [shareButton setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
+    //[shareButton setTitle:@"分享" forState:UIControlStateNormal];
     [shareButton setBackgroundColor:THEME_COLOR_DARK_GREY_PARENT];
     [shareButton.titleLabel setTextColor:[UIColor whiteColor]];
     [shareButton.titleLabel setFont:WZ_FONT_LARGE_BOLD_SIZE];
@@ -353,7 +354,7 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
 {
     UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
     HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
-    [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];
+    [detailPhotoController setDatasource:[NSMutableArray arrayWithObject:item]];
     [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
     [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
 }

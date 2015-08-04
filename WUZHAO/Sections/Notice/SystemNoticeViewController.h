@@ -7,11 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BasicTableViewController.h"
 
-@interface SystemNoticeViewController : UITableViewController
-@property (nonatomic,strong) NSMutableArray *dataSource;
-@property (nonatomic) BOOL shouldRefreshData;
+@interface SystemNoticeViewController : BasicTableViewController
 
 -(void)getLatestData;
--(void)loadData;
 @end

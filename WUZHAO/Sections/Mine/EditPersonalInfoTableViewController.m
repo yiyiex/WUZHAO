@@ -215,7 +215,6 @@
 - (void)logout
 {
     [self.navigationController popViewControllerAnimated:NO];
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"deleteUserInfo" object:nil];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"logOut" object:nil];
 }
 
@@ -310,6 +309,7 @@
                                                  
                                                  [userDefaults setObject:user.UserName forKey:@"userName"];
                                                  [userDefaults setObject:user.avatarImageURLString forKey:@"avatarUrl"];
+                                                 [userDefaults synchronize];
                                              }
                                              else
                                              {

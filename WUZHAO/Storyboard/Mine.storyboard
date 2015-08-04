@@ -359,8 +359,8 @@
                     </view>
                     <toolbarItems/>
                     <connections>
-                        <segue destination="aqa-xk-PAi" kind="custom" identifier="segueForPhotosColletion" customClass="EmptySegue" id="bWG-Ke-dAb"/>
-                        <segue destination="Gq1-9E-X1K" kind="custom" identifier="segueForAddressTable" customClass="EmptySegue" id="uGK-mV-e9I"/>
+                        <segue destination="aqa-xk-PAi" kind="custom" identifier="segueForPhotosColletion" customClass="emptySegue" id="bWG-Ke-dAb"/>
+                        <segue destination="Gq1-9E-X1K" kind="custom" identifier="segueForAddressTable" customClass="emptySegue" id="uGK-mV-e9I"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="M40-UQ-QSc" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="52P-J8-cXU">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="52P-J8-cXU">
     <dependencies>
         <development version="6000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
-        <!--HomeContainer-->
+        <!--主 页-->
         <scene sceneID="jkR-Ml-xjl">
             <objects>
-                <viewController title="HomeContainer" id="52P-J8-cXU" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HomeContainer" title="主 页" automaticallyAdjustsScrollViewInsets="NO" id="52P-J8-cXU" customClass="HomeContainerViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="wnx-Ci-Nbk"/>
                         <viewControllerLayoutGuide type="bottom" id="L4a-lY-Ztq"/>
@@ -18,15 +18,21 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="swA-O8-yTD">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <connections>
-                                    <segue destination="UhZ-Ws-nYB" kind="embed" id="g8P-go-qzZ"/>
-                                </connections>
-                            </containerView>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qWz-az-PRG" customClass="ScrollViewOnlyHorizonScroll">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                            </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="qWz-az-PRG" firstAttribute="top" secondItem="HfB-2l-Kcp" secondAttribute="top" constant="64" id="BDx-tA-KcU"/>
+                            <constraint firstItem="qWz-az-PRG" firstAttribute="leading" secondItem="HfB-2l-Kcp" secondAttribute="leading" id="N52-zj-Ueh"/>
+                            <constraint firstAttribute="trailing" secondItem="qWz-az-PRG" secondAttribute="trailing" id="fKA-ih-uKz"/>
+                            <constraint firstItem="qWz-az-PRG" firstAttribute="bottom" secondItem="L4a-lY-Ztq" secondAttribute="top" id="zH6-Gl-5Lz"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="containerView" destination="qWz-az-PRG" id="aC7-hQ-ojW"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MVP-a3-FYo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -35,8 +41,8 @@
         <!--HomeTable-->
         <scene sceneID="u8H-Ox-FKO">
             <objects>
-                <tableViewController storyboardIdentifier="HomeTableViewController" title="主 页" id="n8j-zi-5ug" userLabel="HomeTable" customClass="HomeTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="472" sectionHeaderHeight="22" sectionFooterHeight="22" id="Pqn-qZ-5qG">
+                <tableViewController storyboardIdentifier="HomeTableViewController" autoresizesArchivedViewToFullSize="NO" title="主 页" id="n8j-zi-5ug" userLabel="HomeTable" customClass="HomeTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" canCancelContentTouches="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="472" sectionHeaderHeight="22" sectionFooterHeight="22" id="Pqn-qZ-5qG" customClass="TableViewScrollNotSwipe">
                         <rect key="frame" x="0.0" y="94" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -90,7 +96,7 @@
                                             <constraints>
                                                 <constraint firstItem="1vk-Qy-jms" firstAttribute="leading" secondItem="kwx-c6-mhO" secondAttribute="leading" constant="8" id="1qb-B0-CMr"/>
                                                 <constraint firstItem="jRx-uJ-oCD" firstAttribute="centerY" secondItem="k6S-JX-yPB" secondAttribute="centerY" id="CoP-cU-HZY"/>
-                                                <constraint firstAttribute="trailing" secondItem="jRx-uJ-oCD" secondAttribute="trailing" constant="8" id="Dzy-Ce-UPe"/>
+                                                <constraint firstAttribute="trailing" secondItem="jRx-uJ-oCD" secondAttribute="trailing" id="Dzy-Ce-UPe"/>
                                                 <constraint firstAttribute="centerY" secondItem="k6S-JX-yPB" secondAttribute="centerY" id="F6e-6n-I1W"/>
                                                 <constraint firstItem="Y5a-2R-4pO" firstAttribute="top" secondItem="1vk-Qy-jms" secondAttribute="top" constant="2" id="LEd-Kc-rsj"/>
                                                 <constraint firstAttribute="centerY" secondItem="1vk-Qy-jms" secondAttribute="centerY" id="MwO-CR-T9e"/>
@@ -283,41 +289,16 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Place" id="tmL-z4-q8w"/>
-                    <nil key="simulatedBottomBarMetrics"/>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="600" height="600"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ld4-m0-MSi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="590" y="55"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="u2Z-9m-fcr">
-            <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="UhZ-Ws-nYB" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="AX0-Ua-cCq"/>
-                        <viewControllerLayoutGuide type="bottom" id="Mya-Ds-W3x"/>
-                    </layoutGuides>
-                    <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Bly-db-ftR">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <toolbarItems/>
-                    <connections>
-                        <segue destination="n8j-zi-5ug" kind="custom" customClass="EmptySegue" id="I5O-Lm-I59"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="o2v-3n-8YU" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="983" y="-676"/>
-        </scene>
-        <!--Table View Controller-->
+        <!--Home Address Table-->
         <scene sceneID="yOU-y2-5lJ">
             <objects>
-                <tableViewController id="6nM-44-mcy" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="c5v-Dx-D3N">
+                <tableViewController storyboardIdentifier="addressListView" automaticallyAdjustsScrollViewInsets="NO" id="6nM-44-mcy" userLabel="Home Address Table" customClass="AddressListTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="c5v-Dx-D3N" customClass="TableViewScrollNotSwipe">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -337,7 +318,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KPh-UP-xMb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1362" y="55"/>
+            <point key="canvasLocation" x="1252" y="55"/>
         </scene>
     </scenes>
     <resources>

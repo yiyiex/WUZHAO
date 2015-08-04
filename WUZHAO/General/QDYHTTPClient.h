@@ -14,6 +14,7 @@
 #import "Feeds.h"
 #import "SuggestAddress.h"
 #import "PrivateLetter.h"
+#import "AddressPhotos.h"
 
 
 @interface QDYHTTPClient :AFHTTPAPIClient
@@ -76,6 +77,10 @@
 
 //get whats going on with userId
 -(void) GetWhatsGoingOnWithUserId:(NSInteger)userId page:(NSInteger)page whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+//get home address list
+-(void)GetHomeAddressWithLocation:(NSString *)location whenComplete:(void (^) (NSDictionary *returnData))whenComplete;
+//get home recommend list
+-(void)GetHomeRecommendListWithPageNum:(NSInteger)page whenComplete:(void (^)(NSDictionary * returnData))whenComplete;
 
 //get recommend userList
 -(void)GetRecommendUserListWhenComplete:(void (^)(NSDictionary *returnData))whenComplete;

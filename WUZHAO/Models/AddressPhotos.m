@@ -23,9 +23,17 @@
 {
     self = [super init];
     self.poi = [[POI alloc]initWithDictionary:data];
+    if ([data objectForKey:@"POI"])
+    {
+        self.poi = [[POI alloc]initWithDictionary:[data objectForKey:@"POI"]];
+    }
     if ([data objectForKey:@"photoNum"])
     {
         self.photoNum = [[data objectForKey:@"photoNum"]integerValue];
+    }
+    if ([data objectForKey:@"description"])
+    {
+        self.addressDescription = [data objectForKey:@"description"];
     }
     
     if ([data objectForKey:@"postList"])
@@ -45,12 +53,14 @@
 {
     NSDictionary *data1 = @{@"POI":@{@"uid":@"11111",@"name":@"杭州市·余杭区",@"location":@"-33.8670522,151.1957362"},
                            @"photoNum":@2,
-                            @"photoList":@[@{@"photo":
+                            @"description":@"ajkdsjfklsajfklsjfklsajdfklasjfklsajfklsa",
+                            @"postList":@[@{@"photo":
                                          @"http://img4.douban.com/view/photo/photo/public/p2254231799.jpg",@"post_id":@1},
                                            @{@"photo":@"http://img3.douban.com/view/photo/photo/public/p2254477835.jpg",@"post_id":@2}]};
     NSDictionary *data2 = @{@"POI":@{@"uid":@"2222",@"name":@"上海市·徐汇区",@"location":@"33.8670522,151.1957362"},
                             @"photoNum":@10,
-                            @"photoList":@[
+                            @"description":@"ajkdsjfklsajfklsjfklsajdfklasjfklsajfklsa",
+                            @"postList":@[
                                     @{@"photo":@"http://img4.douban.com/view/status/raw/public/f8e55597055e768.jpg",@"post_id":@4},
                                     @{@"photo":@"http://img3.douban.com/view/status/raw/public/e8655e54beeb2a5.jpg",@"post_id":@5},
                                     @{@"photo":@"http://img4.douban.com/view/status/raw/public/aeefb22c9318dd8.jpg",@"post_id":@6},

@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) POI *poi;
 @property (nonatomic) NSInteger photoNum;
+@property (nonatomic, strong) NSString *addressDescription;
 @property (nonatomic , strong) NSMutableArray *photoList;
 
 -(instancetype )initWithData:(NSDictionary *)data;

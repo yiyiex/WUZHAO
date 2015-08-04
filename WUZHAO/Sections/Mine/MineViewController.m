@@ -24,7 +24,7 @@
 #import "UserListTableViewController.h"
 #import "EditPersonalInfoTableViewController.h"
 
-#import "UIViewController+HideBottomBar.h"
+#import "UIViewController+Basic.h"
 
 #import "UIScrollView+BlurCover.h"
 

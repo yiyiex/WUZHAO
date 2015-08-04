@@ -10,6 +10,7 @@
 #import "LinkTextView.h"
 #import "WhatsGoingOn.h"
 
+#import "CollectionViewNotSimultaneously.h"
 #import "CommentTextView.h"
 
 
@@ -36,8 +37,7 @@
 
 //photos
 @property (nonatomic, weak) IBOutlet UIView *imagesContainerView;
-@property (nonatomic, weak) IBOutlet UICollectionView *imagesCollectionView;
-@property (nonatomic, weak) IBOutlet UIScrollView *imagesScrollView;
+@property (nonatomic, weak) IBOutlet CollectionViewNotSimultaneously *imagesCollectionView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *imagesContainerViewHeightConstrant;
 
 //address

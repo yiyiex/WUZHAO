@@ -11,11 +11,11 @@
 
 @interface SetAvatarIntroductionViewController : UIViewController
 
-@property (nonatomic, weak) IBOutlet UILabel *intruductionLabel;
 @property (nonatomic, weak) IBOutlet UIImageView *avatarImageView;
 @property (nonatomic, strong) IBOutlet UILabel *avatarLabel;
 @property (nonatomic, weak) IBOutlet PlaceholderTextView *selfDescriptionTextView;
 @property (nonatomic, weak) IBOutlet UIButton *nextButton;
+@property (nonatomic, weak) IBOutlet UIButton *jumpButton;
 
 -(IBAction)nextButtonClick:(id)sender;
 

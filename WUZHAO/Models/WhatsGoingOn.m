@@ -62,7 +62,10 @@
     {
         self.photoUser.selfDescriptions = [data objectForKey:@"description"];
     }
-
+    if ([data objectForKey:@"followType"])
+    {
+        self.photoUser.followType = [(NSNumber *)[data objectForKey:@"followType"]integerValue];
+    }
     
     self.postTime = [data objectForKey:@"create_time"];
     self.imageUrlString = [data objectForKey:@"photo"];

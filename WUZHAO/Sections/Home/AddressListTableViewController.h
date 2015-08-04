@@ -7,26 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PagerViewController.h"
+#import "BasicTableViewController.h"
 
-#import "macro.h"
-
-#import "AddressPhotos.h"
 #import "User.h"
-#import "POI.h"
+#import "AddressPhotos.h"
 
-@protocol AddressListTableViewDataSource ;
+@interface AddressListTableViewController : BasicTableViewController <PagerViewControllerItem>
 
-@interface AddressListTableViewController : UITableViewController
-@property (nonatomic, strong) User *currentUser;
-@property (nonatomic,strong) NSArray *datasource;
-@property (nonatomic, weak) id<AddressListTableViewDataSource> dataSource;
--(void)loadData;
+-(void)getLatestData;
 
 @end
 
-@protocol AddressListTableViewDataSource <NSObject>
 
-@required
--(NSInteger)numberOfPhotos:(AddressListTableViewController *)tableView;
--(AddressPhotos *)AddressListTableView:(AddressListTableViewController *)tableView dataAtIndex:(NSInteger)index;
-@end
+
+

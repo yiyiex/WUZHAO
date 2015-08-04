@@ -716,6 +716,87 @@
         whenComplete(returnData);
     }];
 }
+-(void)GetHomeRecommendListWithPageNum:(NSInteger)page whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/recommendupdate"];
+    NSDictionary *param = @{@"page":[NSNumber numberWithInteger:page]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSArray *data = [result objectForKey:@"data"];
+                NSMutableArray *postData = [[NSMutableArray alloc]init];
+                if (data)
+                {
+                    NSInteger dataCount = [data count];
+                    
+                    // item.photoUser = [[User alloc]init];
+                    for (NSInteger i = 0;i <dataCount;i++)
+                    {
+                        WhatsGoingOn *item = [[WhatsGoingOn alloc]initWithAttributes:data[i]];
+                        [postData addObject:item];
+                    }
+                    [returnData setValue:postData forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
+-(void)GetHomeAddressWithLocation:(NSString *)location whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/homeplaces"];
+    NSDictionary *param = @{@"location":location};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSArray *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    NSMutableArray *addressList = [[NSMutableArray alloc]init];
+                    [data enumerateObjectsUsingBlock:^(NSDictionary *item, NSUInteger idx, BOOL *stop) {
+                        AddressPhotos *address = [[AddressPhotos alloc]initWithData:item];
+                        [addressList addObject:address];
+                        
+                    }];
+                    [returnData setObject:addressList forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        
+        whenComplete(returnData);
+    }];
+}
 
 -(void)GetRecommendUserListWhenComplete:(void (^)(NSDictionary *))whenComplete
 {

@@ -15,7 +15,9 @@
 
 #import "NoticeContentTextView.h"
 
-#import "UIViewController+HideBottomBar.h"
+#import "PagerViewController.h"
+
+#import "UIViewController+Basic.h"
 #import "UILabel+ChangeAppearance.h"
 #import "UIImageView+WebCache.h"
 #import "Feeds.h"
@@ -24,8 +26,7 @@
 #import "macro.h"
 
 
-@interface SystemNoticeViewController ()<NoticeContentTextViewDelegate>
-@property (nonatomic, strong) UIRefreshControl *refreshControl;
+@interface SystemNoticeViewController ()<NoticeContentTextViewDelegate,PagerViewControllerItem>
 
 
 @property (nonatomic,strong) UIView *infoView;
@@ -38,12 +39,13 @@
 @end
 
 @implementation SystemNoticeViewController
-
+@dynamic refreshControl;
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initView];
+    [self setupView];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
     self.shouldRefreshData = YES;
+    [self getLatestData];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -61,21 +63,16 @@
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
--(void)initView
+-(void)setupView
 {
-    self.refreshControl = [[UIRefreshControl alloc]init];
-    [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
-    [self.tableView addSubview:self.refreshControl];
-    [self.refreshControl setHidden:YES];
-    
+    [self setBackItem];
+    [self setupRefreshControl];
     [self initNavigationItem];
 }
 -(void)initNavigationItem
 {
     self.navigationController.navigationBarHidden = NO;
     self.navigationItem.hidesBackButton = YES;
-    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.navigationItem.backBarButtonItem = backBarItem;
 }
 
 
@@ -103,7 +100,7 @@
 #pragma mark - tableview delegate
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Feeds *feeds = [self.dataSource objectAtIndex:indexPath.row];
+    Feeds *feeds = [self.datasource objectAtIndex:indexPath.row];
     UITableViewCell *cell;
     if (feeds.type == WZ_FEEDSTYPE_ZAN)
     {
@@ -151,7 +148,7 @@
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.dataSource.count;
+    return self.datasource.count;
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -188,23 +185,14 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return[ self caculateProtoCellHeightWithData:self.dataSource[indexPath.row]];
+    return[ self caculateProtoCellHeightWithData:self.datasource[indexPath.row]];
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self caculateProtoCellHeightWithData:self.dataSource[indexPath.row]];
+    return [self caculateProtoCellHeightWithData:self.datasource[indexPath.row]];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 -(void)configureZanCell:(FeedsZanAndCommentTableViewCell *)cell WithFeeds:(Feeds *)feeds
 {
     [cell configureZanWithFeeds:feeds parentController:self];
@@ -232,15 +220,17 @@
     NSInteger userId = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
     //获取最新数据
     [[QDYHTTPClient sharedInstance]getNoticeWithUserId:userId whenComplete:^(NSDictionary *returnData) {
+        
         if ([self.refreshControl isRefreshing])
         {
             [self.refreshControl endRefreshing];
         }
         self.shouldRefreshData = YES;
+        [[QDYHTTPClient sharedInstance]getLatestNoticeNumber];
         if ([returnData objectForKey:@"data"])
         {
-            self.dataSource = [returnData objectForKey:@"data"];
-            if (self.dataSource.count == 0)
+            self.datasource = [returnData objectForKey:@"data"];
+            if (self.datasource.count == 0)
             {
                 if (![self.infoView superview])
                 {
@@ -276,13 +266,13 @@
 {
     UITableViewCell *cell = (UITableViewCell *)[[gesture.view superview]superview];
     NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
-    Feeds *feeds = [self.dataSource objectAtIndex:selectedIndexPath.row];
+    Feeds *feeds = [self.datasource objectAtIndex:selectedIndexPath.row];
 
     UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
     HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
-    [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:feeds.feedsPhoto]];
+    [detailPhotoController setDatasource:[NSMutableArray arrayWithObject:feeds.feedsPhoto]];
     [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
-    [detailPhotoController GetLatestDataList];
+    [detailPhotoController getLatestData];
     [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
     
 }
@@ -290,73 +280,39 @@
 {
     UITableViewCell *cell = (UITableViewCell *)[[gesture.view superview]superview];
     NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
-    Feeds *feeds = [self.dataSource objectAtIndex:selectedIndexPath.row];
+    Feeds *feeds = [self.datasource objectAtIndex:selectedIndexPath.row];
     
-    [self goToUserPageWithUserInfo:feeds.feedsUser];
+    [self goToPersonalPageWithUserInfo:feeds.feedsUser];
     
 }
 -(void)feedsUserClick:(UIGestureRecognizer *)gesture
 {
     UITableViewCell *cell = (UITableViewCell *)[[gesture.view superview]superview];
     NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
-    Feeds *feeds = [self.dataSource objectAtIndex:selectedIndexPath.row];
-    [self goToUserPageWithUserInfo:feeds.feedsUser];
+    Feeds *feeds = [self.datasource objectAtIndex:selectedIndexPath.row];
+    [self goToPersonalPageWithUserInfo:feeds.feedsUser];
     
 }
--(void)goToUserPageWithUserInfo:(User *)user
-{
-    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
-    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
-    [personalViewCon setUserInfo:user];
-    [personalViewCon.navigationController setNavigationBarHidden:YES];
-    [self pushToViewController:personalViewCon animated:YES hideBottomBar:YES];
-}
 
--(void)refreshByPullingTable:(id)sender
-{
-    if (self.shouldRefreshData)
-    {
-        [self getLatestData];
-    }
-    else
-    {
-        if ([self.refreshControl isRefreshing])
-        {
-            [self.refreshControl endRefreshing];
-        }
-    }
-}
-/*
--(void)followButtonClick:(UIGestureRecognizer *)gesture
-{
-    
-}*/
-
--(void)loadData
-{
-    if (!self.shouldRefreshData)
-    {
-        return;
-    }
-    [self.tableView reloadData];
-    [self.tableView setContentOffset:CGPointMake(0, 0)];
-    if ([self.refreshControl isRefreshing])
-    {
-        [self.refreshControl endRefreshing];
-    }
-}
 
 
 #pragma mark - noticeTextViewDelegate
 -(void)noticeContentTextView:(NoticeContentTextView *)noticeContentTextView didClickLinkUser:(User *)user
 {
-    [self goToUserPageWithUserInfo:user];
+    [self goToPersonalPageWithUserInfo:user];
 }
 
 #pragma mark - notification selector
 -(void)clearUserInfo
 {
-    self.dataSource = nil;
+    self.datasource = nil;
     [self loadData];
 }
+
+#pragma mark - pagerViewController Delegate
+-(NSString *)titleForPagerViewController:(PagerViewController *)pagerViewController
+{
+    return @"通知";
+}
+
 @end

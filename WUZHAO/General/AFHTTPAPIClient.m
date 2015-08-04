@@ -87,21 +87,39 @@
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)task.response;
             if (httpResponse.statusCode == 200)
             {
-                /*
                 if ( [[responseObject objectForKey:@"success"] isEqualToString:@"false"])
                 {
                     NSLog(@"get infomation failed:");
-                     NSLog(@"%@",responseObject);
+                    //code 110 token校验失败
+                    if ([(NSNumber *)[responseObject objectForKey:@"code"]integerValue] ==110)
+                    {
+                        NSLog(@"token校验失败");
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"tokenIllegal" object:nil];
+                        //complete(@{@"error":@"登录态失效，请重新登录"},nil);
+                        complete(nil,nil);
+                    }
+                    else
+                    {
+                        if ([responseObject objectForKey:@"msg"])
+                        {
+                            complete(@{@"msg":[responseObject objectForKey:@"msg"]},nil);
+                        }
+                        else
+                        {
+                            complete(@{@"msg":@"请求失败"},nil);
+                        }
+                    }
                 }
                 else
                 {
-                    NSLog(@"get infomation success!");
-                    NSLog(@"%@",responseObject);
-                    
-                }*/
+                    complete(responseObject,nil);
+                }
+            }
+            else
+            {
+                complete(@{@"msg":@"您请求的服务不存在或者服务器错误"},nil);
             }
             [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-            complete(responseObject,nil);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             NSLog(@"request failed");
             NSLog(@"%@",error);

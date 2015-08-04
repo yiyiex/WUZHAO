@@ -60,10 +60,16 @@
                 [[NSUserDefaults standardUserDefaults]setObject:@1 forKey:@"noticeIndex"];
                 [[NSUserDefaults standardUserDefaults]synchronize];
             }
-            else
+            if (noticeType == 6)
             {
-                [[QDYHTTPClient sharedInstance] getLatestNoticeNumber];
+                //3-notice tab
+                [[NSUserDefaults standardUserDefaults]setObject:@3 forKey:@"launchIndex"];
+                //0 -- system notice tab  1-- private letter tab
+                [[NSUserDefaults standardUserDefaults]setObject:@0 forKey:@"noticeIndex"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                
             }
+            [[QDYHTTPClient sharedInstance] getLatestNoticeNumber];
         }
         
     }

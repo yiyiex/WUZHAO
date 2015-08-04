@@ -17,7 +17,6 @@
     if (self = [super initWithFrame:frame]) {
         self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
         self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        //self.imageView.layer.borderColor = [UIColor blueColor].CGColor;
         self.imageView.layer.borderColor = THEME_COLOR_DARK.CGColor;
         [self.contentView addSubview:self.imageView];
         
@@ -28,7 +27,6 @@
         layer.borderColor = [THEME_COLOR_WHITE CGColor];
         layer.cornerRadius = self.selectedIcon.frame.size.width/2;
         layer.backgroundColor = [THEME_COLOR_DARK_GREY_PARENT CGColor];
-        //[self.imageView addSubview:self.selectedIcon];
         [self.contentView addSubview:self.selectedIcon];
     }
     return self;

@@ -42,20 +42,18 @@
 
 -(void)initView
 {
+     [self setTitle:@"完善个人信息"];
+    
     [self.view setUserInteractionEnabled:YES];
     
     [self.navigationItem setHidesBackButton:YES];
     
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc]initWithTitle:@"跳过" style:UIBarButtonItemStylePlain target:self action:@selector(jumpTopNext:)];
-    self.navigationItem.rightBarButtonItem = rightItem;
-    
-    
-    [self.intruductionLabel setBoldReadOnlyLabelAppearance];
-    [self.intruductionLabel setFont:WZ_FONT_LARGE_BOLD_SIZE];
-    
     float avatarImageViewWidth = self.avatarImageView.frame.size.width;
-    [self.avatarImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+   // [self.avatarImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
     [self.avatarImageView setRoundConerWithRadius:self.avatarImageView.frame.size.width/2];
+    [self.avatarImageView.layer setBorderColor:[THEME_COLOR_DARK_BIT_PARENT CGColor]];
+    self.avatarImageView.layer.borderWidth = 1.0f;
+    
     
     self.avatarLabel = [[UILabel alloc]initWithFrame:CGRectMake(avatarImageViewWidth/20, avatarImageViewWidth/8*3, avatarImageViewWidth/10*9, avatarImageViewWidth/4)];
     [self.avatarLabel setText:@"点击设置头像"];
@@ -71,7 +69,9 @@
     
     
     [self.selfDescriptionTextView setPlaceholder:@"设置一句话签名"];
-    [self.selfDescriptionTextView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+   // [self.selfDescriptionTextView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    [self.selfDescriptionTextView.layer setBorderColor:[THEME_COLOR_DARK_BIT_PARENT CGColor]];
+    [self.selfDescriptionTextView.layer setBorderWidth:1.0f];
     
     [self.nextButton setTitle:@"保存并进入Place" forState:UIControlStateNormal];
     [self.nextButton addTarget:self action:@selector(nextButtonClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -79,6 +79,13 @@
     [self.nextButton setBigButtonAppearance];
     
     [self.nextButton setEnabled:NO];
+    
+    [self.jumpButton setTitle:@"跳过" forState:UIControlStateNormal];
+    [self.jumpButton addTarget:self action:@selector(jumpButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.jumpButton.titleLabel setFont:WZ_FONT_SMALL_SIZE];
+    [self.jumpButton setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
+    [self.jumpButton.titleLabel setTextAlignment:NSTextAlignmentRight];
+    
     
     UISwipeGestureRecognizer *swipeUpGesture = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeUp:)];
     [self.view addGestureRecognizer:swipeUpGesture];
@@ -148,6 +155,13 @@
     
 }
 
+-(void)jumpButtonClick:(id)sender
+{
+    [self dismissViewControllerAnimated:YES completion:^{
+          [[NSNotificationCenter defaultCenter]postNotificationName:@"finishIntroduction" object:nil];
+    }];
+}
+
 #pragma mark ---VPImageCropperDelegate
 -(void)imageCropper:(VPImageCropperViewController *)cropperViewController didFinished:(UIImage *)editedImage
 {
@@ -204,6 +218,7 @@
                                               
                                               [userDefaults setObject:user.UserName forKey:@"userName"];
                                               [userDefaults setObject:user.avatarImageURLString forKey:@"avatarUrl"];
+                                              [userDefaults synchronize];
                                           }
                                           else
                                           {

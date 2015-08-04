@@ -96,20 +96,16 @@
     [self.passwordTextField addTarget:self action:@selector(textFieldDidChanged:) forControlEvents:UIControlEventEditingChanged];
     [self.passwordTextField addTarget:self action:@selector(checkInput) forControlEvents:UIControlEventEditingDidEndOnExit];
     
-    
     [self.registerButton setTitle:@"注  册" forState:UIControlStateNormal];
     [self.registerButton setThemeBackGroundAppearance];
     [self.registerButton setBigButtonAppearance];
     [self.registerButton setEnabled:NO];
     
-    
-    
     UIButton *testbutton = [[UIButton alloc]initWithFrame:CGRectMake(20, 300, 200, 30)];
     [testbutton setThemeBackGroundAppearance];
     [testbutton setTitle:@"test" forState:UIControlStateNormal];
     [testbutton addTarget:self action:@selector(testButtonClick) forControlEvents:UIControlEventTouchUpInside];
-       // [self.view addSubview:testbutton];
-    
+    //[self.view addSubview:testbutton];
 }
 -(void)drawRegisterViewAppearance
 {
@@ -118,13 +114,14 @@
     float LineX = 36;
     float FirstLineY = self.emailTextField.frame.origin.y+27;
     float verticalDistance = 50;
+    
     CGRect emailLine = CGRectMake(LineX, FirstLineY, lineWidth, lineHeight);
-
     CGRect userNameLine = CGRectMake(LineX, FirstLineY + verticalDistance, lineWidth, lineHeight);
     CGRect passwordLine = CGRectMake(LineX, FirstLineY + verticalDistance *2, lineWidth, lineHeight);
+    
     [PhotoCommon drawALineWithFrame:emailLine andColor:THEME_COLOR_LIGHT_GREY inLayer:self.view.layer];
     [PhotoCommon drawALineWithFrame:userNameLine andColor:THEME_COLOR_LIGHT_GREY inLayer:self.view.layer];
-      [PhotoCommon drawALineWithFrame:passwordLine andColor:THEME_COLOR_LIGHT_GREY inLayer:self.view.layer];
+    [PhotoCommon drawALineWithFrame:passwordLine andColor:THEME_COLOR_LIGHT_GREY inLayer:self.view.layer];
     
 }
 #pragma mark - button action

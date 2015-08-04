@@ -27,6 +27,7 @@
 
 -(void)initView
 {
+    //self.backgroundColor = [UIColor blueColor];
     self.backgroundColor = [UIColor clearColor];
     [self.avatarView setRoundAppearanceWithBorder:THEME_COLOR_LIGHT_GREY borderWidth:1.0f];
     [self.messageView setBackgroundColor:rgba_WZ(221, 221, 221, 1)];

@@ -201,8 +201,9 @@
         __strong typeof (weakSelf_WZ)strongSelf = weakSelf_WZ;
         CGRect toolBarFrame = strongSelf.toolbar.frame;
         CGRect tableViewFrame = strongSelf.commentListTableView.frame;
-        tableViewFrame.size.height = keyboardFrameInView.origin.y - toolBarFrame.size.height;
-        strongSelf.commentListTableView.frame = tableViewFrame;
+        strongSelf.commentListTableView.contentInset = UIEdgeInsetsMake(64, 0,keyboardFrameInView.size.height+ toolBarFrame.size.height, 0);
+       // tableViewFrame.size.height = keyboardFrameInView.origin.y - toolBarFrame.size.height;
+        //strongSelf.commentListTableView.frame = tableViewFrame;
         
         toolBarFrame.origin.y = keyboardFrameInView.origin.y - toolBarFrame.size.height;
         strongSelf.toolbar.frame = toolBarFrame;
@@ -430,12 +431,15 @@
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.prototypeCell configureDataWith:self.commentList[indexPath.row] parentController:nil];
-    return  28+ self.prototypeCell.commentContent.frame.size.height +2;
+    float height = 28+ self.prototypeCell.commentContent.frame.size.height +2 ;
+    
+    return (isnan(height)?UITableViewAutomaticDimension:height);
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.prototypeCell configureDataWith:self.commentList[indexPath.row] parentController:nil];
-    return  28+ self.prototypeCell.commentContent.frame.size.height +2;
+    float height = 28+ self.prototypeCell.commentContent.frame.size.height +2;
+    return (isnan(height)?UITableViewAutomaticDimension:height);
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {

@@ -67,9 +67,9 @@
                     </view>
                     <toolbarItems/>
                     <connections>
-                        <segue destination="XiV-ht-kn5" kind="custom" identifier="segueForSuggestPhotos" customClass="EmptySegue" id="VQh-Wv-BQr"/>
-                        <segue destination="8ff-b0-zDO" kind="custom" identifier="segueForSuggestUsers" customClass="EmptySegue" id="ycF-vy-zeV"/>
-                        <segue destination="vtB-fR-CuV" kind="custom" identifier="segueForSuggestAddress" customClass="EmptySegue" id="182-40-Uus"/>
+                        <segue destination="XiV-ht-kn5" kind="custom" identifier="segueForSuggestPhotos" customClass="emptySegue" id="VQh-Wv-BQr"/>
+                        <segue destination="8ff-b0-zDO" kind="custom" identifier="segueForSuggestUsers" customClass="emptySegue" id="ycF-vy-zeV"/>
+                        <segue destination="vtB-fR-CuV" kind="custom" identifier="segueForSuggestAddress" customClass="emptySegue" id="182-40-Uus"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pq8-Lo-RWg" userLabel="First Responder" sceneMemberID="firstResponder"/>

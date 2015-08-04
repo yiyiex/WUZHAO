@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="AddressListCell" rowHeight="439" id="AdC-lH-jDJ" userLabel="Address List Cell" customClass="HomeAddressListTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="439"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="AdC-lH-jDJ" id="zWW-qX-wqw">
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="userName" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lR0-Tb-Cgl" userLabel="addressName">
+                        <rect key="frame" x="8" y="16" width="544" height="24"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="24" id="NzT-ru-gt3"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="description" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qmq-e5-w98">
+                        <rect key="frame" x="8" y="40" width="85.5" height="12"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="12" id="2QJ-qy-JXY"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RP4-zZ-WZk">
+                        <rect key="frame" x="560" y="8" width="48" height="48"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="48" id="Q6l-qB-4P4"/>
+                            <constraint firstAttribute="width" constant="48" id="v0b-lB-6c9"/>
+                        </constraints>
+                        <state key="normal" title="Button">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="qmq-e5-w98" secondAttribute="bottom" constant="212" id="8ax-qK-PyO"/>
+                    <constraint firstItem="qmq-e5-w98" firstAttribute="top" secondItem="lR0-Tb-Cgl" secondAttribute="bottom" constant="5" id="8fM-ez-URj"/>
+                    <constraint firstItem="qmq-e5-w98" firstAttribute="top" secondItem="lR0-Tb-Cgl" secondAttribute="bottom" id="MFd-7y-n32"/>
+                    <constraint firstItem="RP4-zZ-WZk" firstAttribute="leading" secondItem="lR0-Tb-Cgl" secondAttribute="trailing" constant="8" id="MXD-30-uQr"/>
+                    <constraint firstItem="lR0-Tb-Cgl" firstAttribute="leading" secondItem="zWW-qX-wqw" secondAttribute="leading" constant="8" id="V6q-4o-iy1"/>
+                    <constraint firstItem="lR0-Tb-Cgl" firstAttribute="leading" secondItem="qmq-e5-w98" secondAttribute="leading" id="c4n-2F-f4r"/>
+                    <constraint firstItem="lR0-Tb-Cgl" firstAttribute="top" secondItem="zWW-qX-wqw" secondAttribute="topMargin" constant="8" id="sEG-dW-u9W"/>
+                    <constraint firstItem="lR0-Tb-Cgl" firstAttribute="top" secondItem="RP4-zZ-WZk" secondAttribute="top" constant="8" id="tdZ-ls-GQa"/>
+                    <constraint firstAttribute="trailing" secondItem="RP4-zZ-WZk" secondAttribute="trailing" constant="-8" id="z7h-RT-ihp"/>
+                </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="8ax-qK-PyO"/>
+                        <exclude reference="8fM-ez-URj"/>
+                    </mask>
+                </variation>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="addressDescriptionLabel" destination="qmq-e5-w98" id="aUi-KX-lE2"/>
+                <outlet property="addressNameLabel" destination="lR0-Tb-Cgl" id="z5f-vv-6Vk"/>
+                <outlet property="enterButton" destination="RP4-zZ-WZk" id="OhT-fT-wxM"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+</document>

@@ -10,7 +10,7 @@
 #import "PrivateLetterTableViewCell.h"
 #import "PrivateLetterDetailViewController.h"
 #import "MineViewController.h"
-#import "UIViewController+HideBottomBar.h"
+#import "UIViewController+Basic.h"
 
 #import "UILabel+ChangeAppearance.h"
 
@@ -20,24 +20,20 @@
 #import "QDYHTTPClient.h"
 #import "SVProgressHUD.h"
 
-@interface PrivateLetterViewController ()<UITableViewDataSource,UITableViewDelegate>
-@property (nonatomic, strong) IBOutlet UITableView *letterListTableView;
-
+@interface PrivateLetterViewController ()<PagerViewControllerItem>
 @property (nonatomic, strong) UIView *infoView;
-
-@property (nonatomic, strong) UIRefreshControl *refreshControl;
-
-
-
 
 @end
 
 @implementation PrivateLetterViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initView];
+    [self setupRefreshControl];
+    [self setBackItem];
     self.shouldRefreshData = YES;
+    [self getLatestData];
     // Do any additional setup after loading the view.
 }
 
@@ -49,30 +45,6 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-}
-
--(void)initView
-{
-    [self.letterListTableView setDirectionalLockEnabled:YES];
-    
-    self.refreshControl = [[UIRefreshControl alloc]init];
-    [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
-    [self.letterListTableView addSubview:self.refreshControl];
-    [self.refreshControl setHidden:YES];
-}
-
--(void)loadData
-{
-    if (!self.shouldRefreshData)
-    {
-        return;
-    }
-    [self.letterListTableView reloadData];
-    [self.letterListTableView setContentOffset:CGPointMake(0, 0) animated:YES];
-    if ([self.refreshControl isRefreshing])
-    {
-        [self.refreshControl endRefreshing];
-    }
 }
 
 -(void)getLatestData
@@ -90,8 +62,8 @@
         self.shouldRefreshData = YES;
         if ([returnData objectForKey:@"data"])
         {
-            self.letterListData = [returnData objectForKey:@"data"];
-            if (self.letterListData.count == 0)
+            self.datasource = [returnData objectForKey:@"data"];
+            if (self.datasource.count == 0)
             {
                 if (![self.infoView superview])
                 {
@@ -101,7 +73,7 @@
                     infoLabel.textAlignment = NSTextAlignmentCenter;
                     [infoLabel setReadOnlyLabelAppearance];
                     [self.infoView addSubview:infoLabel];
-                    [self.letterListTableView addSubview:self.infoView];
+                    [self.tableView addSubview:self.infoView];
                 }
             }
             else
@@ -121,6 +93,7 @@
 
     }];
 }
+
 -(void)deleteMessage:(Conversation *)conversation
 {
     NSInteger myId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
@@ -146,7 +119,7 @@
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.letterListData.count;
+    return self.datasource.count;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -159,7 +132,7 @@
     {
         cell = [[PrivateLetterTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"privateLetterCell"];
     }
-    [cell configureData:self.letterListData[indexPath.row]];
+    [cell configureData:self.datasource[indexPath.row]];
     
     //configure gesture
     UITapGestureRecognizer *avatarTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(avatarClick:)];
@@ -171,7 +144,7 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    Conversation *conversation = self.letterListData[indexPath.row];
+    Conversation *conversation = self.datasource[indexPath.row];
     conversation.newMessageCount = 0;
     conversation.me.UserID = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
     PrivateLetterTableViewCell *cell = (PrivateLetterTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
@@ -201,11 +174,11 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete)
     {
-        Conversation *conversation = [self.letterListData objectAtIndex:indexPath.row];
+        Conversation *conversation = [self.datasource objectAtIndex:indexPath.row];
         [self deleteMessage:conversation];
         [tableView beginUpdates];
-        [self.letterListData removeObjectAtIndex:indexPath.row];
-        [self.letterListTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+        [self.datasource removeObjectAtIndex:indexPath.row];
+        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
         [tableView endUpdates];
         
     }
@@ -215,34 +188,19 @@
 -(void)avatarClick:(UIGestureRecognizer *)gesture
 {
     PrivateLetterTableViewCell *cell = (PrivateLetterTableViewCell *)gesture.view.superview.superview;
-    NSIndexPath *indexPath = [self.letterListTableView indexPathForCell:cell];
-    Conversation *conversation = self.letterListData[indexPath.row];
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    Conversation *conversation = self.datasource[indexPath.row];
     User *user = conversation.other;
-    [self gotoPersonalPageWithUserInfo:user];
+    [self goToPersonalPageWithUserInfo:user];
 }
 
--(void)gotoPersonalPageWithUserInfo:(User *)user
+#pragma mark - pageViewController Delegate
+-(NSString *)titleForPagerViewController:(PagerViewController *)pagerViewController
 {
-    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
-    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
-    [personalViewCon setUserInfo:user];
-    [self pushToViewController:personalViewCon animated:YES hideBottomBar:YES];
+    return @"私信";
 }
 
--(void)refreshByPullingTable:(id)sender
-{
-    if (self.shouldRefreshData)
-    {
-        [self getLatestData];
-    }
-    else
-    {
-        if ([self.refreshControl isRefreshing])
-        {
-            [self.refreshControl endRefreshing];
-        }
-    }
-}
+
 
 
 

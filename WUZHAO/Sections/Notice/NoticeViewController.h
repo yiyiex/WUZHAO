@@ -1,14 +1,16 @@
 //
-//  SystemNoticeViewController.h
+//  NoticeViewController.h
 //  WUZHAO
 //
-//  Created by yiyi on 15/7/25.
+//  Created by yiyi on 15/7/31.
 //  Copyright (c) 2015年 yiyi. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "SegmentPagerViewController.h"
 
-@interface NoticeViewController : UIViewController
+//childviewcontroller must adopted pagerViewControllerItem
+
+@interface NoticeViewController : SegmentPagerViewController
 
 -(void)getLatestData;
 

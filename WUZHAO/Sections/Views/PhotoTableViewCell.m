@@ -250,8 +250,17 @@
     self.postUserName.text = self.content.photoUser.UserName;
     if ( self.content.isRecommend)
     {
-        [self.followButton setHidden:NO];
-        [self.postTimeLabel setHidden:YES];
+        if (self.content.photoUser.followType != UNFOLLOW || self.content.photoUser.UserID == [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
+        {
+            [self.postTimeLabel setHidden:NO];
+            [self.followButton setHidden:YES];
+        }
+        else
+        {
+            [self.followButton setHidden:NO];
+            [self.postTimeLabel setHidden:YES];
+        }
+      
     }
     else
     {
@@ -427,30 +436,9 @@
     
         [self.addressLabel addGestureRecognizer:addressClick];
     }
-    [self delayScrollViewTouch];
     
 }
 
--(void)delayScrollViewTouch
-{
-    if (SYSTEM_VERSION_EQUAL_TO(@"7"))
-    {
-        for (id obj in self.subviews)
-        {
-            if ([NSStringFromClass([obj class])isEqualToString:@"UITableViewCellScrollView"])
-                
-            {
-                
-                UIScrollView *scroll = (UIScrollView *) obj;
-                
-                scroll.delaysContentTouches =NO;
-                
-                break;
-                
-            }
-        }
-    }
-}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];

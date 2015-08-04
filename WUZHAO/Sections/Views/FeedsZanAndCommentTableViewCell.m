@@ -16,6 +16,7 @@
 
 - (void)awakeFromNib {
     // Initialization code
+    [self setAppearance];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -71,15 +72,13 @@
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARKER_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE}  range:commentRange];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE}  range:timeRange];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:staticStringRange];
-    self.contentLabel.attributedText = attributeContent;
+    //self.contentLabel.attributedText = attributeContent;
     self.contentTextView.attributedText = attributeContent;
     [self.contentTextView linkUserNameWithUserList:@[feeds.feedsUser]];
      self.contentTextView.delegate = (id<NoticeContentTextViewDelegate>)self.parentController;
     [self updateContentTextViewFrame];
     //添加手势
     [self configureGesture];
-    
-    [self setAppearance];
 }
 -(void)configureCommentWithFeeds:(Feeds *)feeds parentController:(UIViewController *)parentController
 {
@@ -98,7 +97,7 @@
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARKER_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE}  range:commentRange];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE}  range:timeRange];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:staticStringRange];
-    self.contentLabel.attributedText = attributeContent;
+    //self.contentLabel.attributedText = attributeContent;
     self.contentTextView.attributedText = attributeContent;
     [self.contentTextView linkUserNameWithUserList:@[feeds.feedsUser]];
     
@@ -106,8 +105,6 @@
     [self updateContentTextViewFrame];
     //添加手势
     [self configureGesture];
-    
-    [self setAppearance];
 }
 -(void)configureZanWithFeeds:(Feeds *)feeds parentController:(UIViewController *)parentController
 {
@@ -124,17 +121,13 @@
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:userNameRange];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE} range:timeRange];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:staticStringRange];
-    self.contentLabel.attributedText = attributeContent;
+   // self.contentLabel.attributedText = attributeContent;
     self.contentTextView.attributedText = attributeContent;
     [self.contentTextView linkUserNameWithUserList:@[feeds.feedsUser]];
      self.contentTextView.delegate = (id<NoticeContentTextViewDelegate>)self.parentController;
     [self updateContentTextViewFrame];
     //添加手势
     [self configureGesture];
-    
-    [self setAppearance];
-
-    
 }
 
 -(void)updateContentTextViewFrame

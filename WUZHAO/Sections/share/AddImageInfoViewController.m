@@ -23,6 +23,7 @@
 #import <AMapSearchKit/AMapSearchAPI.h>
 #import <CoreLocation/CoreLocation.h>
 #import "Geodetic.h"
+#import "CLLocationUtility.h"
 
 #import <ImageIO/ImageIO.h>
 #import "UMSocial.h"
@@ -31,10 +32,9 @@
 //#define PIOTKEYWORDS @"餐饮|购物|生活|体育|住宿|风景|地名|商务|科教|公司";
 #define POIKEYWORDS @"餐饮"
 #define PHOTOWIDTH  (WZ_APP_SIZE.width-24)/5
-@interface AddImageInfoViewController()<UITableViewDataSource,UITableViewDelegate,AddressSearchTableViewControllerDelegate,UITextViewDelegate,UITextFieldDelegate,AMapSearchDelegate,CLLocationManagerDelegate>
+@interface AddImageInfoViewController()<UITableViewDataSource,UITableViewDelegate,AddressSearchTableViewControllerDelegate,UITextViewDelegate,UITextFieldDelegate,AMapSearchDelegate>
 {
     AMapSearchAPI *_search;
-    CLLocationManager *_locationManager;
     CLLocation *searchLocation;
     CGPoint postImageCenter;
     CGRect postImageFrame;
@@ -65,6 +65,8 @@
 @property (nonatomic, strong) UIImageView *shareToSinaWebo;
 @property (nonatomic, strong) UIImageView *shareToWeChatFriend;
 @property (nonatomic, strong) UIImageView *shareToQQZone;
+
+@property (nonatomic, strong) CLLocationUtility *locationUtility;
 
 
 
@@ -244,13 +246,19 @@
     {
         [self.postImageDescription resignFirstResponder];
     }
-    greyMaskView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, WZ_APP_SIZE.height)];
-    [greyMaskView setBackgroundColor:[UIColor blackColor]];
-    [greyMaskView setUserInteractionEnabled:YES];
-    UITapGestureRecognizer *greyMaskClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(greyMaskClick:)];
-    [greyMaskView addGestureRecognizer:greyMaskClick];
+    if (!greyMaskView)
+    {
+        greyMaskView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, WZ_APP_SIZE.height)];
+        [greyMaskView setBackgroundColor:[UIColor blackColor]];
+        [greyMaskView setUserInteractionEnabled:YES];
+        UITapGestureRecognizer *greyMaskClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(greyMaskClick:)];
+        [greyMaskView addGestureRecognizer:greyMaskClick];
+    }
     [self.view addSubview:greyMaskView];
-    bigImageView= [UIImageView new];
+    if (!bigImageView)
+    {
+        bigImageView= [UIImageView new];
+    }
     UIWindow * window=[[[UIApplication sharedApplication] delegate] window];
     UIImageView *imageView =(UIImageView *) gesture.view;
     postImageFrame = [imageView.superview convertRect:imageView.frame toView:window];
@@ -535,16 +543,6 @@
     
     else if (indexPath.section == 3)
     {
-        /*
-        if (!_shareToSinaWebo)
-        {
-            _shareToSinaWebo = [[UIImageView alloc ]initWithImage:[UIImage imageNamed:@"sina_off"] highlightedImage:[UIImage imageNamed:@"sina_icon"]];
-            [self.shareToSinaWebo setFrame:CGRectMake(20, 24, 36, 36)];
-            UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(shareToSinaWeboClick:)];
-            [_shareToSinaWebo addGestureRecognizer:gesture];
-            [_shareToSinaWebo setUserInteractionEnabled:YES];
-            [_shareToSinaWebo setFrame:CGRectMake(20  , 24, 36, 36)];
-        }*/
         if (!_shareToWeChatTimeLine)
         {
             _shareToWeChatTimeLine = [[UIImageView alloc ]initWithImage:[UIImage imageNamed:@"wechat_off"] highlightedImage:[UIImage imageNamed:@"wechat_icon"]];
@@ -569,24 +567,6 @@
     return cell;
 }
 
-#pragma mark - CLLocationManagerDelegate
--(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
-{
-    NSLog(@"location failed!");
-}
-
--(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
-{
-    NSLog(@"location success");
-    NSLog(@"location: %@",locations);
-    [manager stopUpdatingLocation];
-    searchLocation = locations.lastObject;
-    
-    [self regeoLocation];
-
-    
-}
-
 #pragma mark - address  ReGeocode
 -(void)setCurrentLocation
 {
@@ -600,14 +580,23 @@
     }
     else
     {
-        _locationManager = [[CLLocationManager alloc]init];
-        _locationManager.delegate = self;
-        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        if ([_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-            [_locationManager requestWhenInUseAuthorization];
+        if (!self.locationUtility)
+        {
+           self.locationUtility = [[CLLocationUtility alloc]init];
         }
-        _locationManager.distanceFilter = 500;
-        [_locationManager startUpdatingLocation];
+        
+        [self.locationUtility getCurrentLocationWithComplete:^(NSDictionary *result) {
+            if ([[result objectForKey:@"success"]isEqualToString:@"NO"])
+            {
+                NSLog(@"定位失败");
+            }
+            else
+            {
+                searchLocation = [result objectForKey:@"location"];
+                [self regeoLocation];
+            }
+        }];
+
     }
 
 }

@@ -20,7 +20,7 @@
 #import "AddressMarkCollectionViewCell.h"
 #import "AddressViewController.h"
 #import "PhotosCollectionViewController.h"
-#import "UIViewController+HideBottomBar.h"
+#import "UIViewController+Basic.h"
 #import "SVProgressHUD.h"
 
 #import "WhatsGoingOn.h"
@@ -191,7 +191,7 @@ static NSString * const reuseIdentifier = @"Cell";
 {
     UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
     HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
-    [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];
+    [detailPhotoController setDatasource:[NSMutableArray arrayWithObject:item]];
     [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
     [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
 }

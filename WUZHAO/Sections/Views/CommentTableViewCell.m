@@ -15,7 +15,7 @@
 #import "macro.h"
 
 @implementation CommentTableViewCell
--(void)setAppearance
+-(void)initView
 {
    // [self setAutoresizesSubviews:YES];
     [self.userAvatorView setRoundConerWithRadius:self.userAvatorView.frame.size.width/2];
@@ -53,7 +53,6 @@
     }
     
     self.commentContent.delegate =(id<CommentTextViewDelegate>) self.parentController;
-    [self setAppearance];
     [self configureGesture];
 }
 -(void)configureGesture
@@ -78,6 +77,7 @@
 
 - (void)awakeFromNib {
     // Initialization code
+    [self initView];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

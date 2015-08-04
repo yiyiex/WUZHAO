@@ -1,23 +1,26 @@
 //
-//  ViewController.h
-//  testLogin
+//  LoginViewController.h
+//  WUZHAO
 //
-//  Created by yiyi on 14-11-24.
+//  Created by yiyi on 14-12-15.
 //  Copyright (c) 2014年 yiyi. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "AFHTTPAPIClient.h"
+
+typedef void (^loginSuccessBlock)(void);
 
 @interface LoginViewController : UIViewController <UITextFieldDelegate>
+@property (strong, nonatomic) IBOutlet UITextField *UserNameTextField;
+@property (strong, nonatomic) IBOutlet UITextField *PasswordTextField;
+@property (strong, nonatomic) IBOutlet UIButton *LoginButton;
+@property (strong, nonatomic) IBOutlet UILabel *forgotPasswordLabel;
+@property (strong, nonatomic) loginSuccessBlock loginSuccess;
 
 
+- (IBAction)LoginButtonPressed:(id)sender;
 
 
-@property (nonatomic,weak) IBOutlet UITextField *UserNameField;
-@property (nonatomic,weak) IBOutlet UITextField *PasswordField;
-@property (nonatomic,weak) IBOutlet UIButton *LoginButton;
-
--(IBAction)LoginButtonPressed:(id)sender;
+- (IBAction)userNameInputEnd:(id)sender;
+- (IBAction)passWordInputEnd:(id)sender;
 @end
-

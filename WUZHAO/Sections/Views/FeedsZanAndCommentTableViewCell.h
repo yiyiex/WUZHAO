@@ -12,7 +12,7 @@
 @interface FeedsZanAndCommentTableViewCell : UITableViewCell
 @property (nonatomic, strong) IBOutlet UIImageView *avatarImageView;
 @property (nonatomic, strong) IBOutlet NoticeContentTextView *contentTextView;
-@property (nonatomic, strong) IBOutlet UILabel *contentLabel;
+//@property (nonatomic, strong) IBOutlet UILabel *contentLabel;
 @property (nonatomic, strong) IBOutlet UIImageView *feedsImageView;
 
 @property (nonatomic, weak) UIViewController *parentController;

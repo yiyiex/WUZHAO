@@ -18,7 +18,7 @@
 #import "HomeTableViewController.h"
 #import "AddressViewController.h"
 #import "PhotosCollectionViewController.h"
-#import "UIViewController+HideBottomBar.h"
+#import "UIViewController+Basic.h"
 #import "SVProgressHUD.h"
 
 #import "WhatsGoingOn.h"
@@ -82,21 +82,6 @@
         [snapshotView addGestureRecognizer:tapgesture];
         [snapshotView setUserInteractionEnabled:YES];
     }];
-    //NSInteger showNum = photoNum<=3?photoNum:3*(photoNum/3);
-    /*
-    for (NSInteger i = 0;i<photoNum;i++)
-    {
-        WhatsGoingOn *item = photoList[i];
-        CGRect frame = CGRectMake(i%3*(photoWidth+spacing), basicHeight +  spacing + i/3*(photoWidth + spacing), photoWidth, photoWidth);
-        UIImageView *imageView = [[UIImageView alloc]initWithFrame:frame];
-        imageView.tag = i;
-        [imageView sd_setImageWithURL:[NSURL URLWithString:item.imageUrlString] placeholderImage:[UIImage imageNamed:@"placeholder"]];
-        UITapGestureRecognizer *tapgesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(imageViewTaped:)];
-        [imageView addGestureRecognizer:tapgesture];
-        [imageView setUserInteractionEnabled:YES];
-        [cell addSubview:imageView];
-
-    }*/
     UITapGestureRecognizer *photoNumLabelTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(photoNumLabelClick:)];
     [cell.photoNumLabel addGestureRecognizer:photoNumLabelTap];
     [cell.photoNumLabel setUserInteractionEnabled:YES];
@@ -177,9 +162,9 @@
 
     UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
     HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
-    [detailPhotoController setDataSource:[NSMutableArray arrayWithObject:item]];
+    [detailPhotoController setDatasource:[NSMutableArray arrayWithObject:item]];
     [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
-    [detailPhotoController GetLatestDataList];
+    [detailPhotoController getLatestData];
     [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
     
 }
