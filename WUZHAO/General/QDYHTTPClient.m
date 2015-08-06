@@ -448,6 +448,68 @@
     }];
 }
 
+-(void)GetPOIInfoWithPoiId:(NSInteger)poiId recommendFirstPostId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/poiphotosv2"];
+    NSDictionary *param = @{@"poiid":[NSNumber numberWithInteger:poiId],@"recommendPostId":[NSNumber numberWithInteger:postId]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    NSMutableArray *recommendPoiInfo = [[NSMutableArray alloc]init];
+    NSMutableArray *poiInfo =[[NSMutableArray alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSDictionary *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    if ([data objectForKey:@"recommendPosts"])
+                    {
+                        NSDictionary *recommendPosts = [data objectForKey:@"recommendPosts"];
+                        for (NSDictionary *d in recommendPosts)
+                        {
+                            WhatsGoingOn *item  = [[WhatsGoingOn alloc]init];
+                            item.postId = [(NSNumber *)[d objectForKey:@"post_id"]integerValue];
+                            item.postTime = [d objectForKey:@"create_time"];
+                            item.imageUrlString = [d objectForKey:@"photo"];
+                            [recommendPoiInfo addObject:item];
+                        }
+                    }
+                    if ([data objectForKey:@"allPosts"])
+                    {
+                        NSDictionary *allPosts = [data objectForKey:@"allPosts"];
+                        for (NSDictionary *d in allPosts)
+                        {
+                            WhatsGoingOn *item  = [[WhatsGoingOn alloc]init];
+                            item.postId = [(NSNumber *)[d objectForKey:@"post_id"]integerValue];
+                            item.postTime = [d objectForKey:@"create_time"];
+                            item.imageUrlString = [d objectForKey:@"photo"];
+                            [poiInfo addObject:item];
+                        }
+                    }
+                    NSDictionary *POIs = @{@"recommendPoiInfo":recommendPoiInfo,@"allPosts":poiInfo};
+                    [returnData setObject:POIs forKey:@"data"];
+                    
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        
+        else if (error)
+        {
+            [returnData setObject:@"服务器异常" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
 
 //personal info
 -(void)GetPersonalSimpleInfoWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
@@ -1372,6 +1434,7 @@
                 NSDictionary *d = [result objectForKey:@"data"];
                 [data setObject:(NSNumber *)[d objectForKey:@"unReadNoticeNum"] forKey:@"noticeNum"];
                 [data setObject:(NSNumber *)[d objectForKey:@"unReadMsgNum"] forKey:@"messageNum"];
+                [data setObject:(NSNumber *)[d objectForKey:@"unReadSysNoticeNum"] forKey:@"systemNum"];
                 [data setObject:(NSNumber *)[result objectForKey:@"unreadNum"] forKey:@"unreadNum"];
                 [returnData setObject:data forKey:@"data"];
                 
@@ -1420,6 +1483,38 @@
             [returnData setValue:@"网络请求失败" forKey:@"error"];
         }
    
+        whenComplete(returnData);
+    }];
+}
+-(void)getSystemNoticeWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/sysnotice"];
+    NSDictionary *param = @{@"userid":[NSNumber numberWithInteger:userId]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([result objectForKey:@"success"])
+            {
+                NSArray *data = [result objectForKey:@"data"];
+                NSMutableArray *feeds = [Feeds configureFeedsWithData:data];
+                [returnData setObject:feeds forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+            
+        }
+        else if (error)
+        {
+            [returnData setValue:@"网络请求失败" forKey:@"error"];
+        }
+        
         whenComplete(returnData);
     }];
 }
@@ -1605,7 +1700,8 @@
                         NSNumber *num = [data valueForKey:@"unreadNum"];
                         NSNumber *noticeNum = [data valueForKey:@"noticeNum"];
                         NSNumber *messageNum = [data valueForKey:@"messageNum"];
-                        [[NSNotificationCenter defaultCenter]postNotificationName:@"updateNotificationNum" object:nil userInfo:@{@"notificationNum":num,@"noticeNum":noticeNum,@"messageNum":messageNum}];
+                        NSNumber *systemNum = [data valueForKey:@"systemNum"];
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"updateNotificationNum" object:nil userInfo:@{@"notificationNum":num,@"noticeNum":noticeNum,@"messageNum":messageNum,@"systemNum":systemNum}];
                         [ApplicationUtility setApplicationIconBadgeWithNum:num.integerValue];
                         
                     }

@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "User.h"
 #import "MineViewController.h"
+#import "AddressViewController.h"
+#import "User.h"
+
+#import "POI.h"
 
 @interface BasicViewController : UIViewController
 
@@ -24,6 +27,7 @@
 //basic transition
 -(void)pushToViewController:(UIViewController *)viewController animated:(BOOL)animated hideBottomBar:(BOOL)hidden;
 -(void)goToPersonalPageWithUserInfo:(User *)user;
+-(void)goToPOIPhotoListWithPoi:(POI *)poi;
 
 
 @end

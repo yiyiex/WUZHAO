@@ -12,7 +12,7 @@
 @protocol  NoticeContentTextViewDelegate;
 
 @interface NoticeContentTextView : LinkTextView
-@property (nonatomic, weak) id<NoticeContentTextViewDelegate> delegate;
+@property (nonatomic, weak) id<NoticeContentTextViewDelegate> noticeContentTextViewDelegate;
 -(void) linkUserNameWithUserList:(NSArray *)userList;
 
 @end
@@ -20,8 +20,4 @@
 @protocol NoticeContentTextViewDelegate <NSObject>
 
 -(void) noticeContentTextView:(NoticeContentTextView *)noticeContentTextView didClickLinkUser:(User *)user;
-
-@optional
--(void) didClickUnlinedTextOncommentTextView:(NoticeContentTextView *)commentTextView;
-
 @end

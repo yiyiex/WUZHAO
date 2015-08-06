@@ -52,23 +52,6 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     // Dispose of any resources that can be recreated.
 }
 
-
--(void)configureCell:(PhotoCollectionViewCell *)cell forContent:(WhatsGoingOn *)content atIndexPath:(NSIndexPath *)indexPath
-{
-    [cell.cellImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
-    [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:content.imageUrlString]];
-    [cell setBackgroundColor:[UIColor whiteColor]];
-    [cell setAppearance];
-    if (content.imageUrlList.count <=1)
-    {
-        [cell hideImageCountLabel];
-    }
-    else
-    {
-        [cell showImageCountLabel:content.imageUrlList.count];
-    }
-}
-
 -(void)loadData
 {
     [self.collectionView reloadData];
@@ -84,7 +67,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
             [infoLabel setReadOnlyLabelAppearance];
             [self.infoView addSubview:infoLabel];
             
-            [self.view addSubview:self.infoView];
+            [self.collectionView addSubview:self.infoView];
         }
     }
     else
@@ -140,7 +123,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
         cell = [[PhotoCollectionViewCell alloc]init];
     }
     
-    [self configureCell:cell forContent:[self dataAtIndexPath:indexPath] atIndexPath:indexPath];
+    [cell configureWithContent:self.datasource[indexPath.row]];
     return cell;
 }
 
@@ -222,10 +205,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     }
     else
     {
-        if ([self.refreshControl isRefreshing])
-        {
-            [self.refreshControl endRefreshing];
-        }
+        [self endRefreshing];
     }
     
 }

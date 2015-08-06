@@ -36,7 +36,7 @@
     [self.messageLabel setBackgroundColor:[UIColor clearColor]];
     [self.messageLabel setFont:WZ_FONT_COMMON_SIZE];
     [self.messageLabel setTextColor:THEME_COLOR_DARK_GREY];
-    [self.messageLabel setTextAlignment:NSTextAlignmentRight];
+    [self.messageLabel setTextAlignment:NSTextAlignmentLeft];
     [self.failedInfoIcon setHidden:YES];
 }
 

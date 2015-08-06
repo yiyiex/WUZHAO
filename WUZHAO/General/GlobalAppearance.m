@@ -21,10 +21,6 @@
     [self setTabBarAppearance];
     //[self setLabelsAppearance];
     [self setButtonAppearance];
-    [SVProgressHUD setBackgroundColor:[UIColor darkGrayColor]];
-    [SVProgressHUD setForegroundColor:[UIColor whiteColor]];
-    
-    
 }
 
 #pragma mark  =============set navigator appearance===========

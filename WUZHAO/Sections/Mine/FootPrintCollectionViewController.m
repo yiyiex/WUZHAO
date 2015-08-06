@@ -169,23 +169,14 @@ static NSString * const reuseIdentifier = @"Cell";
 {
     UIStoryboard *addressStoryboard = [UIStoryboard storyboardWithName:@"Address" bundle:nil];
     AddressViewController *addressViewCon = [addressStoryboard instantiateViewControllerWithIdentifier:@"addressPage"];
+    addressViewCon.poiId = poi.poiId;
     addressViewCon.poiName = poi.name;
     addressViewCon.poiLocation = poi.locationArray;
+    addressViewCon.userId = self.currentUser.UserID;
+    [addressViewCon getLatestData];
     [self pushToViewController:addressViewCon animated:YES hideBottomBar:YES];
-    NSInteger userId = self.currentUser.UserID;
-    [[POISearchAPI sharedInstance]getPOIDetail:poi.poiId userId:userId whenComplete:^(NSDictionary *returnData) {
-        if ([returnData objectForKey:@"data"])
-        {
-            AddressPhotos *address = [returnData objectForKey:@"data"];
-            addressViewCon.photoCollectionDatasource = address.photoList;
-            [addressViewCon getLatestAddressPhoto];
-            
-        }
-        else if ([returnData objectForKey:@"error"])
-        {
-            [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-        }
-    }];
+    
+   
 }
 -(void)gotoPOIPageWithItem:(WhatsGoingOn *)item
 {

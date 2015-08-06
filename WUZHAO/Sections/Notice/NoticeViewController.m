@@ -18,7 +18,9 @@
 typedef NS_ENUM(NSInteger, ChildViewIndex)
 {
     ChildViewIndexSystemNotice,
+     ChildViewIndexPlaceNotice,
     ChildViewIndexPrivateLetter
+   
 };
 @interface NoticeViewController()
 @property (nonatomic, strong) SystemNoticeViewController * systemNoticeViewController;
@@ -70,9 +72,9 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updatePageContent:) name:@"updateNoticePage" object:nil];
     [self addSegmentIndicator];
     [self setBackItem];
+    
     [self disableUserInteractive];
     
-   // [self.containerView setContentInset:UIEdgeInsetsMake(64, 0, 44, 0)];
 }
 
 -(void)addSegmentIndicator
@@ -97,12 +99,12 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
     _NoticeIndicator.layer.masksToBounds = YES;
     _NoticeIndicator.backgroundColor = THEME_COLOR_DARK;
     
-    _LetterIndicator = [[UIView alloc]initWithFrame:CGRectMake(self.segmentedControl.frame.size.width/3*2-indicatorOffset, 12, indicatorWidth, indicatorWidth)];
+    _LetterIndicator = [[UIView alloc]initWithFrame:CGRectMake(self.segmentedControl.frame.size.width-indicatorOffset, 12, indicatorWidth, indicatorWidth)];
     _LetterIndicator.layer.cornerRadius = indicatorWidth/2;
     _LetterIndicator.layer.masksToBounds = YES;
     _LetterIndicator.backgroundColor = THEME_COLOR_DARK;
     
-    _PlaceNoticeIndicator = [[UIView alloc]initWithFrame:CGRectMake(self.segmentedControl.frame.size.width-indicatorOffset, 12, indicatorWidth, indicatorWidth)];
+    _PlaceNoticeIndicator = [[UIView alloc]initWithFrame:CGRectMake(self.segmentedControl.frame.size.width/3*2-indicatorOffset, 12, indicatorWidth, indicatorWidth)];
     _PlaceNoticeIndicator.layer.cornerRadius = indicatorWidth/2;
     _PlaceNoticeIndicator.layer.masksToBounds = YES;
     _PlaceNoticeIndicator.backgroundColor = THEME_COLOR_DARK;
@@ -145,6 +147,10 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
     {
         [self.privateLetterViewController getLatestData];
     }
+    else if (self.currentIndex == ChildViewIndexPlaceNotice)
+    {
+        [self.placeNoticeViewController getLatestData];
+    }
     
 }
 
@@ -174,8 +180,23 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
     }
     else
     {
-        [self.NoticeIndicator setHidden:YES];
+        if (self.currentIndex == ChildViewIndexSystemNotice)
+        {
+            [self.NoticeIndicator setHidden:YES];
+        }
     }
+    if ([(NSNumber *)[userInfo objectForKey:@"systemNum"]integerValue]>0 )
+    {
+         [self.PlaceNoticeIndicator setHidden:NO];
+    }
+    else
+    {
+        if (self.currentIndex == ChildViewIndexPlaceNotice)
+        {
+            [self.PlaceNoticeIndicator setHidden:YES];
+        }
+    }
+    
     //TO DO
     //show place notice indicator
 }

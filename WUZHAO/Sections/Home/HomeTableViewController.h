@@ -6,12 +6,10 @@
 //  Copyright (c) 2014年 yiyi. All rights reserved.
 //
 
+#import "BasicTableViewController.h"
 #import <UIKit/UIKit.h>
 #import "PhotoTableViewCell.h"
 #import "PagerViewController.h"
-
-#import "BasicTableViewController.h"
-
 @class WhatsGoingOn;
 @class User;
 

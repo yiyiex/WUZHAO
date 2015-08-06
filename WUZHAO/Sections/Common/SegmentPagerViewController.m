@@ -57,7 +57,7 @@
     _segmentedControl = [[HMSegmentedControl alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width-100, 44)];
     [_segmentedControl setBackgroundColor:[UIColor clearColor]];
     _segmentedControl.titleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_LARGE_SIZE};
-    _segmentedControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_LARGE_SIZE};
+    _segmentedControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_LARGER_SIZE};
     [_segmentedControl setSelectionIndicatorColor:THEME_COLOR_DARK_GREY_BIT_PARENT];
     _segmentedControl.selectionIndicatorHeight = 2.50f;
     

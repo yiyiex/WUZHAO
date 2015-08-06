@@ -71,7 +71,6 @@ typedef NS_ENUM(NSInteger, SWIPEDIRECTION)
     detailView1.tableStyle = WZ_TABLEVIEWSTYLE_DETAIL;
     HomeTableViewController *detailView2 = [whatsNewStoryboard instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
     detailView2.tableStyle = WZ_TABLEVIEWSTYLE_DETAIL;
-    detailView2.datasource = [[NSMutableArray alloc]init];
     self.detailViewControllers = [[NSArray alloc]initWithObjects:detailView1, detailView2, nil];
 }
 

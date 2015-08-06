@@ -9,6 +9,8 @@
 #import "AddressViewController.h"
 #import "CommonContainerViewController.h"
 #import "PhotosCollectionViewController.h"
+#import "AddressPhotosCollectionViewController.h"
+#import "UIViewController+Basic.h"
 
 
 #import <MAMapKit/MAMapKit.h>
@@ -29,13 +31,13 @@
 
 @property (nonatomic, strong) MKMapView *addressMapView;
 @property (nonatomic, strong) MKPointAnnotation *annotation;
+@property (nonatomic, strong) UIButton *mapViewShowButton;
+
 @property (nonatomic, strong) AMapSearchAPI *search;
 @property (nonatomic) AMapSearchType searchType;
 
 @property (nonatomic, strong) IBOutlet CommonContainerViewController *containerViewController;
-@property (nonatomic,strong) PhotosCollectionViewController *photoCollectionViewCon;
-
-@property (nonatomic) BOOL shouldRefresh;
+@property (nonatomic,strong) AddressPhotosCollectionViewController *photoCollectionViewCon;
 @end
 
 @implementation AddressViewController
@@ -44,19 +46,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBarHidden = NO;
-    if ([self.view respondsToSelector:@selector(setLayoutMargins:)])
-    {
-        [self.view setLayoutMargins:UIEdgeInsetsZero];
-    }
-    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.navigationItem.backBarButtonItem = backBarItem;
-    
-    self.shouldRefresh = true;
+
+    [self setBackItem];
     [self initMapView];
     [self initAnnocations];
-    [self.containerViewController swapViewControllersWithIdentifier:SEGUEFIRST];
-    [self getLatestAddressPhoto];
-    
+    //[self.containerViewController swapViewControllersWithIdentifier:SEGUEFIRST];
     // Do any additional setup after loading the view.
 }
 
@@ -87,11 +81,9 @@
 {
     if ([segue.identifier isEqualToString:@"embedContainer"])
     {
-        
         self.containerViewController = (CommonContainerViewController *)segue.destinationViewController;
         self.containerViewController.delegate = self;
-        self.containerViewController.ChildrenName = @[SEGUEFIRST,SEGUESECOND];
-        
+        self.containerViewController.ChildrenName = @[SEGUEFIRST];
     }
 }
 
@@ -121,13 +113,16 @@
 
     //self.addressMapView.showsUserLocation = YES;
     //self.addressMapView.userTrackingMode = MAUserTrackingModeFollow;
+    self.mapViewShowButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width - 28, 174,28, 28)];
+    [self.mapViewShowButton setImage:[UIImage imageNamed:@"map_arrow_down"] forState:UIControlStateNormal];
+    [self.mapViewShowButton setImage:[UIImage imageNamed:@"map_arrow_up"] forState:UIControlStateHighlighted];
+    [self.mapViewShowButton.layer setCornerRadius:2.0f];
+    [self.mapViewShowButton.layer setMasksToBounds:YES];
+    [self.mapViewShowButton addTarget:self action:@selector(expandMapView:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.addressMapView];
+    [self.view addSubview:self.mapViewShowButton];
     
-    UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 174, WZ_APP_SIZE.width, 30)];
-    titleLabel.text = @"  最新";
-    [titleLabel setFont:WZ_FONT_COMMON_BOLD_SIZE];
-    [titleLabel setTextColor:THEME_COLOR_LIGHT_GREY];
-    [self.view addSubview:titleLabel];
+    
 }
 -(void)initAnnocations
 {
@@ -235,23 +230,24 @@
 }
 
 #pragma mark - commoncontainerView delegate
+-(void)beginLoadChildController:(UIViewController *)childController
+{
+    if ([childController isKindOfClass: [AddressPhotosCollectionViewController class]])
+    {
+        self.photoCollectionViewCon = (AddressPhotosCollectionViewController *)childController;
+        
+        [self getLatestData];
+        
+    }
+
+}
 -(void)finishLoadChildController:(UIViewController *)childController
 {
-    if ([childController isKindOfClass: [PhotosCollectionViewController class]])
+    if ([childController isKindOfClass: [AddressPhotosCollectionViewController class]])
     {
-        self.photoCollectionViewCon = (PhotosCollectionViewController *)childController;
-        [self.photoCollectionViewCon.collectionView setBackgroundColor:[UIColor whiteColor]];
-        [self setPhotoCollectionData];
         
     }
 }
-
--(void)setPhotoCollectionData
-{
-    [self.photoCollectionViewCon setDatasource:self.photoCollectionDatasource];
-    [self.photoCollectionViewCon.collectionView reloadData];
-}
-
 /*
 #pragma mark - Navigation
 
@@ -262,45 +258,50 @@
 }
 */
 
--(void)getLatestAddressPhoto
+-(void)getLatestData
 {
-    if (self.poiId <=0)
-    {
-        if (self.photoCollectionDatasource)
-        {
-            [self setPhotoCollectionData];
-            return;
-        }
-        else
-        {
-            return;
-        }
-    }
     if (self.poiName)
     {
         [self.navigationItem setTitle:self.poiName];
     }
-    self.shouldRefresh = false;
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [[QDYHTTPClient sharedInstance]GetPOIInfoWithPoiId:self.poiId whenComplete:^(NSDictionary *returnData) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if ([returnData objectForKey:@"data"])
-                {
-                    self.photoCollectionDatasource = [[returnData objectForKey:@"data"]mutableCopy];
-                    [self setPhotoCollectionData];
-                    //[self.photoCollectionViewCon loadData];
-                }
-                else if ([returnData objectForKey:@"error"])
-                {
-                    
-                    
-                }
-                self.shouldRefresh = true;
-            });
-
-        }];
-    });
+    if (self.photoCollectionViewCon)
+    {
+        self.photoCollectionViewCon.poi.poiId = self.poiId;
+        self.photoCollectionViewCon.poi.name = self.poiName;
+        if (self.recommendFirstPostId >0)
+        {
+            self.photoCollectionViewCon.recommendFirstPostId = self.recommendFirstPostId;
+        }
+        if (self.userId>0)
+        {
+            self.photoCollectionViewCon.userId = self.userId;
+        }
+        [self.photoCollectionViewCon getLatestData];
+    }
 
 }
 
+#pragma mark - button action
+-(void)expandMapView:(id)sender
+{
+    if (self.addressMapView.frame.size.height == self.view.frame.size.height)
+    {
+        [UIView animateWithDuration:0.3 animations:^{
+            [self.addressMapView setFrame:CGRectMake(0, 64, WZ_APP_SIZE.width, 110)];
+            [self.mapViewShowButton setFrame:CGRectMake(WZ_APP_SIZE.width - 28, 174, 28, 28)];
+        } completion:^(BOOL finished) {
+            [self.mapViewShowButton setHighlighted:NO];
+        }];
+    }
+    else
+    {
+        [UIView animateWithDuration:0.3 animations:^{
+            [self.addressMapView setFrame:CGRectMake(0, 64, WZ_APP_SIZE.width, self.view.frame.size.height)];
+            [self.mapViewShowButton setFrame:CGRectMake(WZ_APP_SIZE.width - 28, self.view.frame.size.height - 28, 28, 28)];
+        } completion:^(BOOL finished) {
+            [self.mapViewShowButton setHighlighted:YES];
+        }];
+    }
+    
+}
 @end

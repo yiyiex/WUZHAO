@@ -13,11 +13,13 @@
 @property (nonatomic) NSInteger poiId;
 @property (nonatomic, strong) NSString *poiName;
 @property (nonatomic, strong) NSArray *poiLocation;
+@property (nonatomic) NSInteger recommendFirstPostId;
+@property (nonatomic) NSInteger userId;
 
 
 @property (nonatomic,strong) NSMutableArray *photoCollectionDatasource;
 
--(void)getLatestAddressPhoto;
+-(void)getLatestData;
 
 
 @end

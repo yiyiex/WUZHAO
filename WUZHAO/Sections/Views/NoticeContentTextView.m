@@ -18,6 +18,12 @@
 @end
 @implementation NoticeContentTextView
 
+-(void)reset
+{
+    [super reset];
+    self.noticeContentTextViewDelegate = nil;
+    
+}
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
@@ -31,9 +37,9 @@
     highlightedAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARKER,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
     [userList enumerateObjectsUsingBlock:^(User *user, NSUInteger idx, BOOL *stop) {
         LinkedStringRangeTapHandler taphandler = ^(NSRange linkStringRange) {
-            if ([self.delegate respondsToSelector:@selector(noticeContentTextView:didClickLinkUser:)])
+            if ([self.noticeContentTextViewDelegate respondsToSelector:@selector(noticeContentTextView:didClickLinkUser:)])
             {
-                [self.delegate noticeContentTextView:self didClickLinkUser:user];
+                [self.noticeContentTextViewDelegate noticeContentTextView:self didClickLinkUser:user];
             }};
         [self linkTextWithString:user.UserName defaultAttributes:defaultAttributes highlightAttributes:highlightedAttributes tabHandler:taphandler];
     

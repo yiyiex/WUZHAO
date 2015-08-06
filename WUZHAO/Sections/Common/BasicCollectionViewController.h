@@ -24,11 +24,14 @@
 -(void)getLatestData;
 
 -(void)loadData;
+-(void)endRefreshing;
 
 @property (nonatomic) BOOL shouldLoadMore;
 @property (nonatomic,strong) UIButton *loadMoreButton;
 @property (nonatomic,strong) UIActivityIndicatorView *loadMoreAiv;
 -(void)setupLoadMore;
 -(void)loadMore;
+
+-(void)pushToViewController:(UIViewController *)viewController animated:(BOOL)animated hideBottomBar:(BOOL)hidden;
 
 @end

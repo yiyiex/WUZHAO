@@ -15,7 +15,7 @@
 
 @interface CommentTextView : LinkTextView
 
-@property (nonatomic, weak) id<CommentTextViewDelegate> delegate;
+@property (nonatomic, weak) id<CommentTextViewDelegate> commentTextViewDelegate;
 
 -(void)reset;
 

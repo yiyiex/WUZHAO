@@ -87,6 +87,7 @@
 
 //get address info with POI id
 -(void)GetPOIInfoWithPoiId:(NSInteger)poiId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
+-(void)GetPOIInfoWithPoiId:(NSInteger)poiId recommendFirstPostId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *))whenComplete;
 
 //get photo info with userId or photo post Id
 -(void) GetPhotoInfoWithPostId:(NSInteger)postId userId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
@@ -125,7 +126,8 @@
 -(void)getNoticeWithUserId:(NSInteger)userId  whenComplete:(void (^)(NSDictionary *))whenComplete;
 -(void)getNoticeNumWithUserId:(NSInteger)userId  whenComplete:(void (^)(NSDictionary *))whenComplete;
 
-//get relative item list
+//get system recommend list
+-(void)getSystemNoticeWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete;
 
 //private letter
 -(void)getLetterListWithUserId:(NSInteger)myUserId whenComplete:(void (^)(NSDictionary *))whenComplete;

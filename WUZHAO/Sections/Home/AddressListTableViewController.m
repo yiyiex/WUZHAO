@@ -45,8 +45,10 @@
 
 -(void)loadData
 {
-    
     [self.tableView reloadData];
+    [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
+    [self endRefreshing];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -131,12 +133,17 @@
 #pragma mark - control the model
 -(void)getLatestData
 {
+    if (self.shouldRefreshData == NO)
+    {
+        return;
+    }
+    self.shouldRefreshData = NO;
     if (!self.locationUtility)
     {
         self.locationUtility = [[CLLocationUtility alloc]init];
     }
-    
     [self.locationUtility getCurrentLocationWithComplete:^(NSDictionary *result) {
+        self.shouldRefreshData = YES;
         if ([[result objectForKey:@"success"]isEqualToString:@"NO"])
         {
             NSLog(@"定位失败");
@@ -157,8 +164,9 @@
                 }
                 
             }];
-            [self loadData];
+          
         }
+        [self endRefreshing];
     }];
     
 
@@ -218,4 +226,6 @@
 {
     return @"地点";
 }
+
+
 @end

@@ -108,7 +108,7 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
     
     //share button
     UIButton *shareButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width - 44, 26, 35, 35)];
-    [shareButton setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
+    [shareButton setImage:[UIImage imageNamed:@"share_camera"] forState:UIControlStateNormal];
     //[shareButton setTitle:@"分享" forState:UIControlStateNormal];
     [shareButton setBackgroundColor:THEME_COLOR_DARK_GREY_PARENT];
     [shareButton.titleLabel setTextColor:[UIColor whiteColor]];

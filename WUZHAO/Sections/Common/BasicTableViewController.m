@@ -8,6 +8,7 @@
 
 #import "BasicTableViewController.h"
 #import "AddressViewController.h"
+#import "BlankTableViewCell.h"
 #import "macro.h"
 
 @interface BasicTableViewController ()
@@ -67,6 +68,7 @@
     self.navigationItem.backBarButtonItem = backBarItem;
     
     //
+    //[self.tableView registerClass:[BlankTableViewCell class] forCellReuseIdentifier:@"blankCell"];
 }
 
 -(void)setDatasource:(NSMutableArray *)datasource
@@ -97,19 +99,13 @@
             [self getLatestData];
         }
     }
-    else if ([self.refreshControl isRefreshing])
-    {
-        [self.refreshControl endRefreshing];
-    }
+    [self endRefreshing];
 }
 
 -(void)getLatestData;
 {
     [self.tableView setContentOffset:CGPointMake(0, 0)];
-    if ([self.refreshControl isRefreshing])
-    {
-        [self.refreshControl endRefreshing];
-    }
+    [self endRefreshing];
     return;
 }
 
@@ -173,6 +169,11 @@
 {
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointMake(0, 0)];
+    [self endRefreshing];
+}
+
+-(void)endRefreshing
+{
     if (self.refreshControl.isRefreshing)
     {
         double delayInseconds = 0.2;
@@ -222,6 +223,14 @@
 
 
 #pragma mark - Table view data source
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.datasource.count == 0)
+    {
+        return self.tableView.frame.size.height;
+    }
+    return UITableViewAutomaticDimension;
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
@@ -230,7 +239,22 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
+    if (self.datasource.count == 0)
+    {
+        return 1;
+    }
     return _datasource.count;
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.datasource.count == 0)
+    {
+        BlankTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"blankCell" forIndexPath:indexPath];
+        [cell setBlankMessageText:@"暂时无数据"];
+        return cell;
+    }
+    return nil;
 }
 
 
@@ -252,7 +276,6 @@
     [personalViewCon setUserInfo:user];
     [self pushToViewController:personalViewCon animated:YES hideBottomBar:YES];
 }
-#pragma mark - transition
 -(void)goToPOIPhotoListWithPoi:(POI *)poi
 {
     UIStoryboard *addressStoryboard = [UIStoryboard storyboardWithName:@"Address" bundle:nil];
@@ -260,6 +283,7 @@
     addressViewCon.poiId = poi.poiId;
     addressViewCon.poiName = poi.name;
     addressViewCon.poiLocation = poi.locationArray;
+    addressViewCon.recommendFirstPostId = 0;
     [self pushToViewController:addressViewCon animated:YES hideBottomBar:YES];
 }
 

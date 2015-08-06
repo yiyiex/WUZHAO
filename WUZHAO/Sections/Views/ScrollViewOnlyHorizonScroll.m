@@ -10,6 +10,7 @@
 
 @implementation ScrollViewOnlyHorizonScroll
 
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
@@ -29,6 +30,11 @@
 
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    
+    if (self.disableInteractive)
+    {
+        return NO;
+    }
     if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         CGPoint velocity = [(UIPanGestureRecognizer *)gestureRecognizer velocityInView:self];
         if (fabs(velocity.y) * 2 < fabs(velocity.x)) {

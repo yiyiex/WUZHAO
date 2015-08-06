@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WhatsGoingOn.h"
 
 @interface PhotoCollectionViewCell : UICollectionViewCell
 @property (nonatomic,strong) IBOutlet UIImageView  *cellImageView;
@@ -15,5 +16,6 @@
 
 -(void) hideImageCountLabel;
 -(void) showImageCountLabel:(NSInteger)count;
--(void) setAppearance;
+
+-(void)configureWithContent:(WhatsGoingOn *)content;
 @end

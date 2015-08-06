@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface ScrollViewOnlyHorizonScroll : UIScrollView
+@property (nonatomic) BOOL disableInteractive;
 
 @end

@@ -67,9 +67,18 @@
             [self getLatestData];
         }
     }
-    else if ([self.refreshControl isRefreshing])
+    [self endRefreshing];
+}
+
+-(void)endRefreshing
+{
+    if (self.refreshControl.isRefreshing)
     {
-        [self.refreshControl endRefreshing];
+        double delayInseconds = 0.2;
+        dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^{
+            [self.refreshControl endRefreshing];
+        });
     }
 }
 
@@ -123,14 +132,7 @@
     {
         [self.collectionView setContentSize:CGSizeMake(self.collectionView.contentSize.width, self.collectionView.frame.size.height +10)];
     }
-    if (self.refreshControl.isRefreshing)
-    {
-        double delayInseconds = 0.2;
-        dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_main_queue(), ^{
-            [self.refreshControl endRefreshing];
-        });
-    }
+    [self endRefreshing];
 }
 
 
@@ -188,6 +190,18 @@
 }
 
 #pragma mark <UICollectionViewDelegate>
+
+#pragma mark - transition
+-(void)pushToViewController:(UIViewController *)viewController animated:(BOOL)animated hideBottomBar:(BOOL)hidden
+{
+    if (hidden)
+    {
+        //[[NSNotificationCenter defaultCenter ]postNotificationName:@"hideTabBar" object:nil];
+        viewController.hidesBottomBarWhenPushed = YES;
+    }
+    [self.navigationController pushViewController:viewController animated:animated];
+}
+
 
 
 

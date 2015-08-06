@@ -31,7 +31,7 @@
     self.parentController = parentController;
     [self.userAvatorView sd_setImageWithURL:[NSURL URLWithString:cellData.commentUser.avatarImageURLString]];
     self.userName.text = [NSString stringWithFormat:@"%@",cellData.commentUser.UserName];
-    self.commentContent.delegate = (id<CommentTextViewDelegate>)self;
+    self.commentContent.commentTextViewDelegate = (id<CommentTextViewDelegate>)self;
     [self.commentContent setTextWithoutUserNameWithCommentItem:cellData];
     CGRect frame = self.commentContent.frame;
     CGSize maxSize = CGSizeMake( WZ_APP_SIZE.width -104.0f, FLT_MAX);
@@ -52,7 +52,7 @@
         [self.commentTime setHidden:NO];
     }
     
-    self.commentContent.delegate =(id<CommentTextViewDelegate>) self.parentController;
+    self.commentContent.commentTextViewDelegate =(id<CommentTextViewDelegate>) self.parentController;
     [self configureGesture];
 }
 -(void)configureGesture

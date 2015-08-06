@@ -30,6 +30,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
+    
     [self setupRefreshControl];
     [self setBackItem];
     self.shouldRefreshData = YES;
@@ -45,6 +48,11 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+}
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 
 -(void)getLatestData
@@ -192,6 +200,13 @@
     Conversation *conversation = self.datasource[indexPath.row];
     User *user = conversation.other;
     [self goToPersonalPageWithUserInfo:user];
+}
+
+#pragma mark - notification selector
+-(void)clearUserInfo
+{
+    self.datasource = nil;
+    [self loadData];
 }
 
 #pragma mark - pageViewController Delegate

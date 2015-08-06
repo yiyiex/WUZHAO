@@ -113,5 +113,15 @@
     [personalViewCon setUserInfo:user];
     [self pushToViewController:personalViewCon animated:YES hideBottomBar:YES];
 }
+-(void)goToPOIPhotoListWithPoi:(POI *)poi
+{
+    UIStoryboard *addressStoryboard = [UIStoryboard storyboardWithName:@"Address" bundle:nil];
+    AddressViewController *addressViewCon = [addressStoryboard instantiateViewControllerWithIdentifier:@"addressPage"];
+    addressViewCon.poiId = poi.poiId;
+    addressViewCon.poiName = poi.name;
+    addressViewCon.poiLocation = poi.locationArray;
+    addressViewCon.recommendFirstPostId = 0;
+    [self pushToViewController:addressViewCon animated:YES hideBottomBar:YES];
+}
 
 @end

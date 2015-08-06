@@ -27,6 +27,14 @@
     }
     return _feedsPhoto;
 }
+-(POI *)feedsPOI
+{
+    if (!_feedsPOI)
+    {
+        _feedsPOI = [[POI alloc]init];
+    }
+    return _feedsPOI;
+}
 
 +(NSMutableArray *)configureFeedsWithData:(NSArray *)data
 {
@@ -34,16 +42,31 @@
     
     for (NSDictionary *notice in data)
     {
-        if ( [(NSNumber *)[notice objectForKey:@"noticeType"] integerValue] >4 ||[(NSNumber *)[notice objectForKey:@"noticeType"] integerValue]<1)
+        if ( [(NSNumber *)[notice objectForKey:@"noticeType"] integerValue] >6 ||[(NSNumber *)[notice objectForKey:@"noticeType"] integerValue]<1)
         {
             break;
         }
         Feeds *feed = [[Feeds alloc]init];
-        feed.feedsId = [(NSNumber *)[notice objectForKey:@"noticeId"] integerValue];
-        feed.type = [(NSNumber *)[notice objectForKey:@"noticeType"] integerValue];
-        feed.feedsUser.UserID =[(NSNumber *)[notice objectForKey:@"operatorId"] integerValue];
-        feed.feedsUser.UserName = [notice objectForKey:@"operatorNick"];
-        feed.feedsUser.avatarImageURLString = [notice objectForKey:@"operatorAvatar"];
+        if ([notice objectForKey:@"noticeId"])
+        {
+            feed.feedsId = [(NSNumber *)[notice objectForKey:@"noticeId"] integerValue];
+        }
+        if ([notice objectForKey:@"noticeType"])
+        {
+            feed.type = [(NSNumber *)[notice objectForKey:@"noticeType"] integerValue];
+        }
+        if ([notice objectForKey:@"operatorId"])
+        {
+            feed.feedsUser.UserID =[(NSNumber *)[notice objectForKey:@"operatorId"] integerValue];
+        }
+        if ([notice objectForKey:@"operatorNick"])
+        {
+            feed.feedsUser.UserName = [notice objectForKey:@"operatorNick"];
+        }
+        if ([notice objectForKey:@"operatorAvatar"])
+        {
+            feed.feedsUser.avatarImageURLString = [notice objectForKey:@"operatorAvatar"];
+        }
         if (! [[notice objectForKey:@"content"]isKindOfClass:[NSNull class]])
         {
             feed.content = [notice objectForKey:@"content"];
@@ -53,7 +76,18 @@
             feed.feedsPhoto.postId = [(NSNumber *)[notice objectForKey:@"postId"]integerValue];
             feed.feedsPhoto.imageUrlString = [notice objectForKey:@"photo"];
         }
-        feed.time = [notice objectForKey:@"createTime"];
+        if ([notice objectForKey:@"createTime"])
+        {
+            feed.time = [notice objectForKey:@"createTime"];
+        }
+        if ([notice objectForKey:@"poiName"])
+        {
+            feed.feedsPOI.name = [notice objectForKey:@"poiName"];
+        }
+        if ([notice objectForKey:@"poiId"])
+        {
+            feed.feedsPOI.poiId = [(NSNumber *)[notice objectForKey:@"poiId"]integerValue];
+        }
         [feeds addObject:feed];
         
     }

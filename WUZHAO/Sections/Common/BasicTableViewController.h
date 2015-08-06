@@ -29,6 +29,7 @@
 -(void)getLatestData;
 
 -(void)loadData;
+-(void)endRefreshing;
 
 @property (nonatomic) BOOL shouldLoadMore;
 @property (nonatomic,strong) UIButton *loadMoreButton;
@@ -45,7 +46,6 @@
 #pragma mark - transiation
 -(void)pushToViewController:(UIViewController *)viewController animated:(BOOL)animated hideBottomBar:(BOOL)hidden;
 -(void)goToPersonalPageWithUserInfo:(User *)user;
-#pragma mark - transition
 -(void)goToPOIPhotoListWithPoi:(POI *)poi;
 
 @end

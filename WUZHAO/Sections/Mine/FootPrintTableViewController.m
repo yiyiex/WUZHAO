@@ -197,7 +197,7 @@
         {
             AddressPhotos *address = [returnData objectForKey:@"data"];
             addressViewCon.photoCollectionDatasource = address.photoList;
-            [addressViewCon getLatestAddressPhoto];
+            [addressViewCon getLatestData];
             
         }
         else if ([returnData objectForKey:@"error"])

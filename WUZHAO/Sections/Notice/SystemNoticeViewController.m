@@ -221,10 +221,7 @@
     //获取最新数据
     [[QDYHTTPClient sharedInstance]getNoticeWithUserId:userId whenComplete:^(NSDictionary *returnData) {
         
-        if ([self.refreshControl isRefreshing])
-        {
-            [self.refreshControl endRefreshing];
-        }
+        [self endRefreshing];
         self.shouldRefreshData = YES;
         [[QDYHTTPClient sharedInstance]getLatestNoticeNumber];
         if ([returnData objectForKey:@"data"])
@@ -240,7 +237,7 @@
                     infoLabel.textAlignment = NSTextAlignmentCenter;
                     [infoLabel setReadOnlyLabelAppearance];
                     [self.infoView addSubview:infoLabel];                    
-                    [self.view addSubview:self.infoView];
+                    [self.tableView addSubview:self.infoView];
                 }
             }
             else

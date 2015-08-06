@@ -139,7 +139,7 @@
 {
     //评论内容显示样式
     [self.commentView reset];
-    self.commentView.delegate = (id<CommentTextViewDelegate>)self.parentViewController;
+    self.commentView.commentTextViewDelegate = (id<CommentTextViewDelegate>)self.parentViewController;
     [self.commentView setTextWithCommentList:self.content.commentList withMoreItem:self.content.commentNum];
     [self updateFrameOfTextView:self.commentView heightConstraint:self.commentViewHeightConstraint];
     if (self.commentView.frame.size.height>0)
@@ -314,44 +314,6 @@
         [self.imagesContainerViewHeightConstrant setConstant:0];
     }
     [self.imagesCollectionView reloadData];
-    /*
-    
-    [self.imagesScrollView.subviews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
-        if ([view isKindOfClass:[UIImageView class]])
-        {
-            [view removeFromSuperview];
-        }
-    }];
-    float imageWidth = 70;
-    float spacing = 8;
-    if (self.content.imageUrlList.count>1)
-    {
-        [self.imagesContainerViewHeightConstrant setConstant:86];
-        CGRect frame = self.imagesContainerView.frame;
-        frame.size.height = 86;
-        self.imagesContainerView.frame = frame;
-        [self.imagesScrollView setContentSize:CGSizeMake(spacing +(imageWidth+spacing)*self.content.imageUrlList.count, 86)];
-        //[self.imagesScrollView setDirectionalLockEnabled:YES];
-        [self.content.imageUrlList enumerateObjectsUsingBlock:^(NSString *urlString, NSUInteger idx, BOOL *stop) {
-            UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(spacing +(spacing+imageWidth)*idx, spacing, imageWidth, imageWidth)];
-            [self.imagesScrollView addSubview:imageView];
-            [imageView setBackgroundColor:THEME_COLOR_LIGHT_GREY];
-            [imageView.layer setCornerRadius:2.0f];
-            [imageView sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"placeholder"]];
-            imageView.tag = idx;
-            UITapGestureRecognizer *imageTapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(smallImageViewClick:)];
-            [imageView addGestureRecognizer:imageTapGesture];
-            [imageView setUserInteractionEnabled:YES];
-        }];
-        
-    }
-    else
-    {
-        CGRect frame = self.imagesContainerView.frame;
-        frame.size.height = 0;
-        self.imagesContainerView.frame = frame;
-        [self.imagesContainerViewHeightConstrant setConstant:0];
-    }*/
     //address
     if ([self.content.poiName isEqualToString:@""])
     {

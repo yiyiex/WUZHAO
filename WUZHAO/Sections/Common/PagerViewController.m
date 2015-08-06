@@ -75,11 +75,11 @@
     [self.containerView setAlwaysBounceVertical:NO];
     self.containerView.scrollsToTop = NO;
     self.containerView.delegate = self;
-    self.containerView.showsVerticalScrollIndicator = YES;
-    self.containerView.showsHorizontalScrollIndicator = YES;
+    self.containerView.showsVerticalScrollIndicator = NO;
+    self.containerView.showsHorizontalScrollIndicator = NO;
     self.containerView.pagingEnabled = YES;
-    self.containerView.backgroundColor = [UIColor lightGrayColor];
-    self.containerView.autoresizesSubviews = NO;
+    self.containerView.backgroundColor = [UIColor whiteColor];
+    [self.containerView setDelaysContentTouches:NO];
     
     self.containerView.panGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self.containerView;
     if (self.dataSource)
@@ -116,13 +116,14 @@
     }
 }
 
+
+//TO DO  can not work
 -(void)disableUserInteractive
 {
-    for (UIViewController *childController in self.childViewControllers)
+    if ([self.containerView isKindOfClass:[ScrollViewOnlyHorizonScroll class]])
     {
-         [childController.view.gestureRecognizers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-             [self.containerView.panGestureRecognizer requireGestureRecognizerToFail:(UIGestureRecognizer *)obj];
-         }];
+        ScrollViewOnlyHorizonScroll *scrollView = (ScrollViewOnlyHorizonScroll *)self.containerView;
+        scrollView.disableInteractive = YES;
     }
 }
 
@@ -298,13 +299,6 @@
                 CGFloat childPosition = [self offsetForChildIndex:idx];
                 [childController.view setFrame:CGRectMake(childPosition, 0, CGRectGetWidth(self.containerView.bounds), CGRectGetHeight(self.containerView.bounds))];
                 childController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-                /*
-                [childController.view.gestureRecognizers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                    if([obj isKindOfClass:[UIPanGestureRecognizer class]])
-                    {
-                        [self.containerView.panGestureRecognizer requireGestureRecognizerToFail:(UIGestureRecognizer *)obj];
-                    }
-                }];*/
                 [self.containerView addSubview:childController.view];
                 [childController didMoveToParentViewController:self];
                 [childController endAppearanceTransition];
@@ -455,15 +449,5 @@
     [self updateIfNeeded];
 }
 
-
--(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    // Determine if the touch is inside the custom subview
-    if ([touch view] == self.containerView){
-        // If it is, prevent all of the delegate's gesture recognizers
-        // from receiving the touch
-        return NO;
-    }
-    return YES;
-}
 
 @end

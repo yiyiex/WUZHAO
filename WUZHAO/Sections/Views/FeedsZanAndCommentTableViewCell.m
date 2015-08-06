@@ -75,7 +75,7 @@
     //self.contentLabel.attributedText = attributeContent;
     self.contentTextView.attributedText = attributeContent;
     [self.contentTextView linkUserNameWithUserList:@[feeds.feedsUser]];
-     self.contentTextView.delegate = (id<NoticeContentTextViewDelegate>)self.parentController;
+     self.contentTextView.noticeContentTextViewDelegate = (id<NoticeContentTextViewDelegate>)self.parentController;
     [self updateContentTextViewFrame];
     //添加手势
     [self configureGesture];
@@ -101,7 +101,7 @@
     self.contentTextView.attributedText = attributeContent;
     [self.contentTextView linkUserNameWithUserList:@[feeds.feedsUser]];
     
-     self.contentTextView.delegate = (id<NoticeContentTextViewDelegate>)self.parentController;
+     self.contentTextView.noticeContentTextViewDelegate = (id<NoticeContentTextViewDelegate>)self.parentController;
     [self updateContentTextViewFrame];
     //添加手势
     [self configureGesture];
@@ -124,7 +124,7 @@
    // self.contentLabel.attributedText = attributeContent;
     self.contentTextView.attributedText = attributeContent;
     [self.contentTextView linkUserNameWithUserList:@[feeds.feedsUser]];
-     self.contentTextView.delegate = (id<NoticeContentTextViewDelegate>)self.parentController;
+     self.contentTextView.noticeContentTextViewDelegate = (id<NoticeContentTextViewDelegate>)self.parentController;
     [self updateContentTextViewFrame];
     //添加手势
     [self configureGesture];

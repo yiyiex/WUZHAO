@@ -29,7 +29,11 @@
 - (BOOL)gestureRecognizer:(UIPanGestureRecognizer *)gestureRecognizer
 shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIPanGestureRecognizer *)otherGestureRecognizer
 {
-     return self.isDecelerating || self.contentOffset.y < 0 || self.contentOffset.y > MAX(0, self.contentSize.height - self.bounds.size.height);
+    if ([otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]])
+    {
+        return NO;
+    }
+    return YES;
 }
 
 -(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
@@ -37,7 +41,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIPanGestureRecognizer *)oth
     if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         CGPoint velocity = [(UIPanGestureRecognizer *)gestureRecognizer velocityInView:self];
         
-        if (fabs(velocity.x)*2  <= fabs(velocity.y)) {
+        if (fabs(velocity.x)*2 <= fabs(velocity.y)) {
             return YES;
         }
         else

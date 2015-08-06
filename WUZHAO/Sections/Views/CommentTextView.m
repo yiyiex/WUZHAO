@@ -27,7 +27,7 @@
 -(void)reset
 {
     [super reset];
-    self.delegate = nil;
+    self.commentTextViewDelegate = nil;
     
 }
 
@@ -66,9 +66,9 @@
         {
             [linkStrings addObject:comment.commentUser.UserName];
             LinkedStringRangeTapHandler taphandler = ^(NSRange linkStringRange) {
-                if ([self.delegate respondsToSelector:@selector(commentTextView:didClickLinkUser:)])
+                if ([self.commentTextViewDelegate respondsToSelector:@selector(commentTextView:didClickLinkUser:)])
                 {
-                    [self.delegate commentTextView:self didClickLinkUser:comment.commentUser];
+                    [self.commentTextViewDelegate commentTextView:self didClickLinkUser:comment.commentUser];
                 }};
             [taphandlers addObject:taphandler];
             
@@ -78,9 +78,9 @@
         {
             [linkStrings addObject:comment.replyUser.UserName];
             LinkedStringRangeTapHandler taphandler = ^(NSRange linkStringRange) {
-                if ([self.delegate respondsToSelector:@selector(commentTextView:didClickLinkUser:)])
+                if ([self.commentTextViewDelegate respondsToSelector:@selector(commentTextView:didClickLinkUser:)])
                 {
-                    [self.delegate commentTextView:self didClickLinkUser:comment.replyUser];
+                    [self.commentTextViewDelegate commentTextView:self didClickLinkUser:comment.replyUser];
                 }};
             
             [taphandlers addObject:taphandler];
@@ -105,9 +105,9 @@
     {
         LinkedStringRangeTapHandler taphandler = ^(NSRange linkStringRange) {
             
-            if ([self.delegate respondsToSelector:@selector(moreCommentClick:)])
+            if ([self.commentTextViewDelegate respondsToSelector:@selector(moreCommentClick:)])
             {
-                [self.delegate moreCommentClick:self];
+                [self.commentTextViewDelegate moreCommentClick:self];
             }
         };
         
@@ -125,10 +125,10 @@
     if (comment.commentUser.UserName)
     {
         [self linkTextWithString:comment.commentUser.UserName defaultAttributes:defaultAttributes highlightAttributes:highlightedAttributes tabHandler:^(NSRange linkStringRange) {
-            if ([self.delegate respondsToSelector:@selector(commentTextView:didClickLinkUser:)])
+            if ([self.commentTextViewDelegate respondsToSelector:@selector(commentTextView:didClickLinkUser:)])
             {
                 NSLog(@"comment textview username click");
-                [self.delegate commentTextView:self didClickLinkUser:comment.commentUser];
+                [self.commentTextViewDelegate commentTextView:self didClickLinkUser:comment.commentUser];
             }
         }];
 
@@ -136,10 +136,10 @@
     if (comment.replyUser && ![comment.replyUser.UserName isEqualToString:@""])
     {
         [self linkTextWithString:comment.replyUser.UserName  defaultAttributes:defaultAttributes highlightAttributes:highlightedAttributes tabHandler:^(NSRange linkStringRange) {
-            if ([self.delegate respondsToSelector:@selector(commentTextView:didClickLinkUser:)])
+            if ([self.commentTextViewDelegate respondsToSelector:@selector(commentTextView:didClickLinkUser:)])
             {
                 NSLog(@"comment textview reply username click");
-                [self.delegate commentTextView:self didClickLinkUser:comment.replyUser];
+                [self.commentTextViewDelegate commentTextView:self didClickLinkUser:comment.replyUser];
             }
         }];
     }
@@ -152,9 +152,9 @@
     NSRange tappedStringRange = [self handleTouches:touches];
     if (tappedStringRange.length == 0 && tappedStringRange.location == 0)
     {
-        if ([self.delegate respondsToSelector:@selector(didClickUnlinedTextOncommentTextView:)])
+        if ([self.commentTextViewDelegate respondsToSelector:@selector(didClickUnlinedTextOncommentTextView:)])
         {
-            [self.delegate didClickUnlinedTextOncommentTextView:self];
+            [self.commentTextViewDelegate didClickUnlinedTextOncommentTextView:self];
             
         }
     }

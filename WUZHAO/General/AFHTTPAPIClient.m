@@ -76,7 +76,7 @@
             NSLog(@"request failed");
             NSLog(@"%@",error);
             [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-            complete(@{@"msg":@"请求成功，但服务器返回错误"},error);
+            complete(@{@"msg":@"请求失败"},error);
             
         }];
         
@@ -124,7 +124,7 @@
             NSLog(@"request failed");
             NSLog(@"%@",error);
             [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-            complete(@{@"msg":@"请求成功，但服务器返回错误"},nil);
+            complete(@{@"msg":@"请求失败"},nil);
         }];
     }
 }

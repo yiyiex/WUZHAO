@@ -8,14 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "Feeds.h"
+#import "PlaceRecommendTextView.h"
 
 @interface PlaceRecommendTableViewCell : UITableViewCell
 
 @property (nonatomic, strong) IBOutlet UIImageView *avatarImageView;
-@property (nonatomic, strong) IBOutlet UITextView *contentTextView;
+@property (nonatomic, strong) IBOutlet PlaceRecommendTextView *contentTextView;
 //@property (nonatomic, strong) IBOutlet UILabel *contentLabel;
 @property (nonatomic, strong) IBOutlet UIImageView *feedsImageView;
 
--(void)configureWithFeeds:(Feeds *)feed;
+@property (nonatomic, weak) UIViewController *parentController;
+
+-(void)configureWithFeeds:(Feeds *)feeds parentController:(UIViewController *)parentController;
 
 @end

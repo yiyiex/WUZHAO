@@ -9,6 +9,8 @@
 #import "PlaceRecommendTableViewCell.h"
 #import "UIImageView+ChangeAppearance.h"
 #import "macro.h"
+#import "Feeds.h"
+#import "UIImageView+WebCache.h"
 
 @implementation PlaceRecommendTableViewCell
 
@@ -24,16 +26,63 @@
     [self.feedsImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_MORE_PARENT];
     [self.feedsImageView setRoundConerWithRadius:1.0f];
     
-    [self.contentTextView setEditable:NO];
     [self.contentTextView setFont:WZ_FONT_COMMON_SIZE];
     [self.contentTextView setTextColor:THEME_COLOR_DARK_GREY];
-    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+-(void)configureWithFeeds:(Feeds *)feeds parentController:(UIViewController *)parentController;
+{
+    self.parentController = parentController;
+    
+    [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsUser.avatarImageURLString]];
+    [self.feedsImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsPhoto.imageUrlString]];
+    
+    NSString *content =  feeds.content;
+   
+    NSMutableAttributedString *attributeContent = [[NSMutableAttributedString alloc]initWithString:content];
+     NSRange wholeRange = NSMakeRange(0, [attributeContent length]);
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE} range:wholeRange];
+    if (feeds.feedsPOI.name && ![feeds.feedsPOI.name isEqualToString:@""])
+    {
+        self.contentTextView.attributedText = attributeContent;
+        [self.contentTextView linkPOINameWithPOI:feeds.feedsPOI];
+        
+        self.contentTextView.placeRecommendTextViewDelegate = (id<PlaceRecommendTextViewDelegate>)self.parentController;
+    }
+    [self updateContentTextViewFrame];
+    //添加手势
+    [self configureGesture];
+}
+
+-(void)configureGesture
+{
+    if ([self.parentController respondsToSelector:@selector(avatarClick:)])
+    {
+        UITapGestureRecognizer *avatarClick = [[UITapGestureRecognizer alloc]initWithTarget:self.parentController action:@selector(avatarClick:)];
+        [self.avatarImageView addGestureRecognizer:avatarClick];
+        [self.avatarImageView setUserInteractionEnabled:YES];
+    }
+    if ([self.parentController respondsToSelector:@selector(feedsPhotoClick:)])
+    {
+        UITapGestureRecognizer *feedsPhotoClick = [[UITapGestureRecognizer alloc]initWithTarget:self.parentController action:@selector(feedsPhotoClick:)];
+        [self.feedsImageView addGestureRecognizer:feedsPhotoClick];
+        [self.feedsImageView setUserInteractionEnabled:YES];
+    }
+}
+
+-(void)updateContentTextViewFrame
+{
+    CGRect frame = self.contentTextView.frame;
+    CGSize maxSize = CGSizeMake( WZ_APP_SIZE.width -116.0f, FLT_MAX);
+    CGSize newSize = [self.contentTextView sizeThatFits:maxSize];
+    frame.size = newSize;
+    self.contentTextView.frame = frame;
 }
 
 

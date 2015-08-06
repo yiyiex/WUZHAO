@@ -497,14 +497,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                                          if(self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
                                          {
                                              [self.tableView beginUpdates];
-                                             if (self.recommandDatasource == nil)
-                                             {
                                              [self.datasource removeObjectAtIndex:selectItemIndexPath.row];
-                                             }
-                                             else
-                                             {
-                                                 [self.datasource removeObjectAtIndex:selectItemIndexPath.row -1];
-                                             }
                                              [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject: selectItemIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
                                              [self.tableView endUpdates];
                                          }
@@ -805,12 +798,10 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     }
     NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
     WhatsGoingOn *item = [self getDataAtIndexPath:selectItemIndexPath];
-    UIStoryboard *addressStoryboard = [UIStoryboard storyboardWithName:@"Address" bundle:nil];
-    AddressViewController *addressViewCon = [addressStoryboard instantiateViewControllerWithIdentifier:@"addressPage"];
-    //[self hidesBottomBarWhenPushed];
-    addressViewCon.poiId = item.poiId;
-    addressViewCon.poiName = item.poiName;
-    [self pushToViewController:addressViewCon animated:YES hideBottomBar:YES];
+    POI *poi = [[POI alloc]init];
+    poi.poiId = item.poiId;
+    poi.name = item.poiName;
+    [self goToPOIPhotoListWithPoi:poi];
 }
 #pragma mark - control the model
 
@@ -827,15 +818,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         }
     }];
 }
--(void)GetLatestDataListWithAnimation
-{
-    [self.refreshControl beginRefreshing];
-    double delayInseconds = 1;
-    dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^{
-        [self getLatestData];
-    });
-}
+
 -(void)getLatestData
 {
     if(self.currentUser.UserID <=0)
@@ -861,7 +844,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             [[QDYHTTPClient sharedInstance]GetWhatsGoingOnWithUserId:self.currentUser.UserID page:self.currentPage whenComplete:^(NSDictionary *result) {
-             self.shouldRefreshData = true;
+             self.shouldRefreshData = YES;
             [self stopRightBarAiv];
              dispatch_async(dispatch_get_main_queue(), ^{
                  
@@ -955,14 +938,13 @@ static NSString *reuseIdentifier = @"HomeTableCell";
                         WhatsGoingOn *newItem = [result objectForKey:@"data"];
                         self.datasource = [NSMutableArray arrayWithObject:newItem];
                         [self.tableView reloadData];
-                      
                     }
                     else if ([result objectForKey:@"error"])
                     {
                         [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
                     }
-                     [self.tableView setContentOffset:CGPointMake(0, -64) animated:NO];
-                    
+                    [self.tableView setContentOffset:CGPointMake(0, -64) animated:NO];
+    
                   
                 });
                 
@@ -970,18 +952,8 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         });
 
     }
-    else
-    {
-        if (self.refreshControl.isRefreshing)
-        {
-            double delayInseconds = 0.2;
-            dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
-            dispatch_after(popTime, dispatch_get_main_queue(), ^{
-                [self.refreshControl endRefreshing];
-                 [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
-            });
-        }
-    }
+    [self endRefreshing];
+
 }
 -(void)loadMore
 {
@@ -1078,13 +1050,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     [commentListView setPoiItem:item];
     [self pushToViewController:commentListView animated:YES hideBottomBar:YES];
 }
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    NSLog(@"touch in the home table view");
-    
-}
-
-
 #pragma mark - notification action
 -(void)clearUserInfo
 {

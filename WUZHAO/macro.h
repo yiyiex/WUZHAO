@@ -190,6 +190,9 @@
 #define WZ_FONT_LARGE_SIZE [UIFont fontWithName:WZ_FONT_NAME size:15]
 #define WZ_FONT_LARGE_BOLD_SIZE [UIFont fontWithName:WZ_FONT_NAME_BOLD size:15]
 
+#define WZ_FONT_LARGER_SIZE [UIFont fontWithName:WZ_FONT_NAME size:16]
+#define WZ_FONT_LARGER_BOLD_SIZE [UIFont fontWithName:WZ_FONT_NAME_BOLD size:16]
+
 #define WZ_FONT_TITLE [UIFont fontWithName:WZ_FONT_NAME size:17]
 #define WZ_FONT_TITLE_BOLD [UIFont fontWithName:WZ_FONT_NAME_BOLD size:17]
 

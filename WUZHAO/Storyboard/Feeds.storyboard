@@ -10,7 +10,7 @@
         <scene sceneID="LeH-0y-YXj">
             <objects>
                 <tableViewController storyboardIdentifier="SystemNoticeViewController" title="系统通知" id="6lS-J3-ibg" userLabel="通知" customClass="SystemNoticeViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="116" sectionHeaderHeight="22" sectionFooterHeight="22" id="lKR-6E-H1c" customClass="TableViewScrollNotSwipe">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="116" sectionHeaderHeight="22" sectionFooterHeight="22" id="lKR-6E-H1c">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -186,7 +186,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6fe-zh-AYa">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6fe-zh-AYa" customClass="ScrollViewOnlyHorizonScroll">
                                 <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                             </scrollView>
                         </subviews>
@@ -215,7 +215,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="placeRecommend" rowHeight="60" id="9kR-t7-fxG" userLabel="PlaceRecommend" customClass="FeedsZanAndCommentTableViewCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="placeRecommend" rowHeight="60" id="9kR-t7-fxG" userLabel="PlaceRecommend" customClass="PlaceRecommendTableViewCell">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9kR-t7-fxG" id="2Hp-Uh-y9W">
@@ -235,7 +235,7 @@
                                                 <constraint firstAttribute="width" constant="48" id="RyH-sz-pDY"/>
                                             </constraints>
                                         </imageView>
-                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nom-xi-8Lg" customClass="NoticeContentTextView">
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nom-xi-8Lg" customClass="PlaceRecommendTextView">
                                             <rect key="frame" x="52" y="12" width="484" height="36"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
@@ -276,17 +276,17 @@
                                     <variation key="default">
                                         <mask key="constraints">
                                             <exclude reference="xWq-oL-jmE"/>
-                                            <exclude reference="ni3-tV-TNG"/>
-                                            <exclude reference="Sei-zh-5nO"/>
-                                            <exclude reference="68r-Yf-bgs"/>
-                                            <exclude reference="HYO-Po-xyS"/>
                                             <exclude reference="037-5W-SUT"/>
+                                            <exclude reference="68r-Yf-bgs"/>
                                             <exclude reference="GwW-pM-3FS"/>
+                                            <exclude reference="HYO-Po-xyS"/>
+                                            <exclude reference="Sei-zh-5nO"/>
+                                            <exclude reference="ni3-tV-TNG"/>
+                                            <exclude reference="GMU-X1-XgZ"/>
                                             <exclude reference="RWZ-IA-bvt"/>
+                                            <exclude reference="byM-Uo-a6j"/>
                                             <exclude reference="g4b-Gp-ubL"/>
                                             <exclude reference="pHT-wX-INb"/>
-                                            <exclude reference="byM-Uo-a6j"/>
-                                            <exclude reference="GMU-X1-XgZ"/>
                                             <exclude reference="z9j-hK-9ry"/>
                                         </mask>
                                     </variation>
@@ -312,7 +312,7 @@
         <scene sceneID="PMh-jw-D0m">
             <objects>
                 <tableViewController storyboardIdentifier="privateLetterViewController" title="私 信" id="nj3-DN-S1E" customClass="PrivateLetterViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="clG-4i-saE" customClass="TableViewScrollNotSwipe">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="clG-4i-saE">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
