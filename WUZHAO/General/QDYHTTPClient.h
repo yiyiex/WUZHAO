@@ -110,7 +110,11 @@
 -(void)followUser:(NSInteger)userIdToFollow withUserId:(NSInteger)myUserId whenComplete:(void (^)(NSDictionary *))whenComplete;
 -(void)unFollowUser:(NSInteger)userIdToUnFollow withUserId:(NSInteger)myUserId whenComplete:(void (^)(NSDictionary *))whenComplete;
 
-#pragma mark - search 
+#pragma mark - search
+//get subjectlist
+-(void)getSubjectListBannerWhenComplete:(void (^)(NSDictionary *))whenComplete;
+//get subject detail
+-(void)getSubjectDetailWithSubjectId:(NSInteger )subjectId whenComplete:(void(^)(NSDictionary *))whenComplete;
 //search content with type 0 -用户 1 - 地点
 -(void)searchWithType:(NSString *)type keyword:(NSString *)keyword whenComplete:(void (^)(NSDictionary *))whenComplete;
 

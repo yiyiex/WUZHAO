@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "SuggestAddress.h"
+#import "PagerViewController.h"
+#import "BasicViewController.h"
 
 @protocol AddressSuggestViewControllerDataSource;
-@interface AddressSuggestViewController : UIViewController
+@interface AddressSuggestViewController :BasicViewController  <PagerViewControllerItem>
 
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *datasource;

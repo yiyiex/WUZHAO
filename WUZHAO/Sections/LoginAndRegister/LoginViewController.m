@@ -173,6 +173,7 @@
                                                    {
                                                        [self dismissViewControllerAnimated:YES completion:^{
                                                            [[NSNotificationCenter defaultCenter]postNotificationName:@"loginSuccess" object:nil];
+                                                           [[QDYHTTPClient sharedInstance]getLatestNoticeNumber];
                                                        }];
                                                        
                                                        

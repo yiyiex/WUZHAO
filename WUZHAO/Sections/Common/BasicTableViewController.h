@@ -10,7 +10,7 @@
 #import "User.h"
 #import "POI.h"
 
-#import "UserListTableViewController.h"
+//#import "UserListTableViewController.h"
 #import "MineViewController.h"
 
 @interface BasicTableViewController : UITableViewController
@@ -27,6 +27,7 @@
 
 -(void)setupRefreshControl;
 -(void)getLatestData;
+-(void)getLatestDataAnimated;
 
 -(void)loadData;
 -(void)endRefreshing;

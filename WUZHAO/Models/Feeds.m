@@ -84,7 +84,7 @@
         {
             feed.feedsPOI.name = [notice objectForKey:@"poiName"];
         }
-        if ([notice objectForKey:@"poiId"])
+        if ([notice objectForKey:@"poiId"] && ![[notice objectForKey:@"poiId"] isKindOfClass:[NSNull class]])
         {
             feed.feedsPOI.poiId = [(NSNumber *)[notice objectForKey:@"poiId"]integerValue];
         }

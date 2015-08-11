@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "MineViewController.h"
 #import "AddressViewController.h"
+#import "HomeTableViewController.h"
 #import "User.h"
-
+#import "WhatsGoingOn.h"
 #import "POI.h"
 
 @interface BasicViewController : UIViewController
@@ -28,6 +29,6 @@
 -(void)pushToViewController:(UIViewController *)viewController animated:(BOOL)animated hideBottomBar:(BOOL)hidden;
 -(void)goToPersonalPageWithUserInfo:(User *)user;
 -(void)goToPOIPhotoListWithPoi:(POI *)poi;
-
+-(void)gotoPostDetailPageWithPost:(WhatsGoingOn *)item;
 
 @end

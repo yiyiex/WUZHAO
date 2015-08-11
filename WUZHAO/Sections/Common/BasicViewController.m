@@ -8,6 +8,7 @@
 
 #import "BasicViewController.h"
 
+
 @interface BasicViewController ()
 
 @end
@@ -122,6 +123,16 @@
     addressViewCon.poiLocation = poi.locationArray;
     addressViewCon.recommendFirstPostId = 0;
     [self pushToViewController:addressViewCon animated:YES hideBottomBar:YES];
+}
+
+-(void)gotoPostDetailPageWithPost:(WhatsGoingOn *)item
+{
+    UIStoryboard *whatsNew = [UIStoryboard storyboardWithName:@"WhatsNew" bundle:nil];
+    HomeTableViewController *detailPhotoController  = [whatsNew instantiateViewControllerWithIdentifier:@"HomeTableViewController"];
+    [detailPhotoController setDatasource:[NSMutableArray arrayWithObject:item]];
+    [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
+    [detailPhotoController getLatestData];
+    [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
 }
 
 @end

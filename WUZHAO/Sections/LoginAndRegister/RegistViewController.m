@@ -224,6 +224,7 @@
                     [self dismissViewControllerAnimated:YES completion:^{
                         
                         [[NSNotificationCenter defaultCenter]postNotificationName:@"registSuccess" object:nil];
+                        [[QDYHTTPClient sharedInstance]getLatestNoticeNumber];
                     }];
                 }
                 

@@ -1,43 +1,43 @@
-    //
+//
 //  SearchViewController.m
 //  WUZHAO
 //
-//  Created by yiyi on 14-12-15.
-//  Copyright (c) 2014年 yiyi. All rights reserved.
+//  Created by yiyi on 15/8/9.
+//  Copyright (c) 2015年 yiyi. All rights reserved.
 //
 
 #import "SearchViewController.h"
-#import "CommonContainerViewController.h"
-#import "PhotosCollectionViewController.h"
+#import "PhotosSuggestViewController.h"
 #import "UserListTableViewController.h"
 #import "AddressSuggestViewController.h"
 #import "SearchResultViewController.h"
 #import "SearchResultTableViewController2.h"
 
+#import "HMSegmentedControl.h"
+
 #import "UIViewController+Basic.h"
 
 #import "QDYHTTPClient.h"
-
 #import "SVProgressHUD.h"
-
-#import "User.h"
-#import "WhatsGoingOn.h"
-#import "SuggestAddress.h"
 #import "macro.h"
 
-#define SEGUEFIRST @"segueForSuggestPhotos"
-#define SEGUESECOND @"segueForSuggestAddress"
-#define SEGUETHIRD @"segueForSuggestUsers"
+typedef NS_ENUM(NSInteger, ChildViewIndex)
+{
+    ChildViewIndexPhotos,
+    //ChildViewIndexAddress,
+    ChildViewIndexUsers
+    
+};
 
-@interface SearchViewController () <UISearchBarDelegate,UISearchControllerDelegate,UISearchResultsUpdating,CommonContainerViewControllerDelegate,UserListViewControllerDataSource,AddressSuggestViewControllerDataSource,PhotoCollectionViewControllerDataSource>
-@property (nonatomic, strong) CommonContainerViewController *containerViewController;
-@property (nonatomic, strong) PhotosCollectionViewController *suggestPhotoCollectionViewController;
-@property (nonatomic, strong) AddressSuggestViewController *suggestAddressViewController;
-@property (nonatomic, strong) UserListTableViewController *suggestUserListViewConstroller;
-
+@interface SearchViewController ()<UISearchBarDelegate,UISearchControllerDelegate,UISearchResultsUpdating,PagerViewControllerDelegate,UserListViewControllerDataSource>
+@property (nonatomic, strong) PhotosSuggestViewController *suggestPhotosViewController;
 @property (nonatomic, strong) NSMutableArray *suggestPhotoData;
-@property (nonatomic, strong) NSMutableArray *suggestAddressData;
+
+@property (nonatomic, strong) UserListTableViewController *suggestUserListViewConstroller;
 @property (nonatomic, strong) NSMutableArray *suggestUserListData;
+
+@property (nonatomic, strong) AddressSuggestViewController *suggestAddressViewController;
+@property (nonatomic, strong) NSMutableArray *suggestAddressData;
 
 @property (nonatomic, strong) SearchResultViewController *searchResultTableView;
 @property (nonatomic, strong) NSMutableArray *searchResult;
@@ -47,41 +47,58 @@
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UIBarButtonItem *searchButton;
 
-
-//for state restoration
 @property BOOL searchControllerWasActive;
 @property BOOL searchControllerSearchFieldWasFirstResponder;
+
+
+
 
 @end
 
 @implementation SearchViewController
+-(instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self)
+    {
+        [self setTitle:@"发 现"];
+    }
+    return self;
+}
+-(instancetype)init
+{
+    self = [super init];
+    if (self)
+    {
+        [self setTitle:@"发 现"];
+    }
+    return self;
+}
+-(id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        [self setTitle:@"发 现"];
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self initSearchController];
+    [self initSegmentController];
     
-    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.navigationItem.backBarButtonItem = backBarItem;
-    
-    [self initSearchControllerAndSegmentController];
+    [self setBackItem];
+    // Do any additional setup after loading the view.
 }
-
-- (void)viewWillAppear:(BOOL)animated
+-(void)viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
-    self.navigationItem.title = @"发 现";
-    self.navigationController.navigationBarHidden = NO;
-    self.navigationItem.rightBarButtonItem = self.searchButton;
-    self.navigationItem.hidesBackButton = YES;
-}
-- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
-
     // restore the searchController's active state
     if (self.searchControllerWasActive) {
         self.searchController.active = self.searchControllerWasActive;
         _searchControllerWasActive = NO;
-        
         if (self.searchControllerSearchFieldWasFirstResponder) {
             [self.searchController.searchBar becomeFirstResponder];
             _searchControllerSearchFieldWasFirstResponder = NO;
@@ -89,35 +106,26 @@
     }
 }
 
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    self.tabBarController.navigationItem.rightBarButtonItem = nil;
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    
     // Dispose of any resources that can be recreated.
 }
-
--(void)initSearchControllerAndSegmentController
+-(void)initSegmentController
+{
+    //self.segmentedControl.sectionTitles = @[@"照 片 ",@"用 户 "];
+    
+    self.segmentedControl.backgroundColor = [UIColor whiteColor];
+    self.segmentedControl.titleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
+    self.segmentedControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE};
+    [self.segmentedControl setSelectionIndicatorColor:THEME_COLOR_DARK_BIT_PARENT];
+    self.segmentedControl.selectionIndicatorHeight = 2.50f;
+    self.segmentedControl.selectionStyle = HMSegmentedControlSelectionStyleTextWidthStripe;
+    self.segmentedControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationDown;
+}
+-(void)initSearchController
 {
     
-    _segmentControl.sectionTitles = @[@"照 片 ",@"地 点 ",@"用 户 "];
- 
-    _segmentControl.backgroundColor = [UIColor whiteColor];
-    _segmentControl.titleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
-    _segmentControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE};
-    [_segmentControl setSelectionIndicatorColor:THEME_COLOR_DARK_BIT_PARENT];
-    _segmentControl.selectionIndicatorHeight = 2.50f;
-    
-    _segmentControl.selectionStyle = HMSegmentedControlSelectionStyleTextWidthStripe;
-    _segmentControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationDown;
-    [_segmentControl addTarget:self action:@selector(segmentValueChanged) forControlEvents:UIControlEventValueChanged];
-
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Search" bundle:nil];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Search" bundle:nil];
     _searchResultTableView = [storyboard instantiateViewControllerWithIdentifier:@"SearchResult"];
     
     _searchController = [[UISearchController alloc]initWithSearchResultsController:_searchResultTableView];
@@ -135,48 +143,22 @@
     
     self.searchController.dimsBackgroundDuringPresentation = NO;
     self.searchController.searchBar.delegate = self;
-     
+    
     self.searchButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchResultView)];
     
     //[self.navigationItem setTitle:@"发现"];
     //self.tabBarController.navigationItem.title = @"发现";
-    self.tabBarController.navigationItem.rightBarButtonItem = self.searchButton;
+    self.navigationItem.rightBarButtonItem = self.searchButton;
     
-    _segmentControl.selectedSegmentIndex = 0;
+
     
 }
+
 -(void)showSearchResultView
 {
     SearchResultTableViewController2 *searchResult = [[SearchResultTableViewController2 alloc]init];
     [self pushToViewController:searchResult animated:YES hideBottomBar:YES];
 }
-
-
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"embedContainer"])
-    {
-        self.containerViewController = segue.destinationViewController;
-        self.containerViewController.delegate = self;
-        self.containerViewController.ChildrenName = @[SEGUEFIRST,SEGUESECOND,SEGUETHIRD];
-        self.containerViewController.isInteractive = YES;
-    }
-}
-
-
--(CommonContainerViewController *)containerViewController
-{
-    if (!_containerViewController)
-    {
-        _containerViewController = [[CommonContainerViewController alloc]initWithChildren:@[SEGUEFIRST,SEGUESECOND,SEGUETHIRD]];
-        
-    }
-    return _containerViewController;
-}
-
-
-
-#pragma mark- searchbar delegate
 
 #pragma mark -------UISearchResultsUpdating----------------
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
@@ -186,110 +168,60 @@
     [self.searchResultTableView.searchUserListTableView reloadData];
 }
 
-#pragma mark - commonContainerViewController delegate
 
--(void)beginLoadChildController:(UIViewController *)childController
+
+#pragma mark - pagerViewController delegate
+-(NSArray *)childViewControllersForPagerViewController:(PagerViewController *)pagerViewController
 {
-    if ([childController isKindOfClass: [PhotosCollectionViewController class]])
+    UIStoryboard *searchStoryboard = [UIStoryboard storyboardWithName:@"Search" bundle:nil];
+    self.suggestPhotosViewController = [searchStoryboard instantiateViewControllerWithIdentifier:@"SuggestPhotos"];
+    self.suggestAddressViewController = [searchStoryboard instantiateViewControllerWithIdentifier:@"SuggestAddress"];
+    UIStoryboard *userStoryboard = [UIStoryboard storyboardWithName:@"UserList" bundle:nil];
+    self.suggestUserListViewConstroller = [userStoryboard instantiateViewControllerWithIdentifier:@"userListTableView"];
+    self.suggestUserListViewConstroller.userListStyle = UserListStyle3;
+    WEAKSELF_WZ
+    self.suggestUserListViewConstroller.getLatestDataBlock = ^()
     {
-        self.suggestPhotoCollectionViewController = (PhotosCollectionViewController *)childController;
-       // [self.containerViewController.interactiveTransitionGestureRecognizer requireGestureRecognizerToFail:self.suggestPhotoCollectionViewController.collectionView.panGestureRecognizer];
-        //[self.suggestPhotoCollectionViewController.collectionView.panGestureRecognizer requireGestureRecognizerToFail:self.containerViewController.interactiveTransitionGestureRecognizer];
-        self.suggestPhotoCollectionViewController.dataSource = self;
-        [self.suggestPhotoCollectionViewController.collectionView setBackgroundColor:[UIColor whiteColor]];
-        if (!self.suggestPhotoData)
-        {
-            [self setSuggestPhotoCollectionData];
-        }
-        else
-        {
-            [self.suggestPhotoCollectionViewController setDatasource:self.suggestPhotoData];
-            [self.suggestPhotoCollectionViewController loadData];
-        }
+        __strong typeof (weakSelf_WZ) strongSelf = weakSelf_WZ;
+        strongSelf.suggestUserListViewConstroller.shouldRefreshData = NO;
+        [[QDYHTTPClient sharedInstance]exploreUserWhenComplete:^(NSDictionary *returnData) {
+            strongSelf.suggestUserListViewConstroller.shouldRefreshData = YES;
+            if ([returnData objectForKey:@"data"])
+            {
+                strongSelf.suggestUserListData = [[returnData objectForKey:@"data"]mutableCopy];
+                [strongSelf.suggestUserListViewConstroller setDatasource:strongSelf.suggestUserListData];
+                [strongSelf.suggestUserListViewConstroller loadData];
+                
+            }
+            else if ([returnData objectForKey:@"error"])
+            {
+                [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+            }
+        }];
         
-    }
-    else if ([childController isKindOfClass:[AddressSuggestViewController class]])
-    {
-        self.suggestAddressViewController = (AddressSuggestViewController *)childController;
-        //[self.containerViewController.interactiveTransitionGestureRecognizer requireGestureRecognizerToFail:self.suggestAddressViewController.tableView.panGestureRecognizer];
-        //[self.suggestAddressViewController.tableView.panGestureRecognizer requireGestureRecognizerToFail:self.containerViewController.interactiveTransitionGestureRecognizer];
-        self.suggestAddressViewController.dataSource = self;
-        if (!self.suggestAddressData)
-        {
-            [self setSuggestAddressListData];
-        }
-        else
-        {
-            
-            self.suggestAddressViewController.datasource = self.suggestAddressData;
-            [self.suggestAddressViewController loadData];
-        }
-        
-    }
-    else if( [childController isKindOfClass:[UserListTableViewController class]])
-    {
-        self.suggestUserListViewConstroller = (UserListTableViewController *)childController;
-        // [self.suggestUserListViewConstroller.tableView.panGestureRecognizer requireGestureRecognizerToFail:self.containerViewController.interactiveTransitionGestureRecognizer];
-        //[self.containerViewController.interactiveTransitionGestureRecognizer requireGestureRecognizerToFail:self.suggestUserListViewConstroller.tableView.panGestureRecognizer];
-        self.suggestUserListViewConstroller.dataSource = self;
-        [self.suggestUserListViewConstroller setUserListStyle:UserListStyle3];
-        if (!self.suggestUserListData)
-        {
-            [self setSuggestUserListData];
-        }
-        else
-        {
-            [self.suggestUserListViewConstroller setDatasource:self.suggestUserListData];
-            [self.suggestUserListViewConstroller loadData];
-        }
-    }
+    };
+    
+    return @[self.suggestPhotosViewController,self.suggestUserListViewConstroller];
 }
 
--(void)finishLoadChildController:(UIViewController *)childController
-{
-    [self.segmentControl setUserInteractionEnabled:YES];
-    if ([childController isKindOfClass: [PhotosCollectionViewController class]])
-    {
-        [self.segmentControl setSelectedSegmentIndex:0 animated:YES];
-    }
-    else if ([childController isKindOfClass:[AddressSuggestViewController class]])
-    {
-        [self.segmentControl setSelectedSegmentIndex:1 animated:YES];
-    }
-    else if( [childController isKindOfClass:[UserListTableViewController class]])
-    {
-        [self.segmentControl setSelectedSegmentIndex:2 animated:YES];
-    }
-   
-}
+/*
+#pragma mark - Navigation
 
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+#pragma mark - control the model
 -(void)setSuggestPhotoCollectionData
 {
-    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [[QDYHTTPClient sharedInstance]explorephotoWithUserId:userId whenComplete:^(NSDictionary *returnData) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if ([returnData objectForKey:@"data"])
-                {
-                    self.suggestPhotoData = [[returnData objectForKey:@"data"]mutableCopy];
-                    [self.suggestPhotoCollectionViewController setDatasource:self.suggestPhotoData];
-                    [self.suggestPhotoCollectionViewController loadData];
-                    
-                }
-                else if ([returnData objectForKey:@"error"])
-                {
-                    [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-                }
-            });
-
-        }];
-    });
-
-
+    [self.suggestPhotosViewController getLatestData];
 }
+/*
 -(void)setSuggestAddressListData
 {
-   // self.suggestAddressData = [[SuggestAddress newDatas]mutableCopy];
+    // self.suggestAddressData = [[SuggestAddress newDatas]mutableCopy];
     [[QDYHTTPClient sharedInstance]explorePlaceWhenComplete:^(NSDictionary *returnData) {
         if ([returnData objectForKey:@"data"])
         {
@@ -303,87 +235,61 @@
             [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
         }
     }];
-}
+}*/
 -(void)setSuggestUserListData
 {
     //self.suggestUserListData = [[User userList]mutableCopy];
-    [[QDYHTTPClient sharedInstance]exploreUserWhenComplete:^(NSDictionary *returnData) {
-        if ([returnData objectForKey:@"data"])
-        {
-            self.suggestUserListData = [[returnData objectForKey:@"data"]mutableCopy];
-            [self.suggestUserListViewConstroller setDatasource:self.suggestUserListData];
-            [self.suggestUserListViewConstroller loadData];
-            
-        }
-        else if ([returnData objectForKey:@"error"])
-        {
-            [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-        }
-    }];
-
+    
+    [self.suggestUserListViewConstroller getLatestDataAnimated];
+    
 }
+
 -(void)getLatestData
 {
-    if ([self.containerViewController.currentViewController isKindOfClass:[PhotosCollectionViewController class]])
+    if (self.currentIndex == ChildViewIndexPhotos)
     {
         [self setSuggestPhotoCollectionData];
     }
-    else if ([self.containerViewController.currentViewController isKindOfClass:[AddressSuggestViewController class]])
+    /*
+    else if (self.currentIndex == ChildViewIndexAddress)
     {
         [self setSuggestAddressListData];
-    }
-    else if ([self.containerViewController.currentViewController isKindOfClass:[UserListTableViewController class]])
+        
+    }*/
+    else if (self.currentIndex == ChildViewIndexUsers)
     {
         [self setSuggestUserListData];
     }
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+-(void)loadChildViewData
+{
+    if (self.currentIndex == ChildViewIndexPhotos)
+    {
+  
+    }
+    /*
+    else if (self.currentIndex == ChildViewIndexAddress)
+    {
+        if (self.suggestAddressData.count <=0 || !self.suggestAddressData)
+        {
+            [self setSuggestAddressListData];
+        }
+    }*/
+    else if (self.currentIndex == ChildViewIndexUsers)
+    {
+        if (self.suggestUserListData.count <=0 || !self.suggestUserListData)
+        {
+            [self setSuggestUserListData];
+        }
+    }
 }
-*/
 #pragma mark - userlist delegate
 -(void )updateUserListDatasource:(UserListTableViewController *)userList
 {
     [self setSuggestUserListData];
 }
-#pragma mark - address suggest delegate
--(void)updateAddressDatasource:(AddressSuggestViewController *)addressList
-{
-    [self setSuggestAddressListData];
-}
-#pragma mark - photoCollection delegate
--(void)updatePhotoCollectionDatasource:(PhotosCollectionViewController *)collectionView
-{
-    [self setSuggestPhotoCollectionData];
-}
 
-
-#pragma mark -HMSegment action
-- (void)segmentValueChanged
-{
-    [self.segmentControl setUserInteractionEnabled:NO];
-    NSString *swapIdentifier ;
-    switch (self.segmentControl.selectedSegmentIndex) {
-        case 0:
-            swapIdentifier = SEGUEFIRST;
-            break;
-        case 1:
-            swapIdentifier = SEGUESECOND;
-            break;
-        case 2:
-            swapIdentifier = SEGUETHIRD;
-            break;
-        default:
-            swapIdentifier = SEGUEFIRST;
-            break;
-    }
-    [self.containerViewController swapViewControllersWithIdentifier:swapIdentifier];
-}
+#pragma mark - search with type
 
 -(void)searchWithType:(NSString *)searchType keyWord:(NSString *)keyword
 {

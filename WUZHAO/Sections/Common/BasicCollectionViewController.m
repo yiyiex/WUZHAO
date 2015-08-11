@@ -135,6 +135,13 @@
     [self endRefreshing];
 }
 
+-(void)getLatestDataAnimated
+{
+    [self.collectionView setContentOffset:CGPointMake(0, -80) animated:YES];
+    [self.refreshControl beginRefreshing];
+    [self getLatestData];
+}
+
 
 #pragma mark - scrollview delegate
 

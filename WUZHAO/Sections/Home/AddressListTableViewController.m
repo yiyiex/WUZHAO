@@ -43,6 +43,14 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    if (self.datasource.count == 0 || !self.datasource)
+    {
+        [self getLatestData];
+    }
+}
+
 -(void)loadData
 {
     [self.tableView reloadData];
@@ -131,6 +139,7 @@
     return cell;
 }
 #pragma mark - control the model
+
 -(void)getLatestData
 {
     if (self.shouldRefreshData == NO)

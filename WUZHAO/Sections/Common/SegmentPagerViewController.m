@@ -96,10 +96,6 @@
         }
         
     }];
-    if (segmentTitle.count == 0)
-    {
-        segmentTitle = @[@"test1",@"test2"];
-    }
     self.segmentedControl.sectionTitles = segmentTitle;
     self.segmentedControl.sectionImages = segmentImage;
     [self.segmentedControl setSelectedSegmentIndex:self.currentIndex animated:YES];

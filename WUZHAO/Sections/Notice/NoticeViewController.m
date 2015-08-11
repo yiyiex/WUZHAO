@@ -141,15 +141,15 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
     NSLog(@"%f",self.systemNoticeViewController.view.bounds.size.height);
     if (self.currentIndex == ChildViewIndexSystemNotice)
     {
-        [self.systemNoticeViewController getLatestData];
+        [self.systemNoticeViewController getLatestDataAnimated];
     }
     else if (self.currentIndex == ChildViewIndexPrivateLetter)
     {
-        [self.privateLetterViewController getLatestData];
+        [self.privateLetterViewController getLatestDataAnimated];
     }
     else if (self.currentIndex == ChildViewIndexPlaceNotice)
     {
-        [self.placeNoticeViewController getLatestData];
+        [self.placeNoticeViewController getLatestDataAnimated];
     }
     
 }
@@ -159,7 +159,7 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
     NSDictionary *userInfo = notification.userInfo;
     if ([[userInfo objectForKey:@"type"] isEqualToString:@"message"] )
     {
-        [self.privateLetterViewController getLatestData];
+        [self.privateLetterViewController getLatestDataAnimated];
     }
 }
 

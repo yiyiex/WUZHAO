@@ -43,11 +43,13 @@
     [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsUser.avatarImageURLString]];
     [self.feedsImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsPhoto.imageUrlString]];
     
-    NSString *content =  feeds.content;
+    NSString *content = [NSString stringWithFormat:@"%@  %@",feeds.content,feeds.time];
    
     NSMutableAttributedString *attributeContent = [[NSMutableAttributedString alloc]initWithString:content];
      NSRange wholeRange = NSMakeRange(0, [attributeContent length]);
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE} range:wholeRange];
+    NSRange timeRange = [content rangeOfString:feeds.time];
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE} range:timeRange];
     if (feeds.feedsPOI.name && ![feeds.feedsPOI.name isEqualToString:@""])
     {
         self.contentTextView.attributedText = attributeContent;

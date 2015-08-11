@@ -8,6 +8,7 @@
 
 #import "QDYHTTPClient.h"
 #import "ApplicationUtility.h"
+#import "Subject.h"
 
 #define KAPIHOST @"http://placeapp.cn/"
 //#define KAPIHOST @"http://192.168.0.104/"
@@ -1231,6 +1232,7 @@
         whenComplete(returnData);
     }];
 }
+
 #pragma mark- search with type [poi,user]
 -(void)searchWithType:(NSString *)type keyword:(NSString *)keyword whenComplete:(void (^)(NSDictionary *))whenComplete
 {
@@ -1386,6 +1388,74 @@
         else if (error)
         {
             [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
+-(void)getSubjectListBannerWhenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/subjectlist?from=banner";
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([result objectForKey:@"success"])
+            {
+                NSDictionary *data = [result objectForKey:@"data"];
+                NSArray *subjectList = [data objectForKey:@"subjectList"];
+                NSMutableArray *returnSubjectList = [[NSMutableArray alloc]init];
+                [subjectList enumerateObjectsUsingBlock:^(NSDictionary * obj, NSUInteger idx, BOOL *stop) {
+                    Subject *subject = [[Subject alloc]initWithDictionary:obj];
+                    [returnSubjectList addObject:subject];
+                }];
+                [returnData setObject:returnSubjectList forKey:@"data"];
+                
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"网络请求失败" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
+-(void)getSubjectDetailWithSubjectId:(NSInteger)subjectId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/subjectdetail";
+    NSDictionary *param = @{@"subjectid":[NSNumber numberWithInteger:subjectId]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([result objectForKey:@"success"])
+            {
+                NSDictionary *data = [result objectForKey:@"data"];
+                Subject *subject = [[Subject alloc]initWithDictionary:[data objectForKey:@"subject"]];
+                [returnData setObject:subject forKey:@"data"];
+                
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"网络请求失败" forKey:@"error"];
         }
         whenComplete(returnData);
     }];

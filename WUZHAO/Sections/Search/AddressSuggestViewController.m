@@ -149,5 +149,11 @@
     [self pushToViewController:personalViewCon animated:YES hideBottomBar:YES];
 }
 
+#pragma mark - pageViewControllerItem delegate
+-(NSString *)titleForPagerViewController:(PagerViewController *)pagerViewController
+{
+    return @"地点";
+}
+
 
 @end

@@ -45,7 +45,7 @@
     [self setupView];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
     self.shouldRefreshData = YES;
-    [self getLatestData];
+    [self getLatestDataAnimated];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -66,15 +66,15 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
         return;
     if (self.currentIndex == ChildViewIndexSuggest)
     {
-        [self.suggestTableViewController getLatestData];
+        [self.suggestTableViewController getLatestDataAnimated];
     }
     else if (self.currentIndex == ChildViewIndexHome)
     {
-        [self.homeTableViewController getLatestData];
+        [self.homeTableViewController getLatestDataAnimated];
     }
     else if (self.currentIndex == ChildViewAddress)
     {
-        [self.addressListController getLatestData];
+        [self.addressListController getLatestDataAnimated];
     }
 }
 

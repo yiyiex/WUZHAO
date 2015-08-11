@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PagerViewController.h"
+#import "BasicTableViewController.h"
 @protocol UserListViewControllerDataSource;
 
-@interface UserListTableViewController : UITableViewController
+@interface UserListTableViewController : BasicTableViewController <PagerViewControllerItem>
 @property (nonatomic,strong) NSString *userListStyle;
-@property (nonatomic,strong) NSArray *datasource;
 @property (nonatomic, weak ) id<UserListViewControllerDataSource>dataSource;
 
 -(void)loadData;

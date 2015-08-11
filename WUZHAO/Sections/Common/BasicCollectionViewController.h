@@ -22,6 +22,7 @@
 
 -(void)setupRefreshControl;
 -(void)getLatestData;
+-(void)getLatestDataAnimated;
 
 -(void)loadData;
 -(void)endRefreshing;

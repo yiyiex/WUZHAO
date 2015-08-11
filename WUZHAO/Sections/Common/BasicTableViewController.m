@@ -168,7 +168,7 @@
 -(void)loadData
 {
     [self.tableView reloadData];
-    [self.tableView setContentOffset:CGPointMake(0, 0)];
+    [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
     [self endRefreshing];
 }
 
@@ -176,12 +176,18 @@
 {
     if (self.refreshControl.isRefreshing)
     {
-        double delayInseconds = 0.2;
+        double delayInseconds = 1.0;
         dispatch_time_t popTime =  dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInseconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^{
             [self.refreshControl endRefreshing];
         });
     }
+}
+-(void)getLatestDataAnimated
+{
+    [self.tableView setContentOffset:CGPointMake(0, -80) animated:YES];
+    [self.refreshControl beginRefreshing];
+    [self getLatestData];
 }
 
 #pragma mark - scrollview delegate

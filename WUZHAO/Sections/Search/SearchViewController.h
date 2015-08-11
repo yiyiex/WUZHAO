@@ -2,21 +2,14 @@
 //  SearchViewController.h
 //  WUZHAO
 //
-//  Created by yiyi on 14-12-15.
-//  Copyright (c) 2014年 yiyi. All rights reserved.
+//  Created by yiyi on 15/8/9.
+//  Copyright (c) 2015年 yiyi. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import "HMSegmentedControl.h"
+#import "SegmentPagerViewController.h"
 
-
-
-@interface SearchViewController : UIViewController 
-@property (nonatomic,strong) IBOutlet HMSegmentedControl *segmentControl;
-
-
-
-- (void)segmentValueChanged;
+@interface SearchViewController : SegmentPagerViewController
 
 -(void)getLatestData;
+
 @end

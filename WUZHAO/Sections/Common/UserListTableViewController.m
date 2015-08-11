@@ -39,13 +39,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //self.userListStyle = UserListStyle3;
-    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.navigationItem.backBarButtonItem = backBarItem;
-    
     //refresh control
-    self.refreshControl = [[UIRefreshControl alloc]init];
-    [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
+    [self setupRefreshControl];
     if ([self.userListStyle isEqual: UserListStyle3])
     {
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -54,11 +49,20 @@
     {
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     }
+    [self getLatestDataAnimated];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if (self.datasource.count <=0)
+    {
+        [self getLatestDataAnimated];
+    }
 }
 
 - (UserListTableViewCell *)prototypeCell
@@ -135,23 +139,17 @@
     UITapGestureRecognizer *avatarClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(avatarClick:)];
     [cell.avatorImageView addGestureRecognizer:avatarClick];
     [cell.avatorImageView setUserInteractionEnabled:YES];
-
-    
     return cell;
     
 }
-
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self gotoPersonalPageWithUserInfo:self.datasource[indexPath.row]];
-}
-
 
 #pragma mark - gesture and action
 -(void)avatarClick:(UITapGestureRecognizer *)gesture
 {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:(UserListTableViewCell *)[[gesture.view superview]superview]];
-    [self gotoPersonalPageWithUserInfo:[self.datasource[indexPath.row]mutableCopy]];
+    User *user = [self.datasource[indexPath.row]mutableCopy];
+    user.photoList = nil;
+    [self goToPersonalPageWithUserInfo:user];
      
 }
 -(void)photoClick:(UITapGestureRecognizer *)gesture
@@ -167,35 +165,39 @@
 {
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
-    if ([self.refreshControl isRefreshing])
-    {
-        [self.refreshControl endRefreshing];
-    }
+    [self endRefreshing];
         
 }
 
 -(void)refreshByPullingTable:(id)sender
 {
-     if ([self.dataSource respondsToSelector:@selector(updateUserListDatasource:)])
-     {
+    if ([self.dataSource respondsToSelector:@selector(updateUserListDatasource:)])
+    {
          [self.dataSource updateUserListDatasource:self];
-     }
+    }
+    else if (self.getLatestDataBlock)
+    {
+        self.getLatestDataBlock();
+    }
     else
     {
-        if ([self.refreshControl isRefreshing])
-        {
-            [self.refreshControl endRefreshing];
-        }
+        [self endRefreshing];
     }
 }
-
--(void)gotoPersonalPageWithUserInfo:(User *)user
+-(void)getLatestData
 {
-    user.photoList = nil;
-    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
-    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
-    [personalViewCon setUserInfo:user];
-    [self pushToViewController:personalViewCon animated:YES hideBottomBar:YES];
+    if ([self.dataSource respondsToSelector:@selector(updateUserListDatasource:)])
+    {
+        [self.dataSource updateUserListDatasource:self];
+    }
+    else if (self.getLatestDataBlock)
+    {
+        self.getLatestDataBlock();
+    }
+    else
+    {
+        [self endRefreshing];
+    }
 }
 
 -(void)gotoPhotoDetailPageWithPhotoInfo:(WhatsGoingOn *)item
@@ -206,6 +208,12 @@
     [detailPhotoController setTableStyle:WZ_TABLEVIEWSTYLE_DETAIL];
     [detailPhotoController getLatestData];
     [self pushToViewController:detailPhotoController animated:YES hideBottomBar:YES];
+}
+
+#pragma mark - pageViewControllerItem delegate
+-(NSString *)titleForPagerViewController:(PagerViewController *)pagerViewController
+{
+    return @"用户";
 }
 
 

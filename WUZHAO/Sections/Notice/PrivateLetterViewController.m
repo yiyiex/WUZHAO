@@ -36,7 +36,7 @@
     [self setupRefreshControl];
     [self setBackItem];
     self.shouldRefreshData = YES;
-    [self getLatestData];
+    [self getLatestDataAnimated];
     // Do any additional setup after loading the view.
 }
 

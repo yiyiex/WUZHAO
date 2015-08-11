@@ -60,6 +60,7 @@
 @property (strong, nonatomic) UIButton *mineButton;
 @property (strong, nonatomic) UIButton *sendMessageButton;
 
+@property (nonatomic, strong) UIView *backGroundView;
 @property (strong, nonatomic) UILabel *followsNumLabel;
 @property (strong, nonatomic) UILabel *followsLabel;
 @property (strong, nonatomic) UILabel *followersNumLabel;
@@ -230,7 +231,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     if (!_aiv)
     {
         _aiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        [self.view addSubview:_aiv];
+        [self.scrollView addSubview:_aiv];
     }
     return _aiv;
 }
@@ -397,9 +398,9 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.scrollView addSubview:self.followersNumLabel];
     
     //init tabbar
-    UIView *backGroundView = [[UIView alloc]initWithFrame:CGRectMake(0, TOPCOVERHEIGHT - 44, WZ_APP_SIZE.width, 44)];
-    [backGroundView setBackgroundColor:THEME_COLOR_DARK_GREY_MORE_PARENT];
-    [self.scrollView addSubview:backGroundView];
+    self.backGroundView = [[UIView alloc]initWithFrame:CGRectMake(0, TOPCOVERHEIGHT - 44, WZ_APP_SIZE.width, 44)];
+    [self.backGroundView setBackgroundColor:THEME_COLOR_DARK_GREY_MORE_PARENT];
+    [self.scrollView addSubview:self.backGroundView];
     
     float tabbarLabelWidth = WZ_APP_SIZE.width/3;
     self.myPhotosNumLabel = [[UILabel alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width/3 - tabbarLabelWidth)/2, TOPCOVERHEIGHT - (labelHeight-2)*2 , tabbarLabelWidth, labelHeight)];
@@ -498,7 +499,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         _userInfo.UserID = [[NSUserDefaults standardUserDefaults] integerForKey:@"userId"];
         _userInfo.UserName = [[NSUserDefaults standardUserDefaults] objectForKey:@"userName"];
     }
-    [self.aiv setCenter:CGPointMake(self.myPhotosLabel.center.x,  self.myPhotosLabel.center.y+10)];
+    [self.aiv setCenter:CGPointMake(self.myPhotosLabel.center.x,  self.myPhotosLabel.center.y-10)];
     [self.myPhotosLabel setHidden:YES];
     [self.myPhotosNumLabel setHidden:YES];
     [self.aiv startAnimating];
@@ -1109,7 +1110,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     //根据个人信息，获取更多信息
     if (!_myAddressListDatasource)
     {
-        [self.aiv setCenter:CGPointMake(self.myAddressLabel.center.x, self.myAddressLabel.center.y+10)];
+        [self.aiv setCenter:CGPointMake(self.myAddressLabel.center.x, self.myAddressLabel.center.y-10)];
         [self.myAddressNumLabel setHidden:YES];
         [self.myAddressLabel setHidden:YES];
         [self.aiv startAnimating];
@@ -1192,6 +1193,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     self.userInfo = nil;
     self.myPhotosCollectionDatasource = nil;
     self.myAddressListDatasource = nil;
+    
     [self.myPhotoCollectionViewController loadData];
 }
 -(void)updateUserInfo
@@ -1266,7 +1268,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                 controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
             }
             controller.mediaTypes = mediaTypes;
-            controller.delegate = self;
+            controller.delegate = (id<UIImagePickerControllerDelegate>)self;
             [self presentViewController:controller animated:YES completion:^{
                 NSLog(@"camera view controller is presented");
             }];
@@ -1280,7 +1282,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
             UIImagePickerController *controller = [[UIImagePickerController alloc]init];
             controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
             controller.mediaTypes = mediaTypes;
-            controller.delegate = self;
+            controller.delegate = (id<UIImagePickerControllerDelegate>)self;
             [self presentViewController:controller animated:YES completion:^{
                 NSLog(@"picker view controller  is presented");
             }];
@@ -1291,7 +1293,6 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"backGroundPath"];
         self.coverImage = [UIImage imageNamed:@"cover.png"];
-        
         [self.scrollView setContentOffset:CGPointMake(0, -20) animated:YES];
         [[QDYHTTPClient sharedInstance]PostBackGroundImageWithUserId:userId backgroundName:@"" whenComplete:^(NSDictionary *returnData)
          {
@@ -1320,7 +1321,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     [picker dismissViewControllerAnimated:YES completion:^{
-        [self.aiv setCenter:CGPointMake(WZ_APP_SIZE.width - 20 , CHBlurCoverViewHeight - 50)];
+        [self.aiv setCenter:CGPointMake(WZ_APP_SIZE.width - 20 , CHBlurCoverViewHeight - 60)];
         [self.aiv startAnimating];
         UIImage *backGroundImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
         self.coverImage = [UIImage imageWithCGImage:[backGroundImage CGImage] scale:0.6f orientation:UIImageOrientationUp];

@@ -104,13 +104,16 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         self.shouldLoadMore = YES;
     }
     self.shouldRefreshData = YES;
-    [self getLatestData];
+    [self getLatestDataAnimated];
 
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beginUploadPhotos:) name:@"beginUploadPhotos" object:Nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(finishiIndicator:) name:@"uploadPhotoSuccess" object:nil];
-     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(errorIndicator:) name:@"uploadPhotoFail" object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideIndicator) name:@"uploadAllPhotosSuccess" object:nil];
+    if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
+    {
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beginUploadPhotos:) name:@"beginUploadPhotos" object:Nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(finishiIndicator:) name:@"uploadPhotoSuccess" object:nil];
+         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(errorIndicator:) name:@"uploadPhotoFail" object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideIndicator) name:@"uploadAllPhotosSuccess" object:nil];
+    }
 
 }
 
@@ -131,7 +134,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     }
     if (self.datasource == nil)
     {
-        [self getLatestData];
+        [self getLatestDataAnimated];
     }
 }
 
@@ -249,11 +252,11 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     [self.tableView reloadData];
     if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME || self.tableStyle == WZ_TABLEVIEWSTYLE_SUGGEST)
     {
-        [self.tableView setContentOffset:CGPointMake(0, 0)];
+        [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
     }
     else if (self.tableStyle == WZ_TABLEVIEWSTYLE_DETAIL)
     {
-        [self.tableView setContentOffset:CGPointMake(0, -64)];
+        [self.tableView setContentOffset:CGPointMake(0, -64) animated:YES];
     }
     
 }
@@ -821,8 +824,9 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 
 -(void)getLatestData
 {
-    if(self.currentUser.UserID <=0)
+    if([[NSUserDefaults standardUserDefaults]integerForKey:@"userId"]<=0)
     {
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"logOut" object:nil];
         return;
     }
     //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
@@ -831,10 +835,11 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         return;
     }
     self.shouldRefreshData = false;
+    /*
     if (![self.refreshControl isRefreshing])
     {
         [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
-    }
+    }*/
     if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
     {
         self.recommandDatasource = nil;

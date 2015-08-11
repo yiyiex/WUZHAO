@@ -29,7 +29,7 @@
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
     
-    [self getLatestData];
+    [self getLatestDataAnimated];
     
 }
 
