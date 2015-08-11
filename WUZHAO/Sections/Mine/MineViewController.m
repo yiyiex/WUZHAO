@@ -90,6 +90,9 @@
 
 @property (nonatomic, strong) AddressMarkViewController *addressMarkViewController;
 
+@property (nonatomic, strong) UserListTableViewController *followsList;
+@property (nonatomic, strong) UserListTableViewController *followersList;
+
 @property (nonatomic,strong) UIRefreshControl *refreshControl;
 
 @property (nonatomic,strong) UILabel *footLabel;
@@ -576,39 +579,42 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 {
     UIStoryboard *userListStoryBoard = [UIStoryboard storyboardWithName:@"UserList" bundle:nil];
     UserListTableViewController *followsList = [userListStoryBoard instantiateViewControllerWithIdentifier:@"userListTableView"];
-    
+    self.followsList = followsList;
+    [self.followsList setUserListStyle:UserListStyle2];
     NSInteger userId = self.userInfo.UserID;
     NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    if (userId == myUserId)
+    {
+        [followsList setTitle:@"我关注的"];
+    }
+    else
+    {
+        [followsList setTitle:[NSString stringWithFormat:@"%@关注的",self.userInfo.UserName]];
+    }
+    WEAKSELF_WZ
+    followsList.getLatestDataBlock = ^{
+        __strong typeof (weakSelf_WZ) strongSelf = weakSelf_WZ;
+        if (!strongSelf.followsList.shouldRefreshData)
+            return ;
+        strongSelf.followsList.shouldRefreshData = NO;
         [[QDYHTTPClient sharedInstance]GetPersonalFollowsListWithUserId:userId currentUserId:myUserId whenComplete:^(NSDictionary *returnData) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if ([returnData objectForKey:@"data"])
-                {
-
-                    [followsList setUserListStyle:UserListStyle2];
-                    [followsList setDatasource:[returnData objectForKey:@"data"]];
-                    [followsList.tableView reloadData];
-                    if (userId == myUserId)
-                    {
-                        [followsList setTitle:@"我关注的"];
-                    }
-                    else
-                    {
-                        [followsList setTitle:[NSString stringWithFormat:@"%@关注的",self.userInfo.UserName]];
-                    }
-                    
-                }
-                else if ([returnData objectForKey:@"error"])
-                {
-                    [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-                    
-                }
-            });
+            strongSelf.followsList.shouldRefreshData = YES;
+            if ([returnData objectForKey:@"data"])
+            {
+                [strongSelf.followsList setDatasource:[returnData objectForKey:@"data"]];
+                [strongSelf.followsList.tableView reloadData];
+                
+            }
+            else if ([returnData objectForKey:@"error"])
+            {
+                [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                
+            }
+            [strongSelf.followsList endRefreshing];
 
         }];
-    });
-
-    [self pushToViewController:followsList animated:YES hideBottomBar:YES];
+    };
+    [self pushToViewController:self.followsList animated:YES hideBottomBar:YES];
 
 
     
@@ -619,36 +625,42 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 {
     UIStoryboard *userListStoryBoard = [UIStoryboard storyboardWithName:@"UserList" bundle:nil];
     UserListTableViewController *followersList = [userListStoryBoard instantiateViewControllerWithIdentifier:@"userListTableView"];
+    self.followersList = followersList;
     [followersList setUserListStyle:UserListStyle2];
     NSInteger userId = self.userInfo.UserID;
     NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    if (userId == myUserId)
+    {
+        [followersList setTitle:@"关注我的"];
+    }
+    else
+    {
+        [followersList setTitle:[NSString stringWithFormat:@"关注%@的",self.userInfo.UserName]];
+    }
+    WEAKSELF_WZ
+    self.followersList.getLatestDataBlock = ^{
+        __strong typeof (weakSelf_WZ) strongSelf = weakSelf_WZ;
+        if (!strongSelf.followersList.shouldRefreshData)
+            return ;
+        strongSelf.followersList.shouldRefreshData = NO;
         [[QDYHTTPClient sharedInstance]GetPersonalFollowersListWithUserId:userId currentUserId:myUserId whenComplete:^(NSDictionary *returnData) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if ([returnData objectForKey:@"data"])
-                {
+            strongSelf.followersList.shouldRefreshData = YES;
+            if ([returnData objectForKey:@"data"])
+            {
 
-                    [followersList setDatasource:[returnData objectForKey:@"data"]];
-                    [followersList.tableView reloadData];
-                    if (userId == myUserId)
-                    {
-                        [followersList setTitle:@"关注我的"];
-                    }
-                    else
-                    {
-                        [followersList setTitle:[NSString stringWithFormat:@"关注%@的",self.userInfo.UserName]];
-                    }
-                   
-                }
-                else if ([returnData objectForKey:@"error"])
-                {
-                    [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-                    
-                }
-            });
+                [strongSelf.followersList setDatasource:[returnData objectForKey:@"data"]];
+                [strongSelf.followersList.tableView reloadData];
+               
+            }
+            else if ([returnData objectForKey:@"error"])
+            {
+                [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
+                
+            }
+            [strongSelf.followersList endRefreshing];
 
         }];
-    });
+    };
     [self pushToViewController:followersList animated:YES hideBottomBar:YES];
 
     

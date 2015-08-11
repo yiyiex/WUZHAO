@@ -1236,24 +1236,39 @@
 #pragma mark- search with type [poi,user]
 -(void)searchWithType:(NSString *)type keyword:(NSString *)keyword whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"api/search?type=%@&keyword=%@",type,keyword];
-    NSString *encodeApi = [api stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *api = @"api/search";
+    NSDictionary *param = @{@"type":type,@"keyword":keyword};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
-    [self ExecuteRequestWithMethod:@"GET" api:encodeApi parameters:nil complete:^(NSDictionary *result, NSError *error) {
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
         if (result)
         {
             if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                NSMutableArray *userList = [[NSMutableArray alloc]init];
+              
                 NSArray *data = [result objectForKey:@"data"];
                 if (data)
                 {
-                    for (NSDictionary *item in data)
+                    if ([[param objectForKey:@"type"] isEqualToString:@"user"])
                     {
-                        User *user = [[User alloc]initWithAttributes:item];
-                        [userList addObject:user];
+                        NSMutableArray *userList = [[NSMutableArray alloc]init];
+                        for (NSDictionary *item in data)
+                        {
+                            User *user = [[User alloc]initWithAttributes:item];
+                            [userList addObject:user];
+                        }
+                        [returnData setValue:userList forKey:@"data"];
                     }
-                    [returnData setValue:userList forKey:@"data"];
+                    else if ([[param objectForKey:@"type"] isEqualToString:@"poi"])
+                    {
+                          NSMutableArray *poiList = [[NSMutableArray alloc]init];
+                        for (NSDictionary *item in data)
+                        {
+                            POI *poi = [[POI alloc]initWithDictionary:item];
+                            [poiList addObject:poi];
+                        }
+                        [returnData setValue:poiList forKey:@"data"];
+                    }
+                    
                 }
             }
             else if ([result objectForKey:@"msg"])

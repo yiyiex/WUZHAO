@@ -12,7 +12,12 @@
 
 @implementation AddressTableViewCell
 
--(void)setAppearance
+-(void)awakeFromNib
+{
+    [self initViews];
+}
+
+-(void)initViews
 {
 
     [self.addressLabel setTextColor:[UIColor blackColor]];

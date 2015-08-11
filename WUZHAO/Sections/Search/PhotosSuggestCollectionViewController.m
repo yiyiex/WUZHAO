@@ -79,6 +79,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
     return CGSizeMake(WZ_APP_SIZE.width, 0);
+    /*
     if (self.subjectList.count <=0)
     {
         return CGSizeMake(WZ_APP_SIZE.width, 0);
@@ -86,7 +87,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     else
     {
         return CGSizeMake(WZ_APP_SIZE.width, bannerHeight);
-    }
+    }*/
 }
 
 

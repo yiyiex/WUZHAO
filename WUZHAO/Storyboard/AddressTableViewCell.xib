@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <objects>
@@ -13,28 +12,45 @@
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="AVZ-Gd-FtC" id="3c0-VZ-pAl">
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PkJ-pB-cDY" userLabel="textLabel">
-                        <rect key="frame" x="14" y="4" width="314" height="39"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="751" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PkJ-pB-cDY" userLabel="textLabel">
+                        <rect key="frame" x="25" y="6" width="303" height="33.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ynM-CL-DAU" userLabel="detailLabel">
-                        <rect key="frame" x="14" y="43" width="298" height="21"/>
+                        <rect key="frame" x="24" y="43" width="288" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="map-maker-22.png" translatesAutoresizingMaskIntoConstraints="NO" id="nHT-iQ-LKW">
+                        <rect key="frame" x="4" y="17" width="11" height="11"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="11" id="K9b-bT-XnY"/>
+                            <constraint firstAttribute="width" constant="11" id="elz-4c-TTV"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="PkJ-pB-cDY" firstAttribute="top" secondItem="nHT-iQ-LKW" secondAttribute="bottom" constant="-16" id="1HD-fN-6Kx"/>
+                    <constraint firstItem="nHT-iQ-LKW" firstAttribute="centerY" secondItem="PkJ-pB-cDY" secondAttribute="centerY" id="1bc-v2-wQi"/>
                     <constraint firstAttribute="trailing" secondItem="ynM-CL-DAU" secondAttribute="trailing" constant="8" id="7bH-IM-ksJ"/>
-                    <constraint firstItem="PkJ-pB-cDY" firstAttribute="leading" secondItem="3c0-VZ-pAl" secondAttribute="leading" constant="14" id="APn-3k-FlF"/>
+                    <constraint firstItem="PkJ-pB-cDY" firstAttribute="leading" secondItem="3c0-VZ-pAl" secondAttribute="leading" constant="24" id="APn-3k-FlF"/>
                     <constraint firstItem="PkJ-pB-cDY" firstAttribute="trailing" secondItem="3c0-VZ-pAl" secondAttribute="trailing" constant="8" id="Xpy-UR-6Yb"/>
-                    <constraint firstItem="PkJ-pB-cDY" firstAttribute="top" secondItem="3c0-VZ-pAl" secondAttribute="top" constant="4" id="doe-4N-zFH"/>
+                    <constraint firstItem="PkJ-pB-cDY" firstAttribute="top" secondItem="3c0-VZ-pAl" secondAttribute="top" constant="6" id="doe-4N-zFH"/>
                     <constraint firstAttribute="bottom" secondItem="ynM-CL-DAU" secondAttribute="bottom" constant="4" id="nee-IF-EfY"/>
                     <constraint firstItem="ynM-CL-DAU" firstAttribute="top" secondItem="PkJ-pB-cDY" secondAttribute="bottom" constant="4" id="uSi-Gh-OMU"/>
-                    <constraint firstItem="ynM-CL-DAU" firstAttribute="leading" secondItem="3c0-VZ-pAl" secondAttribute="leading" constant="14" id="ydv-yT-ezP"/>
+                    <constraint firstItem="nHT-iQ-LKW" firstAttribute="leading" secondItem="3c0-VZ-pAl" secondAttribute="leading" constant="10" id="v6G-ak-9ad"/>
+                    <constraint firstItem="PkJ-pB-cDY" firstAttribute="leading" secondItem="nHT-iQ-LKW" secondAttribute="trailing" constant="4" id="wsu-hV-lWn"/>
+                    <constraint firstItem="ynM-CL-DAU" firstAttribute="leading" secondItem="3c0-VZ-pAl" secondAttribute="leading" constant="24" id="ydv-yT-ezP"/>
                 </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="1HD-fN-6Kx"/>
+                        <exclude reference="APn-3k-FlF"/>
+                    </mask>
+                </variation>
             </tableViewCellContentView>
             <connections>
                 <outlet property="addressLabel" destination="PkJ-pB-cDY" id="ckQ-N5-Ga0"/>
@@ -43,4 +59,7 @@
             <point key="canvasLocation" x="416" y="313"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="map-maker-22.png" width="22" height="22"/>
+    </resources>
 </document>

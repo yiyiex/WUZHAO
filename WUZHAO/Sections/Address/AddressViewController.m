@@ -24,6 +24,8 @@
 #import "POISearchAPI.h"
 #import "macro.h"
 
+#import "FloatCaptureView.h"
+
 #define SEGUEFIRST @"photoCollectionViewSegue"
 #define SEGUESECOND @"sharedPeopleTableViewSegue"
 
@@ -50,6 +52,7 @@
     [self setBackItem];
     [self initMapView];
     [self initAnnocations];
+    
     //[self.containerViewController swapViewControllersWithIdentifier:SEGUEFIRST];
     // Do any additional setup after loading the view.
 }
@@ -61,11 +64,13 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [FloatCaptureView show];
     
 }
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    [FloatCaptureView dismiss];
    // [self clearMapView];
 }
 -(void)dealloc
@@ -286,20 +291,24 @@
 {
     if (self.addressMapView.frame.size.height == self.view.frame.size.height)
     {
+       
         [UIView animateWithDuration:0.3 animations:^{
             [self.addressMapView setFrame:CGRectMake(0, 64, WZ_APP_SIZE.width, 110)];
             [self.mapViewShowButton setFrame:CGRectMake(WZ_APP_SIZE.width - 28, 174, 28, 28)];
         } completion:^(BOOL finished) {
             [self.mapViewShowButton setHighlighted:NO];
+             [FloatCaptureView setHidden:NO];
         }];
     }
     else
     {
+        [FloatCaptureView setHidden:YES];
         [UIView animateWithDuration:0.3 animations:^{
             [self.addressMapView setFrame:CGRectMake(0, 64, WZ_APP_SIZE.width, self.view.frame.size.height)];
             [self.mapViewShowButton setFrame:CGRectMake(WZ_APP_SIZE.width - 28, self.view.frame.size.height - 28, 28, 28)];
         } completion:^(BOOL finished) {
             [self.mapViewShowButton setHighlighted:YES];
+            
         }];
     }
     

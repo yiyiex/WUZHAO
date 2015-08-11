@@ -11,5 +11,4 @@
 @interface AddressTableViewCell : UITableViewCell
 @property (nonatomic,strong) IBOutlet UILabel *addressLabel;
 @property (nonatomic,strong) IBOutlet UILabel *detailAddressLabel;
--(void)setAppearance;
 @end

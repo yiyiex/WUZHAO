@@ -8,6 +8,7 @@
 
 #import "SegmentPagerViewController.h"
 
+
 @interface SearchViewController : SegmentPagerViewController
 
 -(void)getLatestData;

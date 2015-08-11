@@ -212,12 +212,12 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="z8O-KN-rUP" secondAttribute="trailing" constant="-16" id="8kk-Sk-Ufr"/>
+                            <constraint firstAttribute="trailing" secondItem="z8O-KN-rUP" secondAttribute="trailing" id="8kk-Sk-Ufr"/>
                             <constraint firstItem="z8O-KN-rUP" firstAttribute="top" secondItem="Efl-4n-72S" secondAttribute="bottom" id="VKO-Wr-bgb"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Efl-4n-72S" secondAttribute="trailing" constant="-16" id="ZCK-4W-aLd"/>
                             <constraint firstItem="Efl-4n-72S" firstAttribute="leading" secondItem="QGl-QP-geB" secondAttribute="leadingMargin" constant="-16" id="aPu-Tb-USf"/>
-                            <constraint firstItem="4QX-Be-Gkj" firstAttribute="top" secondItem="z8O-KN-rUP" secondAttribute="bottom" id="eQ4-Qs-sXR"/>
-                            <constraint firstItem="z8O-KN-rUP" firstAttribute="leading" secondItem="QGl-QP-geB" secondAttribute="leadingMargin" constant="-16" id="gL6-qQ-NZs"/>
+                            <constraint firstItem="z8O-KN-rUP" firstAttribute="bottom" secondItem="4QX-Be-Gkj" secondAttribute="top" id="eQ4-Qs-sXR"/>
+                            <constraint firstItem="z8O-KN-rUP" firstAttribute="leading" secondItem="QGl-QP-geB" secondAttribute="leading" id="gL6-qQ-NZs"/>
                             <constraint firstItem="Efl-4n-72S" firstAttribute="top" secondItem="7mN-Wq-XrC" secondAttribute="bottom" id="jSJ-Gk-lwD"/>
                         </constraints>
                     </view>

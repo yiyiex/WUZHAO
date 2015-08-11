@@ -475,6 +475,11 @@
 		7DDF8FAC1B78D22A0069878E /* title_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DDF8FAA1B78D22A0069878E /* title_icon@2x.png */; };
 		7DDF8FAD1B78D22A0069878E /* title_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DDF8FAB1B78D22A0069878E /* title_icon@3x.png */; };
 		7DDF8FB01B78E3330069878E /* ScrollViewNotSimultaneously.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DDF8FAF1B78E3330069878E /* ScrollViewNotSimultaneously.m */; };
+		7DDF8FB31B79AEEA0069878E /* FloatCaptureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DDF8FB21B79AEEA0069878E /* FloatCaptureView.m */; };
+		7DDF8FB71B79E8F70069878E /* camera_float@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DDF8FB51B79E8F70069878E /* camera_float@2x.png */; };
+		7DDF8FB81B79E8F70069878E /* camera_float@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DDF8FB61B79E8F70069878E /* camera_float@3x.png */; };
+		7DDF8FBC1B7A37940069878E /* SearchAddressTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DDF8FBA1B7A37940069878E /* SearchAddressTableViewCell.m */; };
+		7DDF8FBD1B7A37940069878E /* SearchAddressTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DDF8FBB1B7A37940069878E /* SearchAddressTableViewCell.xib */; };
 		7DDFA98C1B049A4600F182FA /* ApplicationUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DDFA98B1B049A4600F182FA /* ApplicationUtility.m */; };
 		7DE067461A3F07AC008086BD /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE066B51A3F07AC008086BD /* AFHTTPRequestOperation.m */; };
 		7DE067471A3F07AC008086BD /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE066B71A3F07AC008086BD /* AFHTTPRequestOperationManager.m */; };
@@ -1239,6 +1244,13 @@
 		7DDF8FAB1B78D22A0069878E /* title_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "title_icon@3x.png"; sourceTree = "<group>"; };
 		7DDF8FAE1B78E3330069878E /* ScrollViewNotSimultaneously.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScrollViewNotSimultaneously.h; path = WUZHAO/Sections/Views/ScrollViewNotSimultaneously.h; sourceTree = "<group>"; };
 		7DDF8FAF1B78E3330069878E /* ScrollViewNotSimultaneously.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScrollViewNotSimultaneously.m; path = WUZHAO/Sections/Views/ScrollViewNotSimultaneously.m; sourceTree = "<group>"; };
+		7DDF8FB11B79AEEA0069878E /* FloatCaptureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FloatCaptureView.h; path = WUZHAO/Sections/Views/FloatCaptureView.h; sourceTree = "<group>"; };
+		7DDF8FB21B79AEEA0069878E /* FloatCaptureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FloatCaptureView.m; path = WUZHAO/Sections/Views/FloatCaptureView.m; sourceTree = "<group>"; };
+		7DDF8FB51B79E8F70069878E /* camera_float@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camera_float@2x.png"; sourceTree = "<group>"; };
+		7DDF8FB61B79E8F70069878E /* camera_float@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camera_float@3x.png"; sourceTree = "<group>"; };
+		7DDF8FB91B7A37940069878E /* SearchAddressTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchAddressTableViewCell.h; path = WUZHAO/Sections/Search/SearchAddressTableViewCell.h; sourceTree = "<group>"; };
+		7DDF8FBA1B7A37940069878E /* SearchAddressTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchAddressTableViewCell.m; path = WUZHAO/Sections/Search/SearchAddressTableViewCell.m; sourceTree = "<group>"; };
+		7DDF8FBB1B7A37940069878E /* SearchAddressTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchAddressTableViewCell.xib; path = WUZHAO/Sections/Search/SearchAddressTableViewCell.xib; sourceTree = "<group>"; };
 		7DDFA98A1B049A4600F182FA /* ApplicationUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ApplicationUtility.h; path = WUZHAO/General/ApplicationUtility.h; sourceTree = "<group>"; };
 		7DDFA98B1B049A4600F182FA /* ApplicationUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ApplicationUtility.m; path = WUZHAO/General/ApplicationUtility.m; sourceTree = "<group>"; };
 		7DE066B41A3F07AC008086BD /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -1795,6 +1807,8 @@
 		7D4576F91A611B5000786533 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				7DDF8FB51B79E8F70069878E /* camera_float@2x.png */,
+				7DDF8FB61B79E8F70069878E /* camera_float@3x.png */,
 				7DDF8FAA1B78D22A0069878E /* title_icon@2x.png */,
 				7DDF8FAB1B78D22A0069878E /* title_icon@3x.png */,
 				7DDF8F711B7347770069878E /* map_arrow_down@2x.png */,
@@ -2337,6 +2351,9 @@
 				7DDF8FA21B788E3C0069878E /* PhotosSuggestCollectionHeader.h */,
 				7DDF8FA31B788E3C0069878E /* PhotosSuggestCollectionHeader.m */,
 				7DDF8FA41B788E3C0069878E /* PhotosSuggestCollectionHeader.xib */,
+				7DDF8FB91B7A37940069878E /* SearchAddressTableViewCell.h */,
+				7DDF8FBA1B7A37940069878E /* SearchAddressTableViewCell.m */,
+				7DDF8FBB1B7A37940069878E /* SearchAddressTableViewCell.xib */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -2521,6 +2538,15 @@
 				7DDF8FAF1B78E3330069878E /* ScrollViewNotSimultaneously.m */,
 			);
 			name = ScrollView;
+			sourceTree = "<group>";
+		};
+		7DDF8FB41B79AEF40069878E /* FloatCaptureView */ = {
+			isa = PBXGroup;
+			children = (
+				7DDF8FB11B79AEEA0069878E /* FloatCaptureView.h */,
+				7DDF8FB21B79AEEA0069878E /* FloatCaptureView.m */,
+			);
+			name = FloatCaptureView;
 			sourceTree = "<group>";
 		};
 		7DE0669E1A3F037F008086BD /* Frameworks */ = {
@@ -2761,6 +2787,7 @@
 		7DE067901A3F0F42008086BD /* Common Views */ = {
 			isa = PBXGroup;
 			children = (
+				7DDF8FB41B79AEF40069878E /* FloatCaptureView */,
 				7DDF8F541B70F3AB0069878E /* ScrollView */,
 				7D14B10A1B19DA5C00DDF176 /* ImageView */,
 				7D8CA8431AFA0259004D485F /* TextViewAndLabel */,
@@ -2959,6 +2986,7 @@
 				7D00BF5A1B2194FD00374EC0 /* 高斯模糊@2x.png in Resources */,
 				7D00BF6F1B2194FD00374EC0 /* 色温@3x.png in Resources */,
 				7DAD6FB51B4D05B40051221D /* map-marker_green@3x.png in Resources */,
+				7DDF8FB81B79E8F70069878E /* camera_float@3x.png in Resources */,
 				7D0522411B60972400A26AD7 /* cancel_s@2x.png in Resources */,
 				7D00BE091B20509900374EC0 /* cancel@2x.png in Resources */,
 				7D00BF851B21A20800374EC0 /* location_white.png in Resources */,
@@ -3068,6 +3096,7 @@
 				7DAD6FD71B4EA8320051221D /* setting@3x.png in Resources */,
 				7D00BF7B1B2194FD00374EC0 /* grain@3x.png in Resources */,
 				7DF0C24D1B661016005698C3 /* flag_green@2x.png in Resources */,
+				7DDF8FB71B79E8F70069878E /* camera_float@2x.png in Resources */,
 				7D00BF791B2194FD00374EC0 /* 晕影@3x.png in Resources */,
 				7D00BF751B2194FD00374EC0 /* 颜色@3x.png in Resources */,
 				7D9A78751AE9054400CD7287 /* map-marker.png in Resources */,
@@ -3180,6 +3209,7 @@
 				7DDF8FAD1B78D22A0069878E /* title_icon@3x.png in Resources */,
 				7D7047E51A45CDFB00EC0D40 /* switch_camera_h.png in Resources */,
 				7DB4272F1B579DB50062DEE9 /* sina_off@2x.png in Resources */,
+				7DDF8FBD1B7A37940069878E /* SearchAddressTableViewCell.xib in Resources */,
 				7D00BF731B2194FD00374EC0 /* 褪色@3x.png in Resources */,
 				7D09E7C01B465080002E0CF0 /* adaptive_s@2x.png in Resources */,
 				7D686E6E1A592ED200A61E0A /* Address.storyboard in Resources */,
@@ -3234,6 +3264,7 @@
 				7D05225D1B638A7000A26AD7 /* PrivateLetterViewController.m in Sources */,
 				7D4577561A62C2C500786533 /* QNEtag.m in Sources */,
 				7DE067461A3F07AC008086BD /* AFHTTPRequestOperation.m in Sources */,
+				7DDF8FB31B79AEEA0069878E /* FloatCaptureView.m in Sources */,
 				7DDF8F9A1B77C93F0069878E /* subjectItemHeader.m in Sources */,
 				7D65E2171A39701E00F84754 /* AppDelegate.m in Sources */,
 				7DDF8FA51B788E3C0069878E /* PhotosSuggestCollectionHeader.m in Sources */,
@@ -3423,6 +3454,7 @@
 				7D09E7D31B4A8B65002E0CF0 /* FootPrintTableViewCell.m in Sources */,
 				7D09E7AD1B43878E002E0CF0 /* FilterSelectImageView.m in Sources */,
 				7DDF8F6C1B7253EB0069878E /* AddressPhotoCollectionHeaderView.m in Sources */,
+				7DDF8FBC1B7A37940069878E /* SearchAddressTableViewCell.m in Sources */,
 				7DD0A80F1B6B29B5008C27C8 /* SegmentPagerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

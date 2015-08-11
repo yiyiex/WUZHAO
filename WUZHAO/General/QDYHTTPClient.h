@@ -115,7 +115,7 @@
 -(void)getSubjectListBannerWhenComplete:(void (^)(NSDictionary *))whenComplete;
 //get subject detail
 -(void)getSubjectDetailWithSubjectId:(NSInteger )subjectId whenComplete:(void(^)(NSDictionary *))whenComplete;
-//search content with type 0 -用户 1 - 地点
+//search content with type user-用户 poi- 地点
 -(void)searchWithType:(NSString *)type keyword:(NSString *)keyword whenComplete:(void (^)(NSDictionary *))whenComplete;
 
 //search photo

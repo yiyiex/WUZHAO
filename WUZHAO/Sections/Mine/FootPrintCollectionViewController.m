@@ -146,7 +146,7 @@ static NSString * const reuseIdentifier = @"Cell";
     FootPrintCollectionViewCell *cell = (FootPrintCollectionViewCell *)gesture.view.superview;
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
     AddressPhotos *data = (AddressPhotos *)[self dataAtIndexPath:indexPath];
-    [self goToPOIPhotoListWithPoi:data.poi];
+    [self goToPOIPhotoListWithPoi:data.poi showOnlyCurrentUser:YES];
     
 }
 -(void)addressLabelClick:(UIGestureRecognizer *)gesture
@@ -154,25 +154,25 @@ static NSString * const reuseIdentifier = @"Cell";
     FootPrintCollectionViewCell *cell = (FootPrintCollectionViewCell *)gesture.view.superview;
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
     AddressPhotos *data = (AddressPhotos *)[self dataAtIndexPath:indexPath];
-    [self goToPOIPhotoListWithPoi:data.poi];
+    [self goToPOIPhotoListWithPoi:data.poi showOnlyCurrentUser:NO];
     
 }
--(void)photoNumLabelClick:(UIGestureRecognizer *)gesture
-{
-    FootPrintCollectionViewCell *cell = (FootPrintCollectionViewCell *)gesture.view.superview;
-    NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
-    AddressPhotos *data = (AddressPhotos *)[self dataAtIndexPath:indexPath];
-    [self goToPOIPhotoListWithPoi:data.poi];
-    
-}
--(void)goToPOIPhotoListWithPoi:(POI *)poi
+
+-(void)goToPOIPhotoListWithPoi:(POI *)poi showOnlyCurrentUser:(BOOL)show
 {
     UIStoryboard *addressStoryboard = [UIStoryboard storyboardWithName:@"Address" bundle:nil];
     AddressViewController *addressViewCon = [addressStoryboard instantiateViewControllerWithIdentifier:@"addressPage"];
     addressViewCon.poiId = poi.poiId;
     addressViewCon.poiName = poi.name;
     addressViewCon.poiLocation = poi.locationArray;
-    addressViewCon.userId = self.currentUser.UserID;
+    if (show)
+    {
+        addressViewCon.userId = self.currentUser.UserID;
+    }
+    else
+    {
+        addressViewCon.userId = 0;
+    }
     [addressViewCon getLatestData];
     [self pushToViewController:addressViewCon animated:YES hideBottomBar:YES];
     

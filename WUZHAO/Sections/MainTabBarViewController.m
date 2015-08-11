@@ -26,6 +26,8 @@
 #import "QDYHTTPClient.h"
 #import "ApplicationUtility.h"
 
+#import "FloatCaptureView.h"
+
 #import "macro.h"
 
 typedef NS_ENUM(NSInteger, WZ_TABTAG) {
@@ -111,6 +113,8 @@ static NSInteger loginState = 1;
     
      [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideTabBar) name:@"hideTabBar" object:nil];
      [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showTabBar) name:@"showTabBar" object:nil];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showCameraView) name:CaptureViewDidTouchDownInsideNotification object:nil];
     
     /*
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -306,7 +310,10 @@ static NSInteger loginState = 1;
         
     }];
 }
-
+-(void)showCameraView
+{
+    [self cameraButtonClick:nil];
+}
 #pragma mark - tabbar method
 -(void)hideTabBar
 {

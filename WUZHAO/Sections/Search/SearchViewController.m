@@ -156,7 +156,10 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
 
 -(void)showSearchResultView
 {
-    SearchResultTableViewController2 *searchResult = [[SearchResultTableViewController2 alloc]init];
+    UIStoryboard *searchStoryboard = [UIStoryboard storyboardWithName:@"Search" bundle:nil];
+    SearchResultViewController *searchResult = [searchStoryboard instantiateViewControllerWithIdentifier:@"SearchResult"];
+    
+    //SearchResultViewController *searchResult = [[SearchResultViewController alloc]init];
     [self pushToViewController:searchResult animated:YES hideBottomBar:YES];
 }
 

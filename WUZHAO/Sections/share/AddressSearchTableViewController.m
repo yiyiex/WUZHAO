@@ -499,7 +499,6 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
             POI *poiInfo = [self.historyAddressDataSource objectAtIndex:(indexPath.row-1)];
             cell.addressLabel.text = [NSString stringWithFormat:@"%@",poiInfo.name];
             cell.detailAddressLabel.text =[NSString stringWithFormat:@"%@%@",poiInfo.city,poiInfo.address];
-            [cell setAppearance];
         }
     }
     else if (self.searchControllerWasActive)
@@ -526,7 +525,6 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
             }
             cell.addressLabel.text = [NSString stringWithFormat:@"%@",poiInfo.name];
             cell.detailAddressLabel.text =[NSString stringWithFormat:@"%@%@",poiInfo.city,poiInfo.address];
-            [cell setAppearance];
             /*
             cell.textLabel.text = [NSString stringWithFormat:@"%@",poiInfo.name];
             cell.detailTextLabel.text =[NSString stringWithFormat:@"%@%@",poiInfo.city,poiInfo.address];
@@ -592,7 +590,6 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
             }
             cell.addressLabel.text = [NSString stringWithFormat:@"%@",poiInfo.name];
             cell.detailAddressLabel.text =[NSString stringWithFormat:@"%@%@",poiInfo.city,poiInfo.address];
-            [cell setAppearance];
             //return cell;
         }
         else if (!self.provincePoiInfo && indexPath.row >1)
@@ -609,7 +606,6 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
             }
             cell.addressLabel.text = [NSString stringWithFormat:@"%@",poiInfo.name];
             cell.detailAddressLabel.text =[NSString stringWithFormat:@"%@%@",poiInfo.city,poiInfo.address];
-            [cell setAppearance];
             //return cell;
         }
         if (indexPath == self.currentAddressTableSelectedIndex)

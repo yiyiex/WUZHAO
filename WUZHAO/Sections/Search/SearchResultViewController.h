@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "HMSegmentedControl.h"
-/*
+#import "SegmentPagerViewController.h"
+#import "UserListTableViewController.h"
+#import "ScrollViewOnlyHorizonScroll.h"
+
 typedef NS_ENUM(NSInteger, SearchTableDataType)
 {
     SEARCHTABLEDATAADDRESS = 0,
@@ -19,13 +22,16 @@ typedef NS_ENUM(NSInteger, SearchStatus)
 {
     SEARCHSTATUSEND = 0,
     SEARCHSTATUSERROR = 1,
-    SEARCHSTATUSNOTBEGIN = 2
+    SEARCHSTATUSNOTBEGIN = 2,
+    SEARCHSTATUSING = 3
 };
-*/
+
 @interface SearchResultViewController : UIViewController
 
 @property (nonatomic, strong) IBOutlet HMSegmentedControl * segmentControl;
-@property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, strong) ScrollViewOnlyHorizonScroll *scrollView;
+
+@property (nonatomic, strong) UserListTableViewController *userListTableViewController;
 @property (nonatomic, strong) UITableView *searchUserListTableView;
 @property (nonatomic, strong) UITableView *searchAddressListTableView;
 

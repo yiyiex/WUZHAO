@@ -49,7 +49,6 @@
     {
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     }
-    [self getLatestDataAnimated];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -59,9 +58,12 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (self.datasource.count <=0)
+    if (!self.datasource || self.datasource.count <=0)
     {
-        [self getLatestDataAnimated];
+        if (self.dataSource || self.getLatestDataBlock)
+        {
+            [self getLatestDataAnimated];
+        }
     }
 }
 
