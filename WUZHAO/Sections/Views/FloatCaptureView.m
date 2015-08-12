@@ -186,7 +186,7 @@ static const UIImage *CaptureViewImage;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [UIView animateWithDuration:0.15
                           delay:0
-                        options:UIViewAnimationCurveEaseIn | UIViewAnimationOptionAllowUserInteraction
+                        options:UIViewAnimationCurveEaseIn | UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionAllowUserInteraction
                      animations:^{
                          self.imageView.transform = CGAffineTransformScale(self.imageView.transform, 0.8f, 0.8f);
                      }
@@ -355,8 +355,20 @@ static const UIImage *CaptureViewImage;
 
 -(void)captureViewTapped
 {
+    self.imageView.transform = CGAffineTransformScale(self.imageView.transform, 1.3f, 1.3f);
+    [UIView animateWithDuration:0.05
+                          delay:0
+                        options:UIViewAnimationOptionAllowUserInteraction
+                     animations:^{
+                         self.imageView.transform = CGAffineTransformScale(self.imageView.transform, 1.0f, 1.0f);
+                     }
+                     completion:^(BOOL finished){
+                         self.imageView.transform = CGAffineTransformIdentity;
+                      
+                     }];
+      [[NSNotificationCenter defaultCenter]postNotificationName:CaptureViewDidTouchDownInsideNotification object:nil];
     //[self.overlayView setUserInteractionEnabled:YES];
-    [[NSNotificationCenter defaultCenter]postNotificationName:CaptureViewDidTouchDownInsideNotification object:nil];
+
     //[self.overlayView setUserInteractionEnabled:NO];
 }
 

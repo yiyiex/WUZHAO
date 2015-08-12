@@ -123,11 +123,11 @@ static char UIScrollViewBlurCover;
 
 - (void)prepareForBlurImages
 {
-    CGFloat factor = 0.24;
+    CGFloat factor = 0.36;
  
-    for (NSInteger i = 12; i >= 0; i--) {
+    for (NSInteger i = 11; i >= 0; i--) {
         [blurImages_ addObject:[self.image boxblurImageWithBlur:factor]];
-        factor -= 0.02;
+        factor -= 0.03;
         factor = MAX(0, factor);
     }
     [blurImages_ addObject:self.image];
@@ -270,6 +270,10 @@ static char UIScrollViewBlurCover;
                                              outBuffer.rowBytes,
                                              colorSpace,
                                              (CGBitmapInfo)kCGImageAlphaNoneSkipLast);
+    if (!ctx)
+    {
+        return destImage;
+    }
     CGImageRef imageRef = CGBitmapContextCreateImage (ctx);
     UIImage *returnImage = [UIImage imageWithCGImage:imageRef];
     

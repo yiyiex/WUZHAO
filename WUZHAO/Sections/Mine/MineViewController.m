@@ -1336,7 +1336,9 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         [self.aiv setCenter:CGPointMake(WZ_APP_SIZE.width - 20 , CHBlurCoverViewHeight - 60)];
         [self.aiv startAnimating];
         UIImage *backGroundImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-        self.coverImage = [UIImage imageWithCGImage:[backGroundImage CGImage] scale:0.6f orientation:UIImageOrientationUp];
+        NSData *uploadImageData = UIImageJPEGRepresentation(backGroundImage, 0.6f);
+        self.coverImage = [UIImage imageWithData:uploadImageData];
+        //self.coverImage = [UIImage imageWithCGImage:[backGroundImage CGImage] scale:0.6f orientation:UIImageOrientationUp];
         [self.scrollView setContentOffset:CGPointMake(0, -20) animated:YES];
         NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
         [[QDYHTTPClient sharedInstance]GetQiNiuTokenWithUserId:userId type:3 whenComplete:^(NSDictionary *returnData) {
@@ -1354,7 +1356,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                 });
                 
             }
-            NSData *uploadImageData = UIImageJPEGRepresentation(backGroundImage, 0.6f);
+            
             QNUploadManager *upLoadManager = [[QNUploadManager alloc]init];
             [upLoadManager putData:uploadImageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
              {
