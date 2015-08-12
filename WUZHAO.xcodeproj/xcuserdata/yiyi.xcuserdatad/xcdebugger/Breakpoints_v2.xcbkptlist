@@ -11476,7 +11476,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "460978243.390622"
+            timestampString = "461042619.728668"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "219"
@@ -11492,7 +11492,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "460978243.390622"
+            timestampString = "461042619.728668"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "159"
@@ -11508,7 +11508,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "460978243.390622"
+            timestampString = "461042619.728668"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "273"
@@ -11524,7 +11524,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "460978243.390622"
+            timestampString = "461042619.728668"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "174"
@@ -11540,7 +11540,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "460978243.390622"
+            timestampString = "461042619.728668"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "321"
@@ -11556,11 +11556,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "460978243.390622"
+            timestampString = "461042619.728668"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "358"
-            endingLineNumber = "358"
+            startingLineNumber = "357"
+            endingLineNumber = "357"
             landmarkName = "-captureViewTapped"
             landmarkType = "5">
          </BreakpointContent>
@@ -11572,27 +11572,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "460977897.672147"
+            timestampString = "461042619.728668"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "135"
             endingLineNumber = "135"
-            landmarkName = "-showCaptureView"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "460977897.672147"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "154"
-            endingLineNumber = "154"
             landmarkName = "-showCaptureView"
             landmarkType = "5">
          </BreakpointContent>
