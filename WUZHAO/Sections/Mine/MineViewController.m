@@ -242,7 +242,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 -(float)scrollContentViewHeight
 {
     float topHeight = TOPCOVERHEIGHT ;
-    __block float bottomHeight = 44;
+    __block float bottomHeight = 0;
     if (self.myPhotosLabel.highlighted)
     {
         if (_myPhotosCollectionDatasource.count >6)
@@ -1038,14 +1038,16 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                             [self.scrollContentViewHeightConstraint setConstant:[self scrollContentViewHeight]];
                             [self.view setNeedsLayout];
                             [self.view layoutIfNeeded];
+                            /*
                             if (_footLabel)
                             {
                                 [_footLabel setHidden:YES];
-                            }
+                            }*/
                         }
                         else
                         {
                             NSLog(@"no more data");
+                            /*
                             if (!_footLabel)
                             {
                                 float tabbarHeight = 0;
@@ -1063,7 +1065,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                             
                             }
                             [_footLabel setFrame:CGRectMake(0, self.containerViewController.currentViewController.view.frame.size.height -32, WZ_APP_SIZE.width, 32)];
-                            [_footLabel setHidden:NO];
+                            [_footLabel setHidden:NO];*/
                             
                             //TO DO
                         }

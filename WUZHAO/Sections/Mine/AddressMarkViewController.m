@@ -176,6 +176,7 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
         
     }];
     [self.mapView addAnnotations:self.annotations];
+    [self.mapView setCenterCoordinate:centerAnnotation.coordinate animated:YES];
 }
 
 #pragma mark - MAMapViewDelegate

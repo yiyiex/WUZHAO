@@ -13,6 +13,9 @@
 #import "FilterSelectImageView.h"
 #import "ImageCropScrollView.h"
 
+#import "WZTextStickerView.h"
+#import "WZStickerView.h"
+
 #import "PhotoCommon.h"
 #import "captureMacro.h"
 #import "macro.h"
@@ -27,7 +30,8 @@ typedef NS_ENUM(NSInteger, EDIT_TYPE)
 {
     EDIT_TYPE_FILTER = 1,
     EDIT_TYPE_EFFECT = 2,
-    EDIT_TYPE_CROP = 3
+    EDIT_TYPE_CROP = 3,
+    EDIT_TYPE_TEXT = 4
 };
 
 @interface PhotoFilterViewCollectionViewController ()
@@ -43,34 +47,41 @@ typedef NS_ENUM(NSInteger, EDIT_TYPE)
     float bottombarHeight;
 }
 
-
+//filter and tools collectionview
 @property (nonatomic, strong) UICollectionView *photoFilterCollectionView;
 @property (nonatomic, strong) UICollectionView *photoEffectCollectionView;
+//collection view selecter indicator
+@property (nonatomic, strong) UIView *selectIndicatorView;
 
 @property (nonatomic, strong) NSMutableArray *filters;
 @property (nonatomic, strong) NSMutableDictionary *filterDescriptions;
 @property (nonatomic, strong) NSMutableArray *effectDescriptions;
 
+//top bar view
 @property (nonatomic, weak) IBOutlet UIView *topBarView;
 @property (nonatomic, strong) UIScrollView *imageSelectScrollView;
 @property (nonatomic, strong) NSMutableArray *imageSelectIcon;
 @property (nonatomic, strong) FilterSelectImageView *selectedImageView;
 @property (nonatomic, strong) UILabel *topBarTitleLabel;
 
-@property (nonatomic, strong) UIView *effectTopBarView;
-@property (nonatomic, strong) UILabel *effectTopBarTitleLabel;
-
+//bottom bar view
 @property (nonatomic, strong)  UIView *bottomBarView;
 @property (nonatomic, strong) UIButton *filterButton;
 @property (nonatomic, strong) UIButton *effectButton;
 @property (nonatomic, strong) UIButton *cropButton;
+@property (nonatomic, strong) UIButton *textButton;
 
+//effect edit top bar
+@property (nonatomic, strong) UIView *effectTopBarView;
+@property (nonatomic, strong) UILabel *effectTopBarTitleLabel;
+
+//effect sliderview in effect edit view
 @property (nonatomic, strong) UIView *sliderEditView;
 @property (nonatomic, strong) UIButton *sliderEditOk;
 @property (nonatomic, strong) UIButton *sliderEditCancel;
 @property (nonatomic, strong) FilterSliderView *effectFilterSliderView;
 
-
+//crop photos view
 @property (nonatomic, strong) UIView *cropButtonView;
 @property (nonatomic, strong) UIButton *centerPhotoButton;
 @property (nonatomic, strong) UIButton *adaptiveButton;
@@ -78,9 +89,20 @@ typedef NS_ENUM(NSInteger, EDIT_TYPE)
 @property (nonatomic, strong) UIButton *cropCancel;
 @property (nonatomic, strong) ImageCropScrollView *cropScrollView;
 
-@property (nonatomic, strong) UIView *selectIndicatorView;
-
-@property (nonatomic, strong) UIView *selectImageIndicatorView;
+//text edit view
+@property (nonatomic, strong) UIImageView *textImageView;
+@property (nonatomic, strong) UIView *textTempleteEditView;
+@property (nonatomic, strong) UIPageControl *textTempleteSelectPageControl;
+@property (nonatomic, strong) UIButton *textTempleteEditButton;
+@property (nonatomic, strong) UIButton *textTempleteOK;
+@property (nonatomic, strong) UIButton *textTempleteCancel;
+@property (nonatomic, strong) UIScrollView *editScrollView;
+@property (nonatomic, strong) UIView *editPage1;
+@property (nonatomic, strong) UIView *editPage2;
+@property (nonatomic, strong) UIPageControl *editPageControl;
+@property (nonatomic, strong) UIButton *textOK;
+@property (nonatomic, strong) UIButton *textCancel;
+@property (nonatomic, strong) UIButton *textAdd;
 
 @property (nonatomic) EDIT_TYPE editType;
 
@@ -91,6 +113,8 @@ typedef NS_ENUM(NSInteger, EDIT_TYPE)
 static NSString * const reuseIdentifier1 = @"PhotoFilterCollectionViewCell";
 static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
 
+
+#pragma mark - getters
 -(NSMutableArray *)filters
 {
     if (!_filters)
@@ -291,7 +315,6 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         [_selectIndicatorView setBackgroundColor:THEME_COLOR_DARK];
         
     }
-   
     return _selectIndicatorView;
 }
 
@@ -331,7 +354,16 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     return _filteredImageViews;
 }
 
+-(FilterSliderView *)effectFilterSliderView
+{
+    if (!_effectFilterSliderView)
+    {
+        _effectFilterSliderView = [[FilterSliderView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, WZ_APP_SIZE.height - collectionOriginY - 44)];
+    }
+    return _effectFilterSliderView;
+}
 
+#pragma mark - init compoments
 -(void)caculateCollectionRelationSize
 {
     collectionOriginY = self.topBarView.frame.size.height + WZ_APP_SIZE.width ;
@@ -339,9 +371,6 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     collectionCellWidth =  isIPHONE_4s?collectionHeight -20: 48;
     collectionViewHeight = isIPHONE_4s? 40 : 100;
     collectionViewOffset = (collectionHeight - collectionViewHeight)/2;
-    
-
-    
 }
 -(void )initPhotoFilterCollectionView
 {
@@ -403,14 +432,6 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     }
 }
 
--(FilterSliderView *)effectFilterSliderView
-{
-    if (!_effectFilterSliderView)
-    {
-        _effectFilterSliderView = [[FilterSliderView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, WZ_APP_SIZE.height - collectionOriginY - 44)];
-    }
-    return _effectFilterSliderView;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -448,6 +469,8 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self.view addSubview:self.sliderEditView];
 }
 
+
+#pragma mark - crop view
 -(void)initCropView
 {
     self.cropScrollView = [[ImageCropScrollView alloc]initWithFrame:CGRectMake(0, self.topBarView.frame.size.height, WZ_APP_SIZE.width, WZ_APP_SIZE.width)];
@@ -483,7 +506,89 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self.cropButtonView addSubview:self.cropOK];
 }
 
+#pragma mark - text edit view
+-(void)initTextEditView
+{
+    self.textImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, self.topBarView.frame.size.height, WZ_APP_SIZE.width, WZ_APP_SIZE.width)];
+    [self.view addSubview:self.textImageView];
+    self.textImageView.layer.masksToBounds = YES;
+    [self.textImageView setUserInteractionEnabled:YES];
+    
+    self.textTempleteEditView = [[UIView alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height, WZ_APP_SIZE.width, self.view.frame.size.height - collectionOriginY)];
+    [self.textTempleteEditView setBackgroundColor:DARK_BACKGROUND_COLOR];
+    [self.view addSubview:self.textTempleteEditView];
+    
+    self.textTempleteSelectPageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, 30)];
+    [self.textTempleteSelectPageControl setPageIndicatorTintColor:[UIColor whiteColor]];
+    [self.textTempleteSelectPageControl setNumberOfPages:6];
+    [self.textTempleteSelectPageControl setCurrentPage:0];
+    [self.textTempleteSelectPageControl addTarget:self action:@selector(selectTemplete:) forControlEvents:UIControlEventValueChanged];
+    [self.textTempleteEditView addSubview:self.textTempleteSelectPageControl];
+    
+    self.textTempleteEditButton = [[UIButton alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width - 140)/2, 48, 140, 28)];
+    [self.textTempleteEditButton setTitle:@"编辑模板" forState:UIControlStateNormal];
+    [self.textTempleteEditButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.textTempleteEditButton.layer setBorderColor:[[UIColor whiteColor] CGColor]];
+    [self.textTempleteEditButton addTarget:self action:@selector(showTextEditView:) forControlEvents:UIControlEventTouchUpInside];
+    [self.textTempleteEditButton.layer setBorderWidth:0.5f];
+    [self.textTempleteEditView addSubview:self.textTempleteEditButton];
+    
+    self.textTempleteCancel = [[UIButton alloc]initWithFrame:CGRectMake(0, collectionHeight, WZ_APP_SIZE.width/2, self.textTempleteEditView.frame.size.height - collectionHeight)];
+    [self.textTempleteCancel setImage:[UIImage imageNamed:@"cancel"] forState:UIControlStateNormal];
+    [self.textTempleteCancel addTarget:self action:@selector(textTempleteEditCancelClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.textTempleteEditView addSubview:self.textTempleteCancel];
+    
+    self.textTempleteOK= [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2, collectionHeight, WZ_APP_SIZE.width/2, self.textTempleteEditView.frame.size.height - collectionHeight)];
+    [self.textTempleteOK setImage:[UIImage imageNamed:@"check"] forState:UIControlStateNormal];
+    [self.textTempleteOK addTarget:self action:@selector(textTempleteEditOKClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.textTempleteEditView addSubview:self.textTempleteOK];
+    
+    //text templete edit
+    self.editScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0,0, WZ_APP_SIZE.width, collectionViewHeight)];
+    self.editScrollView.contentSize = CGSizeMake(WZ_APP_SIZE.width *2, collectionViewHeight);
+    [self.editScrollView setPagingEnabled:YES];
+    [self.textTempleteEditView addSubview:self.editScrollView];
+    self.editPage1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, collectionViewHeight)];
+    self.editPage2 = [[UIView alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width, 0, WZ_APP_SIZE.width, collectionViewHeight)];
+    self.editPage1.backgroundColor = [UIColor purpleColor];
+    self.editPage2.backgroundColor = [UIColor blueColor];
+    [self.editScrollView addSubview:self.editPage1];
+    [self.editScrollView addSubview:self.editPage2];
+    
+    [self.editScrollView setHidden:YES];
+    
+    self.editPageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(0, collectionViewHeight - 30, WZ_APP_SIZE.width, 30)];
+    self.editPageControl.numberOfPages = 2;
+    self.editPageControl.pageIndicatorTintColor = [UIColor whiteColor];
+    [self.editPageControl setHidden:YES];
+    [self.textTempleteEditView addSubview:self.editPageControl];
+    [self.textTempleteEditView bringSubviewToFront:self.editPageControl];
 
+    self.textCancel = [[UIButton alloc]initWithFrame:CGRectMake(0, collectionHeight, WZ_APP_SIZE.width/3, self.textTempleteEditView.frame.size.height - collectionHeight)];
+    [self.textCancel setImage:[UIImage imageNamed:@"cancel"] forState:UIControlStateNormal];
+    [self.textCancel addTarget:self action:@selector(textEditCancelClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.textCancel setHidden:YES];
+    [self.textTempleteEditView addSubview:self.textCancel];
+    
+    self.textAdd = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/3, collectionHeight, WZ_APP_SIZE.width/3, self.textTempleteEditView.frame.size.height - collectionHeight)];
+    [self.textAdd setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+    [self.textAdd addTarget:self action:@selector(textEditAddClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.textAdd setHidden:YES];
+    [self.textTempleteEditView addSubview:self.textAdd];
+    
+    self.textOK = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/3*2, collectionHeight, WZ_APP_SIZE.width/3, self.textTempleteEditView.frame.size.height - collectionHeight)];
+    [self.textOK setImage:[UIImage imageNamed:@"check"] forState:UIControlStateNormal];
+    [self.textOK addTarget:self action:@selector(textEditOKClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.textOK setHidden:YES];
+    [self.textTempleteEditView addSubview:self.textOK];
+    
+    
+    
+    
+    
+}
+
+#pragma mark - top view
 -(void)initTopContainerView
 {
     [self.topBarView setBackgroundColor:DARK_BACKGROUND_COLOR];
@@ -578,6 +683,8 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
 
 }
 
+#pragma mark - bottom view
+
 -(void)initBottomContainerView
 {
     if (isIPHONE_4s)
@@ -599,7 +706,7 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     self.bottomBarView = [[UIView alloc]initWithFrame:CGRectMake(0, WZ_APP_SIZE.height - bottombarHeight, WZ_APP_SIZE.width, bottombarHeight)];
     [self.view addSubview:self.bottomBarView];
     
-    float buttonWidth = WZ_APP_SIZE.width/3;
+    float buttonWidth = WZ_APP_SIZE.width/4;
     
     [self.bottomBarView setBackgroundColor:DARK_BACKGROUND_COLOR];
     self.filterButton = [[UIButton alloc]initWithFrame:CGRectMake(buttonWidth, 0, buttonWidth, self.bottomBarView.frame.size.height)];
@@ -627,6 +734,12 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self.cropButton setImage:[UIImage imageNamed:@"剪裁_s"] forState:UIControlStateSelected];
     [self.cropButton addTarget:self action:@selector(cropButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.bottomBarView addSubview:self.cropButton];
+    
+    self.textButton = [[UIButton alloc]initWithFrame:CGRectMake(buttonWidth*3, 0, buttonWidth, self.bottomBarView.frame.size.height)];
+    [self.textButton setImage:[UIImage imageNamed:@"text"] forState:UIControlStateNormal];
+    [self.textButton setImage:[UIImage imageNamed:@"text_s"] forState:UIControlStateSelected];
+    [self.textButton addTarget:self action:@selector(textButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.bottomBarView addSubview:self.textButton];
     
 }
 
@@ -811,6 +924,44 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     
 }
 
+-(void)showTextImageView
+{
+    [self.topBarView setHidden:YES];
+    if (!self.effectTopBarView)
+    {
+        [self initTopEffectView];
+    }
+    [self.effectTopBarView setHidden:NO];
+    self.effectTopBarTitleLabel.text = @"添加文字";
+    
+    [self.textImageView setHidden:NO];
+    //[self.cropButtonView setHidden:NO];
+    [self.filteredImageView setHidden:YES];
+    
+    WZTextStickerView *textView1 = [[WZTextStickerView alloc]initWithFrame:CGRectMake(50, 50, 200, 80)];
+    [self.textImageView addSubview:textView1];
+    CGRect targetFrame = CGRectMake(0, collectionOriginY , WZ_APP_SIZE.width,  WZ_APP_SIZE.height - collectionOriginY);
+    [UIView animateWithDuration:0.3 animations:^{
+        self.textTempleteEditView.frame = targetFrame;
+        
+    } completion:^(BOOL finished) {
+        // [self.view bringSubviewToFront:self.cropButtonView];
+    }];
+}
+-(void)hideTextImageView
+{
+    [self.effectTopBarView setHidden:YES];
+    [self.topBarView setHidden:NO];
+    [self.filteredImageView setHidden:NO];
+    [self.textImageView setHidden:YES];
+    CGRect targetFrame = CGRectMake(0, WZ_APP_SIZE.height, WZ_APP_SIZE.width,  WZ_APP_SIZE.height - collectionOriginY);
+    [UIView animateWithDuration:0.3 animations:^{
+        self.textTempleteEditView.frame = targetFrame;
+    } completion:^(BOOL finished) {
+        [self filterButtonClick:self.filterButton];
+    }];
+}
+
 -(void)showCropView
 {
     [self.topBarView setHidden:YES];
@@ -919,6 +1070,7 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         [self.filterButton setSelected:YES];
         [self.effectButton setSelected:NO];
         [self.cropButton setSelected:NO];
+        [self.textButton setSelected:NO];
         self.topBarTitleLabel.text = @"滤镜";
         
         [self.filteredImageView setHidden:NO];
@@ -956,16 +1108,13 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         [self.filterButton setSelected:NO];
         [self.effectButton setSelected:YES];
         [self.cropButton setSelected:NO];
+        [self.textButton setSelected:NO];
         
         [self.effectTopBarView setHidden:YES];
         [self.topBarView setHidden:NO];
         
         self.topBarTitleLabel.text = @"工具";
         [self.filteredImageView setHidden:NO];
-
-
-        
-        
     }
 }
 
@@ -986,6 +1135,7 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     }
     [self hideSliderEditView];
 }
+
 -(void)selectImageSelectIcon:(FilterSelectImageView *)selectedImageView
 {
     NSInteger oldSelectIndex = self.selectedImageView.tag;
@@ -1041,6 +1191,7 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         [self.filterButton setSelected:NO];
         [self.effectButton setSelected:NO];
         [self.cropButton setSelected:YES];
+        [self.textButton setSelected:NO];
         
         if (_photoEffectCollectionView)
         {
@@ -1104,6 +1255,93 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     [self hideCropView];
     self.filteredImageView.inputImage = self.selectedImageView.image;
    
+}
+
+-(void)textButtonClick:(id)sender
+{
+    if (self.editType == EDIT_TYPE_TEXT)
+    {
+        return;
+    }
+    else
+    {
+        [self.filterButton setSelected:NO];
+        [self.effectButton setSelected:NO];
+        [self.cropButton setSelected:NO];
+        [self.textButton setSelected:YES];
+        
+        if (_photoEffectCollectionView)
+        {
+            [self.photoEffectCollectionView setHidden:YES];
+        }
+        if (_photoFilterCollectionView)
+        {
+            [self.photoFilterCollectionView setHidden:YES];
+        }
+        
+        self.editType = EDIT_TYPE_TEXT;
+        if (!_textImageView)
+        {
+            [self initTextEditView];
+        }
+        self.filteredImageView.inputImage = [self.imagesAndInfo[self.selectedImageView.tag] objectForKey:@"image"];
+        self.textImageView.image = self.filteredImageView.outputImage;
+        [self showTextImageView];
+        
+    }
+    
+    
+}
+-(void)showTextEditView:(id)sender
+{
+    [self.textTempleteSelectPageControl setHidden:YES];
+    [self.textTempleteEditButton setHidden:YES];
+    [self.textTempleteOK setHidden:YES];
+    [self.textTempleteCancel setHidden:YES];
+    [self.editPageControl setHidden:NO];
+    [self.textOK setHidden:NO];
+    [self.textCancel setHidden:NO];
+    [self.textAdd setHidden:NO];
+    [self.editScrollView setHidden:NO];
+}
+-(void)hideTextEditView:(id)sender
+{
+    [self.textTempleteSelectPageControl setHidden:NO];
+    [self.textTempleteEditButton setHidden:NO];
+    [self.textTempleteOK setHidden:NO];
+    [self.textTempleteCancel setHidden:NO];
+    [self.editPageControl setHidden:YES];
+    [self.textOK setHidden:YES];
+    [self.textCancel setHidden:YES];
+    [self.textAdd setHidden:YES];
+    [self.editScrollView setHidden:YES];
+}
+
+
+-(void)textTempleteEditCancelClick:(id)sender
+{
+    [self hideTextImageView];
+}
+
+-(void)textTempleteEditOKClick:(id)sender
+{
+    [self hideTextImageView];
+}
+
+
+-(void)textEditCancelClick:(id)sender
+{
+    [self hideTextEditView:nil];
+}
+
+-(void)textEditOKClick:(id)sender
+{
+    [self hideTextEditView:nil];
+}
+-(void)textEditAddClick:(id)sender
+{
+    WZTextStickerView *newTextView = [[WZTextStickerView alloc]initWithFrame:CGRectMake(100, 100, 120, 80)];
+    [self.textImageView addSubview:newTextView];
 }
 
 #pragma mark - images add and delete
