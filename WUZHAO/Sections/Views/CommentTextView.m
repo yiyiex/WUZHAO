@@ -35,9 +35,10 @@
 {
     [self setTextColor:THEME_COLOR_DARK_GREY_PARENT];
     [self setFont:WZ_FONT_COMMON_SIZE];
-    
-    defaultAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
-    highlightedAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+    paragraphStyle.lineSpacing = 6;
+    defaultAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle};
+    highlightedAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle};
     Comment *newComment = [commentItem mutableCopy];
     if (newComment.replyUser && newComment.replyUser.UserID >0)
     {
@@ -111,9 +112,13 @@
             }
         };
         
+     
         NSString *commentString = [NSString stringWithFormat:@"\n查看全部%ld条评论",(long)moreCount];
-        NSAttributedString *appendString = [[NSAttributedString alloc]initWithString:commentString attributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY_PARENT,NSFontAttributeName:WZ_FONT_COMMON_SIZE}];
-        [self appendText:appendString linkStrings:@[commentString] defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:@[taphandler]];
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+        paragraphStyle.lineSpacing = 6;
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle};
+        NSAttributedString *appendString = [[NSAttributedString alloc]initWithString:commentString attributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle}];
+        [self appendText:appendString linkStrings:@[commentString] defaultAttributes:attributes highlightedAttributes:attributes tapHandlers:@[taphandler]];
     }
 
 

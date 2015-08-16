@@ -47,7 +47,9 @@
    
     NSMutableAttributedString *attributeContent = [[NSMutableAttributedString alloc]initWithString:content];
      NSRange wholeRange = NSMakeRange(0, [attributeContent length]);
-    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE} range:wholeRange];
+     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineSpacing = 4;
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle} range:wholeRange];
     NSRange timeRange = [content rangeOfString:feeds.time];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE} range:timeRange];
     if (feeds.feedsPOI.name && ![feeds.feedsPOI.name isEqualToString:@""])

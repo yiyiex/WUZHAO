@@ -117,7 +117,7 @@
                                         <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b50-D1-K1S" userLabel="ImagesContainerView">
                                             <rect key="frame" x="0.0" y="336" width="288" height="0.0"/>
                                             <subviews>
-                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pwv-RQ-4EG" customClass="UICollectionView">
+                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pwv-RQ-4EG" customClass="CollectionViewNotSimultaneously">
                                                     <rect key="frame" x="0.0" y="0.0" width="288" height="0.0"/>
                                                 </scrollView>
                                             </subviews>

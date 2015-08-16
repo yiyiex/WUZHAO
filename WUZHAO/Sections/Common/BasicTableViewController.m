@@ -135,7 +135,12 @@
 //load more
 -(void)setupLoadMore
 {
-    if (!_loadMoreButton && self.shouldLoadMore)
+    if (self.datasource.count == 0 || !self.datasource)
+    {
+        [_loadMoreButton setHidden:YES];
+        return;
+    }
+    else if (!_loadMoreButton && self.shouldLoadMore)
     {
         NSString *footButonTitle = @"加载更多" ;
         UIView *tableFooterView = [[UIView alloc]init];
@@ -154,6 +159,8 @@
         _loadMoreAiv.center = _loadMoreButton.center;
         [self.tableView.tableFooterView addSubview:_loadMoreAiv];
     }
+    [_loadMoreButton setHidden:NO];
+    
 }
 
 -(void)loadMore
@@ -185,11 +192,13 @@
 }
 -(void)getLatestDataAnimated
 {
+    
     if (self.shouldRefreshData)
     {
-        [self.tableView setContentOffset:CGPointMake(0, -80) animated:YES];
+        [self.tableView setContentOffset:CGPointMake(0, -86) animated:NO];
         [self.refreshControl beginRefreshing];
         [self getLatestData];
+        
     }
 }
 

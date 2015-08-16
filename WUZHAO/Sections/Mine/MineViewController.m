@@ -1205,7 +1205,13 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     self.userInfo = nil;
     self.myPhotosCollectionDatasource = nil;
     self.myAddressListDatasource = nil;
-    
+    self.userNameLabel.text = @"";
+    self.avator.image = nil;
+    self.selfDescriptionLabel.text = @"";
+    self.followersNumLabel.text = @"0";
+    self.followsNumLabel.text = @"0";
+    self.myPhotosNumLabel.text = @"0";
+    self.myAddressNumLabel.text = @"0";
     [self.myPhotoCollectionViewController loadData];
 }
 -(void)updateUserInfo

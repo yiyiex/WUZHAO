@@ -105,7 +105,7 @@
 {
     if (self.datasource.count >0)
     {
-        return 64;
+        return 68;
     }
     else
     {
@@ -157,7 +157,7 @@
 #pragma mark - notification selector
 -(void)clearUserInfo
 {
-    self.datasource = nil;
+    self.datasource = [[NSMutableArray alloc]initWithArray:@[]];
     [self loadData];
 }
 

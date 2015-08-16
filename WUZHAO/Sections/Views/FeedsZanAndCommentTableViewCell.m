@@ -68,10 +68,13 @@
     NSRange commentRange = [content rangeOfString:feeds.content];
     NSRange timeRange = [content rangeOfString:feeds.time];
     NSRange staticStringRange = [content rangeOfString:@" 回复了你的评论："];
-    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:userNameRange];
-    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARKER_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE}  range:commentRange];
-    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE}  range:timeRange];
-    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:staticStringRange];
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineSpacing = 4;
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE,NSParagraphStyleAttributeName:paragraphStyle} range:userNameRange];
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARKER_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle}  range:commentRange];
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle}  range:timeRange];
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE,NSParagraphStyleAttributeName:paragraphStyle} range:staticStringRange];
+    
     //self.contentLabel.attributedText = attributeContent;
     self.contentTextView.attributedText = attributeContent;
     [self.contentTextView linkUserNameWithUserList:@[feeds.feedsUser]];
