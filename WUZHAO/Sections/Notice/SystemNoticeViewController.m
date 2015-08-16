@@ -302,7 +302,7 @@
 #pragma mark - notification selector
 -(void)clearUserInfo
 {
-    self.datasource = nil;
+    self.datasource = [[NSMutableArray alloc]initWithArray:@[]];
     [self loadData];
 }
 

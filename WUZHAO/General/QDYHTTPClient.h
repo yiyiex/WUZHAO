@@ -55,6 +55,9 @@
 //get current user photo followers list
 -(void)GetPersonalFollowersListWithUserId:(NSInteger)userId currentUserId:(NSInteger)currentUserId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
+-(void)getDashbordInfoWithUserId:(NSInteger )userId whenComplete:(void (^)(NSDictionary * returnData))whenComplete;
+
+
 #pragma mark - edit personal info
 //edit personal info with userinfo
 - (void)UpdatePersonalInfoWithUser:(User *)user oldNick:(NSString *)oldNick whenComplete:(void (^)(NSDictionary *returnData))whenComplete;

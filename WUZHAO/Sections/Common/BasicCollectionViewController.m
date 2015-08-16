@@ -126,20 +126,25 @@
 #pragma mark - control the model
 -(void)loadData
 {
+    [self endRefreshing];
     [self.collectionView reloadData];
-    [self.collectionView setContentOffset:CGPointMake(0, 0)];
+    [self.collectionView setContentOffset:CGPointMake(0, 0) animated:YES];
     if (self.collectionView.contentSize.height <self.collectionView.frame.size.height)
     {
         [self.collectionView setContentSize:CGSizeMake(self.collectionView.contentSize.width, self.collectionView.frame.size.height +10)];
     }
-    [self endRefreshing];
+    
 }
 
 -(void)getLatestDataAnimated
 {
-    [self.collectionView setContentOffset:CGPointMake(0, -80) animated:YES];
-    [self.refreshControl beginRefreshing];
-    [self getLatestData];
+    if (self.shouldRefreshData)
+    {
+        [self.refreshControl beginRefreshing];
+        [self.collectionView setContentOffset:CGPointMake(0, -90) animated:NO];
+        [self getLatestData];
+        
+    }
 }
 
 

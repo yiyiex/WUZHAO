@@ -25,6 +25,8 @@
 #import "UMSocialSinaHandler.h"
 #import "UMSocialQQHandler.h"
 
+#import <Bugly/CrashReporter.h>
+
 @interface AppDelegate ()<BPushDelegate>
 {
     NSString *myDeviceToken;
@@ -37,6 +39,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [GlobalAppearance setGlobalAppearance];
+    [[CrashReporter sharedInstance]installWithAppId:@"900006753"];
+    [[CrashReporter sharedInstance]enableLog:YES];
+    
     if (launchOptions)
     {
         NSDictionary * userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -233,6 +238,8 @@
         }
     }
 }
+
+
 
 
 @end

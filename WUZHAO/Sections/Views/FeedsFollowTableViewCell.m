@@ -50,9 +50,13 @@
     NSRange userNameRange = [content rangeOfString:feeds.feedsUser.UserName];
     NSRange timeRange = [content rangeOfString:feeds.time];
     NSRange staticStringRange = [content rangeOfString:@" 关注了你"];
-    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:userNameRange];
-    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE} range:timeRange];
-    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE} range:staticStringRange];
+    NSRange wholeRange = NSMakeRange(0, [attributeContent length]);
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineSpacing = 4;
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE,NSParagraphStyleAttributeName:paragraphStyle} range:userNameRange];
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle} range:timeRange];
+    [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_BOLD_SIZE,NSParagraphStyleAttributeName:paragraphStyle} range:staticStringRange];
+    
     self.contentLabel.attributedText = attributeContent;
     self.contentTextView.attributedText = attributeContent;
     [self.contentTextView linkUserNameWithUserList:@[feeds.feedsUser]];

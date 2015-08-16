@@ -20,7 +20,11 @@
 - (BOOL)gestureRecognizer:(UIPanGestureRecognizer *)gestureRecognizer
 shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIPanGestureRecognizer *)otherGestureRecognizer
 {
-    return NO;
+    if ([otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && [otherGestureRecognizer.view isKindOfClass:[UITableView class]])
+    {
+        return YES;
+    }
+    return YES;
 }
 
 

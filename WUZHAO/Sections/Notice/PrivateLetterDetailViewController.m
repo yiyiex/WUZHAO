@@ -15,6 +15,8 @@
 #import "UIButton+ChangeAppearance.h"
 #import "macro.h"
 #import "SVProgressHUD.h"
+#import "MineViewController.h"
+#import "UIViewController+Basic.h"
 
 #import "UIImageView+WebCache.h"
 
@@ -266,6 +268,10 @@
         }
         [cell configureCellWithMessage:message];
         [cell.avatarView sd_setImageWithURL:[NSURL URLWithString:self.conversation.me.avatarImageURLString]];
+        UITapGestureRecognizer *avatarTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(avatarTapped:)];
+        [cell.avatarView addGestureRecognizer:avatarTap];
+        [cell.avatarView setUserInteractionEnabled:YES];
+        
         //failedinfo gesture
         if (message.isFailed)
         {
@@ -287,6 +293,9 @@
         }
         [cell configureCellWithMessage:message];
         [cell.avatarView sd_setImageWithURL:[NSURL URLWithString:self.conversation.other.avatarImageURLString]];
+        UITapGestureRecognizer *avatarTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(avatarTapped:)];
+        [cell.avatarView addGestureRecognizer:avatarTap];
+        [cell.avatarView setUserInteractionEnabled:YES];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }
@@ -377,6 +386,17 @@
     [alertController addAction:retryAction];
     [self presentViewController:alertController animated:YES completion:nil];
 }
+-(void)avatarTapped:(UIGestureRecognizer *)gesture
+{
+    UIImageView *avatar = (UIImageView *)gesture.view;
+    UITableViewCell *cell = (UITableViewCell *)avatar.superview.superview;
+    NSIndexPath *indexPath = [self.conversationTableView indexPathForCell:cell];
+    NSMutableArray *sectionList = self.conversation.messageList[indexPath.section];
+    Message *message = sectionList[indexPath.row];
+    User *user = [[User alloc]init];
+    user.UserID = message.fromId;
+    [self goToPersonalPageWithUserInfo:user];
+}
 
 #pragma mark - control the model
 -(void)resendCommentAtIndexPath:(NSIndexPath *)indexPath
@@ -461,6 +481,14 @@
         [self.refreshControl endRefreshing];
     }
     self.shouldRefreshData = YES;
+}
+
+-(void)goToPersonalPageWithUserInfo:(User *)user
+{
+    UIStoryboard *personalStoryboard= [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
+    MineViewController *personalViewCon = [personalStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
+    [personalViewCon setUserInfo:user];
+    [self pushToViewController:personalViewCon animated:YES hideBottomBar:YES];
 }
 
 @end

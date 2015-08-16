@@ -162,7 +162,6 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     [[QDYHTTPClient sharedInstance]getSubjectListBannerWhenComplete:^(NSDictionary *result) {
         if ([result objectForKey:@"data"])
         {
-            
             self.subjectList = [result objectForKey:@"data"];
             [self loadData];
         }

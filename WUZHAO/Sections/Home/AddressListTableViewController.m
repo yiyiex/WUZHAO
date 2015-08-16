@@ -38,7 +38,7 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"HomeAddressListCell" bundle:nil] forCellReuseIdentifier:@"AddressListCell"];
     self.tableView.allowsSelection = NO;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [self getLatestData];
+    //[self getLatestDataAnimated];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
 }
@@ -47,7 +47,7 @@
 {
     if (self.datasource.count == 0 || !self.datasource)
     {
-        [self getLatestData];
+        [self getLatestDataAnimated];
     }
 }
 
@@ -156,6 +156,7 @@
         if ([[result objectForKey:@"success"]isEqualToString:@"NO"])
         {
             NSLog(@"定位失败");
+            [self endRefreshing];
         }
         else
         {
@@ -171,11 +172,12 @@
                 {
                     [SVProgressHUD showErrorWithStatus:@"获取数据失败"];
                 }
+                [self endRefreshing];
                 
             }];
           
         }
-        [self endRefreshing];
+       
     }];
     
 
@@ -226,7 +228,7 @@
 #pragma mark - notification
 -(void)clearUserInfo
 {
-    self.datasource = nil;
+    self.datasource = [[NSMutableArray alloc]initWithArray:@[]];
     [self.tableView reloadData];
 }
 

@@ -33,8 +33,10 @@
 */
 -(void)linkUserNameWithUserList:(NSArray *)userList
 {
-    defaultAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
-    highlightedAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARKER,NSFontAttributeName:WZ_FONT_COMMON_SIZE};
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+    paragraphStyle.lineSpacing = 4;
+    defaultAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARK,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle};
+    highlightedAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_DARKER,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle};
     [userList enumerateObjectsUsingBlock:^(User *user, NSUInteger idx, BOOL *stop) {
         LinkedStringRangeTapHandler taphandler = ^(NSRange linkStringRange) {
             if ([self.noticeContentTextViewDelegate respondsToSelector:@selector(noticeContentTextView:didClickLinkUser:)])

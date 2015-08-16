@@ -235,6 +235,13 @@
 		7D65E2171A39701E00F84754 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D65E2161A39701E00F84754 /* AppDelegate.m */; };
 		7D65E2221A39701E00F84754 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7D65E2211A39701E00F84754 /* Images.xcassets */; };
 		7D65E2311A39701E00F84754 /* WUZHAOTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D65E2301A39701E00F84754 /* WUZHAOTests.m */; };
+		7D6764C11B7DE65100389C76 /* panel_handle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D6764BF1B7DE65100389C76 /* panel_handle@2x.png */; };
+		7D6764C21B7DE65100389C76 /* panel_handle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D6764C01B7DE65100389C76 /* panel_handle@3x.png */; };
+		7D6764C51B7DFF5500389C76 /* province_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D6764C31B7DFF5500389C76 /* province_back@2x.png */; };
+		7D6764C61B7DFF5500389C76 /* province_back@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D6764C41B7DFF5500389C76 /* province_back@3x.png */; };
+		7D6764C91B7E512B00389C76 /* share_c@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D6764C71B7E512B00389C76 /* share_c@2x.png */; };
+		7D6764CA1B7E512B00389C76 /* share_c@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D6764C81B7E512B00389C76 /* share_c@3x.png */; };
+		7D6764CF1B8045BD00389C76 /* Bugly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D6764CE1B8045BD00389C76 /* Bugly.framework */; };
 		7D686E6E1A592ED200A61E0A /* Address.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7D686E6D1A592ED200A61E0A /* Address.storyboard */; };
 		7D6A67EC1A5EB2290021F12C /* UITabBarController+HideTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A67EB1A5EB2290021F12C /* UITabBarController+HideTabBar.m */; };
 		7D6CDBD81AA0491800BD2597 /* POISearchAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6CDBD71AA0491800BD2597 /* POISearchAPI.m */; };
@@ -377,6 +384,7 @@
 		7DA5BE941A9DBCD800C8BA4B /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DA5BE931A9DBCD800C8BA4B /* libstdc++.6.0.9.dylib */; };
 		7DA5BE971A9DBCEB00C8BA4B /* AMapSearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DA5BE951A9DBCEB00C8BA4B /* AMapSearchKit.framework */; };
 		7DA5BE981A9DBCEB00C8BA4B /* MAMapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DA5BE961A9DBCEB00C8BA4B /* MAMapKit.framework */; };
+<<<<<<< HEAD
 		7DA77A5C1B7B410F00D94594 /* WZStickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA77A5B1B7B410F00D94594 /* WZStickerView.m */; };
 		7DA77A5F1B7B416C00D94594 /* WZStickerBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA77A5E1B7B416C00D94594 /* WZStickerBorderView.m */; };
 		7DA77A671B7B45F200D94594 /* check_small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA77A601B7B45F200D94594 /* check_small@3x.png */; };
@@ -388,6 +396,12 @@
 		7DA77A6D1B7B45F200D94594 /* stickView_resize@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA77A661B7B45F200D94594 /* stickView_resize@3x.png */; };
 		7DA77A701B7B497E00D94594 /* PhotoText.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA77A6F1B7B497E00D94594 /* PhotoText.m */; };
 		7DA77A731B7B4AFA00D94594 /* WZTextStickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA77A721B7B4AFA00D94594 /* WZTextStickerView.m */; };
+=======
+		7DA77A781B7C831D00D94594 /* long_arrow_down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA77A741B7C831D00D94594 /* long_arrow_down@2x.png */; };
+		7DA77A791B7C831D00D94594 /* long_arrow_down@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA77A751B7C831D00D94594 /* long_arrow_down@3x.png */; };
+		7DA77A7A1B7C831D00D94594 /* long_arrow_flat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA77A761B7C831D00D94594 /* long_arrow_flat@2x.png */; };
+		7DA77A7B1B7C831D00D94594 /* long_arrow_flat@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA77A771B7C831D00D94594 /* long_arrow_flat@3x.png */; };
+>>>>>>> master
 		7DAD6FA41B4B76B20051221D /* AddressMarkAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DAD6FA31B4B76B20051221D /* AddressMarkAnnotationView.m */; };
 		7DAD6FA71B4B7AF70051221D /* AddressMarkAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DAD6FA61B4B7AF60051221D /* AddressMarkAnnotation.m */; };
 		7DAD6FAF1B4D05B40051221D /* camera_dark@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DAD6FA81B4D05B40051221D /* camera_dark@3x.png */; };
@@ -921,6 +935,13 @@
 		7D65E22A1A39701E00F84754 /* WUZHAOTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WUZHAOTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D65E22F1A39701E00F84754 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7D65E2301A39701E00F84754 /* WUZHAOTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WUZHAOTests.m; sourceTree = "<group>"; };
+		7D6764BF1B7DE65100389C76 /* panel_handle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "panel_handle@2x.png"; sourceTree = "<group>"; };
+		7D6764C01B7DE65100389C76 /* panel_handle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "panel_handle@3x.png"; sourceTree = "<group>"; };
+		7D6764C31B7DFF5500389C76 /* province_back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "province_back@2x.png"; sourceTree = "<group>"; };
+		7D6764C41B7DFF5500389C76 /* province_back@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "province_back@3x.png"; sourceTree = "<group>"; };
+		7D6764C71B7E512B00389C76 /* share_c@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share_c@2x.png"; sourceTree = "<group>"; };
+		7D6764C81B7E512B00389C76 /* share_c@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share_c@3x.png"; sourceTree = "<group>"; };
+		7D6764CE1B8045BD00389C76 /* Bugly.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bugly.framework; path = WUZHAO/FrameWorks/Bugly.framework; sourceTree = "<group>"; };
 		7D686E6D1A592ED200A61E0A /* Address.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Address.storyboard; path = WUZHAO/Storyboard/Address.storyboard; sourceTree = "<group>"; };
 		7D6A67EA1A5EB2290021F12C /* UITabBarController+HideTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UITabBarController+HideTabBar.h"; path = "WUZHAO/General/UITabBarController+HideTabBar.h"; sourceTree = "<group>"; };
 		7D6A67EB1A5EB2290021F12C /* UITabBarController+HideTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UITabBarController+HideTabBar.m"; path = "WUZHAO/General/UITabBarController+HideTabBar.m"; sourceTree = "<group>"; };
@@ -1384,6 +1405,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D6764CF1B8045BD00389C76 /* Bugly.framework in Frameworks */,
 				7D11C1EE1B56928C00C400D6 /* libiconv.dylib in Frameworks */,
 				7DA5BE7C1A9DBC6200C8BA4B /* Security.framework in Frameworks */,
 				7D11C1EA1B5665D300C400D6 /* libsqlite3.0.dylib in Frameworks */,
@@ -1852,6 +1874,16 @@
 		7D4576F91A611B5000786533 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				7D6764C71B7E512B00389C76 /* share_c@2x.png */,
+				7D6764C81B7E512B00389C76 /* share_c@3x.png */,
+				7D6764C31B7DFF5500389C76 /* province_back@2x.png */,
+				7D6764C41B7DFF5500389C76 /* province_back@3x.png */,
+				7D6764BF1B7DE65100389C76 /* panel_handle@2x.png */,
+				7D6764C01B7DE65100389C76 /* panel_handle@3x.png */,
+				7DA77A741B7C831D00D94594 /* long_arrow_down@2x.png */,
+				7DA77A751B7C831D00D94594 /* long_arrow_down@3x.png */,
+				7DA77A761B7C831D00D94594 /* long_arrow_flat@2x.png */,
+				7DA77A771B7C831D00D94594 /* long_arrow_flat@3x.png */,
 				7DDF8FB51B79E8F70069878E /* camera_float@2x.png */,
 				7DDF8FB61B79E8F70069878E /* camera_float@3x.png */,
 				7DDF8FAA1B78D22A0069878E /* title_icon@2x.png */,
@@ -2611,6 +2643,7 @@
 		7DE0669E1A3F037F008086BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7D6764CE1B8045BD00389C76 /* Bugly.framework */,
 				7D11C1ED1B56928C00C400D6 /* libiconv.dylib */,
 				7D11C1E91B5665D300C400D6 /* libsqlite3.0.dylib */,
 				7D14B1051B19752C00DDF176 /* GLKit.framework */,
@@ -2939,6 +2972,7 @@
 				7D65E20B1A39701E00F84754 /* Frameworks */,
 				7D65E20C1A39701E00F84754 /* Resources */,
 				7DD0E4221AA01028002AF97D /* Embed Frameworks */,
+				7D6764D01B8078C400389C76 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -3027,6 +3061,7 @@
 				7D9A78571AE9034C00CD7287 /* person@3x.png in Resources */,
 				7D0290F61AD3D64B003D8393 /* RecommendCell.xib in Resources */,
 				7D9A786C1AE9054400CD7287 /* heart.png in Resources */,
+				7D6764C51B7DFF5500389C76 /* province_back@2x.png in Resources */,
 				7D9A78551AE9034C00CD7287 /* person.png in Resources */,
 				7DF606411AED06C1008DCEA4 /* map-maker-22.png in Resources */,
 				7D7047DD1A45CDFB00EC0D40 /* flashing_on.png in Resources */,
@@ -3042,6 +3077,7 @@
 				7D11C1E51B565C7800C400D6 /* ios-social-sdk-shake.html in Resources */,
 				7DAD6FD01B4D5EF10051221D /* map-marker-button_s@2x.png in Resources */,
 				7D09E7B71B46403F002E0CF0 /* 剪裁@3x.png in Resources */,
+				7D6764C21B7DE65100389C76 /* panel_handle@3x.png in Resources */,
 				7D9A78781AE9054500CD7287 /* trash@2x.png in Resources */,
 				7D1DAF9B1B58F9A6001BE641 /* add@2x.png in Resources */,
 				7D00BF5A1B2194FD00374EC0 /* 高斯模糊@2x.png in Resources */,
@@ -3123,7 +3159,11 @@
 				7DB427321B579DB50062DEE9 /* wechat_off.png in Resources */,
 				7D11C1741B5601EA00C400D6 /* UMSCommentDetailController.xib in Resources */,
 				7DEE7B121AB06EA100A38AA3 /* UserList.storyboard in Resources */,
+<<<<<<< HEAD
 				7DA77A681B7B45F200D94594 /* menuIcon_close@2x.png in Resources */,
+=======
+				7D6764C91B7E512B00389C76 /* share_c@2x.png in Resources */,
+>>>>>>> master
 				7D00BE941B21508A00374EC0 /* 高斯模糊.png in Resources */,
 				7DA2CE911B54BAAC0016EAC6 /* intro1.png in Resources */,
 				7D00BF8A1B21F4D900374EC0 /* 滤镜_s@3x.png in Resources */,
@@ -3135,6 +3175,7 @@
 				7DDF8FC41B7B03FE0069878E /* text_s@2x.png in Resources */,
 				7D00BE6D1B206AEC00374EC0 /* 褪色.png in Resources */,
 				7D65E2221A39701E00F84754 /* Images.xcassets in Resources */,
+				7DA77A791B7C831D00D94594 /* long_arrow_down@3x.png in Resources */,
 				7D00BF841B21A20800374EC0 /* location_green@3x.png in Resources */,
 				7D00BF541B2194FD00374EC0 /* 对比度@2x.png in Resources */,
 				7D7047E81A45CDFB00EC0D40 /* touch_focus@2x.png in Resources */,
@@ -3164,6 +3205,7 @@
 				7D00BF7B1B2194FD00374EC0 /* grain@3x.png in Resources */,
 				7DF0C24D1B661016005698C3 /* flag_green@2x.png in Resources */,
 				7DDF8FB71B79E8F70069878E /* camera_float@2x.png in Resources */,
+				7D6764C11B7DE65100389C76 /* panel_handle@2x.png in Resources */,
 				7D00BF791B2194FD00374EC0 /* 晕影@3x.png in Resources */,
 				7D00BF751B2194FD00374EC0 /* 颜色@3x.png in Resources */,
 				7D9A78751AE9054400CD7287 /* map-marker.png in Resources */,
@@ -3187,6 +3229,7 @@
 				7D0522531B633B1700A26AD7 /* filter_addImage@2x.png in Resources */,
 				7DF0C2421B65208B005698C3 /* message_me@2x.png in Resources */,
 				7DC29DA11A3F10450065BBD2 /* Search.storyboard in Resources */,
+				7D6764C61B7DFF5500389C76 /* province_back@3x.png in Resources */,
 				7D7FADC01AC6C62300AC9BD1 /* cameraroll-picker-grip@3x.png in Resources */,
 				7D00BE761B206AEC00374EC0 /* grain.png in Resources */,
 				7DAD6FB31B4D05B40051221D /* earth@3x.png in Resources */,
@@ -3232,6 +3275,7 @@
 				7DAD6FD21B4D5EF10051221D /* map-marker-button@2x.png in Resources */,
 				7DC29DA31A3F105D0065BBD2 /* Share.storyboard in Resources */,
 				7D09E7B61B46403F002E0CF0 /* 剪裁@2x.png in Resources */,
+				7DA77A7B1B7C831D00D94594 /* long_arrow_flat@3x.png in Resources */,
 				7D09E7C11B465080002E0CF0 /* adaptive_s@3x.png in Resources */,
 				7DB4272E1B579DB50062DEE9 /* sina_off.png in Resources */,
 				7DA77A691B7B45F200D94594 /* menuIcon_open@2x.png in Resources */,
@@ -3258,11 +3302,13 @@
 				7DF0C23A1B65070A005698C3 /* OtherMessageCell.xib in Resources */,
 				7D00BF821B21A20800374EC0 /* location_green.png in Resources */,
 				7D9A783B1AE8F00D00CD7287 /* trash.png in Resources */,
+				7DA77A781B7C831D00D94594 /* long_arrow_down@2x.png in Resources */,
 				7D00BF571B2194FD00374EC0 /* 肤色@3x.png in Resources */,
 				7D7047E11A45CDFB00EC0D40 /* shot_h.png in Resources */,
 				7DAD6FC01B4D48D20051221D /* cover.png in Resources */,
 				7D09E7C21B465080002E0CF0 /* adaptive@2x.png in Resources */,
 				7DAD6FCF1B4D5EF10051221D /* icon-all-v2.png in Resources */,
+				7D6764CA1B7E512B00389C76 /* share_c@3x.png in Resources */,
 				7D09E7CB1B465C63002E0CF0 /* arrow_up@2x.png in Resources */,
 				7D09E7BB1B4640BA002E0CF0 /* 剪裁_s@3x.png in Resources */,
 				7D00BE8E1B214E5C00374EC0 /* 颜色.png in Resources */,
@@ -3271,6 +3317,7 @@
 				7D00BF631B2194FD00374EC0 /* 亮度@3x.png in Resources */,
 				7D7047D81A45CDFB00EC0D40 /* close_cha_h@2x.png in Resources */,
 				7D00BF621B2194FD00374EC0 /* 亮度@2x.png in Resources */,
+				7DA77A7A1B7C831D00D94594 /* long_arrow_flat@2x.png in Resources */,
 				7D00BE4C1B206AEC00374EC0 /* 饱和度.png in Resources */,
 				7D17D8BF1A660B5600FD8713 /* 37x-Checkmark@2x.png in Resources */,
 				7DDF8F751B7347770069878E /* map_arrow_down@2x.png in Resources */,
@@ -3318,6 +3365,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7D6764D01B8078C400389C76 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\n# Copyright 2014-2015 Bugly @Tencent. All rights reserved.\n#\n# V 1.1\n#\n################################################################################\n# 注意: 请配置下面的信息\n################################################################################\nBUGLY_APP_ID=\"900006753\"\nBUGLY_APP_KEY=\"YosRWDJ9ivnaQiTq\"\nBUNDLE_IDENTIFIER=\"com.yiyi.placeapp\"\n################################################################################\n# 自定义配置\n################################################################################\n# Debug模式编译是否上传，1＝上传 0＝不上传，默认不上传\nUPLOAD_DEBUG_SYMBOLS=1\n#\n# 模拟器编译是否上传，1=上传 0=不上传，默认不上传\nUPLOAD_SIMULATOR_SYMBOLS=1\n#\n# # 脚本默认配置的版本格式为CFBundleShortVersionString(CFBundleVersion),  如果你修改默认的版本格式, 请设置此变量, 如果不想修改, 请忽略此设置\n# CUSTOMIZED_APP_VERSION=\"\"\n#\n#\n#\n# This script will extract symbols from the .dSYM and generate .symbol file(Bugly supported) and upload to server.\n# You could visit http://bugly.qq.com to get more details about Bugly.\n#\n# Usage:\n#   * The instructions assume you have copyed this script into your project int Xcode.\n#   * Copy the \"buglySymbolIOS.jar\" file into the \"~/bin\" folder.\n#   * Open the project editor, select your build target.\n#   * Click \"Build Phases\" at the top of the project editor.\n#   * Click \"+\" button in the top left corner and select \"New Run Script Phase\".\n#   * Click \"Run Script\".\n#   * Paste the following script into the dark text box. You will have to uncomment the lines (remove the #) of course.\n#\n# --- SCRIPT BEGINS ON NEXT LINE, COPY AND EDIT FROM THERE ---\n#\n#\n#\n# --- END OF SCRIPT ---\n\n\n################################################################################\n# 注意: 如果你不知道此脚本的执行流程和用法，请不要随便修改！\n################################################################################\n\n# 退出执行并打印提示信息\nexitWithMessage() {\n    echo \"--------------------------------\"\n    echo -e \"${1}\"\n    echo \"--------------------------------\"\n    echo \"No upload and exit.\"\n    echo \"----------------------------------------------------------------\"\n    exit ${2}\n}\n\necho \"----------------------------------------------------------------\"\necho \"Copyright 2014-2015 Bugly @Tencent. All rights reserved.\"\n\necho \"This script will extract symbols from the .dSYM file and generate .symbol file(Bugly supported) and upload to server.\"\necho \"You could visit http://bugly.qq.com to get more details about Bugly.\"\necho \"----------------------------------------------------------------\"\n\necho \"Uploading dSYM to Bugly.\"\necho \"\"\n\n# Bugly服务域名\nDSYM_UPLOAD_DOMAIN=\"bugly.qq.com\"\n\n# 读取Info.plist文件中的版本信息\necho \"Info.Plist : ${INFOPLIST_FILE}\"\n\nBUNDLE_VERSION=$(/usr/libexec/PlistBuddy -c 'Print CFBundleVersion' \"${INFOPLIST_FILE}\")\nBUNDLE_SHORT_VERSION=$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' \"${INFOPLIST_FILE}\")\n\n# 组装Bugly默认识别的版本信息(格式为CFBundleShortVersionString(CFBundleVersion), 例如: 1.0(1))\nif [ ! \"${CUSTOMIZED_APP_VERSION}\" ]; then\nBUGLY_APP_VERSION=\"${BUNDLE_SHORT_VERSION}(${BUNDLE_VERSION})\"\nelse\nBUGLY_APP_VERSION=\"${CUSTOMIZED_APP_VERSION}\"\nfi\n\n# Bugly符号提取工具路径, 请确保已经把对应的buglySymboliOS.jar拷贝到目录~/bin\nBUGLY_SYMBOL_JAR_PATH=\"$HOME/bin/buglySymboliOS.jar\"\n\necho \"--------------------------------\"\necho \"Step 1: Prepare application information.\"\necho \"--------------------------------\"\n\necho \"Product Name: ${PRODUCT_NAME}\"\necho \"Bundle Identifier: ${BUNDLE_IDENTIFIER}\"\necho \"Version: ${BUNDLE_SHORT_VERSION}\"\necho \"Build: ${BUNDLE_VERSION}\"\n\necho \"Bugly App ID: ${BUGLY_APP_ID}\"\necho \"Bugly App key: ${BUGLY_APP_KEY}\"\necho \"Bugly App Version: ${BUGLY_APP_VERSION}\"\n\necho \"--------------------------------\"\necho \"Step 2: Check the arguments ...\"\n\n# 检查模拟器编译是否允许上传符号\nif [ \"$EFFECTIVE_PLATFORM_NAME\" == \"-iphonesimulator\" ]; then\nif [ $UPLOAD_SIMULATOR_SYMBOLS -eq 0 ]; then\nexitWithMessage \"Warning: Build for simulator and skipping to upload. \\nYou can modify 'UPLOAD_SIMULATOR_SYMBOLS' to 1 in the script.\" 0\nfi\nfi\n\nif [ \"${CONFIGURATION=}\" == \"Debug\" ]; then\nif [ $UPLOAD_DEBUG_SYMBOLS -eq 0 ]; then\nexitWithMessage \"Warning: Build for debug mode and skipping to upload. \\nYou can modify 'UPLOAD_DEBUG_SYMBOLS' to 1 in the script.\" 0\nfi\nfi\n\n# 检查必须参数是否设置\nif [ ! \"${BUGLY_APP_ID}\" ]; then\nexitWithMessage \"Error: Bugly App ID not defined.\" 1\nfi\n\nif [ ! \"${BUGLY_APP_KEY}\" ]; then\nexitWithMessage \"Error: Bugly APP Key not defined.\" 1\nfi\n\nif [ ! \"${BUNDLE_IDENTIFIER}\" ]; then\nexitWithMessage \"Error: Bundle Identifier not defined.\" 1\nfi\n\nfunction uploadDSYM {\n    DSYM_SRC=\"$1\"\n    echo \".dSYM file: ${DSYM_SRC}\"\n    if [ ! -d \"$DSYM_SRC\" ]; then\n    exitWithMessage \"dSYM source not found: ${DSYM_SRC}\" 1\n    fi\n    DSYM_FILE_NAME=${DSYM_SRC##*/}\n        DSYM_SYMBOL_OUT_ZIP_NAME=\"${DSYM_FILE_NAME}.bSymbol.zip\"\n        # 替换空格\n        DSYM_SYMBOL_OUT_ZIP_NAME=\"${DSYM_SYMBOL_OUT_ZIP_NAME// /_}\"\n        DSYM_ZIP_FPATH=\"${BUILT_PRODUCTS_DIR}/${DSYM_SYMBOL_OUT_ZIP_NAME}\"\n        \n        DSYM_SYMBOL_BACKUP_DIR=${BUILD_DIR}/Symbols\n        \n        if [ ! -e \"${DSYM_SYMBOL_BACKUP_DIR}\" ]; then\n        mkdir ${DSYM_SYMBOL_BACKUP_DIR}\n        fi\n        \n        # 备份并清理\n        find ${BUILT_PRODUCTS_DIR} -name \"*.zip\" -print0 | xargs -0 -I {} mv {} ${DSYM_SYMBOL_BACKUP_DIR}\n        /bin/rm -rf \"${BUILT_PRODUCTS_DIR}/*.zip\"\n        \n        echo \"Extract symbols from dSYM to ${DSYM_ZIP_FPATH}.\"\n        \n        echo \"--------------------------------\"\n        (/usr/bin/java -jar \"${BUGLY_SYMBOL_JAR_PATH}\" -i \"${DSYM_SRC}\" -o \"${DSYM_ZIP_FPATH}\" ) || exitWithMessage \"Error: Failed to extract symbols.\" 1\n        echo \"--------------------------------\"\n        \n        if [ ! -e \"${DSYM_ZIP_FPATH}\" ]; then\n        DSYM_SYMBOL_OUT_ZIP_NAME=$(ls ${BUILT_PRODUCTS_DIR} | grep \".zip\")\n        DSYM_ZIP_FPATH=\"${BUILT_PRODUCTS_DIR}/${DSYM_SYMBOL_OUT_ZIP_NAME}\"\n        DSYM_SYMBOL_OUT_ZIP_NAME=${DSYM_SYMBOL_OUT_ZIP_NAME//&/_}\n            fi\n            \n            if [ ! -e \"${DSYM_ZIP_FPATH}\" ] ; then\n            exitWithMessage \"no symbol file zip archive generated: ${DSYM_ZIP_FPATH}\" 1\n            fi\n            \n            # 提取符号信息\n            echo \"--------------------------------\"\n            echo \"Step 3: Extract symbol info from .dSYM file.\"\n            \n            if [ ! -e \"$BUGLY_SYMBOL_JAR_PATH\" ]; then\n            exitWithMessage \"Error: Jar file '${BUGLY_SYMBOL_JAR_PATH}' was not found. \\nPlease copy the jar file into ~/bin folder.\" 1\n            fi\n            \n            echo \"Step 4: Upload the symbols of dSYM.\"\n            echo \"--------------------------------\"\n            echo \"zip : ${DSYM_SYMBOL_OUT_ZIP_NAME}\"\n            echo \"dir : ${DSYM_ZIP_FPATH}\"\n            \n            echo \"dSYM upload domain: ${DSYM_UPLOAD_DOMAIN}\"\n            DSYM_UPLOAD_URL=\"http://${DSYM_UPLOAD_DOMAIN}/upload/dsym?app=${BUGLY_APP_ID}&pid=2&ver=${BUGLY_APP_VERSION}&n=${DSYM_SYMBOL_OUT_ZIP_NAME}&key=${BUGLY_APP_KEY}&bid=${BUNDLE_IDENTIFIER}\"\n            echo \"dSYM upload url: ${DSYM_UPLOAD_URL}\"\n            \n            # Upload dSYM to Bugly\n            echo \"curl --header \"Content-Type:application/zip\" --data-binary \"@${DSYM_ZIP_FPATH}\" \"${DSYM_UPLOAD_URL}\" --verbose\"\n            \n            echo \"--------------------------------\"\n            STATUS=$(/usr/bin/curl --header \"Content-Type:application/zip\" --data-binary \"@${DSYM_ZIP_FPATH}\" \"${DSYM_UPLOAD_URL}\" --verbose)\n            echo \"--------------------------------\"\n            \n            UPLOAD_RESULT=\"FAILTURE\"\n            echo \"Bugly server response: ${STATUS}\"\n            if [ ! \"${STATUS}\" ]; then\n            echo \"Error: Failed to upload the zip archive file.\"\n            elif [[ \"${STATUS}\" == *\":true\"* ]]; then\n            echo \"Success to upload the dSYM for the app [${BUNDLE_IDENTIFIER} ${BUGLY_APP_VERSION}]\"\n            UPLOAD_RESULT=\"SUCCESS\"\n            else\n            echo \"Error: Failed to upload the zip archive file to Bugly.\"\n            fi\n            \n            #Remove temp dSYM archive\n            echo \"Remove temporary zip archive: ${DSYM_ZIP_FPATH}\"\n            #/bin/rm -f \"${DSYM_ZIP_FPATH}\"\n            \n            if [ \"$?\" -ne 0 ]; then\n            exitWithMessage \"Error: Failed to remove temporary zip archive.\" 1\n            fi\n            \n            echo \"--------------------------------\"\n            echo \"${UPLOAD_RESULT} - dSYM upload complete.\"\n            \n            if [[ \"${UPLOAD_RESULT}\" == \"FAILTURE\" ]]; then\n            echo \"--------------------------------\"\n            echo \"Failed to upload the dSYM\"\n            echo \"Please check the script and try it again.\"\n            fi\n            \n            echo \"----------------------------------------------------------------\"\n        }\n        \n        # .dSYM文件信息\n        \n        echo \"DSYM FOLDER ${DWARF_DSYM_FOLDER_PATH}\"\n        \n        DSYM_FOLDER=\"${DWARF_DSYM_FOLDER_PATH}\"\n        \n        IFS=$'\\n'\n        \n        for dsymFile in $(find \"$DSYM_FOLDER\" -name '*.dSYM'); do\n        echo \"Found dSYM file: $dsymFile\"\n        uploadDSYM $dsymFile\n        done\n        \n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		7D65E20A1A39701E00F84754 /* Sources */ = {
@@ -3663,6 +3726,8 @@
 					"$(PROJECT_DIR)/WUZHAO/Vendor",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/TencentOpenAPI",
+					"/Users/yiyi/Downloads/Bugly-v1.2.9/Bugly_libc++",
+					"$(PROJECT_DIR)/WUZHAO/FrameWorks",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
@@ -3700,6 +3765,8 @@
 					"$(PROJECT_DIR)/WUZHAO/Vendor",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/UMSocial_Sdk_Extra_Frameworks/TencentOpenAPI",
+					"/Users/yiyi/Downloads/Bugly-v1.2.9/Bugly_libc++",
+					"$(PROJECT_DIR)/WUZHAO/FrameWorks",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;

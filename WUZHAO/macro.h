@@ -60,11 +60,12 @@
 #define THEME_COLOR_DARKER_PARENT rgba_WZ(49,120,175,0.5)
 
 
-#define THEME_COLOR_WHITE rgba_WZ(240,240,240,1.0)
+#define THEME_COLOR_WHITE rgba_WZ(238,238,238,1.0)
 
 #define THEME_COLOR_LIGHTER_GREY rgba_WZ(220,220,220,1.0)
 
 #define THEME_COLOR_LIGHT_GREY rgba_WZ(160,160,160,1.0)
+#define THEME_COLOR_LIGHT_GREY_BIT_PARENT rgba_WZ(200,200,200,0.8)
 #define THEME_COLOR_LIGHT_GREY_PARENT rgba_WZ(200,200,200,0.5)
 #define THEME_COLOR_LIGHT_GREY_MORE_PARENT rgba_WZ(200,200,200,0.3)
 
@@ -79,6 +80,12 @@
 #define THEME_COLOR_DARKER_GREY_PARENT rgba_WZ(20,20,25,0.5)
 #define THEME_COLOR_BLACK rgba_WZ(0,0,0,1.0)
 #define THEME_COLOR_BLACK_PARENT rgba_WZ(0,0,0,0.8)
+
+#define THEME_COLOR_RED rgba_WZ(223,34,23,1.0)
+#define THEME_COLOR_FONT_GREY rgba_WZ(153,153,153,1.0)
+#define THEME_COLOR_FONT_DARK_GREY rgba_WZ(102,102,102,1.0)
+#define THEME_COLOR_FONT_BLACK rgba_WZ(51,51,51,1.0)
+
 
 
 //控件相关颜色
@@ -157,7 +164,18 @@
 #define WZ_FONT_NAME_BOLD @"Helvetica-Bold"
 
 #define Hiragino_W3_Name @"HiraKakuProN-W3"
+#define Hiragino_W6_Name @"HiraKakuProN-W6"
 
+#define WZ_FONT_NUMBER_LONG [UIFont fontWithName:@"Heiti SC" size:34]
+
+#define WZ_FONT_HIRAGINO_SIZE_12 [UIFont fontWithName:Hiragino_W3_Name size:12]
+
+#define WZ_FONT_HIRAGINO_SIZE_14_W6 [UIFont fontWithName:Hiragino_W6_Name size:14]
+#define WZ_FONT_HIRAGINO_SIZE_13 [UIFont fontWithName:Hiragino_W3_Name size:13]
+#define WZ_FONT_HIRAGINO_SIZE_14 [UIFont fontWithName:Hiragino_W3_Name size:14]
+#define WZ_FONT_HIRAGINO_SIZE_15 [UIFont fontWithName:Hiragino_W3_Name size:15]
+#define WZ_FONT_HIRAGINO_SIZE_16 [UIFont fontWithName:Hiragino_W3_Name size:16]
+#define WZ_FONT_HIRAGINO_SIZE_17 [UIFont fontWithName:Hiragino_W3_Name size:17]
 #define WZ_FONT_HIRAGINO_LARGE_SIZE [UIFont fontWithName:Hiragino_W3_Name size:40]
 #define WZ_FONT_HIRAGINO_MID_SIZE [UIFont fontWithName:Hiragino_W3_Name size:22]
 #define WZ_FONT_HIRAGINO_SMALL_SIZE [UIFont fontWithName:Hiragino_W3_Name size:14]

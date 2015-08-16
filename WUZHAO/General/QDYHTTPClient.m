@@ -670,6 +670,45 @@
     }];
 }
 
+-(void)getDashbordInfoWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/dashboard"];
+    NSDictionary *param = @{@"userid":[NSNumber numberWithInteger:userId]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                if ([result objectForKey:@"data"])
+                {
+                    NSDictionary *data = [result objectForKey:@"data"];
+                    NSDictionary *dashboardInfo = [data objectForKey:@"dashboardInfo"];
+                    [returnData setObject:dashboardInfo forKey:@"data"];
+                }
+                else
+                {
+                    [returnData setValue:@"服务器错误" forKey:@"error"];
+                }
+                
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器异常" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
 -(void)PostAvatorWithUserId:(NSInteger)userId avatorName:(NSString *)avatarName whenComplete:(void (^)(NSDictionary *))whenComplete
 {
     NSString *api = [NSString stringWithFormat:@"api/avatar/%ld",(long)userId];

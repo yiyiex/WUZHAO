@@ -132,7 +132,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         [commentCell reloadInputViews];
         [self.tableView endUpdates];
     }
-    if (self.datasource == nil)
+    if (self.datasource == nil || self.datasource.count == 0)
     {
         [self getLatestDataAnimated];
     }
@@ -258,7 +258,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     {
         [self.tableView setContentOffset:CGPointMake(0, -64) animated:YES];
     }
-    
+    [self setupLoadMore];
 }
 
 
@@ -814,6 +814,8 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         if ([result objectForKey:@"data"])
         {
             self.recommandDatasource  = [result objectForKey:@"data"];
+            NSIndexSet *set = [NSIndexSet indexSetWithIndex:0];
+            [self.tableView reloadSections:set withRowAnimation:UITableViewRowAnimationAutomatic];
         }
         else if ([result objectForKey:@"error"])
         {
@@ -829,60 +831,44 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         [[NSNotificationCenter defaultCenter]postNotificationName:@"logOut" object:nil];
         return;
     }
-    //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
     if (self.shouldRefreshData == false)
     {
         return;
     }
     self.shouldRefreshData = false;
-    /*
-    if (![self.refreshControl isRefreshing])
-    {
-        [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
-    }*/
     if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
     {
         self.recommandDatasource = nil;
         [self getRecommandUser];
         self.currentPage = 1;
         [self starRightBartAiv];
-        
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            [[QDYHTTPClient sharedInstance]GetWhatsGoingOnWithUserId:self.currentUser.UserID page:self.currentPage whenComplete:^(NSDictionary *result) {
-             self.shouldRefreshData = YES;
-            [self stopRightBarAiv];
-             dispatch_async(dispatch_get_main_queue(), ^{
-                 
-                 if ([result objectForKey:@"data"] )
+        [[QDYHTTPClient sharedInstance]GetWhatsGoingOnWithUserId:self.currentUser.UserID page:self.currentPage whenComplete:^(NSDictionary *result) {
+         self.shouldRefreshData = YES;
+        [self stopRightBarAiv];
+         if ([result objectForKey:@"data"] )
+         {
+             self.datasource = [result objectForKey:@"data"];
+             if (self.datasource.count == 0)
+             {
+                 //[self addIntroductionButton];
+                 self.datasource = [[NSMutableArray alloc]initWithArray:@[]];
+             }
+             else
+             {
+                 /*
+                 if (self.introductionView)
                  {
-                     
-                     self.datasource = [result objectForKey:@"data"];
-                     if (self.datasource.count == 0)
-                     {
-                         [self addIntroductionButton];
-                         self.datasource = [[NSMutableArray alloc]initWithArray:@[]];
-                     }
-                     else
-                     {
-                         if (self.introductionView)
-                         {
-                             [self.introductionView removeFromSuperview];
-                         }
-                         [self setupLoadMore];
-                     }
-                     [self loadData];
-                 }
-                 else if ([result objectForKey:@"error"])
-                 {
-                     [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
-                 }
-                 [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
-                 //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-             });
-
-                
-            }];
-        });
+                     [self.introductionView removeFromSuperview];
+                 }*/
+             }
+             [self loadData];
+         }
+         else if ([result objectForKey:@"error"])
+         {
+             [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+         }
+         [self endRefreshing];
+        }];
 
     }
     else if (self.tableStyle == WZ_TABLEVIEWSTYLE_SUGGEST)
@@ -890,41 +876,29 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         self.recommandDatasource = nil;
         self.currentPage = 1;
         [self starRightBartAiv];
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            [[QDYHTTPClient sharedInstance]GetHomeRecommendListWithPageNum:self.currentPage whenComplete:^(NSDictionary *result) {
-                self.shouldRefreshData = true;
-                [self stopRightBarAiv];
-                dispatch_async(dispatch_get_main_queue(), ^{
+        [[QDYHTTPClient sharedInstance]GetHomeRecommendListWithPageNum:self.currentPage whenComplete:^(NSDictionary *result) {
+            self.shouldRefreshData = true;
+            [self stopRightBarAiv];
+            if ([result objectForKey:@"data"] )
+            {
+                
+                self.datasource = [result objectForKey:@"data"];
+                if (self.datasource.count == 0)
+                {
+                    self.datasource = [[NSMutableArray alloc]initWithArray:@[]];
+                }
+                else
+                {
                     
-                    if ([result objectForKey:@"data"] )
-                    {
-                        
-                        self.datasource = [result objectForKey:@"data"];
-                        if (self.datasource.count == 0)
-                        {
-                            [self addIntroductionButton];
-                            self.datasource = [[NSMutableArray alloc]initWithArray:@[]];
-                        }
-                        else
-                        {
-                            if (self.introductionView)
-                            {
-                                [self.introductionView removeFromSuperview];
-                            }
-                            [self setupLoadMore];
-                        }
-                        [self loadData];
-                    }
-                    else if ([result objectForKey:@"error"])
-                    {
-                        [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
-                    }
-                    //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-                });
-                
-                
-            }];
-        });
+                }
+                [self loadData];
+            }
+            else if ([result objectForKey:@"error"])
+            {
+                [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+            }
+            [self endRefreshing];
+        }];
         
     }
 
@@ -933,31 +907,26 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         self.currentPage = 1;
         WhatsGoingOn *item = [self.datasource objectAtIndex:0];
         [self starRightBartAiv];
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            [[QDYHTTPClient sharedInstance ]GetPhotoInfoWithPostId:item.postId userId:self.currentUser.UserID whenComplete:^(NSDictionary *result) {
-                  self.shouldRefreshData = true;
-                [self stopRightBarAiv];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if ([result objectForKey:@"data"])
-                    {
-                        WhatsGoingOn *newItem = [result objectForKey:@"data"];
-                        self.datasource = [NSMutableArray arrayWithObject:newItem];
-                        [self.tableView reloadData];
-                    }
-                    else if ([result objectForKey:@"error"])
-                    {
-                        [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
-                    }
-                    [self.tableView setContentOffset:CGPointMake(0, -64) animated:NO];
-    
-                  
-                });
-                
-            }];
-        });
+        [[QDYHTTPClient sharedInstance ]GetPhotoInfoWithPostId:item.postId userId:self.currentUser.UserID whenComplete:^(NSDictionary *result) {
+              self.shouldRefreshData = true;
+            [self stopRightBarAiv];
+            if ([result objectForKey:@"data"])
+            {
+                WhatsGoingOn *newItem = [result objectForKey:@"data"];
+                self.datasource = [NSMutableArray arrayWithObject:newItem];
+                [self.tableView reloadData];
+            }
+            else if ([result objectForKey:@"error"])
+            {
+                [SVProgressHUD showErrorWithStatus:[result objectForKey:@"error"]];
+            }
+            [self.tableView setContentOffset:CGPointMake(0, -64) animated:NO];
+
+          [self endRefreshing];
+        }];
 
     }
-    [self endRefreshing];
+    
 
 }
 -(void)loadMore
@@ -1059,13 +1028,14 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 -(void)clearUserInfo
 {
     self.currentUser = nil;
-    self.datasource = nil;
-    self.recommandDatasource = nil;
+    self.datasource = [[NSMutableArray alloc]initWithArray:@[]];
+    self.recommandDatasource = [[NSMutableArray alloc]initWithArray:@[]];
+    /*
     if (self.introductionView)
     {
         [self.introductionView removeFromSuperview];
-    }
-    [self.tableView reloadData];
+    }*/
+    [self loadData];
     
 }
 
