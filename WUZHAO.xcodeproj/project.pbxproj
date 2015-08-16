@@ -384,7 +384,6 @@
 		7DA5BE941A9DBCD800C8BA4B /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DA5BE931A9DBCD800C8BA4B /* libstdc++.6.0.9.dylib */; };
 		7DA5BE971A9DBCEB00C8BA4B /* AMapSearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DA5BE951A9DBCEB00C8BA4B /* AMapSearchKit.framework */; };
 		7DA5BE981A9DBCEB00C8BA4B /* MAMapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DA5BE961A9DBCEB00C8BA4B /* MAMapKit.framework */; };
-<<<<<<< HEAD
 		7DA77A5C1B7B410F00D94594 /* WZStickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA77A5B1B7B410F00D94594 /* WZStickerView.m */; };
 		7DA77A5F1B7B416C00D94594 /* WZStickerBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA77A5E1B7B416C00D94594 /* WZStickerBorderView.m */; };
 		7DA77A671B7B45F200D94594 /* check_small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA77A601B7B45F200D94594 /* check_small@3x.png */; };
@@ -396,12 +395,6 @@
 		7DA77A6D1B7B45F200D94594 /* stickView_resize@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA77A661B7B45F200D94594 /* stickView_resize@3x.png */; };
 		7DA77A701B7B497E00D94594 /* PhotoText.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA77A6F1B7B497E00D94594 /* PhotoText.m */; };
 		7DA77A731B7B4AFA00D94594 /* WZTextStickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA77A721B7B4AFA00D94594 /* WZTextStickerView.m */; };
-=======
-		7DA77A781B7C831D00D94594 /* long_arrow_down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA77A741B7C831D00D94594 /* long_arrow_down@2x.png */; };
-		7DA77A791B7C831D00D94594 /* long_arrow_down@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA77A751B7C831D00D94594 /* long_arrow_down@3x.png */; };
-		7DA77A7A1B7C831D00D94594 /* long_arrow_flat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA77A761B7C831D00D94594 /* long_arrow_flat@2x.png */; };
-		7DA77A7B1B7C831D00D94594 /* long_arrow_flat@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA77A771B7C831D00D94594 /* long_arrow_flat@3x.png */; };
->>>>>>> master
 		7DAD6FA41B4B76B20051221D /* AddressMarkAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DAD6FA31B4B76B20051221D /* AddressMarkAnnotationView.m */; };
 		7DAD6FA71B4B7AF70051221D /* AddressMarkAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DAD6FA61B4B7AF60051221D /* AddressMarkAnnotation.m */; };
 		7DAD6FAF1B4D05B40051221D /* camera_dark@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DAD6FA81B4D05B40051221D /* camera_dark@3x.png */; };
@@ -3159,11 +3152,8 @@
 				7DB427321B579DB50062DEE9 /* wechat_off.png in Resources */,
 				7D11C1741B5601EA00C400D6 /* UMSCommentDetailController.xib in Resources */,
 				7DEE7B121AB06EA100A38AA3 /* UserList.storyboard in Resources */,
-<<<<<<< HEAD
 				7DA77A681B7B45F200D94594 /* menuIcon_close@2x.png in Resources */,
-=======
 				7D6764C91B7E512B00389C76 /* share_c@2x.png in Resources */,
->>>>>>> master
 				7D00BE941B21508A00374EC0 /* 高斯模糊.png in Resources */,
 				7DA2CE911B54BAAC0016EAC6 /* intro1.png in Resources */,
 				7D00BF8A1B21F4D900374EC0 /* 滤镜_s@3x.png in Resources */,
