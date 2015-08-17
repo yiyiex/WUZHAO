@@ -23,6 +23,8 @@
 @property (strong, nonatomic)  UITextField *webSiteTextField;
 @property (strong, nonatomic) IBOutlet UITableViewCell *selfDescriptionCell;
 @property (strong, nonatomic)  PlaceholderTextView *selfDescriptionTextView;
+
+@property (strong, nonatomic) IBOutlet UITableViewCell *voteCell;
 @property (strong, nonatomic) IBOutlet UITableViewCell *feedBackCell;
 
 @property (strong, nonatomic) IBOutlet UITableViewCell *changePwdCell;

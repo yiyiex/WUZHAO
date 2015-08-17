@@ -43,6 +43,7 @@
 @property (nonatomic ,strong)  NSMutableArray *searchAddressDataSource;
 @property (nonatomic, strong) UITableView *historyAddressTableView;
 @property (nonatomic, strong) NSMutableArray *historyAddressDataSource;
+@property (nonatomic, strong) UIActivityIndicatorView *historyAiv;
 @property (nonatomic, strong) UIActivityIndicatorView *tableViewAiv;
 @property (nonatomic, strong) UIActivityIndicatorView *locationButtonAiv;
 @property (nonatomic) BOOL searchControllerWasActive;
@@ -96,6 +97,14 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
         _searchAddressDataSource = [[NSMutableArray alloc]init];
     }
     return _searchAddressDataSource;
+}
+
+-(UIActivityIndicatorView *)historyAiv
+{
+    if (!_historyAiv) {
+        _historyAiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    }
+    return _historyAiv;
 }
 
 
@@ -487,6 +496,27 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
             cell.imageView.image = [UIImage imageNamed:@"back_arrow.png"];
             [cell.textLabel setFont:WZ_FONT_LARGE_SIZE];
             [cell.textLabel setTextColor:THEME_COLOR_LIGHT_GREY];
+            if (self.historyAddressDataSource.count == 0)
+            {
+                if ([self.historyAiv superview])
+                {
+                    [self.historyAiv removeFromSuperview];
+                }
+                [self.historyAiv setCenter:CGPointMake(24, 22)];
+                [cell addSubview:self.historyAiv];
+                [cell.imageView setHidden:YES];
+               
+                [self.historyAiv startAnimating];
+            }
+            else
+            {
+                [self.historyAiv stopAnimating];
+                [cell.imageView setHidden:NO];
+                if ([self.historyAiv superview])
+                {
+                    [self.historyAiv removeFromSuperview];
+                }
+            }
         }
         else
         {

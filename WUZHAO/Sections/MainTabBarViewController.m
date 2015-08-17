@@ -21,6 +21,9 @@
 #import "MineViewController.h"
 #import "NoticeViewController.h"
 #import "SCCaptureCameraController.h"
+
+#import "FeedbackViewController.h"
+
 #import "SVProgressHUD.h"
 
 #import "QDYHTTPClient.h"
@@ -116,6 +119,8 @@ static NSInteger loginState = 1;
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showCameraView) name:CaptureViewDidTouchDownInsideNotification object:nil];
     
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showFeedBack) name:@"showFeedbackPage" object:nil];
+    
     /*
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
@@ -141,6 +146,7 @@ static NSInteger loginState = 1;
     
     UIStoryboard *mineStoryboard = [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
     self.mineViewController = [mineStoryboard instantiateViewControllerWithIdentifier:@"personalPage"];
+    
     
     self.homeNav = [[UINavigationController alloc]initWithRootViewController:self.homeViewController];
     self.searchNav = [[UINavigationController alloc]initWithRootViewController:self.searchViewController];
@@ -314,6 +320,12 @@ static NSInteger loginState = 1;
 {
     [self cameraButtonClick:nil];
 }
+-(void)showFeedBack
+{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
+    FeedbackViewController *feedbackController = [storyboard instantiateViewControllerWithIdentifier:@"feedback"];
+    [self presentViewController:feedbackController animated:YES completion:nil];
+}
 #pragma mark - tabbar method
 -(void)hideTabBar
 {
@@ -445,6 +457,8 @@ static NSInteger loginState = 1;
         [defaults synchronize];
         
         [[NSNotificationCenter defaultCenter]postNotificationName:@"deleteUserInfo" object:nil];
+        [self setTabarBadgeWithData:nil atIndex:3];
+        [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
         //reset entry flag
         firstEntryFlag =[NSMutableArray arrayWithArray:@[@0,@0,@0,@0,@0]];
         self.selectedIndex = self.currentTabIndex =  WZ_HOME_TAB;
@@ -492,6 +506,8 @@ static NSInteger loginState = 1;
     [defaults synchronize];
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"deleteUserInfo" object:nil];
+    [self setTabarBadgeWithData:nil atIndex:3];
+    [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
     
     //reset entry flag
     firstEntryFlag =[NSMutableArray arrayWithArray:@[@0,@0,@0,@0,@0]];

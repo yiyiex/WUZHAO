@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>9A297A42-BF81-4779-8E8C-795BDFC0662C</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>WUZHAO</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>409EBEBD01761B678AA0A80445FBA8871C7D7C02</key>
 		<string>https://github.com/yiyiex/WUZHAO.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>WUZHAO.xcodeproj/project.xcworkspace</string>
+	<string>WUZHAO.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>409EBEBD01761B678AA0A80445FBA8871C7D7C02</key>

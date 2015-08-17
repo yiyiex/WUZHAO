@@ -68,7 +68,7 @@
     //右侧保存按钮
     UIButton *save = [[UIButton alloc]init];
     save.titleLabel.text = @"完成";
-    UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(savaButtonPressed)];
+    UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]initWithTitle:@"完成" style:UIBarButtonItemStylePlain target:self action:@selector(saveButtonPressed)];
     self.navigationItem.rightBarButtonItem = saveButton;
     
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -123,6 +123,10 @@
     [self.changePwdCell.textLabel setFont:WZ_FONT_COMMON_SIZE];
     self.changePwdCell.textLabel.text = @"修改密码";
     
+    //评价区
+    [self.voteCell.textLabel setFont:WZ_FONT_COMMON_SIZE];
+    self.voteCell.textLabel.text = @"我要打分";
+    
     //吐槽区
     [self.feedBackCell.textLabel setFont:WZ_FONT_COMMON_SIZE];
     self.feedBackCell.textLabel.text = @"我要吐槽";
@@ -144,6 +148,10 @@
     [self.changePwdCell setUserInteractionEnabled:YES];
     UITapGestureRecognizer *passwordCellClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(passwordCellClick:)];
     [self.changePwdCell addGestureRecognizer:passwordCellClick];
+    
+    [self.voteCell setUserInteractionEnabled:YES];
+    UITapGestureRecognizer *voteCellClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(voteCellClick:)];
+    [self.voteCell addGestureRecognizer:voteCellClick];
     
     [self.feedBackCell setUserInteractionEnabled:YES];
     UITapGestureRecognizer *feedbackCellClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(feedbackCellClick:)];
@@ -174,7 +182,7 @@
 {
     [self.tableView reloadData];
 }
--(void)savaButtonPressed
+-(void)saveButtonPressed
 {
     if ([self.nickNameTextField.text isEqualToString:@""])
     {
@@ -435,6 +443,10 @@
         SetPasswordTableViewController *setPasswordController = [storyboard instantiateViewControllerWithIdentifier:@"setPassword"];
         [self.navigationController pushViewController:setPasswordController animated:YES];
     }
+}
+-(void)voteCellClick:(UIGestureRecognizer *)gesture
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/place-biao-ji-dian-fen-xiang/id989677123?mt=8"]];
 }
 -(void)feedbackCellClick:(UIGestureRecognizer *)gesture
 {

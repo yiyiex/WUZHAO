@@ -151,4 +151,10 @@
 
 #pragma mark - get notice number
 -(void)getLatestNoticeNumber;
+
+
+#pragma mark - vote 
+-(void)getUserRateStatusWithUserId:(NSInteger)userId whenComplete:(void(^)(NSDictionary *))whenComplete;
+-(void)setUserRateStatusWithUserId:(NSInteger)userId voteStatus:(NSInteger)voteStatus whenComplete:(void (^)(NSDictionary *))whenComplete;
+
 @end

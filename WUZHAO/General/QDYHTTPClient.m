@@ -1767,6 +1767,63 @@
         whenComplete(returnData);
     }];}
 
+#pragma mark - user rate status
+-(void)getUserRateStatusWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/rate";
+    NSDictionary *param = @{@"userid":[NSNumber numberWithInteger:userId]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([result objectForKey:@"success"])
+            {
+                [returnData setObject:[result objectForKey:@"data"] forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"网络请求失败" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+-(void)setUserRateStatusWithUserId:(NSInteger)userId voteStatus:(NSInteger)voteStatus whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/rate";
+    NSDictionary *param = @{@"userid":[NSNumber numberWithInteger:userId],@"ratetype":[NSNumber numberWithInteger:voteStatus]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"POST" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([result objectForKey:@"success"])
+            {
+                [returnData setObject:@"success" forKey:@"data"];
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+        }
+        else if (error)
+        {
+            [returnData setValue:@"网络请求失败" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
 
 #pragma mark - basic method
 -(void)setDefaultUserInfoWithUser:(User *)user

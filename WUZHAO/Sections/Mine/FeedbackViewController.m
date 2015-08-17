@@ -74,10 +74,36 @@
     [self.sendButton addTarget:self action:@selector(sendFeedBack:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.sendButton];
     
+    if (!self.navigationController)
+    {
+        UIButton *cancelButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 28, 64, 32)];
+        //[cancelButton setImage:[UIImage imageNamed:@"back_arrow"] forState:UIControlStateNormal];
+        [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+        [cancelButton addTarget:self action:@selector(canButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        [cancelButton setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
+        [cancelButton.titleLabel setFont:WZ_FONT_HIRAGINO_SIZE_16];
+        [self.view addSubview:cancelButton];
+    }
+    
 }
 -(void)canButtonPressed
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([self.feedbackContent isFirstResponder])
+    {
+        [self.feedbackContent resignFirstResponder];
+    }
+    if ([self.contact isFirstResponder])
+    {
+        [self.contact resignFirstResponder];
+    }
+    if (self.navigationController)
+    {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    else
+    {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 -(void)sendFeedBack:(UIButton *)sender
 {
@@ -95,9 +121,14 @@
     [[QDYHTTPClient sharedInstance]feedBackWithUserId:userId content:feedBack contact:contact whenComplete:^(NSDictionary *returnData) {
         if ([returnData objectForKey:@"data"])
         {
-            [SVProgressHUD showInfoWithStatus:@"反馈成功"];
-            sleep(1);
-            [self.navigationController popViewControllerAnimated:YES];
+            [SVProgressHUD showSuccessWithStatus:@"反馈成功，我们会及时跟进的哦"];
+            double delaysInSecond = 2;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)delaysInSecond * NSEC_PER_SEC);
+            dispatch_after(popTime, dispatch_get_main_queue(), ^{
+               [self canButtonPressed];
+            }) ;
+           
+           // [self.navigationController popViewControllerAnimated:YES];
         }
         else
         {

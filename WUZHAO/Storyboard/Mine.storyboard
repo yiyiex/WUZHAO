@@ -155,6 +155,12 @@
                             </tableViewSection>
                             <tableViewSection id="esi-n5-1c5" userLabel="feedback">
                                 <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" id="8a3-oM-pL5">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8a3-oM-pL5" id="gfb-fb-bxE">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" id="29o-Le-9Yg">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="29o-Le-9Yg" id="vSy-16-Fhf">
@@ -191,6 +197,7 @@
                         <outlet property="logoutCell" destination="tZZ-rl-oMI" id="Wia-dl-lwF"/>
                         <outlet property="nickNameCell" destination="kWu-F2-Kmv" id="hfE-5n-Y6M"/>
                         <outlet property="selfDescriptionCell" destination="hki-Wo-dR3" id="NkO-yy-FD2"/>
+                        <outlet property="voteCell" destination="8a3-oM-pL5" id="pJq-qT-sMS"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bop-Vj-8Sb" userLabel="First Responder" sceneMemberID="firstResponder"/>

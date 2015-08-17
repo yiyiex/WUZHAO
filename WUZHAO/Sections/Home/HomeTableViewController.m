@@ -24,6 +24,8 @@
 #import "UIButton+ChangeAppearance.h"
 #import "UILabel+ChangeAppearance.h"
 
+#import "VoteAlertView.h"
+
 #import "PhotoCommon.h"
 
 #import "PureLayout.h"
@@ -1102,6 +1104,31 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         self.tableView.tableHeaderView = nil;
         NSLog(@"get latest data list when finish upload photos");
         [self getLatestData];
+        
+        NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+        [[QDYHTTPClient sharedInstance]getUserRateStatusWithUserId:userId whenComplete:^(NSDictionary *result) {
+            if ([result objectForKey:@"data"])
+            {
+                NSDictionary *data = [result objectForKey:@"data"];
+                NSInteger allowRate = [[data objectForKey:@"allowRate"]integerValue];
+                if (allowRate == 1)
+                {
+                    double delaysInSecond = 3.0;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)delaysInSecond * NSEC_PER_SEC);
+                    dispatch_after(popTime, dispatch_get_main_queue(), ^{
+                        VoteAlertView *voteAlertControl = [[VoteAlertView alloc]init];
+                        [self presentViewController:voteAlertControl animated:YES completion:nil];
+                    }) ;
+                }
+            }
+            else
+            {
+                NSLog(@"get rate status error");
+            }
+        }];
+
+        
+        
         
     }];
 }

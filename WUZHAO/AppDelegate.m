@@ -39,9 +39,12 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [GlobalAppearance setGlobalAppearance];
-    [[CrashReporter sharedInstance]installWithAppId:@"900006753"];
-    [[CrashReporter sharedInstance]enableLog:YES];
     
+    //bugly init
+    [[CrashReporter sharedInstance]installWithAppId:@"900006753"];
+    [[CrashReporter sharedInstance]enableLog:NO];
+    
+    //launch option
     if (launchOptions)
     {
         NSDictionary * userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -83,6 +86,7 @@
     {
         [[QDYHTTPClient sharedInstance] getLatestNoticeNumber];
     }
+    
     //初始化百度推送
     NSString *pushKey= @"MXD0PZ8Qt9LD9ia3PWf41PSL";
    // [BPush registerChannel:launchOptions apiKey:pushKey pushMode:BPushModeDevelopment isDebug:YES];
@@ -96,9 +100,6 @@
         *settings = [UIUserNotificationSettings settingsForTypes: (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound) categories:nil];
         [application registerForRemoteNotifications];
         [application registerUserNotificationSettings:settings];
-        
-        
-     
     }
     
     //设置友盟sdk key
@@ -194,11 +195,22 @@
         //int returnCode = [[res valueForKey:BPushRequestErrorCodeKey] intValue];
         //NSString *requestid = [res valueForKey:BPushRequestRequestIdKey];
         
+        if ([channelid isEqualToString:@""])
+        {
+            channelid = @"bind baidu push failed";
+            //return;
+        }
+        /*
+        else
+        {
+        
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         [userDefaults setObject:userid forKey:@"bpUserId"];
         [userDefaults setObject:channelid forKey:@"bpChannelId"];
         [userDefaults setObject:myDeviceToken forKey:@"deviceToken"];
         [userDefaults synchronize];
+        }*/
+        
         [[QDYHTTPClient sharedInstance]registerBPushWithBpUserId:userid bpChannelId:channelid deviceToken:myDeviceToken whenComplete:^(NSDictionary *returnData) {
             if ([returnData objectForKey:@"data"])
             {
