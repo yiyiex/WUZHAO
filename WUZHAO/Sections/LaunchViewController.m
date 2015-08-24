@@ -30,6 +30,8 @@
 -(void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [self initIntroView];
 
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(dismissSelf) name:@"loginSuccess" object:nil];
@@ -47,7 +49,6 @@
 {
     [super viewWillAppear:animated];
     [self setNavigationAppearance];
-    [self initIntroView];
      NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     if ([userDefaults objectForKey:@"token"])
     {
@@ -67,12 +68,12 @@
 }
 -(void)initAppearance
 {
-    [self.view setBackgroundColor:rgba_WZ(253, 253, 253, 1.0)];
+   // [self.view setBackgroundColor:THEME_COLOR_DARK];
+   // [self.view setBackgroundColor:rgba_WZ(229, 229, 229, 1.0)];
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     if ([userDefaults objectForKey:@"token"])
     {
         NSLog(@"user defaults in launch%@",[userDefaults objectForKey:@"token"]);
-        sleep(1);
         [[QDYHTTPClient sharedInstance]updateLocalUserInfo];
         UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         MainTabBarViewController *main = [mainStoryboard instantiateViewControllerWithIdentifier:@"mainTabBarController"];
@@ -90,16 +91,15 @@
 {
     
     //scrollview and pageControl
-    self.scrollview.hidden = YES;
-    self.scrollview = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, WZ_APP_SIZE.height - 90)];
+    self.scrollview = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, WZ_APP_SIZE.height - 80)];
     self.scrollview.pagingEnabled = YES;
     self.scrollview.showsHorizontalScrollIndicator = NO;
     [self.scrollview setContentSize:CGSizeMake(WZ_APP_SIZE.width*5, self.scrollview.frame.size.height)];
     [self.scrollview setContentOffset:CGPointMake(0, 0) animated:YES];
     [self.view addSubview:self.scrollview];
     
-    self.pageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(0, self.scrollview.frame.size.height *0.95, WZ_APP_SIZE.width, 10)];
-    self.pageControl.currentPageIndicatorTintColor = THEME_COLOR_DARK;
+    self.pageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(0, self.scrollview.frame.size.height , WZ_APP_SIZE.width, 10)];
+    self.pageControl.currentPageIndicatorTintColor = THEME_COLOR_WHITE;
     self.pageControl.pageIndicatorTintColor = THEME_COLOR_LIGHT_GREY;
     self.pageControl.numberOfPages = 5;
 
@@ -119,6 +119,48 @@
                                    @"从不断更新的照片中发现旅程下一站",
                                    @"从他人作品中游览各地",
                                    @"将自己的足迹铺满整个世界"];
+    /*
+    for (int i = 0; i<5; i++)
+    {
+        UIView *view = [[UIView alloc]initWithFrame:CGRectMake(i*WZ_APP_SIZE.width, 0, WZ_APP_SIZE.width,self.scrollview.frame.size.height)];
+        [view setBackgroundColor:[UIColor clearColor]];
+    
+        UIView *innerView = [[UIView alloc]initWithFrame:CGRectInset(view.bounds, 16, 16)];
+        [innerView setBackgroundColor:[UIColor colorWithRed:238 green:238 blue:238 alpha:1.0]];
+        [innerView.layer setCornerRadius:4.0f];
+        [innerView.layer setMasksToBounds:YES];
+        innerView.layer.shadowColor = [[UIColor blackColor] CGColor];
+        innerView.layer.shadowRadius = 15.0f;
+        innerView.layer.shadowOpacity = 0.2f;
+
+        UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, innerView.frame.size.width, innerView.frame.size.width*1.2)];
+        [imageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"intro_%ld",(long)i]]];
+        [innerView addSubview:imageView];
+        
+        UIView *labelView = [[UIView alloc]initWithFrame:CGRectMake(0,innerView.frame.size.width*1.2 , innerView.frame.size.width, innerView.frame.size.height - innerView.frame.size.width*1.2)];
+        [labelView setBackgroundColor:[UIColor colorWithWhite:10 alpha:1.0f]];
+        [innerView addSubview:labelView];
+        
+        UILabel *label1 = [[UILabel alloc]initWithFrame:CGRectMake(0,0, labelView.frame.size.width, 42)];
+        [label1 setText:descriptionArray1[i]];
+        //[label1 setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+        [label1 setTextColor:THEME_COLOR_FONT_DARK_GREY];
+        [label1 setFont:WZ_FONT_HIRAGINO_MID_SIZE];
+        [label1 setTextAlignment:NSTextAlignmentCenter];
+        [labelView addSubview:label1];
+        
+        UILabel *label2 = [[UILabel alloc]initWithFrame:CGRectMake(0,42, labelView.frame.size.width, labelView.frame.size.height - 42)];
+        [label2 setText:descriptionArray2[i]];
+        //[label2 setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+        [label2 setTextColor:THEME_COLOR_FONT_GREY];
+        [label2 setFont:WZ_FONT_HIRAGINO_SMALL_SIZE];
+        [label2 setTextAlignment:NSTextAlignmentCenter];
+        [labelView addSubview:label2];
+        
+        [view addSubview:innerView];
+        [self.scrollview addSubview:view];
+    }*/
+    
     for (int i = 0;i <5;i++)
     {
         UIView *view = [[UIView alloc]initWithFrame:CGRectMake(i*WZ_APP_SIZE.width, 0, WZ_APP_SIZE.width, WZ_APP_SIZE.height - 90)];
@@ -176,6 +218,7 @@
     [self.LoginButton setHidden:YES];
     [self.RegisterButton setHidden:YES];
     [self.scrollview setHidden:YES];
+    [self.pageControl setHidden:YES];
     self.scrollview.alpha = 0;
 }
 
@@ -187,16 +230,13 @@
     [self.RegisterButton setBigButtonAppearance];
     [self.RegisterButton setThemeBackGroundAppearance];
     [UIView animateWithDuration:1.0 animations:^{
-        [self.QDYLabel setFrame:CGRectMake(0, 0, self.QDYLabel.frame.size.width, self.QDYLabel.frame.size.height)];
-        [self.QDYLabel2 setFrame:CGRectMake(0, self.QDYLabel.frame.size.height, self.QDYLabel2.frame.size.width, self.QDYLabel2.frame.size.height)];
+        self.QDYLabel.transform = CGAffineTransformMakeScale(0.1, 0.1);
+        self.QDYLabel2.transform = CGAffineTransformMakeScale(0.1, 0.1);
+    } completion:^(BOOL finished) {
         self.QDYLabel.alpha = 0;
         self.QDYLabel2.alpha = 0;
-
-    } completion:^(BOOL finished) {
-       // self.scrollview.alpha = 1;
-        //[self.scrollview setHidden:NO];
-       // [self.LoginButton setHidden:NO];
-       // [self.RegisterButton setHidden:NO];
+        [self.scrollview setAlpha:1.0f];
+        [self.pageControl setAlpha:1.0f];
     }];
 
 }

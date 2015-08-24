@@ -28,8 +28,7 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
     [self.containerView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
     [self initView];
     
-    
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beginUploadPhotos) name:@"beginUploadPhotos" object:Nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beginUploadPhotos:) name:@"beginUploadPhotos" object:Nil];
     //self.containerView.userInteractionEnabled = NO;
     // Do any additional setup after loading the view.
 }
@@ -78,9 +77,10 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
     }
 }
 
--(void)beginUploadPhotos
+-(void)beginUploadPhotos:(NSNotification *)notification
 {
     [self moveToViewControllerAtIndex:ChildViewIndexHome];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"beginShowUploadIndicator" object:nil userInfo:notification.userInfo];
 }
 
 /*

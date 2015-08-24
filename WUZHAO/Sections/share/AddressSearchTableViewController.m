@@ -33,6 +33,10 @@
     CGPoint postImageCenter;
     UIView *greyMaskView;
     
+    NSUInteger locationAddressPage;
+    NSUInteger searchAddressPage;
+    BOOL searchAddressByGoogle;
+    
     NSString *googleSearchNextPageToken;
 }
 @property (strong, nonatomic) UIButton *locationButton;
@@ -63,6 +67,10 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     {
         [self.locationButton setSelected:YES];
     }
+    searchAddressPage = 0;
+    locationAddressPage = 0;
+    searchAddressByGoogle = NO;
+    googleSearchNextPageToken = @"";
     if (self.addressDataSource.count<=0)
     {
         [self searchAddress];
@@ -281,25 +289,37 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     
     NSLog(@"begin search");
     self.searchControllerWasActive = YES;
+    searchAddressPage = 0;
     [self startAiv];
     
     
     NSLog(@"searchBy : %@",_searchBar.text);
+    
     [self searchAddressWithKeyword:_searchBar.text];
     
 }
 #pragma mark - search With Location
 -(void)searchAddressWithLocation:(CLLocation *)location
 {
-    [self.addressDataSource removeAllObjects];
-    [self.tableView reloadData];
+    if (locationAddressPage == 0)
+    {
+        [self.addressDataSource removeAllObjects];
+        [self.tableView reloadData];
+        googleSearchNextPageToken = @"";
+    }
     [self startAiv];
-     //CLLocation *location2 = [[CLLocation alloc]initWithLatitude:-33.8670522 longitude:151.1957362];
+    // CLLocation *location2 = [[CLLocation alloc]initWithLatitude:-33.8670522 longitude:151.1957362];
     //CLLocation *location2 = [[CLLocation alloc]initWithLatitude:29.797155 longitude:119.69141];
     //判断是否在国内，国内通过高德SDK ，国外通过后台接口
     if (![Geodetic isInsideChina:location])
     {
-        [[POISearchAPI sharedInstance]SearchAroundPOIWithLongitude:location.coordinate.longitude Latitude:location.coordinate.latitude radius:500 ignorepolitical:1 whenComplete:^(NSDictionary *result) {
+        if (locationAddressPage >0 && [googleSearchNextPageToken isEqualToString:@""])
+        {
+            [self stopAiv];
+            return;
+        }
+        
+        [[POISearchAPI sharedInstance]SearchAroundPOIWithLongitude:location.coordinate.longitude Latitude:location.coordinate.latitude radius:3000 ignorepolitical:1 pagetoken:googleSearchNextPageToken whenComplete:^(NSDictionary *result) {
             NSLog(@"%@",result);
             [self stopAiv];
             if ([result objectForKey:@"data"])
@@ -307,18 +327,28 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
                 
                 NSDictionary *data = [result objectForKey:@"data"];
                 googleSearchNextPageToken = [data objectForKey:@"nextPageToken"];
-                [self.addressDataSource removeAllObjects];
-                if (self.provincePoiInfo)
+                if (locationAddressPage ==0)
                 {
-                    [self.addressDataSource addObject:self.provincePoiInfo];
+                    [self.addressDataSource removeAllObjects];
+                    if (self.provincePoiInfo )
+                    {
+                        [self.addressDataSource addObject:self.provincePoiInfo];
+                    }
                 }
-                for (NSDictionary *p in [data objectForKey:@"POIs"])
+    
+                NSArray *POIs = [data objectForKey:@"POIs"];
+                for (NSDictionary *p in POIs)
                 {
                     POI *poiInfo = [[POI alloc]init];
                     [poiInfo configureWithGoogleSearchResult:p];
                     [self.addressDataSource addObject:poiInfo];
                 }
-                [self.tableView reloadData];
+                if (POIs.count >0)
+                {
+                    locationAddressPage += 1;
+                    [self.tableView reloadData];
+                }
+                
             }
             else if ([result objectForKey:@"error"])
             {
@@ -331,22 +361,25 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
         _search = [[AMapSearchAPI alloc]initWithSearchKey:@"2552aafe945c02ece19c41739007ca14" Delegate:self];
         NSLog(@"world location %f %f",location.coordinate.latitude,location.coordinate.longitude);
         CLLocation *marsLocation = [Geodetic transFromGPSToMars:location];
-         NSLog(@"mars location %f %f",marsLocation.coordinate.latitude,marsLocation.coordinate.longitude);
+        // NSLog(@"mars location %f %f",marsLocation.coordinate.latitude,marsLocation.coordinate.longitude);
         
         AMapPlaceSearchRequest *poiRequest = [[AMapPlaceSearchRequest alloc]init];
         poiRequest.searchType = AMapSearchType_PlaceAround;
         AMapGeoPoint *postImageGeoPoint = [[AMapGeoPoint alloc]init];
         postImageGeoPoint.latitude = marsLocation.coordinate.latitude;
         postImageGeoPoint.longitude = marsLocation.coordinate.longitude;
+        //postImageGeoPoint.latitude = location.coordinate.latitude;
+        //postImageGeoPoint.longitude = location.coordinate.longitude;
         NSLog(@"location :%f-----%f",postImageGeoPoint.latitude,postImageGeoPoint.longitude);
         poiRequest.location = postImageGeoPoint;
         
         poiRequest.keywords = searchKeyWords;
         //poiRequest.types = @"050000";
-        poiRequest.radius = 500;
+        //poiRequest.radius = 1000;
         poiRequest.sortrule = 1;
         poiRequest.offset = 50;
         poiRequest.requireExtension = YES;
+        poiRequest.page = locationAddressPage+1;
         [_search AMapPlaceSearch:poiRequest];
     }
 }
@@ -362,6 +395,7 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     poiRequest.keywords = keyword;
     poiRequest.sortrule = 1;
     poiRequest.requireExtension = YES;
+    poiRequest.page = searchAddressPage +1;
     [_search AMapPlaceSearch:poiRequest];
 }
 
@@ -383,6 +417,7 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
                 
             }
         }
+        searchAddressPage = 1;
         [self.tableView reloadData];
         
     }];
@@ -394,7 +429,10 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
     NSLog(@"on place search Done %@",response);
     if (self.searchControllerWasActive)
     {
-        [self.searchAddressDataSource removeAllObjects];
+        if (searchAddressPage == 0)
+        {
+            [self.searchAddressDataSource removeAllObjects];
+        }
         for (AMapPOI *p in response.pois) {
             POI *poiInfo = [[POI alloc]init];
             [poiInfo configureWithGaodeSearchResult:p];
@@ -407,17 +445,22 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
         else
         {
             [self stopAiv];
+            searchAddressPage += 1;
             [self.tableView reloadData];
         }
     }
     else
     {
         //通过AMapPlaceSearchResponse对象处理搜索结果
-        [self.addressDataSource removeAllObjects];
-        if (self.provincePoiInfo)
+        if (locationAddressPage == 0)
         {
-            [self.addressDataSource addObject:self.provincePoiInfo];
+            [self.addressDataSource removeAllObjects];
+            if (self.provincePoiInfo )
+            {
+                [self.addressDataSource addObject:self.provincePoiInfo];
+            }
         }
+
         for (AMapPOI *p in response.pois) {
             if (p.weight <0.20)
             {
@@ -428,10 +471,11 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
             [self.addressDataSource addObject:poiInfo];
         }
         [self stopAiv];
-        [self.tableView reloadData];
-        
-        
-        
+        if (response.pois.count >0)
+        {
+            locationAddressPage += 1;
+            [self.tableView reloadData];
+        }
     }
     
     
@@ -441,6 +485,7 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
 {
     if (error)
     {
+        searchAddressByGoogle = YES;
         [self searchAddressByGoogleWithKeyword:request.keywords];
  
     }
@@ -758,15 +803,39 @@ static NSString *searchKeyWords = @"商场|娱乐|风景|餐饮|住宅|科教|�
         }
 
     }
-    // self.currentAddressTableSelectedIndex = indexPath;
-    
-    
+}
+
+#pragma mark - scroll view delegate
+
+-(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    CGPoint loadMorePoint = CGPointMake(0, self.tableView.contentSize.height);
+    CGPoint targetPoint = *targetContentOffset;
+    if (targetPoint.y >= loadMorePoint.y - self.tableView.frame.size.height)
+    {
+        if (!self.searchControllerWasActive)
+        {
+            if (self.locationButton.selected)
+            {
+                 [self searchAddressWithLocation:self.location];
+            }
+            else
+            {
+                [self searchCurrentAddress];
+            }
+        }
+        else
+        {
+            [self searchAddressWithKeyword:_searchBar.text];
+        }
+    }
 }
 
 #pragma mark - action
 
 -(void)switchLocation:(UIButton *)sender
 {
+    locationAddressPage = 0;
     if (sender.selected)
     {
         sender.selected = NO;

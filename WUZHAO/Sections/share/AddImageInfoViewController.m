@@ -28,6 +28,9 @@
 #import <ImageIO/ImageIO.h>
 #import "UMSocial.h"
 
+#import "ImageDetailView.h"
+#import "PhotoCommon.h"
+
 
 //#define PIOTKEYWORDS @"餐饮|购物|生活|体育|住宿|风景|地名|商务|科教|公司";
 #define POIKEYWORDS @"餐饮"
@@ -36,12 +39,6 @@
 {
     AMapSearchAPI *_search;
     CLLocation *searchLocation;
-    CGPoint postImageCenter;
-    CGRect postImageFrame;
-    UIView *greyMaskView;
-    UIImageView *bigImageView;
-   
-    
 }
 @property (strong, nonatomic)  UITableView *imageInfoTableView;
 
@@ -231,10 +228,8 @@
     [self.postImageDescription resignFirstResponder];
     //发布照片信息,上传到七牛;上传成功后提示并转回主页
     //[self dismissViewControllerAnimated:YES completion:nil];
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"finishPostImage" object:nil];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self uploadPhotoToQiNiu];
-    });
+    //[[NSNotificationCenter defaultCenter]postNotificationName:@"finishPostImage" object:nil];
+    [self uploadPhotoToQiNiu];
     [self shareAction];
     
     
@@ -246,213 +241,42 @@
     {
         [self.postImageDescription resignFirstResponder];
     }
-    if (!greyMaskView)
-    {
-        greyMaskView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, WZ_APP_SIZE.height)];
-        [greyMaskView setBackgroundColor:[UIColor blackColor]];
-        [greyMaskView setUserInteractionEnabled:YES];
-        UITapGestureRecognizer *greyMaskClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(greyMaskClick:)];
-        [greyMaskView addGestureRecognizer:greyMaskClick];
-    }
-    [self.view addSubview:greyMaskView];
-    if (!bigImageView)
-    {
-        bigImageView= [UIImageView new];
-    }
-    UIWindow * window=[[[UIApplication sharedApplication] delegate] window];
-    UIImageView *imageView =(UIImageView *) gesture.view;
-    postImageFrame = [imageView.superview convertRect:imageView.frame toView:window];
-    postImageCenter = [imageView.superview convertPoint:imageView.center toView:window];
-    bigImageView.center = postImageCenter;
-    bigImageView.frame = postImageFrame;
-    bigImageView.image = imageView.image;
-    bigImageView.userInteractionEnabled = YES;
-    imageView.userInteractionEnabled = NO;
-    UITapGestureRecognizer *bigImageClick = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backToSmallImage:)];
-    [bigImageView addGestureRecognizer:bigImageClick];
-
-    [self.view addSubview:bigImageView];
-    [UIView animateWithDuration:0.5 animations:^{
-        bigImageView.frame = CGRectMake(0, (WZ_APP_SIZE.height-WZ_APP_SIZE.width)/2, WZ_APP_SIZE.width, WZ_APP_SIZE.width);
-        imageView.userInteractionEnabled = YES;
+    UIImageView *imageView = (UIImageView *)gesture.view;
+    __block NSMutableArray *images = [[NSMutableArray alloc]init];
+    __block NSMutableArray *infos = [[NSMutableArray alloc]init];
+    [self.imagesAndInfo enumerateObjectsUsingBlock:^(NSDictionary *imageAndInfo, NSUInteger idx, BOOL *stop) {
+        [images addObject:[imageAndInfo objectForKey:@"image"]];
+        [infos addObject:[imageAndInfo objectForKey:@"imageInfo"]];
     }];
-}
--(void)backToSmallImage:(UITapGestureRecognizer *)gesture
-{
-    UIView *view = bigImageView;
-    [UIView animateWithDuration:0.5 animations:^{
-        view.frame = postImageFrame;
-        view.center = postImageCenter;
-    } completion:^(BOOL finished) {
-        [view removeFromSuperview];
-        [greyMaskView removeFromSuperview];
-    }];
-}
--(void)greyMaskClick:(UITapGestureRecognizer *)gesture
-{
-    UIView *view = bigImageView;
-    [UIView animateWithDuration:0.5 animations:^{
-        view.frame = postImageFrame;
-        view.center = postImageCenter;
-    } completion:^(BOOL finished) {
-        [view removeFromSuperview];
-        [greyMaskView removeFromSuperview];
-    }];
+    ImageDetailView *detailView = [[ImageDetailView alloc]initWithImages:images currentImageIndex:imageView.tag];
+    [detailView setImagesInfo:infos];
+    [detailView show];
 }
 
 -(void)uploadPhotoToQiNiu
 {
-    
     //获取token和filename请求
-    NSMutableArray *photos = [[NSMutableArray alloc]init];
-    [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [photos addObject:[obj objectForKey:@"image"]];
-    }];
-    __block NSInteger photoNum  = 0;
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"beginUploadPhotos" object:nil userInfo:@{@"photos":photos}];
-   // [SVProgressHUD showWithStatus:@"图片上传中..."];
-    NSMutableArray *photoNames = [[NSMutableArray alloc]init];
-    for (int i = 0;i<photos.count;i++)
-    {
-        [photoNames  addObject:[NSNull null]];
-    }
-    
-    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            [[QDYHTTPClient sharedInstance] GetQiNiuTokenWithUserId:userId type:1 whenComplete:^(NSDictionary *result) {
-                NSDictionary *data;
-                if ([result objectForKey:@"data"])
-                {
-                    data = [result objectForKey:@"data"];
-                    NSLog(@"%@",data);
-                }
-                else
-                {
-                    dispatch_sync(dispatch_get_main_queue(), ^{
-                        [SVProgressHUD showErrorWithStatus:@"获取token失败"];
-                        return ;
-                    });
-                }
-                QNUploadManager *upLoadManager = [[QNUploadManager alloc]init];
-                NSData *imageData = UIImageJPEGRepresentation([obj objectForKey:@"image"], 0.7f);
-                [upLoadManager putData:imageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
-                 {
-                     NSLog(@"%@",info);
-                     if (info.error)
-                     {
-                         //重传逻辑
-                         NSData *imageData = UIImageJPEGRepresentation([obj objectForKey:@"image"], 0.7f);
-                         [upLoadManager putData:imageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
-                          {
-                              NSLog(@"%@",info);
-                              photoNum ++;
-                              if (info.error)
-                              {
-                                  
-                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                      [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadPhotoFail" object:nil userInfo:@{@"photoIndex":[NSNumber numberWithInteger:idx]}];
-                                  });
-                                  
-                              }
-                              else
-                              {
-                                  [photoNames replaceObjectAtIndex:idx withObject:[data objectForKey:@"imageName"]];
-                                  //用户端提示
-                                  [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadPhotoSuccess" object:nil userInfo:@{@"photoIndex":[NSNumber numberWithInteger:idx]}];
-                    
-                                  
-                              }
-                              if (photoNum== self.imagesAndInfo.count)
-                              {
-                                  [self uploadPhotoInfosToServer:photoNames];
-                                  [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadAllPhotosSuccess" object:nil];
-                              }
-                              
-                              
-                          } option:nil];
-                     }
-                     else
-                     {
-                         //用户端提示
-                         photoNum ++;
-                         [photoNames replaceObjectAtIndex:idx withObject:[data objectForKey:@"imageName"]];
-                         [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadPhotoSuccess" object:nil userInfo:@{@"photoIndex":[NSNumber numberWithInteger:idx]}];
-                         if (photoNum == self.imagesAndInfo.count)
-                         {
-                             [self uploadPhotoInfosToServer:photoNames];
-                                [[NSNotificationCenter defaultCenter]postNotificationName:@"uploadAllPhotosSuccess" object:nil];
-                         }
-                         
-                     }
-                     
-                     
-                 } option:nil];
-        }];
-        
-    }];
-    });
-
-   
-}
-
--(void)uploadPhotoInfosToServer:(NSArray *)photoNames
-{
-    
-   __block  NSString *photosNameString = @"";
-    
-    [photoNames enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if (![obj isEqual:[NSNull null]])
-        {
-            photosNameString = [NSString stringWithFormat:@"%@;%@",photosNameString,obj];
-        }
-       
-    }];
-    photosNameString = [photosNameString substringFromIndex:1];
-    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    /*
+     1.通知主页开始上传，将数据传到主页
+     2.转回到主页，显示上传进度,并进行上传操作
+     3.后台开始处理数据，转化为nsdata类型
+     4.对于每条data数据，逐个请求token 并上传
+     */
+    //1 & 2
     NSString *photoDescription = self.postImageDescription.text;
     POI *uploadPoi;
-    if (self.poiInfo)
+    if (self.hasPoi && self.poiInfo)
     {
         uploadPoi = self.poiInfo;
     }
     else
     {
         uploadPoi = [[POI alloc]init];
+        uploadPoi.uid = @"";
     }
-    [[QDYHTTPClient sharedInstance]PostPhotoInfomationWithUserId:userId
-                                                           photo:photosNameString
-                                                         thought:photoDescription
-                                                          haspoi:_hasPoi
-                                                        provider:uploadPoi.type
-                                                             uid:uploadPoi.uid
-                                                            name:uploadPoi.name
-                                                        classify:uploadPoi.classify
-                                                        location:uploadPoi.location
-                                                         address:uploadPoi.address
-                                                        province:uploadPoi.province
-                                                            city:uploadPoi.city
-                                                        district:uploadPoi.district
-                                                           stamp:uploadPoi.stamp
-                                                    whenComplete:^(NSDictionary *returnData)
-     {
-         
-         dispatch_async(dispatch_get_main_queue(), ^{
-             if ([returnData objectForKey:@"data"])
-             {
-                 //[[NSNotificationCenter defaultCenter]postNotificationName:@"uploadDataSuccess" object:nil];
-             }
-             else if ([returnData objectForKey:@"error"])
-             {
-                // [SVProgressHUD showErrorWithStatus:@"上传图片失败"];
-             }
-         });
-         
-         
-     }];
-    
-    
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"beginUploadPhotos" object:nil userInfo:@{@"imagesAndInfo":self.imagesAndInfo,@"photoDescription":photoDescription,@"poiInfo":uploadPoi}];
 }
+
 #pragma mark - addressSearchTableviewDelegate
 -(void)finishSelectAddress:(POI *)addressInfo
 {
@@ -510,6 +334,7 @@
         [self.imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(spacing+ (PHOTOWIDTH+spacing)*(idx%5) , spacing+(PHOTOWIDTH+spacing)*(idx/5), PHOTOWIDTH, PHOTOWIDTH)];
             [imageView setImage:[obj objectForKey:@"image"]];
+            [imageView setTag:idx];
             [imageView.layer setMasksToBounds:YES];
             [imageView.layer setCornerRadius:4.0f];
             UITapGestureRecognizer *imageClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showImageDetail:)];

@@ -13,11 +13,17 @@
 
 +(void)saveImageToPhotoAlbum:(UIImage *)image;
 
-+(void)saveImageToPhotoAlbumWithExif:(NSDictionary *)exif image:(UIImage *)image;
++(void)saveImageToPhotoAlbumWithInfo:(NSDictionary *)info image:(UIImage *)image;
 
 + (UIImage*)createImageWithColor:(UIColor*)color size:(CGSize)imageSize;
 
 +(UIImage *)imageNamed:(NSString *)name withColor:(UIColor *)color;
+
++(NSDictionary *)getImageInfo:(UIImage *)image;
+
++(NSDictionary *)getImageInfoFromUrl:(NSURL *)url;
+
++(NSData *)setImageInfo:(NSDictionary *)info image:(UIImage *)image scale:(float)scale ;
 
 + (void)drawALineWithFrame:(CGRect)frame andColor:(UIColor*)color inLayer:(CALayer*)parentLayer;
 

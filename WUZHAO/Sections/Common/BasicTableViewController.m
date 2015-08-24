@@ -192,13 +192,11 @@
 }
 -(void)getLatestDataAnimated
 {
-    
     if (self.shouldRefreshData)
     {
         [self.tableView setContentOffset:CGPointMake(0, -86) animated:NO];
         [self.refreshControl beginRefreshing];
         [self getLatestData];
-        
     }
 }
 

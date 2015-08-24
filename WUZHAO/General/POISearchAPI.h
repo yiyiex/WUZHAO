@@ -13,7 +13,7 @@
 +(POISearchAPI*)sharedInstance;
 
 //根据坐标，通过google地图搜索附近地址；用于国外坐标搜索
-- (void)SearchAroundPOIWithLongitude:(float)longitude Latitude:(float)latitude radius:(float)radius ignorepolitical:(NSInteger )ignore whenComplete:(void(^)(NSDictionary *result))whenComplete;
+- (void)SearchAroundPOIWithLongitude:(float)longitude Latitude:(float)latitude radius:(float)radius ignorepolitical:(NSInteger )ignore pagetoken:(NSString *)pagetoken whenComplete:(void(^)(NSDictionary *result))whenComplete;
 
 //获取指定POI的location信息
 - (void)getPOILocationWithPoiId:(NSInteger )poiId whenComplete:(void(^)(NSDictionary *reuslt))whenComplete;
@@ -21,7 +21,7 @@
 //根据坐标，通过google 反解析当前地址
 - (void)regeoGoogleLocation:(float)latitude longitude:(float)longtitude whenComplete:(void (^)(NSDictionary *))whenComplete;
 
-//根据关键字，通过google搜索周边POI
+//根据关键字，通过google搜索POI
 -(void)SearchAroundPOIWithKeyWord:(NSString *)keyword whenComplete:(void (^)(NSDictionary *))whenComplete;
 
 //获取用户的所有POI列表

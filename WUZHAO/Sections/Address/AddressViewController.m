@@ -64,7 +64,10 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [FloatCaptureView show];
+    if (self.addressMapView.frame.size.height == 110)
+    {
+        [FloatCaptureView show];
+    }
     
 }
 - (void)viewWillDisappear:(BOOL)animated

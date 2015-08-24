@@ -57,22 +57,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
-            landmarkName = "-viewDidAppear:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "WUZHAO/General/QDYHTTPClient.m"
             timestampString = "461232881.447214"
             startingColumnNumber = "9223372036854775807"
@@ -249,11 +233,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1199"
-            endingLineNumber = "1199"
+            startingLineNumber = "1269"
+            endingLineNumber = "1269"
             landmarkName = "-deleteMyPhotos:"
             landmarkType = "5">
          </BreakpointContent>
@@ -265,11 +249,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1204"
-            endingLineNumber = "1204"
+            startingLineNumber = "1274"
+            endingLineNumber = "1274"
             landmarkName = "-clearUserInfo"
             landmarkType = "5">
          </BreakpointContent>
@@ -281,11 +265,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "486"
-            endingLineNumber = "486"
+            startingLineNumber = "509"
+            endingLineNumber = "509"
             landmarkName = "-initView"
             landmarkType = "5">
          </BreakpointContent>
@@ -297,11 +281,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461864938.677179"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "125"
-            endingLineNumber = "125"
+            startingLineNumber = "130"
+            endingLineNumber = "130"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -313,11 +297,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462113887.742036"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "756"
-            endingLineNumber = "756"
+            startingLineNumber = "828"
+            endingLineNumber = "828"
             landmarkName = "-MineButtonClick:"
             landmarkType = "5">
          </BreakpointContent>
@@ -329,11 +313,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462113887.742036"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "754"
-            endingLineNumber = "754"
+            startingLineNumber = "826"
+            endingLineNumber = "826"
             landmarkName = "-MineButtonClick:"
             landmarkType = "5">
          </BreakpointContent>
@@ -345,11 +329,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461864938.677179"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "125"
-            endingLineNumber = "125"
+            startingLineNumber = "130"
+            endingLineNumber = "130"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -361,11 +345,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "966"
-            endingLineNumber = "966"
+            startingLineNumber = "1027"
+            endingLineNumber = "1027"
             landmarkName = "-updateMyInfomationUI"
             landmarkType = "5">
          </BreakpointContent>
@@ -377,11 +361,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "984"
-            endingLineNumber = "984"
+            startingLineNumber = "1044"
+            endingLineNumber = "1044"
             landmarkName = "-updateMyInfomationUI"
             landmarkType = "5">
          </BreakpointContent>
@@ -505,11 +489,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "487"
-            endingLineNumber = "487"
+            startingLineNumber = "510"
+            endingLineNumber = "510"
             landmarkName = "-initView"
             landmarkType = "5">
          </BreakpointContent>
@@ -809,11 +793,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/SCCaptureCameraController.m"
-            timestampString = "459696611.669488"
+            timestampString = "461819685.022965"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "724"
-            endingLineNumber = "724"
+            startingLineNumber = "726"
+            endingLineNumber = "726"
             landmarkName = "-dismissBtnPressed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1161,11 +1145,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/PhotoTableViewCell.m"
-            timestampString = "460354330.378581"
+            timestampString = "461919656.826658"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "300"
-            endingLineNumber = "300"
+            startingLineNumber = "317"
+            endingLineNumber = "317"
             landmarkName = "-configureBasicInfo"
             landmarkType = "5">
          </BreakpointContent>
@@ -1177,11 +1161,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/SCCaptureCameraController.m"
-            timestampString = "459696611.669488"
+            timestampString = "461819685.022965"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "894"
-            endingLineNumber = "894"
+            startingLineNumber = "896"
+            endingLineNumber = "896"
             landmarkName = "-endPostImage"
             landmarkType = "5">
          </BreakpointContent>
@@ -1193,11 +1177,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "609"
-            endingLineNumber = "609"
+            startingLineNumber = "654"
+            endingLineNumber = "654"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1209,11 +1193,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461646198.467736"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "69"
-            endingLineNumber = "69"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -1225,11 +1209,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461646198.467736"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "248"
-            endingLineNumber = "248"
+            startingLineNumber = "256"
+            endingLineNumber = "256"
             landmarkName = "-locationManager:didUpdateLocations:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1241,11 +1225,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "394"
-            endingLineNumber = "394"
+            startingLineNumber = "429"
+            endingLineNumber = "429"
             landmarkName = "-onPlaceSearchDone:response:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1257,11 +1241,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "436"
-            endingLineNumber = "436"
+            startingLineNumber = "480"
+            endingLineNumber = "480"
             landmarkName = "-onPlaceSearchDone:response:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1273,11 +1257,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460225589.787811"
+            timestampString = "461769704.850415"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
             landmarkName = "-viewWillAppear:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1289,11 +1273,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "691"
-            endingLineNumber = "691"
+            startingLineNumber = "736"
+            endingLineNumber = "736"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1321,11 +1305,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "463"
-            endingLineNumber = "463"
+            startingLineNumber = "287"
+            endingLineNumber = "287"
             landmarkName = "-finishSelectAddress:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1337,11 +1321,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "616"
-            endingLineNumber = "616"
+            startingLineNumber = "661"
+            endingLineNumber = "661"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1353,11 +1337,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "459"
-            endingLineNumber = "459"
+            startingLineNumber = "283"
+            endingLineNumber = "283"
             landmarkName = "-finishSelectAddress:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1369,11 +1353,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461646198.467736"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "58"
-            endingLineNumber = "58"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -1385,11 +1369,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "684"
-            endingLineNumber = "684"
+            startingLineNumber = "729"
+            endingLineNumber = "729"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1401,11 +1385,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "617"
-            endingLineNumber = "617"
+            startingLineNumber = "662"
+            endingLineNumber = "662"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2025,11 +2009,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "508"
-            endingLineNumber = "508"
+            startingLineNumber = "532"
+            endingLineNumber = "532"
             landmarkName = "-setPersonalInfo"
             landmarkType = "5">
          </BreakpointContent>
@@ -2041,11 +2025,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461907600.834597"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "512"
-            endingLineNumber = "512"
+            startingLineNumber = "534"
+            endingLineNumber = "534"
             landmarkName = "-setPersonalInfo"
             landmarkType = "5">
          </BreakpointContent>
@@ -2073,11 +2057,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "811"
-            endingLineNumber = "811"
+            startingLineNumber = "636"
+            endingLineNumber = "636"
             landmarkName = "-addressCellClick:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2089,11 +2073,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "829"
-            endingLineNumber = "829"
+            startingLineNumber = "654"
+            endingLineNumber = "654"
             landmarkName = "-tableviewTouch:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2105,11 +2089,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461864938.677179"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "117"
-            endingLineNumber = "117"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -2121,11 +2105,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/SCCaptureCameraController.m"
-            timestampString = "459696611.669488"
+            timestampString = "461819685.022965"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "689"
-            endingLineNumber = "689"
+            startingLineNumber = "691"
+            endingLineNumber = "691"
             landmarkName = "-selectPhotoFromAlubm:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2137,11 +2121,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461646198.467736"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -2153,11 +2137,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "761"
-            endingLineNumber = "761"
+            startingLineNumber = "586"
+            endingLineNumber = "586"
             landmarkName = "-addressCellClick:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2280,11 +2264,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461646198.467736"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "288"
-            endingLineNumber = "288"
+            startingLineNumber = "298"
+            endingLineNumber = "298"
             landmarkName = "-searchBarSearchButtonClicked:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2296,11 +2280,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "357"
-            endingLineNumber = "357"
+            startingLineNumber = "390"
+            endingLineNumber = "390"
             landmarkName = "-searchAddressWithKeyword:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2312,11 +2296,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "534"
-            endingLineNumber = "534"
+            startingLineNumber = "579"
+            endingLineNumber = "579"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2328,11 +2312,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "565"
-            endingLineNumber = "565"
+            startingLineNumber = "610"
+            endingLineNumber = "610"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2344,11 +2328,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "564"
-            endingLineNumber = "564"
+            startingLineNumber = "609"
+            endingLineNumber = "609"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2584,11 +2568,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/PhotoTableViewCell.m"
-            timestampString = "458898037.627781"
+            timestampString = "461919656.826658"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
+            startingLineNumber = "165"
+            endingLineNumber = "165"
             landmarkName = "-configureComment"
             landmarkType = "5">
          </BreakpointContent>
@@ -2616,11 +2600,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/PhotoTableViewCell.m"
-            timestampString = "458898037.627781"
+            timestampString = "461919656.826658"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
+            startingLineNumber = "165"
+            endingLineNumber = "165"
             landmarkName = "-configureComment"
             landmarkType = "5">
          </BreakpointContent>
@@ -3112,11 +3096,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1028"
-            endingLineNumber = "1028"
+            startingLineNumber = "1088"
+            endingLineNumber = "1088"
             landmarkName = "-loadMoreCollectionData"
             landmarkType = "5">
          </BreakpointContent>
@@ -3336,11 +3320,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1025"
-            endingLineNumber = "1025"
+            startingLineNumber = "1085"
+            endingLineNumber = "1085"
             landmarkName = "-loadMoreCollectionData"
             landmarkType = "5">
          </BreakpointContent>
@@ -3352,11 +3336,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1045"
-            endingLineNumber = "1045"
+            startingLineNumber = "1106"
+            endingLineNumber = "1106"
             landmarkName = "-loadMoreCollectionData"
             landmarkType = "5">
          </BreakpointContent>
@@ -3864,11 +3848,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1001"
-            endingLineNumber = "1001"
+            startingLineNumber = "1061"
+            endingLineNumber = "1061"
             landmarkName = "-SetPhotosCollectionData"
             landmarkType = "5">
          </BreakpointContent>
@@ -3928,11 +3912,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "826"
-            endingLineNumber = "826"
+            startingLineNumber = "651"
+            endingLineNumber = "651"
             landmarkName = "-textViewShouldEndEditing:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3976,11 +3960,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460225589.787811"
+            timestampString = "461835558.144586"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "236"
-            endingLineNumber = "236"
+            startingLineNumber = "232"
+            endingLineNumber = "232"
             landmarkName = "-PostButtonPressed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3991,28 +3975,12 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "313"
-            endingLineNumber = "313"
-            landmarkName = "-uploadPhotoToQiNiu"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
-            timestampString = "459493572.391496"
+            timestampString = "461820417.510689"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "930"
-            endingLineNumber = "930"
+            startingLineNumber = "932"
+            endingLineNumber = "932"
             landmarkName = "-effectButtonClick:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4024,11 +3992,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
-            timestampString = "459493572.391496"
+            timestampString = "461820417.510689"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "890"
-            endingLineNumber = "890"
+            startingLineNumber = "892"
+            endingLineNumber = "892"
             landmarkName = "-filterButtonClick:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4104,12 +4072,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/General/PhotoCommon.m"
-            timestampString = "455100663.426423"
+            timestampString = "461819685.022965"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
-            landmarkName = "+saveImageToPhotoAlbumWithExif:image:"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
+            landmarkName = "+saveImageToPhotoAlbumWithInfo:image:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -4152,44 +4120,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/General/PhotoCommon.m"
-            timestampString = "455100663.426423"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
-            landmarkName = "+saveImageToPhotoAlbumWithExif:image:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/General/PhotoCommon.m"
-            timestampString = "455100663.426423"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "103"
-            endingLineNumber = "103"
-            landmarkName = "+saveImageToPhotoAlbumWithExif:image:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/General/PhotoCommon.m"
-            timestampString = "455100663.426423"
+            timestampString = "461819685.022965"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "100"
             endingLineNumber = "100"
-            landmarkName = "+saveImageToPhotoAlbumWithExif:image:"
+            landmarkName = "+saveImageToPhotoAlbumWithInfo:image:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/General/PhotoCommon.m"
+            timestampString = "461819685.022965"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "101"
+            endingLineNumber = "101"
+            landmarkName = "+saveImageToPhotoAlbumWithInfo:image:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/General/PhotoCommon.m"
+            timestampString = "461819685.022965"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
+            landmarkName = "+saveImageToPhotoAlbumWithInfo:image:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -4312,11 +4280,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "770"
-            endingLineNumber = "770"
+            startingLineNumber = "839"
+            endingLineNumber = "839"
             landmarkName = "-switchLocation:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4536,12 +4504,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "240"
-            endingLineNumber = "240"
-            landmarkName = "-aiv"
+            startingLineNumber = "236"
+            endingLineNumber = "236"
+            landmarkName = "-scrollContentViewHeight"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4600,28 +4568,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462113887.742036"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "753"
-            endingLineNumber = "753"
+            startingLineNumber = "825"
+            endingLineNumber = "825"
             landmarkName = "-MineButtonClick:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "523"
-            endingLineNumber = "523"
-            landmarkName = "-setPersonalInfo"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4664,11 +4616,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1141"
-            endingLineNumber = "1141"
+            startingLineNumber = "1208"
+            endingLineNumber = "1208"
             landmarkName = "-SetAddressListData"
             landmarkType = "5">
          </BreakpointContent>
@@ -4680,11 +4632,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "485"
-            endingLineNumber = "485"
+            startingLineNumber = "508"
+            endingLineNumber = "508"
             landmarkName = "-initView"
             landmarkType = "5">
          </BreakpointContent>
@@ -4696,11 +4648,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461656207.174009"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "300"
-            endingLineNumber = "300"
+            startingLineNumber = "314"
+            endingLineNumber = "314"
             landmarkName = "-searchAddressWithLocation:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4728,11 +4680,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461660971.83059"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "305"
-            endingLineNumber = "305"
+            startingLineNumber = "325"
+            endingLineNumber = "325"
             landmarkName = "-searchAddressWithLocation:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4808,11 +4760,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "533"
-            endingLineNumber = "533"
+            startingLineNumber = "358"
+            endingLineNumber = "358"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4824,11 +4776,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "581"
-            endingLineNumber = "581"
+            startingLineNumber = "406"
+            endingLineNumber = "406"
             landmarkName = "-setCurrentLocation"
             landmarkType = "5">
          </BreakpointContent>
@@ -4840,11 +4792,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "610"
-            endingLineNumber = "610"
+            startingLineNumber = "435"
+            endingLineNumber = "435"
             landmarkName = "-regeoLocation"
             landmarkType = "5">
          </BreakpointContent>
@@ -4856,11 +4808,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "646"
-            endingLineNumber = "646"
+            startingLineNumber = "471"
+            endingLineNumber = "471"
             landmarkName = "-onReGeocodeSearchDone:response:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4872,11 +4824,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "458649141.315457"
+            timestampString = "461769704.850415"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "53"
-            endingLineNumber = "53"
+            startingLineNumber = "50"
+            endingLineNumber = "50"
             landmarkName = "addressTableViewCell"
             landmarkType = "19">
             <Locations>
@@ -4920,11 +4872,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "421"
-            endingLineNumber = "421"
+            startingLineNumber = "464"
+            endingLineNumber = "464"
             landmarkName = "-onPlaceSearchDone:response:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5048,11 +5000,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "607"
-            endingLineNumber = "607"
+            startingLineNumber = "432"
+            endingLineNumber = "432"
             landmarkName = "-regeoLocation"
             landmarkType = "5">
          </BreakpointContent>
@@ -5064,11 +5016,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "622"
-            endingLineNumber = "622"
+            startingLineNumber = "447"
+            endingLineNumber = "447"
             landmarkName = "-regeoLocation"
             landmarkType = "5">
          </BreakpointContent>
@@ -5080,11 +5032,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460225589.787811"
+            timestampString = "461769704.850415"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
+            startingLineNumber = "96"
+            endingLineNumber = "96"
             landmarkName = "-viewWillAppear:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5224,11 +5176,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
-            timestampString = "459692431.675595"
+            timestampString = "461820417.510689"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1008"
-            endingLineNumber = "1008"
+            startingLineNumber = "1010"
+            endingLineNumber = "1010"
             landmarkName = "-selectImage:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5320,11 +5272,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
-            timestampString = "459693601.851653"
+            timestampString = "461820417.510689"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1098"
-            endingLineNumber = "1098"
+            startingLineNumber = "1100"
+            endingLineNumber = "1100"
             landmarkName = "-cropEditOkClick:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5336,11 +5288,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/SCCaptureCameraController.m"
-            timestampString = "459696611.669488"
+            timestampString = "461769704.850415"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "585"
-            endingLineNumber = "585"
+            startingLineNumber = "583"
+            endingLineNumber = "583"
             landmarkName = "-takePictureBtnPressed:"
             landmarkType = "5">
             <Locations>
@@ -5384,44 +5336,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
-            timestampString = "459493572.391496"
+            timestampString = "461820417.510689"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "881"
-            endingLineNumber = "881"
+            startingLineNumber = "882"
+            endingLineNumber = "882"
             landmarkName = "-nextButtonPressed:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "381"
-            endingLineNumber = "381"
-            landmarkName = "-uploadPhotoToQiNiu"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "382"
-            endingLineNumber = "382"
-            landmarkName = "-uploadPhotoToQiNiu"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5608,11 +5528,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
-            timestampString = "459693601.851653"
+            timestampString = "461820417.510689"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1034"
-            endingLineNumber = "1034"
+            startingLineNumber = "1036"
+            endingLineNumber = "1036"
             landmarkName = "-cropButtonClick:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5640,11 +5560,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/SCCaptureCameraController.m"
-            timestampString = "459696611.669488"
+            timestampString = "461819685.022965"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "695"
-            endingLineNumber = "695"
+            startingLineNumber = "697"
+            endingLineNumber = "697"
             landmarkName = "-selectPhotoFromAlubm:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5656,11 +5576,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460225589.787811"
+            timestampString = "461769704.850415"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "119"
-            endingLineNumber = "119"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
             landmarkName = "-postImageInfo"
             landmarkType = "5">
          </BreakpointContent>
@@ -5672,11 +5592,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460225589.787811"
+            timestampString = "461769704.850415"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "124"
-            endingLineNumber = "124"
+            startingLineNumber = "121"
+            endingLineNumber = "121"
             landmarkName = "-postImageInfo"
             landmarkType = "5">
          </BreakpointContent>
@@ -5688,7 +5608,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/SCCaptureCameraController.m"
-            timestampString = "459696611.669488"
+            timestampString = "461819685.022965"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "588"
@@ -5704,11 +5624,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/SCCaptureCameraController.m"
-            timestampString = "459696611.669488"
+            timestampString = "461819685.022965"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "699"
-            endingLineNumber = "699"
+            startingLineNumber = "701"
+            endingLineNumber = "701"
             landmarkName = "-selectPhotoFromAlubm:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5752,11 +5672,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462113887.742036"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "768"
-            endingLineNumber = "768"
+            startingLineNumber = "840"
+            endingLineNumber = "840"
             landmarkName = "-refreshByPullingTable:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5800,11 +5720,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1100"
-            endingLineNumber = "1100"
+            startingLineNumber = "1162"
+            endingLineNumber = "1162"
             landmarkName = "-getMoreCollectionDataWithCompleteBlock:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5976,11 +5896,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "243"
-            endingLineNumber = "243"
+            startingLineNumber = "238"
+            endingLineNumber = "238"
             landmarkName = "-scrollContentViewHeight"
             landmarkType = "5">
          </BreakpointContent>
@@ -5992,11 +5912,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "269"
-            endingLineNumber = "269"
+            startingLineNumber = "264"
+            endingLineNumber = "264"
             landmarkName = "-scrollContentViewHeight"
             landmarkType = "5">
          </BreakpointContent>
@@ -6008,11 +5928,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "242"
-            endingLineNumber = "242"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
             landmarkName = "-scrollContentViewHeight"
             landmarkType = "5">
          </BreakpointContent>
@@ -6071,22 +5991,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "460"
-            endingLineNumber = "460"
-            landmarkName = "-initView"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "WUZHAO/General/QDYHTTPClient.m"
             timestampString = "460831956.880543"
             startingColumnNumber = "9223372036854775807"
@@ -6104,11 +6008,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "341"
-            endingLineNumber = "341"
+            startingLineNumber = "345"
+            endingLineNumber = "345"
             landmarkName = "-initView"
             landmarkType = "5">
          </BreakpointContent>
@@ -6120,11 +6024,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "484"
-            endingLineNumber = "484"
+            startingLineNumber = "507"
+            endingLineNumber = "507"
             landmarkName = "-initView"
             landmarkType = "5">
          </BreakpointContent>
@@ -6136,11 +6040,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "917"
-            endingLineNumber = "917"
+            startingLineNumber = "994"
+            endingLineNumber = "994"
             landmarkName = "-updateMyInfomationUI"
             landmarkType = "5">
          </BreakpointContent>
@@ -6152,11 +6056,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1014"
-            endingLineNumber = "1014"
+            startingLineNumber = "1074"
+            endingLineNumber = "1074"
             landmarkName = "-addMorePhotoCollectionDataWith:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6168,11 +6072,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1084"
-            endingLineNumber = "1084"
+            startingLineNumber = "1146"
+            endingLineNumber = "1146"
             landmarkName = "-loadMoreCollectionData"
             landmarkType = "5">
             <Locations>
@@ -6216,11 +6120,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "893"
-            endingLineNumber = "893"
+            startingLineNumber = "969"
+            endingLineNumber = "969"
             landmarkName = "-finishLoadChildController:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6232,11 +6136,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "339"
-            endingLineNumber = "339"
+            startingLineNumber = "344"
+            endingLineNumber = "344"
             landmarkName = "-initView"
             landmarkType = "5">
          </BreakpointContent>
@@ -6248,11 +6152,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "905"
-            endingLineNumber = "905"
+            startingLineNumber = "981"
+            endingLineNumber = "981"
             landmarkName = "@implementation MineViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -6280,11 +6184,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "909"
-            endingLineNumber = "909"
+            startingLineNumber = "986"
+            endingLineNumber = "986"
             landmarkName = "-updateMyInfomationUI"
             landmarkType = "5">
          </BreakpointContent>
@@ -6296,11 +6200,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "912"
-            endingLineNumber = "912"
+            startingLineNumber = "989"
+            endingLineNumber = "989"
             landmarkName = "-updateMyInfomationUI"
             landmarkType = "5">
          </BreakpointContent>
@@ -6312,11 +6216,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "911"
-            endingLineNumber = "911"
+            startingLineNumber = "988"
+            endingLineNumber = "988"
             landmarkName = "-updateMyInfomationUI"
             landmarkType = "5">
             <Locations>
@@ -6359,38 +6263,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "461267660.248806"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1294"
-            endingLineNumber = "1294"
-            landmarkName = "-actionSheet:clickedButtonAtIndex:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "461267660.248806"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1303"
-            endingLineNumber = "1303"
-            landmarkName = "-actionSheet:clickedButtonAtIndex:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/FootPrintTableViewController.m"
             timestampString = "459154623.964773"
             startingColumnNumber = "9223372036854775807"
@@ -6408,11 +6280,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "706"
-            endingLineNumber = "706"
+            startingLineNumber = "751"
+            endingLineNumber = "751"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6424,11 +6296,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "716"
-            endingLineNumber = "716"
+            startingLineNumber = "761"
+            endingLineNumber = "761"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6440,11 +6312,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461646198.467736"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "178"
-            endingLineNumber = "178"
+            startingLineNumber = "186"
+            endingLineNumber = "186"
             landmarkName = "-showHistoryAddressTableView"
             landmarkType = "5">
          </BreakpointContent>
@@ -6456,11 +6328,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "489"
-            endingLineNumber = "489"
+            startingLineNumber = "534"
+            endingLineNumber = "534"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6472,11 +6344,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "490"
-            endingLineNumber = "490"
+            startingLineNumber = "535"
+            endingLineNumber = "535"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6616,11 +6488,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1157"
-            endingLineNumber = "1157"
+            startingLineNumber = "1227"
+            endingLineNumber = "1227"
             landmarkName = "-SetAddressListData"
             landmarkType = "5">
          </BreakpointContent>
@@ -6648,11 +6520,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "976"
-            endingLineNumber = "976"
+            startingLineNumber = "1036"
+            endingLineNumber = "1036"
             landmarkName = "-updateMyInfomationUI"
             landmarkType = "5">
          </BreakpointContent>
@@ -6664,11 +6536,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1159"
-            endingLineNumber = "1159"
+            startingLineNumber = "1229"
+            endingLineNumber = "1229"
             landmarkName = "-SetAddressListData"
             landmarkType = "5">
          </BreakpointContent>
@@ -6871,92 +6743,12 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "412"
-            endingLineNumber = "412"
-            landmarkName = "-uploadPhotoInfosToServer:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "404"
-            endingLineNumber = "404"
-            landmarkName = "-uploadPhotoInfosToServer:"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[AddImageInfoViewController uploadPhotoInfosToServer:]"
-                  moduleName = "Place"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/share/AddImageInfoViewController.m"
-                  timestampString = "458463020.151876"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "402"
-                  endingLineNumber = "402"
-                  offsetFromSymbolStart = "140">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__55-[AddImageInfoViewController uploadPhotoInfosToServer:]_block_invoke"
-                  moduleName = "Place"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/share/AddImageInfoViewController.m"
-                  timestampString = "458463020.152126"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "402"
-                  endingLineNumber = "402"
-                  offsetFromSymbolStart = "80">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "405"
-            endingLineNumber = "405"
-            landmarkName = "-uploadPhotoInfosToServer:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "573"
-            endingLineNumber = "573"
+            startingLineNumber = "618"
+            endingLineNumber = "618"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6968,27 +6760,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "619"
-            endingLineNumber = "619"
-            landmarkName = "-tableView:cellForRowAtIndexPath:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "635"
-            endingLineNumber = "635"
+            startingLineNumber = "664"
+            endingLineNumber = "664"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7000,11 +6776,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "670"
-            endingLineNumber = "670"
+            startingLineNumber = "680"
+            endingLineNumber = "680"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
+            timestampString = "461667881.281099"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "715"
+            endingLineNumber = "715"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7016,11 +6808,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "693"
-            endingLineNumber = "693"
+            startingLineNumber = "738"
+            endingLineNumber = "738"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7032,11 +6824,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "742"
-            endingLineNumber = "742"
+            startingLineNumber = "787"
+            endingLineNumber = "787"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7048,11 +6840,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "756"
-            endingLineNumber = "756"
+            startingLineNumber = "801"
+            endingLineNumber = "801"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7060,15 +6852,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "554"
-            endingLineNumber = "554"
+            startingLineNumber = "599"
+            endingLineNumber = "599"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7080,11 +6872,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "575"
-            endingLineNumber = "575"
+            startingLineNumber = "620"
+            endingLineNumber = "620"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7096,11 +6888,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "606"
-            endingLineNumber = "606"
+            startingLineNumber = "651"
+            endingLineNumber = "651"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7416,11 +7208,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461907600.834597"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "668"
-            endingLineNumber = "668"
+            startingLineNumber = "682"
+            endingLineNumber = "682"
             landmarkName = "-personalAvatarClick"
             landmarkType = "5">
          </BreakpointContent>
@@ -7432,11 +7224,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "488"
-            endingLineNumber = "488"
+            startingLineNumber = "511"
+            endingLineNumber = "511"
             landmarkName = "-initView"
             landmarkType = "5">
          </BreakpointContent>
@@ -7448,11 +7240,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "461906605.350306"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -7528,11 +7320,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "824"
-            endingLineNumber = "824"
+            startingLineNumber = "898"
+            endingLineNumber = "898"
             landmarkName = "-myAddressButtonClick:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7543,60 +7335,12 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "461267660.248806"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1372"
-            endingLineNumber = "1372"
-            landmarkName = "-imagePickerController:didFinishPickingMediaWithInfo:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "461267660.248806"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1373"
-            endingLineNumber = "1373"
-            landmarkName = "-imagePickerController:didFinishPickingMediaWithInfo:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "461267660.248806"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1332"
-            endingLineNumber = "1332"
-            landmarkName = "-actionSheet:clickedButtonAtIndex:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/PhotoTableViewCell.m"
-            timestampString = "460521132.166885"
+            timestampString = "461920207.961319"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "484"
-            endingLineNumber = "484"
+            startingLineNumber = "504"
+            endingLineNumber = "504"
             landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7608,11 +7352,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/PhotoTableViewCell.m"
-            timestampString = "460521132.166885"
+            timestampString = "461920207.961319"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "476"
-            endingLineNumber = "476"
+            startingLineNumber = "496"
+            endingLineNumber = "496"
             landmarkName = "-collectionView:numberOfItemsInSection:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7672,11 +7416,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/PhotoTableViewCell.m"
-            timestampString = "458898816.641413"
+            timestampString = "461919656.826658"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "163"
+            endingLineNumber = "163"
             landmarkName = "-configureComment"
             landmarkType = "5">
          </BreakpointContent>
@@ -7816,11 +7560,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462113887.742036"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "778"
-            endingLineNumber = "778"
+            startingLineNumber = "850"
+            endingLineNumber = "850"
             landmarkName = "@implementation MineViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -7832,11 +7576,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462122035.859589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1163"
-            endingLineNumber = "1163"
+            startingLineNumber = "1233"
+            endingLineNumber = "1233"
             landmarkName = "-SetAddressListData"
             landmarkType = "5">
          </BreakpointContent>
@@ -8357,11 +8101,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "442"
-            endingLineNumber = "442"
+            startingLineNumber = "486"
+            endingLineNumber = "486"
             landmarkName = "-searchRequest:didFailWithError:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8373,11 +8117,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461489571.169722"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "403"
-            endingLineNumber = "403"
+            startingLineNumber = "441"
+            endingLineNumber = "441"
             landmarkName = "-onPlaceSearchDone:response:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8485,11 +8229,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
-            timestampString = "459693601.851653"
+            timestampString = "461820417.510689"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1121"
-            endingLineNumber = "1121"
+            startingLineNumber = "1123"
+            endingLineNumber = "1123"
             landmarkName = "-deleteImageView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8501,11 +8245,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
-            timestampString = "459693601.851653"
+            timestampString = "461820417.510689"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1193"
-            endingLineNumber = "1193"
+            startingLineNumber = "1195"
+            endingLineNumber = "1195"
             landmarkName = "-removeImageFromTheScrollView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8517,11 +8261,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "460"
-            endingLineNumber = "460"
+            startingLineNumber = "284"
+            endingLineNumber = "284"
             landmarkName = "-finishSelectAddress:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8837,11 +8581,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/MineViewController.m"
-            timestampString = "460967407.883436"
+            timestampString = "462113887.742036"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "693"
-            endingLineNumber = "693"
+            startingLineNumber = "779"
+            endingLineNumber = "779"
             landmarkName = "-sendMessageButtonClick:"
             landmarkType = "5">
          </BreakpointContent>
@@ -9237,11 +8981,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
-            timestampString = "459693601.851653"
+            timestampString = "461820417.510689"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1172"
-            endingLineNumber = "1172"
+            startingLineNumber = "1174"
+            endingLineNumber = "1174"
             landmarkName = "-removeImageFromTheScrollView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -9253,11 +8997,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
-            timestampString = "459693601.851653"
+            timestampString = "461820417.510689"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1133"
-            endingLineNumber = "1133"
+            startingLineNumber = "1135"
+            endingLineNumber = "1135"
             landmarkName = "-removeImageFromTheScrollView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -9301,11 +9045,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
-            timestampString = "459693640.634107"
+            timestampString = "461766481.511321"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "861"
-            endingLineNumber = "861"
+            startingLineNumber = "862"
+            endingLineNumber = "862"
             landmarkName = "-saveAllImagesInfo"
             landmarkType = "5">
          </BreakpointContent>
@@ -9317,11 +9061,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
-            timestampString = "459693861.859176"
+            timestampString = "461820417.510689"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1142"
-            endingLineNumber = "1142"
+            startingLineNumber = "1144"
+            endingLineNumber = "1144"
             landmarkName = "-removeImageFromTheScrollView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -9493,11 +9237,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "648"
-            endingLineNumber = "648"
+            startingLineNumber = "473"
+            endingLineNumber = "473"
             landmarkName = "-onReGeocodeSearchDone:response:"
             landmarkType = "5">
          </BreakpointContent>
@@ -9509,11 +9253,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490404.086466"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "731"
-            endingLineNumber = "731"
+            startingLineNumber = "776"
+            endingLineNumber = "776"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -10164,11 +9908,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Common/BasicTableViewController.m"
-            timestampString = "461268319.946636"
+            timestampString = "461925230.66297"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "222"
-            endingLineNumber = "222"
+            startingLineNumber = "220"
+            endingLineNumber = "220"
             landmarkName = "-scrollViewWillEndDragging:withVelocity:targetContentOffset:"
             landmarkType = "5">
          </BreakpointContent>
@@ -10186,22 +9930,6 @@
             startingLineNumber = "143"
             endingLineNumber = "143"
             landmarkName = "-setupLoadMore"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
-            timestampString = "461498814.429388"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "840"
-            endingLineNumber = "840"
-            landmarkName = "-getLatestData"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10292,11 +10020,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "599"
-            endingLineNumber = "599"
+            startingLineNumber = "424"
+            endingLineNumber = "424"
             landmarkName = "-setCurrentLocation"
             landmarkType = "5">
          </BreakpointContent>
@@ -10404,11 +10132,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "587"
-            endingLineNumber = "587"
+            startingLineNumber = "412"
+            endingLineNumber = "412"
             landmarkName = "-setCurrentLocation"
             landmarkType = "5">
             <Locations>
@@ -10452,11 +10180,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "593"
-            endingLineNumber = "593"
+            startingLineNumber = "418"
+            endingLineNumber = "418"
             landmarkName = "-setCurrentLocation"
             landmarkType = "5">
          </BreakpointContent>
@@ -10468,11 +10196,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
-            timestampString = "460376024.246824"
+            timestampString = "462112118.279355"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "573"
-            endingLineNumber = "573"
+            startingLineNumber = "398"
+            endingLineNumber = "398"
             landmarkName = "-setCurrentLocation"
             landmarkType = "5">
          </BreakpointContent>
@@ -10484,11 +10212,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Home/HomeContainerViewController.m"
-            timestampString = "460350049.541999"
+            timestampString = "461926440.216208"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
             landmarkName = "-getLatestData"
             landmarkType = "5">
          </BreakpointContent>
@@ -10505,22 +10233,6 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "-getLatestData"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
-            timestampString = "461498814.429388"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "841"
-            endingLineNumber = "841"
             landmarkName = "-getLatestData"
             landmarkType = "5">
          </BreakpointContent>
@@ -10756,11 +10468,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/PhotoTableViewCell.m"
-            timestampString = "460354885.189849"
+            timestampString = "461919656.826658"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "251"
-            endingLineNumber = "251"
+            startingLineNumber = "271"
+            endingLineNumber = "271"
             landmarkName = "-configureBasicInfo"
             landmarkType = "5">
          </BreakpointContent>
@@ -11012,11 +10724,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Common/BasicTableViewController.m"
-            timestampString = "461268319.946636"
+            timestampString = "461925230.66297"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "301"
-            endingLineNumber = "301"
+            startingLineNumber = "299"
+            endingLineNumber = "299"
             landmarkName = "-goToPOIPhotoListWithPoi:"
             landmarkType = "5">
          </BreakpointContent>
@@ -11050,38 +10762,6 @@
             startingLineNumber = "156"
             endingLineNumber = "156"
             landmarkName = "-touchesEnded:withEvent:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
-            timestampString = "461520175.285162"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1007"
-            endingLineNumber = "1007"
-            landmarkName = "-commentTextView:didClickLinkUser:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
-            timestampString = "461520175.285162"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1011"
-            endingLineNumber = "1011"
-            landmarkName = "-moreCommentClick:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -11162,22 +10842,6 @@
             startingLineNumber = "95"
             endingLineNumber = "95"
             landmarkName = "-getLatestData"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
-            timestampString = "461520175.285162"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1046"
-            endingLineNumber = "1046"
-            landmarkName = "-beginUploadPhotos:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -11428,11 +11092,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "461042619.728668"
+            timestampString = "461735483.893354"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "219"
-            endingLineNumber = "219"
+            startingLineNumber = "216"
+            endingLineNumber = "216"
             landmarkName = "-positionView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -11444,11 +11108,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "461042619.728668"
+            timestampString = "461735483.893354"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "159"
-            endingLineNumber = "159"
+            startingLineNumber = "158"
+            endingLineNumber = "158"
             landmarkName = "-showCaptureView"
             landmarkType = "5">
          </BreakpointContent>
@@ -11460,11 +11124,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "461042619.728668"
+            timestampString = "461735483.893354"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "273"
-            endingLineNumber = "273"
+            startingLineNumber = "270"
+            endingLineNumber = "270"
             landmarkName = "-positionView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -11476,11 +11140,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "461042619.728668"
+            timestampString = "461735483.893354"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
+            startingLineNumber = "173"
+            endingLineNumber = "173"
             landmarkName = "-showCaptureView"
             landmarkType = "5">
          </BreakpointContent>
@@ -11492,11 +11156,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "461042619.728668"
+            timestampString = "461735483.893354"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "321"
-            endingLineNumber = "321"
+            startingLineNumber = "318"
+            endingLineNumber = "318"
             landmarkName = "-positionView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -11508,11 +11172,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "461043238.319657"
+            timestampString = "461735483.893354"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "359"
-            endingLineNumber = "359"
+            startingLineNumber = "356"
+            endingLineNumber = "356"
             landmarkName = "-captureViewTapped"
             landmarkType = "5">
          </BreakpointContent>
@@ -11524,11 +11188,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/FloatCaptureView.m"
-            timestampString = "461042619.728668"
+            timestampString = "461735483.893354"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
+            startingLineNumber = "134"
+            endingLineNumber = "134"
             landmarkName = "-showCaptureView"
             landmarkType = "5">
          </BreakpointContent>
@@ -11811,22 +11475,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
-            timestampString = "461520175.285162"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1031"
-            endingLineNumber = "1031"
-            landmarkName = "-clearUserInfo"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "WUZHAO/General/QDYHTTPClient.m"
             timestampString = "461233009.03294"
             startingColumnNumber = "9223372036854775807"
@@ -12052,11 +11700,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
-            timestampString = "461490426.497115"
+            timestampString = "461667881.281099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "501"
-            endingLineNumber = "501"
+            startingLineNumber = "546"
+            endingLineNumber = "546"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -12068,11 +11716,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/FeedbackViewController.m"
-            timestampString = "461500272.001924"
+            timestampString = "461562740.072589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
             landmarkName = "-initView"
             landmarkType = "5">
          </BreakpointContent>
@@ -12084,11 +11732,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Mine/FeedbackViewController.m"
-            timestampString = "461501254.122435"
+            timestampString = "461562740.072589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "86"
-            endingLineNumber = "86"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
             landmarkName = "-initView"
             landmarkType = "5">
          </BreakpointContent>
@@ -12099,76 +11747,12 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
-            timestampString = "461519780.385983"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1109"
-            endingLineNumber = "1109"
-            landmarkName = "-hideIndicator"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__40-[HomeTableViewController hideIndicator]_block_invoke699"
-                  moduleName = "Place"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Home/HomeTableViewController.m"
-                  timestampString = "461520375.54112"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1109"
-                  endingLineNumber = "1109"
-                  offsetFromSymbolStart = "416">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__40-[HomeTableViewController hideIndicator]_block_invoke_3"
-                  moduleName = "Place"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Home/HomeTableViewController.m"
-                  timestampString = "461520375.541267"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1109"
-                  endingLineNumber = "1109"
-                  offsetFromSymbolStart = "56">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
-            timestampString = "461520265.312678"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1112"
-            endingLineNumber = "1112"
-            landmarkName = "-hideIndicator"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/VoteAlertView.m"
-            timestampString = "461520911.0642"
+            timestampString = "461602819.233167"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "87"
-            endingLineNumber = "87"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
             landmarkName = "-cancelAction"
             landmarkType = "5">
          </BreakpointContent>
@@ -12180,11 +11764,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/VoteAlertView.m"
-            timestampString = "461520915.647587"
+            timestampString = "461602819.233167"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "56"
-            endingLineNumber = "56"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
             landmarkName = "-voteAction"
             landmarkType = "5">
          </BreakpointContent>
@@ -12196,13 +11780,1325 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WUZHAO/Sections/Views/VoteAlertView.m"
-            timestampString = "461521281.537342"
+            timestampString = "461602819.233167"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
+            startingLineNumber = "88"
+            endingLineNumber = "88"
             landmarkName = "-cancelAction"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Common/PlaceholderTextView.m"
+            timestampString = "461562740.072589"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
+            landmarkName = "@implementation PlaceholderTextView"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Common/PlaceholderTextView.m"
+            timestampString = "461562740.072589"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
+            landmarkName = "-setPlaceholder:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Mine/FeedbackViewController.m"
+            timestampString = "461562740.072589"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "150"
+            endingLineNumber = "150"
+            landmarkName = "-touchesEnded:withEvent:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Common/PlaceholderTextView.m"
+            timestampString = "461562740.072589"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
+            landmarkName = "-DidChange:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Common/PlaceholderTextView.m"
+            timestampString = "461562740.072589"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
+            landmarkName = "-textViewBeginNoti:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Common/PlaceholderTextView.m"
+            timestampString = "461562740.072589"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "129"
+            endingLineNumber = "129"
+            landmarkName = "-textViewEndNoti:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Common/PlaceholderTextView.m"
+            timestampString = "461562740.072589"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
+            landmarkName = "-addTextViewBeginEvent:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Common/PlaceholderTextView.m"
+            timestampString = "461562740.072589"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
+            landmarkName = "-addTextViewEndEvent:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Common/PlaceholderTextView.m"
+            timestampString = "461562740.072589"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "160"
+            endingLineNumber = "160"
+            landmarkName = "-setUpdateHeight:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
+            timestampString = "461667881.281099"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "814"
+            endingLineNumber = "814"
+            landmarkName = "-scrollViewWillEndDragging:withVelocity:targetContentOffset:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
+            timestampString = "461648260.298128"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "302"
+            endingLineNumber = "302"
+            landmarkName = "-searchAddressWithLocation:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
+            timestampString = "461660971.83059"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "361"
+            endingLineNumber = "361"
+            landmarkName = "-searchAddressWithLocation:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
+            timestampString = "461648783.015507"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
+            landmarkName = "-searchCurrentAddress"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
+            timestampString = "461648797.571959"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "260"
+            endingLineNumber = "260"
+            landmarkName = "-locationManager:didUpdateLocations:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
+            timestampString = "461648817.08167"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "304"
+            endingLineNumber = "304"
+            landmarkName = "-searchAddressWithLocation:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddressSearchTableViewController.m"
+            timestampString = "461648935.209338"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "305"
+            endingLineNumber = "305"
+            landmarkName = "-searchAddressWithLocation:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/PhotoTableViewCell.m"
+            timestampString = "461920207.961319"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "535"
+            endingLineNumber = "535"
+            landmarkName = "-showImageDetail:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/ImageDetailView.m"
+            timestampString = "461852077.255923"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "329"
+            endingLineNumber = "329"
+            landmarkName = "-dismiss:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[ImageDetailView dismiss:]"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Views/ImageDetailView.m"
+                  timestampString = "461736473.999261"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "144"
+                  endingLineNumber = "144"
+                  offsetFromSymbolStart = "88">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__27-[ImageDetailView dismiss:]_block_invoke"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Views/ImageDetailView.m"
+                  timestampString = "461736473.999501"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "144"
+                  endingLineNumber = "144"
+                  offsetFromSymbolStart = "24">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/ImageDetailView.m"
+            timestampString = "461852077.255923"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "325"
+            endingLineNumber = "325"
+            landmarkName = "-show"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/ImageDetailView.m"
+            timestampString = "461852077.255923"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "342"
+            endingLineNumber = "342"
+            landmarkName = "-updateInfoIconState"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/ImageDetailView.m"
+            timestampString = "461852077.255923"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "404"
+            endingLineNumber = "404"
+            landmarkName = "-showInfoPanel"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/ImageDetailView.m"
+            timestampString = "461852077.255923"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "299"
+            endingLineNumber = "299"
+            landmarkName = "-show"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/General/PhotoCommon.m"
+            timestampString = "461819685.022965"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
+            landmarkName = "+getImageInfo:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/ImageDetailView.m"
+            timestampString = "461852077.255923"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "537"
+            endingLineNumber = "537"
+            landmarkName = "-transImageInfo:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/General/PhotoCommon.m"
+            timestampString = "461834821.122304"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "124"
+            endingLineNumber = "124"
+            landmarkName = "+setImageInfo:image:scale:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
+            timestampString = "461820417.510689"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "866"
+            endingLineNumber = "866"
+            landmarkName = "-saveAllImagesInfo"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/General/PhotoCommon.m"
+            timestampString = "461834821.122304"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "146"
+            endingLineNumber = "146"
+            landmarkName = "+setImageInfo:image:scale:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/PhotoTableViewCell.m"
+            timestampString = "461920207.961319"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "531"
+            endingLineNumber = "531"
+            landmarkName = "-showImageDetail:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/PhotoTableViewCell.m"
+            timestampString = "461920207.961319"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "534"
+            endingLineNumber = "534"
+            landmarkName = "-showImageDetail:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/ImageDetailView.m"
+            timestampString = "461852077.255923"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
+            landmarkName = "-initWithImageUrls:currentImageIndex:placeHolderImages:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[ImageDetailView initWithImageUrls:currentImageIndex:]"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Views/ImageDetailView.m"
+                  timestampString = "461834022.99395"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "72"
+                  endingLineNumber = "72"
+                  offsetFromSymbolStart = "1256">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__55-[ImageDetailView initWithImageUrls:currentImageIndex:]_block_invoke"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Views/ImageDetailView.m"
+                  timestampString = "461834022.994773"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "73"
+                  endingLineNumber = "73"
+                  offsetFromSymbolStart = "88">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/ImageDetailView.m"
+            timestampString = "461852077.255923"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "147"
+            endingLineNumber = "147"
+            landmarkName = "-initWithImageUrls:currentImageIndex:placeHolderImages:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__55-[ImageDetailView initWithImageUrls:currentImageIndex:]_block_invoke"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Views/ImageDetailView.m"
+                  timestampString = "461834821.461996"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "103"
+                  endingLineNumber = "103"
+                  offsetFromSymbolStart = "1828">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__55-[ImageDetailView initWithImageUrls:currentImageIndex:]_block_invoke"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Views/ImageDetailView.m"
+                  timestampString = "461834821.462156"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "103"
+                  endingLineNumber = "103"
+                  offsetFromSymbolStart = "1908">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/ImageDetailView.m"
+            timestampString = "461852077.255923"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "594"
+            endingLineNumber = "594"
+            landmarkName = "-viewForZoomingInScrollView:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/PhotoTableViewCell.m"
+            timestampString = "461920207.961319"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "530"
+            endingLineNumber = "530"
+            landmarkName = "-showImageDetail:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/ImageDetailView.m"
+            timestampString = "461852077.255923"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "113"
+            endingLineNumber = "113"
+            landmarkName = "-initWithImageUrls:currentImageIndex:placeHolderImages:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Mine/MineViewController.m"
+            timestampString = "462113887.742036"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "721"
+            endingLineNumber = "721"
+            landmarkName = "-personalAvatarClick"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[MineViewController personalAvatarClick]"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Mine/MineViewController.m"
+                  timestampString = "461863002.290589"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "705"
+                  endingLineNumber = "705"
+                  offsetFromSymbolStart = "2700">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__41-[MineViewController personalAvatarClick]_block_invoke"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Mine/MineViewController.m"
+                  timestampString = "461863002.290793"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "705"
+                  endingLineNumber = "705"
+                  offsetFromSymbolStart = "124">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Mine/MineViewController.m"
+            timestampString = "461906605.350306"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "276"
+            endingLineNumber = "276"
+            landmarkName = "-adaptFollowsLabels"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Views/PhotoTableViewCell.m"
+            timestampString = "461920207.961319"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "506"
+            endingLineNumber = "506"
+            landmarkName = "-collectionView:cellForItemAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeContainerViewController.m"
+            timestampString = "461944283.94203"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
+            landmarkName = "-beginUploadPhotos:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeContainerViewController.m"
+            timestampString = "461926440.216208"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
+            landmarkName = "-initView"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeContainerViewController.m"
+            timestampString = "461926440.216208"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "-getLatestData"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/AddImageInfoViewController.m"
+            timestampString = "462112118.279355"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "265"
+            endingLineNumber = "265"
+            landmarkName = "-uploadPhotoToQiNiu"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Notice/PlaceRecommendTableViewCell.m"
+            timestampString = "462034461.38481"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "-configureWithFeeds:parentController:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Common/PhotosCollectionViewController.m"
+            timestampString = "462036551.003242"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "147"
+            endingLineNumber = "147"
+            landmarkName = "-collectionView:layout:sizeForItemAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Search/PhotosSuggestCollectionViewController.m"
+            timestampString = "462037418.656"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
+            landmarkName = "-collectionView:layout:sizeForItemAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Search/PhotosSuggestCollectionViewController.m"
+            timestampString = "462037216.670542"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/LaunchViewController.m"
+            timestampString = "462076507.640722"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "-viewWillAppear:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462102185.341748"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1048"
+            endingLineNumber = "1048"
+            landmarkName = "-beginUploadPhotos:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462112647.073764"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1138"
+            endingLineNumber = "1138"
+            landmarkName = "-uploadPhotos:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462118203.975185"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1158"
+            endingLineNumber = "1158"
+            landmarkName = "-uploadPhotos:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[HomeTableViewController uploadPhotos:WithRetry:]"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Home/HomeTableViewController.m"
+                  timestampString = "462099353.416328"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1142"
+                  endingLineNumber = "1142"
+                  offsetFromSymbolStart = "572">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__50-[HomeTableViewController uploadPhotos:WithRetry:]_block_invoke"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Home/HomeTableViewController.m"
+                  timestampString = "462099353.41679"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1142"
+                  endingLineNumber = "1142"
+                  offsetFromSymbolStart = "48">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462118203.975185"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1190"
+            endingLineNumber = "1190"
+            landmarkName = "-uploadPhotos:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462118203.975185"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1203"
+            endingLineNumber = "1203"
+            landmarkName = "-uploadPhotos:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462112647.073764"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1097"
+            endingLineNumber = "1097"
+            landmarkName = "-finishiIndicator:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462101193.36717"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "137"
+            endingLineNumber = "137"
+            landmarkName = "-viewWillAppear:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462112647.073764"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1101"
+            endingLineNumber = "1101"
+            landmarkName = "-finishiIndicator:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeContainerViewController.m"
+            timestampString = "462101275.667898"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "76"
+            endingLineNumber = "76"
+            landmarkName = "-getLatestData"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462101322.302224"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462118203.975185"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1275"
+            endingLineNumber = "1275"
+            landmarkName = "-hideIndicator:WithDelay:ReloadData:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462102037.682464"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "236"
+            endingLineNumber = "236"
+            landmarkName = "-loadData"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462102081.787816"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "811"
+            endingLineNumber = "811"
+            landmarkName = "-getLatestData"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462102162.078039"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1041"
+            endingLineNumber = "1041"
+            landmarkName = "-clearUserInfo"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeContainerViewController.m"
+            timestampString = "462102365.572865"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "72"
+            endingLineNumber = "72"
+            landmarkName = "-getLatestData"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/MainTabBarViewController.m"
+            timestampString = "462103010.822401"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "357"
+            endingLineNumber = "357"
+            landmarkName = "-activeCurrentTab"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/MainTabBarViewController.m"
+            timestampString = "462102849.553611"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "244"
+            endingLineNumber = "244"
+            landmarkName = "-tabBar:didSelectItem:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/MainTabBarViewController.m"
+            timestampString = "462102895.780528"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "286"
+            endingLineNumber = "286"
+            landmarkName = "-tabBarController:didSelectViewController:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/MainTabBarViewController.m"
+            timestampString = "462103010.822401"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "355"
+            endingLineNumber = "355"
+            landmarkName = "-activeCurrentTab"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
+            timestampString = "462110621.854062"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "767"
+            endingLineNumber = "767"
+            landmarkName = "-collectionView:didSelectItemAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
+            timestampString = "462110670.237824"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "766"
+            endingLineNumber = "766"
+            landmarkName = "-collectionView:didSelectItemAtIndexPath:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[PhotoFilterViewCollectionViewController collectionView:didSelectItemAtIndexPath:]"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
+                  timestampString = "462111746.687375"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "766"
+                  endingLineNumber = "766"
+                  offsetFromSymbolStart = "1940">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__83-[PhotoFilterViewCollectionViewController collectionView:didSelectItemAtIndexPath:]_block_invoke518"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/share/PhotoFilterViewCollectionViewController.m"
+                  timestampString = "462111746.687542"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "766"
+                  endingLineNumber = "766"
+                  offsetFromSymbolStart = "72">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WUZHAO/Sections/Home/HomeTableViewController.m"
+            timestampString = "462118203.975185"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1218"
+            endingLineNumber = "1218"
+            landmarkName = "-uploadPhotos:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__40-[HomeTableViewController uploadPhotos:]_block_invoke690"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Home/HomeTableViewController.m"
+                  timestampString = "462112647.249439"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1211"
+                  endingLineNumber = "1211"
+                  offsetFromSymbolStart = "452">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__40-[HomeTableViewController uploadPhotos:]_block_invoke697"
+                  moduleName = "Place"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yiyi/Documents/learn_tech/learn_IOS/WUZHAO/WUZHAO/Sections/Home/HomeTableViewController.m"
+                  timestampString = "462112647.249618"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1211"
+                  endingLineNumber = "1211"
+                  offsetFromSymbolStart = "40">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

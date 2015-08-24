@@ -562,8 +562,6 @@ void c_slideAlpha() {
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [PhotoCommon saveImageToPhotoAlbum:stillImage];//存至本机
-            
-            //写入地址信息
         });
         double delayInSeconds = 0.8f;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -585,7 +583,9 @@ void c_slideAlpha() {
                 [imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                     if ([[obj objectForKey:@"needSave"] isEqualToString:@"true"])
                     {
-                        [PhotoCommon saveImageToPhotoAlbumWithExif:[obj objectForKey:@"imageInfo"] image:[obj objectForKey:@"image"]];
+                        //[PhotoCommon saveImageToPhotoAlbum:[obj objectForKey:@"image"]];
+                        
+                        [PhotoCommon saveImageToPhotoAlbumWithInfo:[obj objectForKey:@"imageInfo"] image:[obj objectForKey:@"image"]];
                     }
                 }];
                 AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
@@ -616,7 +616,8 @@ void c_slideAlpha() {
         [imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             if ([[obj objectForKey:@"needSave"] isEqualToString:@"true"])
             {
-                [PhotoCommon saveImageToPhotoAlbumWithExif:[obj objectForKey:@"imageInfo"] image:[obj objectForKey:@"image"]];
+                //[PhotoCommon saveImageToPhotoAlbum:[obj objectForKey:@"image"]];
+                //[PhotoCommon saveImageToPhotoAlbumWithInfo:[obj objectForKey:@"imageInfo"] image:[obj objectForKey:@"image"]];
             }
         }];
         AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
@@ -652,7 +653,8 @@ void c_slideAlpha() {
             [imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                 if ([[obj objectForKey:@"needSave"] isEqualToString:@"true"])
                 {
-                    [PhotoCommon saveImageToPhotoAlbumWithExif:[obj objectForKey:@"imageInfo"] image:[obj objectForKey:@"image"]];
+                    //[PhotoCommon saveImageToPhotoAlbum:[obj objectForKey:@"image"]];
+                    [PhotoCommon saveImageToPhotoAlbumWithInfo:[obj objectForKey:@"imageInfo"] image:[obj objectForKey:@"image"]];
                 }
             }];
             AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];
@@ -696,7 +698,7 @@ void c_slideAlpha() {
             [imagesAndInfo enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                 if ([[obj objectForKey:@"needSave"] isEqualToString:@"true"])
                 {
-                    [PhotoCommon saveImageToPhotoAlbumWithExif:[obj objectForKey:@"imageInfo"] image:[obj objectForKey:@"image"]];
+                    [PhotoCommon saveImageToPhotoAlbumWithInfo:[obj objectForKey:@"imageInfo"] image:[obj objectForKey:@"image"]];
                 }
             }];
             AddImageInfoViewController *addImageInfoCon = [storyboard instantiateViewControllerWithIdentifier:@"addImageInfo"];

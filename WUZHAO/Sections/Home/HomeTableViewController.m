@@ -16,6 +16,7 @@
 
 #import "CommentTextView.h"
 #import "progressImageView.h"
+#import "UploadPhotoIndicatorView.h"
 
 #import "UIViewController+Basic.h"
 
@@ -35,6 +36,7 @@
 #import "QDYHTTPClient.h"
 #import "macro.h"
 #import "UMSocial.h"
+#import "QiniuSDK.h"
 
 #define ONEPAGEITEMS 10
 #define RecommendCellHeigh 100
@@ -54,10 +56,11 @@
 @property (nonatomic,strong) PhotoTableViewCell *prototypeCell;
 @property (nonatomic,strong) UIView *introductionView;
 
-@property (nonatomic, strong) UIScrollView *uploadPhotoIndicatorView;
-@property (nonatomic, strong) NSMutableArray *uploadImageProgressViews;
 
-
+@property (nonatomic, strong) UIView *uploadPhotoIndicatorViewContainer;
+@property (nonatomic, strong) NSMutableArray *uploadPhotoIndicatorViews;
+@property (nonatomic, strong) NSMutableArray *uploadPhotoInfos;
+@property (nonatomic, strong) UploadPhotoIndicatorView *uploadPhotoIndicatorView;
 
 @end
 
@@ -111,10 +114,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
     if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
     {
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beginUploadPhotos:) name:@"beginUploadPhotos" object:Nil];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(finishiIndicator:) name:@"uploadPhotoSuccess" object:nil];
-         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(errorIndicator:) name:@"uploadPhotoFail" object:nil];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideIndicator) name:@"uploadAllPhotosSuccess" object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beginUploadPhotos:) name:@"beginShowUploadIndicator" object:Nil];
     }
 
 }
@@ -156,6 +156,30 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     // Dispose of any resources that can be recreated.
 }
 
+-(UIView *)uploadPhotoIndicatorViewContainer
+{
+    if (!_uploadPhotoIndicatorViewContainer)
+    {
+        _uploadPhotoIndicatorViewContainer = [[UIView alloc]init];
+    }
+    return _uploadPhotoIndicatorViewContainer;
+}
+-(NSMutableArray *)uploadPhotoIndicatorViews
+{
+    if (!_uploadPhotoIndicatorViews)
+    {
+        _uploadPhotoIndicatorViews = [[NSMutableArray alloc]init];
+    }
+    return _uploadPhotoIndicatorViews;
+}
+-(NSMutableArray *)uploadPhotoInfos
+{
+    if (!_uploadPhotoInfos)
+    {
+        _uploadPhotoInfos = [[NSMutableArray alloc]init];
+    }
+    return _uploadPhotoInfos;
+}
 
 -(UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -207,48 +231,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     return _currentUser;
 }
 
--(void)addIntroductionButton
-{
-    if (![self.introductionView superview])
-    {
-        self.introductionView = [[UIView alloc]initWithFrame:self.view.frame];
-        UILabel *huoLabel = [[UILabel alloc]init];
-        huoLabel.text = @"或";
-        [huoLabel setSmallReadOnlyLabelAppearance];
-        [huoLabel sizeToFit];
-        huoLabel.center = CGPointMake(self.introductionView.frame.size.width/2,self.introductionView.frame.size.height/2-64);
-        [self.introductionView addSubview:huoLabel];
-        
-        [PhotoCommon drawALineWithFrame:CGRectMake(60, huoLabel.center.y, WZ_APP_SIZE.width/2-huoLabel.frame.size.width-60, 0.5) andColor:THEME_COLOR_LIGHT_GREY_PARENT inLayer:self.introductionView.layer];
-        [PhotoCommon drawALineWithFrame:CGRectMake(huoLabel.center.x+huoLabel.frame.size.width, huoLabel.center.y, WZ_APP_SIZE.width/2-huoLabel.frame.size.width-60, 0.5) andColor:THEME_COLOR_LIGHT_GREY_PARENT inLayer:self.introductionView.layer];
-        
-        UIButton *searchAndAddButton = [[UIButton alloc]initWithFrame:CGRectMake(30, huoLabel.center.y+38, WZ_APP_SIZE.width-60, 42)];
-        [searchAndAddButton setTitle:@"浏览照片并关注" forState:UIControlStateNormal];
-        [searchAndAddButton setThemeBackGroundAppearance];
-        [searchAndAddButton setBigButtonAppearance];
-        [searchAndAddButton addTarget:self action:@selector(searchAndAddButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-        [self.introductionView addSubview:searchAndAddButton];
-        
-        UIButton *postMyFirstPhotoButton = [[UIButton alloc]initWithFrame:CGRectMake(30, huoLabel.center.y-80, WZ_APP_SIZE.width-60, 42)];
-        [postMyFirstPhotoButton setTitle:@"发布第一张照片" forState:UIControlStateNormal];
-        [postMyFirstPhotoButton setThemeBackGroundAppearance];
-        [postMyFirstPhotoButton setBigButtonAppearance];
-        [postMyFirstPhotoButton addTarget:self action:@selector(postMyFirstPhotoButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-        [self.introductionView addSubview:postMyFirstPhotoButton];
-        
-        [self.view addSubview:self.introductionView];
-        NSLog(@"introductionview frame:x %f y %f  w %f  h %f",self.introductionView.frame.origin.x,self.introductionView.frame.origin.y,self.introductionView.frame.size.width,self.introductionView.frame.size.height);
-        NSLog(@"introductionview center %f  %f",self.introductionView.center.x,self.introductionView.center.y);
-        NSLog(@"label center %f  %f",huoLabel.center.x,huoLabel.center.y);
-        
-        if (self.tableView.tableFooterView)
-        {
-            [self.tableView.tableFooterView removeFromSuperview];
-        }
-    }
-    
-}
-
 -(void)loadData
 {
     [self.tableView reloadData];
@@ -262,8 +244,6 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     }
     [self setupLoadMore];
 }
-
-
 
 #pragma mark - tableview delegate
 - (WhatsGoingOn *)getDataAtIndexPath:(NSIndexPath *)indexPath
@@ -833,11 +813,11 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         [[NSNotificationCenter defaultCenter]postNotificationName:@"logOut" object:nil];
         return;
     }
-    if (self.shouldRefreshData == false)
+    if (self.shouldRefreshData == NO)
     {
         return;
     }
-    self.shouldRefreshData = false;
+    self.shouldRefreshData = NO;
     if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
     {
         self.recommandDatasource = nil;
@@ -879,7 +859,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         self.currentPage = 1;
         [self starRightBartAiv];
         [[QDYHTTPClient sharedInstance]GetHomeRecommendListWithPageNum:self.currentPage whenComplete:^(NSDictionary *result) {
-            self.shouldRefreshData = true;
+            self.shouldRefreshData = YES;
             [self stopRightBarAiv];
             if ([result objectForKey:@"data"] )
             {
@@ -1026,6 +1006,25 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     [commentListView setPoiItem:item];
     [self pushToViewController:commentListView animated:YES hideBottomBar:YES];
 }
+-(void)didClickUnlinedTextOncommentTextView:(CommentTextView *)commentTextView
+{
+    PhotoTableViewCell * cell ;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8"))
+    {
+        cell = (PhotoTableViewCell *)[[commentTextView superview]superview];
+    }
+    else
+    {
+        cell = (PhotoTableViewCell *)[[[commentTextView superview]superview]superview];
+    }
+    NSIndexPath *selectItemIndexPath = [self.tableView indexPathForCell:cell];
+    self.currentCommentIndexPath = selectItemIndexPath;
+    WhatsGoingOn *item = [self getDataAtIndexPath:selectItemIndexPath];
+    CommentListViewController *commentListView = [[CommentListViewController alloc]init];
+    [commentListView setPoiItem:item];
+    commentListView.isKeyboardShowWhenLoadView = YES;
+    [self pushToViewController:commentListView animated:YES hideBottomBar:YES];
+}
 #pragma mark - notification action
 -(void)clearUserInfo
 {
@@ -1037,106 +1036,324 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     {
         [self.introductionView removeFromSuperview];
     }*/
+    self.uploadPhotoInfos = nil;
+    self.uploadPhotoIndicatorViewContainer = nil;
     [self loadData];
     
 }
 
 -(void)beginUploadPhotos:(NSNotification *)notification
 {
-    NSArray *photos =  [[notification userInfo] objectForKey:@"photos"];
-    if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
+    //初始化上传数据
+    NSMutableDictionary *uploadInfo = [[NSMutableDictionary alloc]init];
+    NSMutableArray *imagesAndInfo = [[notification userInfo]objectForKey:@"imagesAndInfo"];
+    [imagesAndInfo enumerateObjectsUsingBlock:^(NSMutableDictionary *imageInfo, NSUInteger idx, BOOL *stop) {
+        NSData *photoData = [PhotoCommon setImageInfo:[imageInfo objectForKey:@"imageInfo"] image:[imageInfo objectForKey:@"image"] scale:0.7f];
+        [imageInfo setObject:photoData forKey:@"photoData"];
+    }];
+    [uploadInfo setObject:imagesAndInfo forKey:@"imagesAndInfo"];
+    [uploadInfo setObject:[[notification userInfo]objectForKey:@"photoDescription"] forKey:@"photoDescription"];
+    [uploadInfo setObject:[[notification userInfo]objectForKey:@"poiInfo"] forKey:@"poiInfo"];
+    [uploadInfo setObject:@0 forKey:@"successNum"];
+    [uploadInfo setObject:@"NO" forKey:@"isUploading"];
+    [self.uploadPhotoInfos addObject:uploadInfo];
+
+    //初始化界面
+    UploadPhotoIndicatorView *indicatorView = [[UploadPhotoIndicatorView alloc]init];
+    [indicatorView.imageView setImage:[imagesAndInfo[0] objectForKey:@"image"]];
+    
+    [indicatorView setStatus:UPLOAD_STATUS_UPLOADING withInfo:[NSString stringWithFormat:@"照片上传中，正在上传 1/%ld",(long)imagesAndInfo.count]];
+    [indicatorView.deleteButton setEnabled:YES];
+    [indicatorView.deleteButton addTarget:self action:@selector(deleteIndicator:) forControlEvents:UIControlEventTouchUpInside];
+    [indicatorView.reloadButton setEnabled:YES];
+    [indicatorView.reloadButton addTarget:self action:@selector(reuploadPhotos:) forControlEvents:UIControlEventTouchUpInside];
+    [uploadInfo setObject:indicatorView forKey:@"indicatorView"];
+    
+    //界面显示
+    [self.uploadPhotoIndicatorViews addObject:indicatorView];
+    [self updateIndicatorView];
+    
+    //正式开始上传
+    [self uploadPhotos:uploadInfo];
+    
+}
+
+-(void)successIndicator:(NSMutableDictionary *)photosInfo
+{
+    NSInteger successNum = [[photosInfo objectForKey:@"successNum"]integerValue];
+    NSArray *imagesAndInfo = [photosInfo objectForKey:@"imagesAndInfo"];
+    successNum += 1;
+    [photosInfo setObject:@(successNum) forKey:@"successNum"];
+    UploadPhotoIndicatorView *indicatorView = [photosInfo objectForKey:@"indicatorView"];
+    if (successNum + 1<=imagesAndInfo.count)
     {
-        [self showIndicator:photos];
+        [indicatorView setStatus:UPLOAD_STATUS_UPLOADING withInfo:[NSString stringWithFormat:@"照片上传中，正在上传 %ld/%ld",(long)successNum+1,(long)imagesAndInfo.count]];
     }
 }
 
--(void)finishiIndicator:(NSNotification *)notification
+-(void)finishiIndicator:(NSMutableDictionary *)photosInfo
 {
     
-    NSInteger index = [[[notification userInfo] objectForKey:@"photoIndex"]integerValue];
-    progressImageView *imageView = self.uploadImageProgressViews[index];
-    [imageView setfinishState];
-     
-}
+    [photosInfo setObject:@"NO" forKey:@"isUploading"];
+    NSInteger successNum = [[photosInfo objectForKey:@"successNum"]integerValue];
+    NSArray *imagesAndInfo = [photosInfo objectForKey:@"imagesAndInfo"];
+    UploadPhotoIndicatorView *indicatorView = [photosInfo objectForKey:@"indicatorView"];
+    if (successNum == imagesAndInfo.count)
+    {
 
--(void)errorIndicator:(NSNotification *)notification
+        [self uploadPhotoInfosToServer:photosInfo];
+    }
+    else
+    {
+        NSInteger failedCount = imagesAndInfo.count - successNum;
+        
+        [indicatorView setStatus:UPLOAD_STATUS_UPLOAD_FAILED withInfo:[NSString stringWithFormat:@"%ld张照片上传失败",(long)failedCount]];
+    }
+}
+-(void)deleteIndicator:(UIButton *)sender
 {
+    UploadPhotoIndicatorView *indicatorView = (UploadPhotoIndicatorView *)sender.superview;
+    [self.uploadPhotoInfos enumerateObjectsUsingBlock:^(NSDictionary *photosInfo, NSUInteger idx, BOOL *stop) {
+        if ([[photosInfo objectForKey:@"indicatorView"] isEqual:indicatorView])
+        {
+            [self.uploadPhotoInfos removeObject:photosInfo];
+            [self hideIndicator:indicatorView WithDelay:0.0 ReloadData:NO];
+            *stop = YES;
+        }
+    }];
     
-    NSInteger index = [[[notification userInfo] objectForKey:@"photoIndex"]integerValue];
-    progressImageView *imageView = self.uploadImageProgressViews[index];
-    [imageView setErrorState];
+}
+-(void)reuploadPhotos:(UIButton *)sender
+{
+    UploadPhotoIndicatorView *indicatorView = (UploadPhotoIndicatorView *)sender.superview;
+    [self.uploadPhotoInfos enumerateObjectsUsingBlock:^(NSMutableDictionary *photosInfo, NSUInteger idx, BOOL *stop) {
+        if ([[photosInfo objectForKey:@"indicatorView"] isEqual:indicatorView])
+        {
+            [self uploadPhotos:photosInfo];
+        }
+    }];
     
+}
+-(void)uploadPhotos:(NSMutableDictionary *)photosInfo
+{
+    if ([[photosInfo objectForKey:@"isUploading"]isEqualToString:@"YES"])
+        return;
+    [photosInfo setValue:@"YES" forKey:@"isUploading"];
+    
+    NSMutableArray *imagesAndInfo = [photosInfo objectForKey:@"imagesAndInfo"];
+    UploadPhotoIndicatorView *indicatorView = [photosInfo objectForKey:@"indicatorView"];
+    NSInteger successNum = [[photosInfo objectForKey:@"successNum"]integerValue];
+    if (successNum <= imagesAndInfo.count)
+    {
+        [indicatorView setStatus:UPLOAD_STATUS_UPLOADING withInfo:[NSString stringWithFormat:@"照片上传中，正在上传 %ld/%ld",(long)successNum+1,(long)imagesAndInfo.count]];
+    }
+    else
+    {
+        [indicatorView setStatus:UPLOAD_STATUS_UPLOADING withInfo:[NSString stringWithFormat:@"照片上传中，正在上传 %ld/%ld",(long)successNum,(long)imagesAndInfo.count]];
+    }
+    
+    //begin upload
+     __block NSInteger photoNum  = 0;
+    NSInteger totalReuploadNum = imagesAndInfo.count - successNum;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        [imagesAndInfo enumerateObjectsUsingBlock:^(NSDictionary *imageInfo, NSUInteger idx, BOOL *stop) {
+            //还未上传或者上传失败状态
+        if ( (![imageInfo objectForKey:@"success"]) || [[imageInfo objectForKey:@"success"]isEqualToString:@"NO"])
+        {
+            NSData *photoData = [imageInfo objectForKey:@"photoData"];
+            if (!photoData)
+            {
+                photoData = [PhotoCommon setImageInfo:[imageInfo objectForKey:@"imageInfo"] image:[imageInfo objectForKey:@"image"] scale:0.7f];
+            }
+            NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+            [[QDYHTTPClient sharedInstance] GetQiNiuTokenWithUserId:userId type:1 whenComplete:^(NSDictionary *result) {
+                NSDictionary *data;
+                if ([result objectForKey:@"data"])
+                {
+                    data = [result objectForKey:@"data"];
+                }
+                else
+                {
+                    //获取token失败
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        photoNum ++;
+                        [SVProgressHUD showErrorWithStatus:@"照片上传失败,请检查网络设置"];
+                        [imageInfo setValue:@"NO" forKey:@"success"];
+                        if (photoNum == totalReuploadNum)
+                        {
+                            [self finishiIndicator:photosInfo];
+                        }
+                    });
+                    return ;
+                }
+                //获取token成功，继续上传逻辑
+                QNUploadManager *upLoadManager = [[QNUploadManager alloc]init];
+                NSString *dataName ;
+                if ([imageInfo objectForKey:@"imageName"])
+                {
+                    dataName = [imageInfo objectForKey:@"imageName"];
+                }
+                else
+                {
+                    dataName = [data objectForKey:@"imageName"];
+                }
+                [imageInfo setValue:dataName forKey:@"imageName"];
+                [upLoadManager putData:photoData key:[imageInfo objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
+                 {
+                     if (info.error)
+                     {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                             //一张图片上传失败
+                            photoNum ++;
+                            [imageInfo setValue:@"NO" forKey:@"success"];
+                            //已上传完所有图片
+                            if (photoNum == totalReuploadNum)
+                            {
+                                [self finishiIndicator:photosInfo];
+                            }
+                        });
+                     }
+                     else
+                     {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            //一张图片上传成功
+                            photoNum ++;
+                            [imageInfo setValue:@"YES" forKey:@"success"];
+                            [self successIndicator:photosInfo];
+                            //已上传完所有图片
+                            if (photoNum == totalReuploadNum)
+                            {
+                                [self finishiIndicator:photosInfo];
+                            }
+                        });
+                     }
+                 } option:nil];
+            }];
+
+        }
+        }];
+    });
 }
 
 #pragma mark - uploadNewPhotoIndicator
--(void)showIndicator:(NSArray *)photos
+-(void)updateIndicatorView
 {
-    float imageWidth = 48;
-    float spacing =8;
-    self.uploadPhotoIndicatorView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, 64)];
-    self.uploadPhotoIndicatorView.backgroundColor = [UIColor whiteColor];
-    self.uploadPhotoIndicatorView.contentSize = CGSizeMake(spacing +(imageWidth+spacing)*photos.count, 64);
-    [PhotoCommon drawALineWithFrame:CGRectMake(0, self.uploadPhotoIndicatorView.frame.size.height-0.5f, WZ_APP_SIZE.width, 0.5f) andColor:THEME_COLOR_LIGHT_GREY_PARENT inLayer:self.uploadPhotoIndicatorView.layer];
-    self.uploadImageProgressViews = [[NSMutableArray alloc]init];
-    [photos enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        progressImageView *imageView = [[progressImageView alloc]initWithFrame:CGRectMake(spacing +idx*(imageWidth+spacing), spacing, imageWidth, imageWidth)];
-        [self.uploadPhotoIndicatorView addSubview:imageView];
-        imageView.image = obj;
-        [self.uploadImageProgressViews addObject:imageView];
+    float indicatorViewHeight = 64;
+    [self.uploadPhotoIndicatorViewContainer setFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, self.uploadPhotoIndicatorViews.count * indicatorViewHeight)];
+    
+    [self.uploadPhotoIndicatorViewContainer.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if ([obj isKindOfClass:[UploadPhotoIndicatorView class]])
+        {
+            [obj removeFromSuperview];
+        }
     }];
-    self.tableView.tableHeaderView = self.uploadPhotoIndicatorView;
+    
+    if (self.uploadPhotoIndicatorViews.count == 0)
+    {
+        self.tableView.tableHeaderView = nil;
+        return;
+    }
+    [self.uploadPhotoIndicatorViews enumerateObjectsUsingBlock:^(UploadPhotoIndicatorView *indicatorView, NSUInteger idx, BOOL *stop) {
+        [indicatorView setFrame:CGRectMake(0, indicatorViewHeight*idx, WZ_APP_SIZE.width, indicatorViewHeight)];
+        [self.uploadPhotoIndicatorViewContainer addSubview:indicatorView];
+        
+    }];
+    self.tableView.tableHeaderView = self.uploadPhotoIndicatorViewContainer;
     //[self.view addSubview:self.uploadPhotoIndicatorView];
 }
 
--(void)hideIndicator
+-(void)hideIndicator:(UploadPhotoIndicatorView *)indicatorView WithDelay:(float)delayTime ReloadData:(BOOL)reload
 {
-    CGRect rect = CGRectMake(0, -64, WZ_APP_SIZE.width, 64);
-    
-    [UIView animateWithDuration:0.3 delay:2.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-        
-        self.uploadPhotoIndicatorView.frame = rect;
-        
+    CGRect frame = indicatorView.frame;
+    [UIView animateWithDuration:0.3 delay:delayTime options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionBeginFromCurrentState animations:^{
+        indicatorView.transform  = CGAffineTransformMakeTranslation(frame.size.width*-1, 0);
     } completion:^(BOOL finished) {
-        [self.uploadImageProgressViews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            [obj removeFromSuperview];
-        }];
-        [self.uploadPhotoIndicatorView removeFromSuperview];
-        self.tableView.tableHeaderView = nil;
-        NSLog(@"get latest data list when finish upload photos");
-        [self getLatestData];
-        
-        NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-        [[QDYHTTPClient sharedInstance]getUserRateStatusWithUserId:userId whenComplete:^(NSDictionary *result) {
-            if ([result objectForKey:@"data"])
-            {
-                NSDictionary *data = [result objectForKey:@"data"];
-                NSInteger allowRate = [[data objectForKey:@"allowRate"]integerValue];
-                if (allowRate == 1)
+        [self.uploadPhotoIndicatorViews removeObject:indicatorView];
+        [self updateIndicatorView];
+        if (reload)
+        {
+            [self getLatestDataAnimated];
+            //上传成功，询问服务器，是否要提示去app store 评分
+            NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+            [[QDYHTTPClient sharedInstance]getUserRateStatusWithUserId:userId whenComplete:^(NSDictionary *result) {
+                if ([result objectForKey:@"data"])
                 {
-                    double delaysInSecond = 3.0;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)delaysInSecond * NSEC_PER_SEC);
-                    dispatch_after(popTime, dispatch_get_main_queue(), ^{
-                        VoteAlertView *voteAlertControl = [[VoteAlertView alloc]init];
-                        [self presentViewController:voteAlertControl animated:YES completion:nil];
-                    }) ;
+                    NSDictionary *data = [result objectForKey:@"data"];
+                    NSInteger allowRate = [[data objectForKey:@"allowRate"]integerValue];
+                    if (allowRate == 1)
+                    {
+                        double delaysInSecond = 5.0;
+                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)delaysInSecond * NSEC_PER_SEC);
+                        dispatch_after(popTime, dispatch_get_main_queue(), ^{
+                            VoteAlertView *voteAlertControl = [VoteAlertView alertControllerWithTitle:@"" message:nil preferredStyle:UIAlertControllerStyleAlert];
+                            [self presentViewController:voteAlertControl animated:YES completion:nil];
+                        }) ;
+                    }
                 }
-            }
-            else
-            {
-                NSLog(@"get rate status error");
-            }
-        }];
-
-        
-        
-        
+                else
+                {
+                    NSLog(@"get rate status error");
+                }
+            }];
+        }
     }];
 }
 
--(void)updateIndicatorAtIndex:(NSInteger)index withProcess:(float)process
+
+-(void)uploadPhotoInfosToServer:(NSDictionary *)photosInfo
 {
-    progressImageView *imageView = self.uploadImageProgressViews[index];
-    [imageView setProgress:process];
+    NSString *photosNameString = @"";
+    NSArray *imagesAndInfo = [photosInfo objectForKey:@"imagesAndInfo"];
+    for (int i = 0;i<imagesAndInfo.count;i++)
+    {
+        NSDictionary *imageInfo = imagesAndInfo[i];
+        if ([imageInfo objectForKey:@"imageName"])
+        {
+            photosNameString = [NSString stringWithFormat:@"%@;%@",photosNameString,[imageInfo objectForKey:@"imageName"]];
+        }
+    }
+    if (photosNameString.length >1)
+    {
+        photosNameString = [photosNameString substringFromIndex:1];
+    }
+    NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
+    POI *uploadPoi = [photosInfo objectForKey:@"poiInfo"];
+    NSString *photoDescription = [photosInfo objectForKey:@"photoDescription"];
+    BOOL hasPoi = YES;
+    if ([uploadPoi.uid isEqualToString:@""])
+    {
+        hasPoi = NO;
+    }
+    [[QDYHTTPClient sharedInstance]PostPhotoInfomationWithUserId:userId
+                                                           photo:photosNameString
+                                                         thought:photoDescription
+                                                          haspoi:hasPoi
+                                                        provider:uploadPoi.type
+                                                             uid:uploadPoi.uid
+                                                            name:uploadPoi.name
+                                                        classify:uploadPoi.classify
+                                                        location:uploadPoi.location
+                                                         address:uploadPoi.address
+                                                        province:uploadPoi.province
+                                                            city:uploadPoi.city
+                                                        district:uploadPoi.district
+                                                           stamp:uploadPoi.stamp
+                                                    whenComplete:^(NSDictionary *returnData)
+     {
+         UploadPhotoIndicatorView *indicatorView =[photosInfo objectForKey:@"indicatorView"];
+         if ([returnData objectForKey:@"data"])
+         {
+             [indicatorView setStatus:UPLOAD_STATUS_UPLOAD_SUCCESS withInfo:@"照片上传成功"];
+             [self hideIndicator:indicatorView WithDelay:2.0f ReloadData:YES];
+             [self.uploadPhotoInfos removeObject:photosInfo];
+         }
+         else if ([returnData objectForKey:@"error"])
+         {
+             [indicatorView setStatus:UPLOAD_STATUS_UPLOAD_FAILED withInfo:@"照片上传失败"];
+         }
+     }];
+    
+    
 }
 
 #pragma mark - UMSocialData delegate

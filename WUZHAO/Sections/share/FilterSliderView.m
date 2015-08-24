@@ -147,4 +147,33 @@
     return _otherInputs;
 }
 
+-(id)copyWithZone:(NSZone *)zone
+{
+    FilterParameters *copy = [[[self class]allocWithZone:zone]init];
+    copy->_currentValue = _currentValue;
+    copy->_defaultValue = _defaultValue;
+    copy->_filterName = [_filterName copy];
+    copy->_maxmumValue = _maxmumValue;
+    copy->_minmumValue = _minmumValue;
+    copy->_name = [_name copy];
+    copy->_otherInputs = [_otherInputs copy];
+    copy->_key = [_key copy];
+    
+    return copy;
+}
+-(id)mutableCopyWithZone:(NSZone *)zone
+{
+    FilterParameters *copy = [[[self class]allocWithZone:zone]init];
+    copy->_currentValue = _currentValue;
+    copy->_defaultValue = _defaultValue;
+    copy->_filterName = [_filterName mutableCopy];
+    copy->_maxmumValue = _maxmumValue;
+    copy->_minmumValue = _minmumValue;
+    copy->_name = [_name copy];
+    copy->_otherInputs = [_otherInputs mutableCopy];
+    copy->_key = [_key copy];
+    
+    return copy;
+}
+
 @end

@@ -6,11 +6,11 @@
 //  Copyright (c) 2014年 yiyi. All rights reserved.
 //
 
-#define TOPCOVERHEIGHT 240
-#define kNavBarHeight 49
-#define kAvatarWidth 76
-#define kAvatarVerticalOffset 49
-#define kFollowsLabelOffset 40
+#define TOPCOVERHEIGHT 248
+#define kNavBarHeight 64
+#define kAvatarWidth 86
+#define kAvatarVerticalOffset 28
+#define kFollowsLabelOffset 62
 
 #import "MineViewController.h"
 
@@ -54,6 +54,10 @@
 @interface MineViewController () <CommonContainerViewControllerDelegate,UIScrollViewDelegate,UIActionSheetDelegate ,UIImagePickerControllerDelegate>
 {
     CGPoint scrollViewInitContentOffset;
+    UIView *greyMaskView;
+    UIImageView *bigImageView;
+    CGRect selectImageFrame;
+    CGPoint selectImageCenter;
 }
 
 @property (nonatomic, strong) UIView *navigationBar;
@@ -65,6 +69,7 @@
 @property (strong, nonatomic) UILabel *followsLabel;
 @property (strong, nonatomic) UILabel *followersNumLabel;
 @property (strong, nonatomic) UILabel *followersLabel;
+@property (nonatomic, strong) UILabel *seperateLabel;
 
 @property (nonatomic, strong) UILabel *myPhotosNumLabel;
 @property (nonatomic, strong) UILabel *myPhotosLabel;
@@ -125,6 +130,9 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     
     self.scrollView.delegate = self;
     self.scrollView.showsVerticalScrollIndicator = NO;
+    self.refreshControl = [[UIRefreshControl alloc]init];
+    [self.refreshControl addTarget:self action:@selector(refreshByPullingTable:) forControlEvents:UIControlEventValueChanged];
+    [self.scrollView addSubview:self.refreshControl];
     
     [self configGesture];
     
@@ -160,16 +168,11 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     self.navigationController.navigationBarHidden = YES;
     self.tabBarController.navigationItem.backBarButtonItem.title = @"";
     self.tabBarController.navigationController.navigationBarHidden = NO;
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
 }
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-
-    // [self.scrollView addBlurCoverWithImage:[UIImage imageNamed:@"cover.png"]];
-    UITapGestureRecognizer *backGroundImageTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backGroundImageClick:)];
-    [self.scrollView.blurCoverView addGestureRecognizer:backGroundImageTap];
-    [self.scrollView.blurCoverView setUserInteractionEnabled:YES];
     if (self.shouldReloadData)
     {
         [self.myPhotoCollectionViewController.collectionView reloadData];
@@ -195,7 +198,6 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self];
-    [self.scrollView removeBlurCoverView];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -210,14 +212,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     }
     _userInfo = [userInfo mutableCopy];
 }
--(void)setCoverImage:(UIImage *)coverImage
-{
-    _coverImage = coverImage;
-    if (self.scrollView.blurCoverView)
-    {
-        [self.scrollView.blurCoverView setImage:coverImage];
-    }
-}
+
 -(UIImageView *)placeHolderImageView
 {
     if (!_placeHolderImageView)
@@ -233,7 +228,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 {
     if (!_aiv)
     {
-        _aiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        _aiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self.scrollView addSubview:_aiv];
     }
     return _aiv;
@@ -252,7 +247,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         else
         {
             //bottomHeight = 4*WZ_APP_SIZE.width/3;
-            bottomHeight = WZ_APP_SIZE.height -topHeight +10;
+            bottomHeight = WZ_APP_SIZE.height -topHeight +30;
         }
     }
     else if (self.myAddressLabel.highlighted)
@@ -263,7 +258,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         }
         else
         {
-            bottomHeight = WZ_APP_SIZE.height - topHeight +10;
+            bottomHeight = WZ_APP_SIZE.height - topHeight +30;
         }
     }
     
@@ -278,6 +273,10 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     CGRect frame = self.followsNumLabel.frame;
     frame.origin.x = WZ_APP_SIZE.width/2 - 8 - frame.size.width;
     frame.origin.y = kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset;
+    if ([self.userInfo.selfDescriptions isEqualToString:@""])
+    {
+        frame.origin.y -=20;
+    }
     frame.size.height = 20;
     [self.followsNumLabel setFrame:frame];
     
@@ -286,6 +285,12 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     
     followsFrame.origin.x = frame.origin.x - 8 - followsFrame.size.width;
     followsFrame.origin.y = kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset;
+    [self.seperateLabel setFrame:CGRectMake(WZ_APP_SIZE.width/2-4, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset , 8,22)];
+    if ([self.userInfo.selfDescriptions isEqualToString:@""])
+    {
+        followsFrame.origin.y -=20;
+        [self.seperateLabel setFrame:CGRectMake(WZ_APP_SIZE.width/2-4, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset - 20 , 8,22)];
+    }
     followsFrame.size.height = 20;
     [self.followsLabel setFrame:followsFrame];
 }
@@ -296,6 +301,10 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     CGRect frame = self.followersLabel.frame;
     frame.origin.x = WZ_APP_SIZE.width/2 + 8 ;
     frame.origin.y = kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset;
+    if ([self.userInfo.selfDescriptions isEqualToString:@""])
+    {
+        frame.origin.y -=20;
+    }
     frame.size.height = 20;
     [self.followersLabel setFrame:frame];
     
@@ -304,120 +313,138 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     
     followersNumFrame.origin.x = frame.origin.x + frame.size.width +8;
     followersNumFrame.origin.y = kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset;
+    [self.seperateLabel setFrame:CGRectMake(WZ_APP_SIZE.width/2-4, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset , 8,22)];
+    if ([self.userInfo.selfDescriptions isEqualToString:@""])
+    {
+        followersNumFrame.origin.y -=20;
+        [self.seperateLabel setFrame:CGRectMake(WZ_APP_SIZE.width/2-4, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset - 20 , 8,22)];
+    }
     followersNumFrame.size.height = 20;
     [self.followersNumLabel setFrame:followersNumFrame];
 }
 
 -(void)initView
 {
+    
     float avatarVerticalOffset = kAvatarVerticalOffset;
     float avatarViewWidth = kAvatarWidth;
     float followsLabelOffset = kFollowsLabelOffset;
-    float buttonWidth = 44;
+    float buttonWidth = 48;
     float labelHeight = 22;
-    float navBarHeight = 49;
+    float verticalSpacing = 8;
+    
+    [self.view setBackgroundColor:[UIColor colorWithWhite:238 alpha:1.0f]];
 
-    
-    [self.scrollView addBlurCover];
-    // [self.scrollView addBlurCoverWithImage:[UIImage imageNamed:@"cover.png"]];
-    UITapGestureRecognizer *backGroundImageTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backGroundImageClick:)];
-    [self.scrollView.blurCoverView addGestureRecognizer:backGroundImageTap];
-    [self.scrollView.blurCoverView setUserInteractionEnabled:YES];
-    
-    //usernameLabel
-    self.userNameLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 0, WZ_APP_SIZE.width - 40, navBarHeight)];
-    [self.userNameLabel setTextAlignment:NSTextAlignmentCenter];
-    [self.userNameLabel setTextColor:THEME_COLOR_WHITE];
-    [self.userNameLabel setFont:[UIFont systemFontOfSize:20]];
-    [self.scrollView addSubview:self.userNameLabel];
-    
+
     //avatar
     self.avator = [[UIImageView alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width - avatarViewWidth)/2 , avatarVerticalOffset, avatarViewWidth, avatarViewWidth)];
-    [self.avator setRoundAppearanceWithBorder:THEME_COLOR_WHITE borderWidth:2.0];
+    [self.avator setRoundAppearance];
     [self.avator setBackgroundColor:THEME_COLOR_LIGHT_GREY_MORE_PARENT];
     UITapGestureRecognizer *avatarTapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(personalAvatarClick)];
     [self.avator addGestureRecognizer:avatarTapGesture];
     [self.avator setUserInteractionEnabled:YES];
-    
     [self.scrollView addSubview:self.avator];
     
+    //usernameLabel
+    self.userNameLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, avatarVerticalOffset + avatarViewWidth + verticalSpacing, WZ_APP_SIZE.width - 40, labelHeight)];
+    [self.userNameLabel setTextAlignment:NSTextAlignmentCenter];
+    [self.userNameLabel setTextColor:THEME_COLOR_FONT_BLACK];
+    [self.userNameLabel setFont:[UIFont systemFontOfSize:20]];
+    [self.scrollView addSubview:self.userNameLabel];
+    
     //private letter button
-    self.sendMessageButton = [[UIButton alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width- avatarViewWidth)/2 - 64,avatarVerticalOffset + (avatarViewWidth -36)/2, 36,36)];
+    self.sendMessageButton = [[UIButton alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width + avatarViewWidth)/2 + 28,avatarVerticalOffset + avatarViewWidth - 48,36,36)];
     [self.sendMessageButton setHidden:YES];
-    [self.sendMessageButton setNormalButtonAppearance];
+    self.sendMessageButton.layer.borderWidth = 1.5f;
+    self.sendMessageButton.layer.cornerRadius = 18.0f;
+    self.sendMessageButton.layer.borderColor = [THEME_COLOR_LIGHT_GREY_BIT_PARENT CGColor];
+    self.sendMessageButton.layer.masksToBounds = YES;
     [self.sendMessageButton addTarget:self action:@selector(sendMessageButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    [self.sendMessageButton setImage:[UIImage imageNamed:@"letter"] forState:UIControlStateNormal];
+    [self.sendMessageButton setImage:[UIImage imageNamed:@"letter_bubble"] forState:UIControlStateNormal];
     //[self.sendMessageButton setTitle:@"私信" forState:UIControlStateNormal];
     [self.scrollView addSubview:self.sendMessageButton];
     
     //myButton
-    self.mineButton = [[UIButton alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width + avatarViewWidth)/2 + 28, avatarVerticalOffset + (avatarViewWidth - 24)/2, 64, 24)];
+    self.mineButton = [[UIButton alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width- avatarViewWidth)/2 - 64, avatarVerticalOffset + avatarViewWidth - 48, 36, 36)];
     [self.scrollView addSubview:self.mineButton];
 
     [self.mineButton setHidden:YES];
-    [self.mineButton setNormalButtonAppearance];
+    self.mineButton.layer.borderWidth = 1.5f;
+    self.mineButton.layer.cornerRadius = 18.0f;
+    self.mineButton.layer.borderColor = [THEME_COLOR_LIGHT_GREY_BIT_PARENT CGColor];
+    self.mineButton.layer.masksToBounds = YES;
     [self.mineButton addTarget:self action:@selector(MineButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
     //self description
-    self.selfDescriptionLabel = [[UILabel alloc]initWithFrame:CGRectMake(8, avatarVerticalOffset + avatarViewWidth , WZ_APP_SIZE.width - 16 , 36)];
+    self.selfDescriptionLabel = [[UILabel alloc]initWithFrame:CGRectMake(8, self.userNameLabel.frame.origin.y + labelHeight , WZ_APP_SIZE.width - 16 , 36)];
     [self.scrollView addSubview:self.selfDescriptionLabel];
-    [self.selfDescriptionLabel setTextColor:[UIColor whiteColor]];
+    [self.selfDescriptionLabel setTextColor:THEME_COLOR_FONT_GREY];
     [self.selfDescriptionLabel setFont:WZ_FONT_COMMON_SIZE];
     [self.selfDescriptionLabel setTextAlignment:NSTextAlignmentCenter];
     [self.selfDescriptionLabel setNumberOfLines:2];
     
     //follows and followers
-    self.followsLabel = [[UILabel alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2 - 44 - 50, avatarVerticalOffset + avatarViewWidth + followsLabelOffset , 50, labelHeight)];
-    self.followsNumLabel = [[UILabel alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2 - 40, avatarVerticalOffset + avatarViewWidth + followsLabelOffset  , 40, labelHeight)];
+    self.followsLabel = [[UILabel alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2 - 44 - 50, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset, 50, labelHeight)];
+    self.followsNumLabel = [[UILabel alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2 - 40, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset  , 40, labelHeight)];
     [self.followsNumLabel setText:@"0"];
     [self.followsNumLabel setTextAlignment:NSTextAlignmentLeft];
-    [self.followsNumLabel setFont:WZ_FONT_READONLY_BOLD];
-    [self.followsNumLabel setTextColor:THEME_COLOR_WHITE];
-    [self.followsLabel setText:@"关注"];
+    [self.followsNumLabel setFont:WZ_FONT_SMALL_SIZE];
+    [self.followsNumLabel setTextColor:THEME_COLOR_FONT_BLACK];
+    [self.followsLabel setText:@"关注了"];
     [self.followsLabel setTextAlignment:NSTextAlignmentRight];
     [self.followsLabel setFont:WZ_FONT_SMALL_SIZE];
-    [self.followsLabel setTextColor:THEME_COLOR_WHITE];
+    [self.followsLabel setTextColor:THEME_COLOR_FONT_GREY];
     [self.scrollView addSubview:self.followsLabel];
     [self.scrollView addSubview:self.followsNumLabel];
     
     UILabel *seperateLabel = [[UILabel alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2-4, avatarVerticalOffset + avatarViewWidth + followsLabelOffset , 8, labelHeight)];
     [seperateLabel setText:@"/"];
     [seperateLabel setTextAlignment:NSTextAlignmentCenter];
-    [seperateLabel setTextColor:THEME_COLOR_WHITE];
-    [seperateLabel setFont:WZ_FONT_COMMON_BOLD_SIZE];
+    [seperateLabel setTextColor:THEME_COLOR_FONT_GREY];
+    [seperateLabel setFont:WZ_FONT_COMMON_SIZE];
+    self.seperateLabel = seperateLabel;
     [self.scrollView addSubview:seperateLabel];
     
-    self.followersNumLabel = [[UILabel alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2 + 58, avatarVerticalOffset + avatarViewWidth + followsLabelOffset , 40, labelHeight)];
-    self.followersLabel = [[UILabel alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2 + 10 , avatarVerticalOffset + avatarViewWidth + followsLabelOffset  , 40, labelHeight)];
+    self.followersNumLabel = [[UILabel alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2 + 58, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset, 40, labelHeight)];
+    self.followersLabel = [[UILabel alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width/2 + 10 , kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset, 40, labelHeight)];
     [self.followersNumLabel setText:@"0"];
     [self.followersNumLabel setTextAlignment:NSTextAlignmentLeft];
-    [self.followersNumLabel setFont:WZ_FONT_READONLY_BOLD];
-    [self.followersNumLabel setTextColor:THEME_COLOR_WHITE];
+    [self.followersNumLabel setFont:WZ_FONT_SMALL_SIZE];
+    [self.followersNumLabel setTextColor:THEME_COLOR_FONT_BLACK];
     [self.followersLabel setText:@"关注者"];
     [self.followersLabel setTextAlignment:NSTextAlignmentLeft];
     [self.followersLabel setFont:WZ_FONT_SMALL_SIZE];
-    [self.followersLabel setTextColor:THEME_COLOR_WHITE];
+    [self.followersLabel setTextColor:THEME_COLOR_FONT_GREY];
     [self.scrollView addSubview:self.followersLabel];
     [self.scrollView addSubview:self.followersNumLabel];
     
     //init tabbar
-    self.backGroundView = [[UIView alloc]initWithFrame:CGRectMake(0, TOPCOVERHEIGHT - 44, WZ_APP_SIZE.width, 44)];
-    [self.backGroundView setBackgroundColor:THEME_COLOR_DARK_GREY_MORE_PARENT];
+    
+    self.backGroundView = [[UIView alloc]initWithFrame:CGRectMake(0, TOPCOVERHEIGHT - 50, WZ_APP_SIZE.width, 49)];
+    [self.backGroundView setBackgroundColor:[UIColor colorWithWhite:238 alpha:1.0f]];
     [self.scrollView addSubview:self.backGroundView];
     
+    [PhotoCommon drawALineWithFrame:CGRectMake(4, 0, self.backGroundView.frame.size.width - 8, 0.6) andColor:THEME_COLOR_LIGHT_GREY_BIT_PARENT inLayer:self.backGroundView.layer];
+    [PhotoCommon drawALineWithFrame:CGRectMake(4, self.backGroundView.frame.size.height-0.6, self.backGroundView.frame.size.width - 8, 0.6) andColor:THEME_COLOR_LIGHT_GREY_BIT_PARENT inLayer:self.backGroundView.layer];
+    /*
+    //draw button lines
+    [PhotoCommon drawALineWithFrame:CGRectMake(WZ_APP_SIZE.width/3, TOPCOVERHEIGHT - 36 , 0.6, 24) andColor:THEME_COLOR_WHITE inLayer:self.scrollView.layer];
+    [PhotoCommon drawALineWithFrame:CGRectMake(WZ_APP_SIZE.width/3*2, TOPCOVERHEIGHT - 36 , 0.6, 24) andColor:THEME_COLOR_WHITE inLayer:self.scrollView.layer];
+    */
+    
     float tabbarLabelWidth = WZ_APP_SIZE.width/3;
-    self.myPhotosNumLabel = [[UILabel alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width/3 - tabbarLabelWidth)/2, TOPCOVERHEIGHT - (labelHeight-2)*2 , tabbarLabelWidth, labelHeight)];
-    self.myPhotosLabel = [[UILabel alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width/3 - tabbarLabelWidth)/2, TOPCOVERHEIGHT - labelHeight , tabbarLabelWidth, labelHeight)];
+    self.myPhotosNumLabel = [[UILabel alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width/3 - tabbarLabelWidth)/2, TOPCOVERHEIGHT - (labelHeight)*2 , tabbarLabelWidth, labelHeight)];
+    self.myPhotosLabel = [[UILabel alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width/3 - tabbarLabelWidth)/2, TOPCOVERHEIGHT - labelHeight-4 , tabbarLabelWidth, labelHeight)];
     [self.myPhotosNumLabel setText:@"0"];
     [self.myPhotosNumLabel setTextAlignment:NSTextAlignmentCenter];
-    [self.myPhotosNumLabel setFont:WZ_FONT_SMALL_SIZE];
-    [self.myPhotosNumLabel setTextColor:THEME_COLOR_WHITE];
-    [self.myPhotosNumLabel setHighlightedTextColor:THEME_COLOR_DARK];
+    [self.myPhotosNumLabel setFont:WZ_FONT_LARGER_SIZE];
+    [self.myPhotosNumLabel setTextColor:THEME_COLOR_FONT_DARK_GREY];
+    [self.myPhotosNumLabel setHighlightedTextColor:THEME_COLOR_FONT_BLACK];
     [self.myPhotosLabel setText:@"发布"];
     [self.myPhotosLabel setTextAlignment:NSTextAlignmentCenter];
     [self.myPhotosLabel setFont:WZ_FONT_SMALL_SIZE];
-    [self.myPhotosLabel setTextColor:THEME_COLOR_WHITE];
-    [self.myPhotosLabel setHighlightedTextColor:THEME_COLOR_DARK];
+    [self.myPhotosLabel setTextColor:THEME_COLOR_FONT_GREY];
+    [self.myPhotosLabel setHighlightedTextColor:THEME_COLOR_FONT_DARK_GREY];
     UITapGestureRecognizer *myPhotoNumLabelTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(myPhotosButtonClick:)];
     [self.myPhotosNumLabel addGestureRecognizer:myPhotoNumLabelTap];
     [self.myPhotosNumLabel setUserInteractionEnabled:YES];
@@ -428,18 +455,18 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.scrollView addSubview:self.myPhotosNumLabel];
     [self.scrollView addSubview:self.myPhotosLabel];
     
-    self.myAddressNumLabel = [[UILabel alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width/3 - tabbarLabelWidth)/2 + WZ_APP_SIZE.width/3 , TOPCOVERHEIGHT - (labelHeight -2)*2 , tabbarLabelWidth, labelHeight)];
-    self.myAddressLabel = [[UILabel alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width/3 - tabbarLabelWidth)/2 + WZ_APP_SIZE.width/3 , TOPCOVERHEIGHT - labelHeight , tabbarLabelWidth, labelHeight)];
+    self.myAddressNumLabel = [[UILabel alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width/3 - tabbarLabelWidth)/2 + WZ_APP_SIZE.width/3 , TOPCOVERHEIGHT - (labelHeight )*2 , tabbarLabelWidth, labelHeight)];
+    self.myAddressLabel = [[UILabel alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width/3 - tabbarLabelWidth)/2 + WZ_APP_SIZE.width/3 , TOPCOVERHEIGHT - labelHeight - 4 , tabbarLabelWidth, labelHeight)];
     [self.myAddressNumLabel setText:@"0"];
     [self.myAddressNumLabel setTextAlignment:NSTextAlignmentCenter];
-    [self.myAddressNumLabel setTextColor:THEME_COLOR_WHITE];
-    [self.myAddressNumLabel setFont:WZ_FONT_SMALL_SIZE];
-    [self.myAddressNumLabel setHighlightedTextColor:THEME_COLOR_DARK];
+    [self.myAddressNumLabel setTextColor:THEME_COLOR_FONT_DARK_GREY];
+    [self.myAddressNumLabel setFont:WZ_FONT_LARGER_SIZE];
+    [self.myAddressNumLabel setHighlightedTextColor:THEME_COLOR_FONT_BLACK];
     [self.myAddressLabel setText:@"地点"];
     [self.myAddressLabel setTextAlignment:NSTextAlignmentCenter];
-    [self.myAddressLabel setTextColor:THEME_COLOR_WHITE];
+    [self.myAddressLabel setTextColor:THEME_COLOR_FONT_GREY];
     [self.myAddressLabel setFont:WZ_FONT_SMALL_SIZE];
-    [self.myAddressLabel setHighlightedTextColor:THEME_COLOR_DARK];
+    [self.myAddressLabel setHighlightedTextColor:THEME_COLOR_FONT_DARK_GREY];
     UITapGestureRecognizer *myAddressNumLabelTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(myAddressButtonClick:)];
     [self.myAddressNumLabel addGestureRecognizer:myAddressNumLabelTap];
     [self.myAddressNumLabel setUserInteractionEnabled:YES];
@@ -451,18 +478,15 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.scrollView addSubview:self.myAddressLabel];
     
     self.myMapButton = [[UIButton alloc]initWithFrame:CGRectMake((WZ_APP_SIZE.width/3 - tabbarLabelWidth)/2 + WZ_APP_SIZE.width/3*2, TOPCOVERHEIGHT - buttonWidth , tabbarLabelWidth, buttonWidth)];
-    [self.myMapButton setImage:[UIImage imageNamed:@"earth.png"] forState:UIControlStateNormal];
-    [self.myMapButton setImage:[UIImage imageNamed:@"earth_s.png"] forState:UIControlStateSelected];
+    
+    [self.myMapButton setImage:[UIImage imageNamed:@"earth"] forState:UIControlStateNormal];
     [self.myMapButton addTarget:self action:@selector(myMapButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollView addSubview:self.myMapButton];
     
-    //draw button lines
-    [PhotoCommon drawALineWithFrame:CGRectMake(WZ_APP_SIZE.width/3, TOPCOVERHEIGHT - 36 , 0.6, 24) andColor:THEME_COLOR_WHITE inLayer:self.scrollView.layer];
-    [PhotoCommon drawALineWithFrame:CGRectMake(WZ_APP_SIZE.width/3*2, TOPCOVERHEIGHT - 36 , 0.6, 24) andColor:THEME_COLOR_WHITE inLayer:self.scrollView.layer];
-    
+
     //setting button
-    UIButton *setting = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width - 56, 0, 48, 48)];
-    [setting setImage:[UIImage imageNamed:@"setting.png"] forState:UIControlStateNormal];
+    UIButton *setting = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width - 42, 24, 36, 36)];
+    [setting setImage:[UIImage imageNamed:@"setting"] forState:UIControlStateNormal];
     [setting addTarget:self action:@selector(settingButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
     [self.scrollView addSubview:setting];
@@ -470,15 +494,14 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     //back button
     if (self.userInfo )
     {
-        UIView *view = [[UIView alloc]initWithFrame:CGRectMake(8, 24, 35, 35)];
-        UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(6, 8, 19, 19)];
+        UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 20, 36, 36)];
+        UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(6, 6, 24, 24)];
         [view addSubview:backButton];
-        [view setBackgroundColor:THEME_COLOR_DARK_GREY_PARENT];
         UITapGestureRecognizer *tapgesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backButtonClick:)];
         [view addGestureRecognizer:tapgesture];
         [view setUserInteractionEnabled:YES];
         [view setRoundAppearance];
-        [backButton setBackgroundImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+        [backButton setBackgroundImage:[UIImage imageNamed:@"back_arrow_bold"] forState:UIControlStateNormal];
         [backButton addTarget:self action:@selector(backButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:view];
         
@@ -492,10 +515,11 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 
 -(void)setPersonalInfo
 {
-    [self.mineButton setTitle:@"正在加载..." forState:UIControlStateNormal];
-    self.shouldRefreshData = false;
+    [self.mineButton setHidden:YES];
+    //[self.mineButton setTitle:@"正在加载..." forState:UIControlStateNormal];
+    self.shouldRefreshData = NO;
     
-    [self.scrollView setContentOffset:CGPointMake(0, -20) animated:NO];
+    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
     if (!_userInfo)
     {
         _userInfo = [[User alloc]init];
@@ -506,44 +530,34 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.myPhotosLabel setHidden:YES];
     [self.myPhotosNumLabel setHidden:YES];
     [self.aiv startAnimating];
-    
     self.photoCollectionCurrentPage = 1;
     NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [[QDYHTTPClient sharedInstance]GetPersonalInfoWithUserId:self.userInfo.UserID currentUserId:myUserId page:self.photoCollectionCurrentPage whenComplete:^(NSDictionary *returnData) {
-            [self.aiv stopAnimating];
-            [self.myPhotosLabel setHidden:NO];
-            [self.myPhotosNumLabel setHidden:NO];
-            if ([self.refreshControl isRefreshing])
-            {
-                [self.refreshControl endRefreshing];
-            }
-            self.shouldRefreshData = true;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if ([returnData objectForKey:@"data"])
-                {
-                    User *user = [returnData objectForKey:@"data"];
-                    NSLog(@"userinfo %@",user);
-                    [self setUserInfo:user];
-                    [self updateMyInfomationUI];
-                    [self SetPhotosCollectionData];
-                    NSLog(@"collection view height%f",self.containerViewController.currentViewController.view.frame.size.height);
-                    [self.scrollContentViewHeightConstraint setConstant:[self scrollContentViewHeight]];
-                    [self.scrollContentView setNeedsLayout];
-                    [self.scrollContentView layoutIfNeeded];
-                   
-                    
-                }
-                else if ([returnData objectForKey:@"error"])
-                {
-                    [SVProgressHUD showErrorWithStatus:@"获取个人信息失败"];
-                }
-
-                
-            });
-        }];
-
-    });
+    [[QDYHTTPClient sharedInstance]GetPersonalInfoWithUserId:self.userInfo.UserID currentUserId:myUserId page:self.photoCollectionCurrentPage whenComplete:^(NSDictionary *returnData) {
+        self.shouldRefreshData = YES;
+        if ([self.refreshControl isRefreshing])
+        {
+            [self.refreshControl endRefreshing];
+        }
+        [self.aiv stopAnimating];
+        [self.myPhotosLabel setHidden:NO];
+        [self.myPhotosNumLabel setHidden:NO];
+        if ([returnData objectForKey:@"data"])
+        {
+            User *user = [returnData objectForKey:@"data"];
+            NSLog(@"userinfo %@",user);
+            [self setUserInfo:user];
+            [self updateMyInfomationUI];
+            [self SetPhotosCollectionData];
+            NSLog(@"collection view height%f",self.containerViewController.currentViewController.view.frame.size.height);
+            [self.scrollContentViewHeightConstraint setConstant:[self scrollContentViewHeight]];
+            [self.scrollContentView setNeedsLayout];
+            [self.scrollContentView layoutIfNeeded];
+        }
+        else if ([returnData objectForKey:@"error"])
+        {
+            [SVProgressHUD showErrorWithStatus:@"获取个人信息失败"];
+        }
+    }];
 
 
 }
@@ -676,7 +690,79 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         editViewController.userInfo = self.userInfo;
         [self pushToViewController:editViewController animated:YES hideBottomBar:YES];
     }
+    else
+    {
+        if (!self.avator.image)
+            return;
+        NSLog(@"imageView click");
+        if (!greyMaskView)
+        {
+            greyMaskView = [[UIView alloc]initWithFrame:CGRectMake(0, 0 ,self.view.frame.size.width,self.view.frame.size.height)];
+            [greyMaskView setBackgroundColor:[UIColor blackColor]];
+            [greyMaskView setUserInteractionEnabled:YES];
+            UITapGestureRecognizer *greyMaskClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(greyMaskClick:)];
+            [greyMaskView addGestureRecognizer:greyMaskClick];
+        }
+        [self.view addSubview:greyMaskView];
+        if (!bigImageView)
+        {
+            bigImageView= [UIImageView new];
+        }
+        UIWindow * window=[[[UIApplication sharedApplication] delegate] window];
+        UIImageView *imageView = self.avator;
+        selectImageFrame = [imageView.superview convertRect:imageView.frame toView:window];
+        selectImageCenter = [imageView.superview convertPoint:imageView.center toView:window];
+        bigImageView.center = selectImageCenter;
+        bigImageView.frame = selectImageFrame;
+        UIActivityIndicatorView *aiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        [aiv setCenter:CGPointMake(WZ_APP_SIZE.width/2, WZ_APP_SIZE.width/2)];
+        [aiv startAnimating];
+        NSString *bigImageUrl = [self.userInfo.avatarImageURLString substringWithRange:NSMakeRange(0, self.userInfo.avatarImageURLString.length - 4)];
+        [bigImageView sd_setImageWithURL:[NSURL URLWithString:bigImageUrl] placeholderImage:imageView.image completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [aiv stopAnimating];
+            if (aiv.superview)
+            {
+                [aiv removeFromSuperview];
+            }
+        }];
+        bigImageView.userInteractionEnabled = YES;
+        imageView.userInteractionEnabled = NO;
+        UITapGestureRecognizer *bigImageClick = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backToSmallImage:)];
+        [bigImageView addGestureRecognizer:bigImageClick];
+        
+        [self.view addSubview:bigImageView];
+        [UIView animateWithDuration:0.5 animations:^{
+            bigImageView.frame = CGRectMake(0, (WZ_APP_SIZE.height-WZ_APP_SIZE.width)/2, WZ_APP_SIZE.width, WZ_APP_SIZE.width);
+            imageView.userInteractionEnabled = YES;
+        }
+         completion:^(BOOL finished) {
+             [bigImageView addSubview:aiv];
+         }];
+
+    }
     
+}
+-(void)backToSmallImage:(UITapGestureRecognizer *)gesture
+{
+    UIView *view = bigImageView;
+    [UIView animateWithDuration:0.5 animations:^{
+        view.frame = selectImageFrame;
+        view.center = selectImageCenter;
+    } completion:^(BOOL finished) {
+        [view removeFromSuperview];
+        [greyMaskView removeFromSuperview];
+    }];
+}
+-(void)greyMaskClick:(UITapGestureRecognizer *)gesture
+{
+    UIView *view = bigImageView;
+    [UIView animateWithDuration:0.5 animations:^{
+        view.frame = selectImageFrame;
+        view.center = selectImageCenter;
+    } completion:^(BOOL finished) {
+        [view removeFromSuperview];
+        [greyMaskView removeFromSuperview];
+    }];
 }
 -(void)backGroundImageClick:(UIGestureRecognizer *)gesture
 {
@@ -704,17 +790,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     if ( [sender isKindOfClass:[UIButton class]])
     {
         UIButton *myBtn = (UIButton *)sender;
-        if ([myBtn.titleLabel.text  isEqualToString:@"编辑个人信息"])
-        {
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Mine" bundle:nil];
-            
-            EditPersonalInfoTableViewController *editViewController = [storyboard instantiateViewControllerWithIdentifier:@"editPersonalInfo"];
-            editViewController.userInfo = self.userInfo;
-            [self pushToViewController:editViewController animated:YES hideBottomBar:YES];
-            
-           // [self performSegueWithIdentifier:@"editPersonInfo" sender:self];
-        }
-        else if ([myBtn.titleLabel.text  isEqualToString:@"关注"])
+        if (self.userInfo.followType == UNFOLLOW)
         {
             NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -722,10 +798,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if ([result objectForKey:@"data"])
                         {
-                            //[SVProgressHUD showInfoWithStatus:@"关注成功"];
-                            [myBtn setTitle:@"已关注" forState:UIControlStateNormal];
                             self.userInfo.followType = FOLLOWED;
-                            [myBtn setWhiteFrameTransparentAppearence];
+                            [myBtn setImage:[UIImage imageNamed:@"followed"] forState:UIControlStateNormal];
                             
                         }
                         else if ([result objectForKey:@"error"])
@@ -738,7 +812,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
             });
 
         }
-        else if ([myBtn.titleLabel.text  isEqualToString:@"已关注"]||[myBtn.titleLabel.text  isEqualToString:@"互相关注"])
+        else if (self.userInfo.followType == FOLLOWEACH || self.userInfo.followType == FOLLOWED)
         {
             NSInteger myUserId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -746,10 +820,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                  dispatch_async(dispatch_get_main_queue(), ^{
                 if ([result objectForKey:@"data"])
                 {
-                    //[SVProgressHUD showInfoWithStatus:@"关注成功"];
-                    [myBtn setTitle:@"关注" forState:UIControlStateNormal];
                     self.userInfo.followType = UNFOLLOW;
-                    [myBtn setThemeBackGroundWhiteFrameAppearance];
+                    [myBtn setImage:[UIImage imageNamed:@"unfollow"] forState:UIControlStateNormal];
                     
                 }
                 else if ([result objectForKey:@"error"])
@@ -814,6 +886,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.myPhotosLabel setHighlighted:YES];
     [self.myAddressNumLabel setHighlighted:NO];
     [self.myAddressLabel setHighlighted:NO];
+    [self.myAddressNumLabel setHidden:NO];
+    [self.myAddressLabel setHidden:NO];
     [self.containerViewController swapViewControllersWithIdentifier:SEGUEFIRST];
     [self.scrollContentViewHeightConstraint setConstant:[self scrollContentViewHeight]];
     [self.scrollContentView setNeedsLayout];
@@ -825,6 +899,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.myPhotosLabel setHighlighted:NO];
     [self.myAddressNumLabel setHighlighted:YES];
     [self.myAddressLabel setHighlighted:YES];
+    [self.myPhotosNumLabel setHidden:NO];
+    [self.myPhotosLabel setHidden:NO];
     [self.containerViewController swapViewControllersWithIdentifier:SEGUESECOND];
     [self.scrollContentViewHeightConstraint setConstant:[self scrollContentViewHeight]];
     [self.scrollContentView setNeedsLayout];
@@ -906,6 +982,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 
 -(void) updateMyInfomationUI
 {
+    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
     if ([self.userInfo.UserName isEqualToString:@""])
     {
         self.userNameLabel.text = @"个人主页";
@@ -920,19 +997,6 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     {
         [self.avator sd_setImageWithURL:[NSURL URLWithString:self.userInfo.avatarImageURLString] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         }];
-    }
-    if (self.userInfo.backGroundImage && ![self.userInfo.backGroundImage isEqualToString:@""])
-    {
-        [self.placeHolderImageView sd_setImageWithURL:[NSURL URLWithString:self.userInfo.backGroundImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            self.coverImage = image;
-            [self.scrollView setContentOffset:CGPointMake(0, -18) animated:YES];
-        }];
-       // [self.scrollView.blurCoverView setImageWithUrl:self.userInfo.backGroundImage];
-    }
-    else
-    {
-        self.coverImage = [UIImage imageNamed:@"cover.png"];
-        
     }
 
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
@@ -949,23 +1013,19 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         if (self.userInfo.followType == UNFOLLOW)
         {
             
-            [self.mineButton setTitle:@"关注" forState:UIControlStateNormal];
-            [self.mineButton setThemeBackGroundWhiteFrameAppearance];
+            [self.mineButton setImage:[UIImage imageNamed:@"unfollow"] forState:UIControlStateNormal];
         }
         else if (self.userInfo.followType == FOLLOWED)
         {
-            [self.mineButton setTitle:@"已关注" forState:UIControlStateNormal];
-            [self.mineButton setWhiteFrameTransparentAppearence];
+            [self.mineButton setImage:[UIImage imageNamed:@"followed"] forState:UIControlStateNormal];
         }
         else if (self.userInfo.followType == FOLLOWEACH)
         {
-            [self.mineButton setTitle:@"互相关注" forState:UIControlStateNormal];
-            [self.mineButton setWhiteFrameTransparentAppearence];
+             [self.mineButton setImage:[UIImage imageNamed:@"follow_each"] forState:UIControlStateNormal];
         }
         else
         {
-            [self.mineButton setTitle:@"  " forState:UIControlStateNormal];
-            [self.mineButton setBackgroundColor:[UIColor grayColor]];
+            [self.mineButton setHidden:YES];
             
         }
     }
@@ -981,7 +1041,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     
     [self.view setNeedsLayout];
     [self.view layoutIfNeeded];
-    [self.scrollView setContentOffset:CGPointMake(0, -19) animated:YES];
+    
 }
 -(void)SetPhotosCollectionData
 {
@@ -1038,14 +1098,16 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                             [self.scrollContentViewHeightConstraint setConstant:[self scrollContentViewHeight]];
                             [self.view setNeedsLayout];
                             [self.view layoutIfNeeded];
+                            /*
                             if (_footLabel)
                             {
                                 [_footLabel setHidden:YES];
-                            }
+                            }*/
                         }
                         else
                         {
                             NSLog(@"no more data");
+                            /*
                             if (!_footLabel)
                             {
                                 float tabbarHeight = 0;
@@ -1064,7 +1126,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                             }
                             [_footLabel setFrame:CGRectMake(0, self.containerViewController.currentViewController.view.frame.size.height -32, WZ_APP_SIZE.width, 32)];
                             [_footLabel setHidden:NO];
-                            
+                            */
                             //TO DO
                         }
                         NSLog(@"collection view height%f",self.containerViewController.currentViewController.view.frame.size.height);
@@ -1120,19 +1182,24 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 -(void)SetAddressListData
 {
     //根据个人信息，获取更多信息
+    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
     if (!_myAddressListDatasource)
     {
         [self.aiv setCenter:CGPointMake(self.myAddressLabel.center.x, self.myAddressLabel.center.y-10)];
         [self.myAddressNumLabel setHidden:YES];
         [self.myAddressLabel setHidden:YES];
         [self.aiv startAnimating];
-        self.shouldRefreshData = false;
+        self.shouldRefreshData = NO;
         NSInteger userId = self.userInfo.UserID;
         [[POISearchAPI sharedInstance]getUserPOIsWithUserId:userId whenComplete:^(NSDictionary *returnData) {
             [self.aiv stopAnimating];
             [self.myAddressNumLabel setHidden:NO];
             [self.myAddressLabel setHidden:NO];
-              self.shouldRefreshData = true;
+            self.shouldRefreshData = YES;
+            if ([self.refreshControl isRefreshing])
+            {
+                [self.refreshControl endRefreshing];
+            }
             if ([returnData objectForKey:@"data"])
             {
                 _myAddressListDatasource = [returnData objectForKey:@"data"];
@@ -1142,18 +1209,21 @@ static NSString * const minePhotoCell = @"minePhotosCell";
                 [self.myFootPrintViewController setDatasource:_myAddressListDatasource];
                 self.myAddressNumLabel.text = [NSString stringWithFormat:@"%ld",(long)_myAddressListDatasource.count];
                 [self.myFootPrintViewController loadData];
-                [self.scrollView setContentOffset:CGPointMake(0, -20) animated:YES];
+                
             }
             else if ([returnData objectForKey:@"error"])
             {
                 [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
             }
         }];
-        
-
     }
     else
     {
+        self.shouldRefreshData = YES;
+        if ([self.refreshControl isRefreshing])
+        {
+            [self.refreshControl endRefreshing];
+        }
         [self.scrollContentViewHeightConstraint setConstant:[self scrollContentViewHeight]];
         [self.scrollContentView setNeedsLayout];
         [self.scrollContentView layoutIfNeeded];
@@ -1269,146 +1339,6 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     return datas;
 }
 
-#pragma mark ---UIActionSheetDelegate
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    NSMutableArray *mediaTypes = [[NSMutableArray alloc]init];
-    [mediaTypes addObject:(__bridge NSString *)kUTTypeImage];
-    if (buttonIndex ==0)
-    {
-        NSLog(@"select camera");
-        if ([CameraUtility isCameraAvailable] && [CameraUtility doesCameraSupportTakingPhotos])
-        {
-            UIImagePickerController *controller = [[UIImagePickerController alloc]init];
-            controller.sourceType = UIImagePickerControllerSourceTypeCamera;
-            if ( [CameraUtility isFrontCameraAvailable])
-            {
-                controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-            }
-            controller.mediaTypes = mediaTypes;
-            controller.delegate = (id<UIImagePickerControllerDelegate>)self;
-            [self presentViewController:controller animated:YES completion:^{
-                NSLog(@"camera view controller is presented");
-            }];
-        }
-    }
-    else if (buttonIndex == 1)
-    {
-        NSLog(@"select photo library");
-        if ([CameraUtility isPhotoLibraryAvailable])
-        {
-            UIImagePickerController *controller = [[UIImagePickerController alloc]init];
-            controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-            controller.mediaTypes = mediaTypes;
-            controller.delegate = (id<UIImagePickerControllerDelegate>)self;
-            [self presentViewController:controller animated:YES completion:^{
-                NSLog(@"picker view controller  is presented");
-            }];
-        }
-    }
-    else if (buttonIndex == 2)
-    {
-        NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"backGroundPath"];
-        self.coverImage = [UIImage imageNamed:@"cover.png"];
-        [self.scrollView setContentOffset:CGPointMake(0, -20) animated:YES];
-        [[QDYHTTPClient sharedInstance]PostBackGroundImageWithUserId:userId backgroundName:@"" whenComplete:^(NSDictionary *returnData)
-         {
-             
-             dispatch_async(dispatch_get_main_queue(), ^{
-                 if ([returnData objectForKey:@"data"])
-                 {
-                     //上传图片成功
-                    // [SVProgressHUD showInfoWithStatus:@"修改背景图片成功"];
-                 }
-                 else if ([returnData objectForKey:@"error"])
-                 {
-                    // [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-                 }
-                 
-             });
-             
-             
-         }];
-
-        //恢复默认图片
-    }
-}
-
-#pragma mark ----UIImagePickerControllerDelegate
--(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    [picker dismissViewControllerAnimated:YES completion:^{
-        [self.aiv setCenter:CGPointMake(WZ_APP_SIZE.width - 20 , CHBlurCoverViewHeight - 60)];
-        [self.aiv startAnimating];
-        UIImage *backGroundImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-        NSData *uploadImageData = UIImageJPEGRepresentation(backGroundImage, 0.6f);
-        self.coverImage = [UIImage imageWithData:uploadImageData];
-        //self.coverImage = [UIImage imageWithCGImage:[backGroundImage CGImage] scale:0.6f orientation:UIImageOrientationUp];
-        [self.scrollView setContentOffset:CGPointMake(0, -20) animated:YES];
-        NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
-        [[QDYHTTPClient sharedInstance]GetQiNiuTokenWithUserId:userId type:3 whenComplete:^(NSDictionary *returnData) {
-            NSDictionary *data;
-            if ([returnData objectForKey:@"data"])
-            {
-                data = [returnData objectForKey:@"data"];
-                NSLog(@"%@",data);
-            }
-            else
-            {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showErrorWithStatus:@"获取token失败"];
-                    return ;
-                });
-                
-            }
-            
-            QNUploadManager *upLoadManager = [[QNUploadManager alloc]init];
-            [upLoadManager putData:uploadImageData key:[data objectForKey:@"imageName"] token:[data objectForKey:@"uploadToken"] complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp)
-             {
-                 NSLog(@"%@",info);
-                 if (info.error)
-                 {
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         [SVProgressHUD showErrorWithStatus:@"上传图片失败"];
-                     });
-                 }
-                 else
-                 {
-                     [[QDYHTTPClient sharedInstance]PostBackGroundImageWithUserId:userId backgroundName:[data objectForKey:@"imageName"] whenComplete:^(NSDictionary *returnData)
-                      {
-                          
-                          dispatch_async(dispatch_get_main_queue(), ^{
-                               [self.aiv stopAnimating];
-                              if ([returnData objectForKey:@"data"])
-                              {
-                                  [SVProgressHUD showInfoWithStatus:@"修改背景图片成功"];
-                              }
-                              else if ([returnData objectForKey:@"error"])
-                              {
-                                  [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
-                              }
-                              
-                          });
-                          
-                          
-                      }];
-                     
-                 }
-                 
-                 
-             } option:nil];
-        }];
-
-        
-    }];
-}
--(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
-    [picker dismissViewControllerAnimated:YES completion:^{
-        
-    }];
-}
 
 
 

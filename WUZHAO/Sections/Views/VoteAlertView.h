@@ -10,9 +10,4 @@
 #import <UIKit/UIKit.h>
 
 @interface VoteAlertView : UIAlertController
-
--(void)show;
-
--(void)remove;
-
 @end

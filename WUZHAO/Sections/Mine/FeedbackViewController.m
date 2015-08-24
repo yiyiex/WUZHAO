@@ -15,7 +15,7 @@
 #import "macro.h"
 
 @interface FeedbackViewController ()<UITextViewDelegate>
-@property (nonatomic, strong) PlaceholderTextView *feedbackContent;
+@property (nonatomic, strong) IBOutlet PlaceholderTextView *feedbackContent;
 @property (nonatomic, strong) UITextField *contact;
 @property (nonatomic, strong) UIButton *sendButton;
 @end
@@ -50,26 +50,34 @@
 }
 -(void)initView
 {
+    [self.view setBackgroundColor:[UIColor colorWithRed:238 green:238 blue:238 alpha:1.0]];
     float feedbackContentHeight = 80;
-    self.feedbackContent = [[PlaceholderTextView alloc]initWithFrame:CGRectMake(10,80, WZ_APP_SIZE.width-20,feedbackContentHeight)];
-    [self.feedbackContent setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
-    self.feedbackContent.placeholder = @"请您填写您对Place的意见和建议";
+    
+    //self.feedbackContent = [[PlaceholderTextView alloc]initWithFrame:CGRectMake(24,88, WZ_APP_SIZE.width-48,feedbackContentHeight)];
+    //[self.feedbackContent setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    [self.feedbackContent.layer setBorderColor:[THEME_COLOR_DARK_BIT_PARENT CGColor]];
+    [self.feedbackContent.layer setBorderWidth:0.8f];
+    self.feedbackContent.placeholder = @" 请您填写您对Place的意见和建议";
     self.feedbackContent.placeholderFont = WZ_FONT_COMMON_SIZE;
     [self.feedbackContent setFont:WZ_FONT_COMMON_SIZE];
+
     [self.feedbackContent becomeFirstResponder];
     [self.feedbackContent setDelegate:self];
-    [self.view addSubview:self.feedbackContent];
+    //[self.view addSubview:self.feedbackContent];
+    //[self.feedbackContent setContentSize:CGSizeMake(self.feedbackContent.frame.size.width, feedbackContentHeight)];
     
     float contactHeight = 40;
-    self.contact = [[UITextField alloc]initWithFrame:CGRectMake(10,80 + feedbackContentHeight +20, WZ_APP_SIZE.width-20,contactHeight)];
-    self.contact.placeholder = @"手机/邮箱/QQ(选填)";
+    self.contact = [[UITextField alloc]initWithFrame:CGRectMake(24,88 + feedbackContentHeight +22, WZ_APP_SIZE.width-48,contactHeight)];
+    self.contact.placeholder = @" 手机/邮箱/QQ(选填)";
     [self.contact setFont:WZ_FONT_COMMON_SIZE];
-    [self.contact setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    //[self.contact setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    [self.contact.layer setBorderColor:[THEME_COLOR_DARK_BIT_PARENT CGColor]];
+    [self.contact.layer setBorderWidth:0.8f];
     [self.view addSubview:self.contact];
     
-    self.sendButton = [[UIButton alloc]initWithFrame:CGRectMake(10, 80 + feedbackContentHeight + 20 + contactHeight +20, WZ_APP_SIZE.width-20, 42)];
+    self.sendButton = [[UIButton alloc]initWithFrame:CGRectMake(24, 88 + feedbackContentHeight + 22 + contactHeight +22, WZ_APP_SIZE.width-48, 42)];
     [self.sendButton setTitle:@"发送" forState:UIControlStateNormal];
-    [self.sendButton setThemeBackGroundAppearance];
+    [self.sendButton setThemeFrameAppearence];
     [self.sendButton setBigButtonAppearance];
     [self.sendButton addTarget:self action:@selector(sendFeedBack:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.sendButton];

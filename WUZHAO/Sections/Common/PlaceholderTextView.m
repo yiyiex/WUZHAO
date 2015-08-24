@@ -22,12 +22,15 @@
 
 @end
 @implementation PlaceholderTextView
-- (id) initWithFrame:(CGRect)frame {
+
+-(instancetype)initWithFrame:(CGRect)frame
+{
     if ((self = [super initWithFrame:frame])) {
         [self awakeFromNib];
     }
     return self;
 }
+
 
 
 - (void)awakeFromNib {
@@ -55,6 +58,8 @@
     self.maxTextLength=1000;
 
 }
+
+
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 -(void)setPlaceholder:(NSString *)placeholder{

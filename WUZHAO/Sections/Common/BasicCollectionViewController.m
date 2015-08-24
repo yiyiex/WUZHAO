@@ -67,7 +67,10 @@
             [self getLatestData];
         }
     }
-    [self endRefreshing];
+    else
+    {
+        [self endRefreshing];
+    }
 }
 
 -(void)endRefreshing

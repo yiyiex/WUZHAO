@@ -207,13 +207,13 @@
     {
         MyMessageTableViewCell *cell = self.myMessagePrototypeCell;
         [cell configureCellWithMessage:message];
-        height = MAX(avatarHeight +spacing*2, spacing*2+ cell.messageView.frame.size.height);
+        height = MAX(avatarHeight +spacing*2, spacing*4+ cell.messageView.frame.size.height);
     }
     else
     {
         OtherMessageTableViewCell *cell = self.otherMessagePrototypeCell;
         [cell configureCellWithMessage:message];
-        height = MAX(avatarHeight +spacing*2, spacing*2+ cell.messageView.frame.size.height);
+        height = MAX(avatarHeight +spacing*2, spacing*4+ cell.messageView.frame.size.height);
     }
     return height;
 }

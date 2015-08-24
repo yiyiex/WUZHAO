@@ -760,7 +760,7 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
     }
     else if (self.editType == EDIT_TYPE_EFFECT)
     {
-        __block FilterParameters *parameters  = self.effectDescriptions[indexPath.item];
+        __block FilterParameters *parameters  = [self.effectDescriptions[indexPath.item] copy];
         __block BOOL isNewFilter = YES;
         
         [self.filteredImageView.preEffectFilters enumerateObjectsUsingBlock:^(FilterParameters *p, NSUInteger idx, BOOL *stop) {
@@ -859,7 +859,8 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         NSString *needSave = filterUsed || effectUsed?@"true":@"false";
         
         NSMutableDictionary *imageAndInfo = [[NSMutableDictionary alloc]init];
-        [imageAndInfo setObject:filterImageView.outputImage forKey:@"image"];
+        UIImage *image = filterImageView.outputImage;
+        [imageAndInfo setObject:image forKey:@"image"];
         [imageAndInfo setObject:needSave forKey:@"needSave"];
         [imageAndInfo setObject:[obj objectForKey:@"imageInfo"] forKey:@"imageInfo"];
         [newImagesAndInfo addObject:imageAndInfo];
@@ -881,6 +882,7 @@ static NSString * const reuseIdentifier2 = @"PhotoEffectCollectionViewCell";
         if (self.filterBlock)
         {
             [self saveAllImagesInfo];
+            
             self.filterBlock(self.imagesAndInfo);
         }
     }];

@@ -29,7 +29,6 @@ typedef NS_ENUM(NSUInteger, VOTETYPE)
     self = [super init];
     if (self)
     {
-    
         self.title = @"觉得Place怎么样？";
         NSMutableAttributedString *attTitle = [[NSMutableAttributedString alloc] initWithString:@"觉得Place怎么样？"];
         [attTitle addAttribute:NSFontAttributeName
@@ -81,7 +80,7 @@ typedef NS_ENUM(NSUInteger, VOTETYPE)
 {
     if (!_cancelAction)
     {
-        _cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        _cancelAction = [UIAlertAction actionWithTitle:@"再用用看" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             NSInteger userId = [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"];
             [[QDYHTTPClient sharedInstance]setUserRateStatusWithUserId:userId voteStatus:VOTETYPE_CANCEL whenComplete:^(NSDictionary *result) {
                 NSLog(@"%@",result);

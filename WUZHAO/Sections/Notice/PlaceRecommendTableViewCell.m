@@ -40,6 +40,7 @@
 {
     self.parentController = parentController;
     
+    
     [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsUser.avatarImageURLString]];
     [self.feedsImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsPhoto.imageUrlString]];
     
@@ -52,13 +53,14 @@
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle} range:wholeRange];
     NSRange timeRange = [content rangeOfString:feeds.time];
     [attributeContent setAttributes:@{NSForegroundColorAttributeName:THEME_COLOR_LIGHT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE} range:timeRange];
+    [self.contentTextView reset];
+    self.contentTextView.attributedText = attributeContent;
     if (feeds.feedsPOI.name && ![feeds.feedsPOI.name isEqualToString:@""])
     {
-        self.contentTextView.attributedText = attributeContent;
         [self.contentTextView linkPOINameWithPOI:feeds.feedsPOI];
-        
         self.contentTextView.placeRecommendTextViewDelegate = (id<PlaceRecommendTextViewDelegate>)self.parentController;
     }
+    
     [self updateContentTextViewFrame];
     //添加手势
     [self configureGesture];

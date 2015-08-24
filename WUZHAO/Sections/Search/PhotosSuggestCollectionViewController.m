@@ -108,7 +108,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake((WZ_APP_FRAME.size.width-2)/3, (WZ_APP_FRAME.size.width-2)/3);
+    return CGSizeMake((self.collectionView.frame.size.width-4)/3, (self.collectionView.frame.size.width-4)/3);
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath

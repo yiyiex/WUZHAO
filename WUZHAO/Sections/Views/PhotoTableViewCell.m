@@ -18,6 +18,9 @@
 #import "QDYHTTPClient.h"
 #import "SVProgressHUD.h"
 
+#import "UIImage+WebP.h"
+#import "ImageDetailView.h"
+
 #import "macro.h"
 
 #define AvatorImageWidth 38
@@ -25,7 +28,10 @@
 
 
 @interface PhotoTableViewCell()<UICollectionViewDataSource,UICollectionViewDelegate>
-
+{
+    NSIndexPath *currentSelectImageIndexPath;
+}
+@property (nonatomic, strong) NSMutableArray *allPhotos;
 
 
 @end
@@ -63,8 +69,9 @@
 
 -(void)initView
 {
-    self.backgroundColor = [UIColor clearColor];
     
+    self.backgroundColor = [UIColor clearColor];
+    currentSelectImageIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
     
     [self.homeCellAvatorImageView setRoundConerWithRadius:18];
     [self.homeCellAvatorImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
@@ -81,6 +88,10 @@
     [self.addressLabel setThemeLabelAppearance];
     
     [self.homeCellImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    UITapGestureRecognizer *homeCellImageViewTapped = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showImageDetail:)];
+    [self.homeCellImageView addGestureRecognizer:homeCellImageViewTapped];
+    [self.homeCellImageView setUserInteractionEnabled:YES];
+    
     [self.descriptionTextView setTextColor:THEME_COLOR_DARK_GREY_BIT_PARENT];
     [self.descriptionTextView setFont:WZ_FONT_COMMON_SIZE];
     [self.descriptionTextView setScrollEnabled:NO];
@@ -97,6 +108,8 @@
     [self.moreButton setGreyBackGroundAppearance];
     
     [self initImagesCollectionView];
+    
+
 }
 -(void)initImagesCollectionView
 {
@@ -118,6 +131,13 @@
 {
     self.content = content;
     self.parentViewController = parentController;
+    currentSelectImageIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    self.allPhotos = [[NSMutableArray alloc]initWithCapacity:content.imageUrlList.count];
+    for (int i = 0;i<content.imageUrlList.count;i++)
+    {
+        [self.allPhotos addObject:[NSNull null]];
+    }
+    
     [self configureBasicInfo];
     [self configureLikeView];
     [self configureComment];
@@ -280,10 +300,7 @@
         [self.userNameLabelTopAlignment setConstant:2.0f];
     }
     [self.homeCellAvatorImageView sd_setImageWithURL:[NSURL URLWithString:self.content.photoUser.avatarImageURLString]];
-    
     [self.homeCellImageView setFrame:CGRectMake(0, 48, WZ_APP_SIZE.width, WZ_APP_SIZE.width)];
-    
-
     
     //description label
     self.descriptionTextView.text = self.content.imageDescription;
@@ -305,6 +322,8 @@
         CGRect frame = self.imagesContainerView.frame;
         frame.size.height = 86;
         self.imagesContainerView.frame = frame;
+        [self.imagesCollectionView reloadData];
+        [self.imagesCollectionView selectItemAtIndexPath:currentSelectImageIndexPath animated:YES scrollPosition:UICollectionViewScrollPositionLeft];
     }
     else
     {
@@ -312,8 +331,9 @@
         frame.size.height = 0;
         self.imagesContainerView.frame = frame;
         [self.imagesContainerViewHeightConstrant setConstant:0];
+        [self.imagesCollectionView reloadData];
     }
-    [self.imagesCollectionView reloadData];
+
     //address
     if ([self.content.poiName isEqualToString:@""])
     {
@@ -482,7 +502,12 @@
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     HomeSmallImagesCollectionViewCell *cell =(HomeSmallImagesCollectionViewCell *) [collectionView dequeueReusableCellWithReuseIdentifier:@"smallImageCell" forIndexPath:indexPath];
-    [cell.imageView sd_setImageWithURL:[NSURL URLWithString:self.content.imageUrlList[indexPath.item]]];
+    [cell.imageView sd_setImageWithURL:[NSURL URLWithString:self.content.imageUrlList[indexPath.item]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        if (self.allPhotos.count >indexPath.item && image != nil)
+        {
+            self.allPhotos[indexPath.item] = image;
+        }
+    }];
     return cell;
 }
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -490,6 +515,24 @@
     [collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
     HomeSmallImagesCollectionViewCell *cell =(HomeSmallImagesCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
     self.homeCellImageView.image = cell.imageView.image;
+    currentSelectImageIndexPath = indexPath;
+}
+
+-(void)showImageDetail:(UITapGestureRecognizer *)gesture
+{
+    NSInteger index = currentSelectImageIndexPath.item;
+    NSMutableArray *originImageUrls = [[NSMutableArray alloc]init];
+    [self.content.imageUrlList enumerateObjectsUsingBlock:^(NSString *url, NSUInteger idx, BOOL *stop) {
+        NSString *bigUrl = [url substringWithRange:NSMakeRange(0, url.length - 3)];
+        [originImageUrls addObject:bigUrl];
+        
+    }];
+    if (self.content.imageUrlList.count == 1)
+    {
+        self.allPhotos = [[NSMutableArray alloc]initWithArray:@[self.homeCellImageView.image]];
+    }
+    ImageDetailView *imageDetailView = [[ImageDetailView alloc]initWithImageUrls:originImageUrls currentImageIndex:index placeHolderImages:self.allPhotos];
+    [imageDetailView show];
 }
 
 @end

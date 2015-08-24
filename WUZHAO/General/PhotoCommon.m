@@ -77,37 +77,98 @@
     UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
 }
 
-+(void)saveImageToPhotoAlbumWithExif:(NSDictionary *)exif image:(UIImage *)image
++(void)saveImageToPhotoAlbumWithInfo:(NSDictionary *)info image:(UIImage *)image
 {
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
     CGImageRef imageRef = image.CGImage;
     
     //方向校正
-    if ([exif objectForKey:@"Orientation"])
+    if ([info objectForKey:@"Orientation"])
     {
-        [exif setValue:@(UIImageOrientationUp) forKey:@"Orientation"];
+        [info setValue:@(UIImageOrientationUp) forKey:@"Orientation"];
     }
-    if ( [exif objectForKey:@"{TIFF}"])
+    if ( [info objectForKey:@"{TIFF}"])
     {
-        NSDictionary *tiff = [exif objectForKey:@"{TIFF}"];
+        NSDictionary *tiff = [info objectForKey:@"{TIFF}"];
         if ([tiff objectForKey:@"Orientation"])
         {
-            [[exif objectForKey:@"{TIFF}"] setValue:@(UIImageOrientationUp) forKey:@"Orientation"];
+            [[info objectForKey:@"{TIFF}"] setValue:@(UIImageOrientationUp) forKey:@"Orientation"];
         }
     }
-    
-    NSLog(@"%@",exif);
-    
-    [library writeImageToSavedPhotosAlbum:imageRef metadata:exif completionBlock:^(NSURL *assetURL, NSError *error) {
+    NSLog(@"%@",info);
+    [library writeImageToSavedPhotosAlbum:imageRef metadata:info completionBlock:^(NSURL *assetURL, NSError *error) {
         NSLog(@"%@",assetURL);
         NSLog(@"%@",error);
     }];
 }
++(NSDictionary *)getImageInfo:(UIImage *)image
+{
+    NSData *jpeg = UIImageJPEGRepresentation(image, 1.0f);
+    CGImageSourceRef sourceRef = CGImageSourceCreateWithData((CFDataRef)jpeg, NULL);
+    NSMutableDictionary *metaData = [(NSDictionary *)CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(sourceRef, 0, NULL)) mutableCopy];
+    return metaData;
+}
++(NSDictionary *)getImageInfoFromUrl:(NSURL *)url
+{
+    NSData *jpeg = [NSData dataWithContentsOfURL:url];
+    CGImageSourceRef sourceRef = CGImageSourceCreateWithData((CFDataRef)jpeg, NULL);
+    NSMutableDictionary *metaData = [(NSDictionary *)CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(sourceRef, 0, NULL)) mutableCopy];
+    return metaData;
+}
++(NSData *)setImageInfo:(NSDictionary *)info image:(UIImage *)image scale:(float)scale
+{
+    if (scale <=0 || scale >=1)
+    {
+        scale = 1.0f;
+    }
+    NSData *jpeg = UIImageJPEGRepresentation(image, scale);
+    CGImageSourceRef sourceRef = CGImageSourceCreateWithData((__bridge CFDataRef)jpeg, NULL);
+    
+    CFStringRef UTI = CGImageSourceGetType(sourceRef);
+    if (!UTI)
+    {
+        UTI = (__bridge CFStringRef)@"public.jpeg";
+    }
+    NSMutableDictionary *metaData = [(NSDictionary *)CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(sourceRef, 0, NULL)) mutableCopy];
+    
+    if ([info objectForKey:(NSString *)kCGImagePropertyGPSDictionary])
+    {
+        [metaData setObject:[info objectForKey:(NSString *)kCGImagePropertyGPSDictionary] forKey:(NSString *)kCGImagePropertyGPSDictionary];
+    }
+    if ([info objectForKey:(NSString *)kCGImagePropertyTIFFDictionary])
+    {
+        [metaData setObject:[info objectForKey:(NSString *)kCGImagePropertyTIFFDictionary] forKey:(NSString *)kCGImagePropertyTIFFDictionary];
+    }
+    if ([info objectForKey:(NSString *)kCGImagePropertyExifDictionary])
+    {
+        [metaData setObject:[info objectForKey:(NSString *)kCGImagePropertyExifDictionary] forKey:(NSString *)kCGImagePropertyExifDictionary];
+    }
+    NSMutableData *dest_data = [NSMutableData data];
+    CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data, UTI, 1, NULL);
+    if (!destination)
+    {
+        NSLog(@"could not create image destination ");
+    }
+    CGImageDestinationAddImageFromSource(destination, sourceRef, 0, (__bridge CFDictionaryRef)metaData);
+    BOOL success = NO;
+    success = CGImageDestinationFinalize(destination);
+    if (!success)
+    {
+        NSLog(@"could not create data from image destination");
+        return nil;
+    }
+    else
+    {
+       // CGImageSourceRef newRef = CGImageSourceCreateWithData((__bridge CFDataRef)dest_data, NULL);
+       // NSMutableDictionary *newMeta = [(NSDictionary *)CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(newRef, 0, NULL)) mutableCopy];
+        return dest_data;
+    }
+}
+
 +(void)saveImageToPhotoAlbumWithLocation:(CLLocation *)location image:(UIImage *)image
 {
-    CGImageRef imageRef = image.CGImage;
-    CGDataProviderRef providerRef= CGImageGetDataProvider(imageRef);
-    CGImageSourceRef sourceRef =  CGImageSourceCreateWithDataProvider(providerRef, NULL);
+    NSData *jpeg = UIImageJPEGRepresentation(image, 1.0f);
+    CGImageSourceRef sourceRef = CGImageSourceCreateWithData((CFDataRef)jpeg, NULL);
     NSMutableDictionary *metaData = [(NSDictionary *)CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(sourceRef, 0, NULL)) mutableCopy];
     NSMutableDictionary *GPSDictionary = [[metaData objectForKey:(NSString *)kCGImagePropertyGPSDictionary]mutableCopy];
     if (!GPSDictionary)
@@ -119,6 +180,10 @@
     [metaData setObject:GPSDictionary forKey:(NSString *)kCGImagePropertyGPSDictionary];
     
     CFStringRef UTI = CGImageSourceGetType(sourceRef);
+    if (!UTI)
+    {
+        UTI = (__bridge CFStringRef)@"public.jpeg";
+    }
     NSMutableData *dest_data = [NSMutableData data];
     CGImageDestinationRef destination = CGImageDestinationCreateWithData((CFMutableDataRef)dest_data, UTI, 1, NULL);
     if (!destination)
@@ -136,8 +201,8 @@
     else
     {
         UIImage *newImage = [UIImage imageWithData:dest_data];
+        
         [self saveImageToPhotoAlbum:newImage];
-    
     }
     
     

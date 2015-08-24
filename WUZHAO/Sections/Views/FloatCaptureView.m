@@ -50,7 +50,6 @@ static const UIImage *CaptureViewImage;
         _overlayView = [[UIControl alloc]initWithFrame:CGRectMake(0, 0, 48, 48)];
         _overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _overlayView.backgroundColor = [UIColor clearColor];
-        //_overlayView.userInteractionEnabled = NO;
     }
     return _overlayView;
 }
@@ -174,8 +173,6 @@ static const UIImage *CaptureViewImage;
                      }];
     
     [self setNeedsDisplay];
-
-    
 }
 +(void)dismiss
 {
@@ -367,9 +364,6 @@ static const UIImage *CaptureViewImage;
                       
                      }];
       [[NSNotificationCenter defaultCenter]postNotificationName:CaptureViewDidTouchDownInsideNotification object:nil];
-    //[self.overlayView setUserInteractionEnabled:YES];
-
-    //[self.overlayView setUserInteractionEnabled:NO];
 }
 
 

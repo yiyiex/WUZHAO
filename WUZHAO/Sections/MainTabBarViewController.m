@@ -343,8 +343,10 @@ static NSInteger loginState = 1;
 -(void)beginUploadPhotos
 {
     [self dismissViewControllerAnimated:YES completion:^{
-        self.selectedIndex = self.currentTabIndex = WZ_HOME_TAB;
-        [self activeCurrentTab];
+        if (self.currentTabIndex !=WZ_HOME_TAB)
+        {
+            [self activeTabbarAtIndex:WZ_HOME_TAB];
+        }
     }];
 }
 

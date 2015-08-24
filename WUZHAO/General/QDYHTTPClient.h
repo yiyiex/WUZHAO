@@ -157,4 +157,6 @@
 -(void)getUserRateStatusWithUserId:(NSInteger)userId whenComplete:(void(^)(NSDictionary *))whenComplete;
 -(void)setUserRateStatusWithUserId:(NSInteger)userId voteStatus:(NSInteger)voteStatus whenComplete:(void (^)(NSDictionary *))whenComplete;
 
+#pragma mark - upload Data to QINIU
+
 @end

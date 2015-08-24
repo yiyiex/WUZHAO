@@ -51,6 +51,7 @@
     CGRect messageViewFrame = self.messageView.frame;
     messageViewFrame.size.height = frame.size.height + 16;
     [self.messageView setFrame:messageViewFrame];
+    
 }
 
 

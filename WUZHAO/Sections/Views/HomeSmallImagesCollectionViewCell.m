@@ -37,6 +37,7 @@
         _imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0,kSmallImageCellWidth, kSmallImageCellWidth)];
         _imageView.layer.borderColor = self.tintColor.CGColor;
         [_imageView.layer setMasksToBounds:YES];
+        [_imageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
     }
     return _imageView;
 }

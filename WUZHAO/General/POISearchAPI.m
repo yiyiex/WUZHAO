@@ -31,13 +31,13 @@
     return sharedInstance;
 }
 
--(void)SearchAroundPOIWithLongitude:(float)longitude Latitude:(float)latitude radius:(float)radius ignorepolitical:(NSInteger )ignore whenComplete:(void(^)(NSDictionary *result))whenComplete
+-(void)SearchAroundPOIWithLongitude:(float)longitude Latitude:(float)latitude radius:(float)radius ignorepolitical:(NSInteger )ignore pagetoken:(NSString *)pagetoken whenComplete:(void(^)(NSDictionary *result))whenComplete
 {
     NSString *api = @"api/nearbypoi";
     NSString *location = [NSString stringWithFormat:@"%f,%f",latitude,longitude];
 
     
-    NSDictionary *param = @{@"location":location,@"radius":[NSNumber numberWithFloat:radius],@"ignorepolitical":[NSNumber numberWithInteger:ignore]};
+    NSDictionary *param = @{@"location":location,@"radius":[NSNumber numberWithFloat:radius],@"ignorepolitical":[NSNumber numberWithInteger:ignore],@"pagetoken":pagetoken};
     
     [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
         NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
