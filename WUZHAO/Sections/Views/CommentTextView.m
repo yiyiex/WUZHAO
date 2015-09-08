@@ -72,9 +72,7 @@
                     [self.commentTextViewDelegate commentTextView:self didClickLinkUser:comment.commentUser];
                 }};
             [taphandlers addObject:taphandler];
-            
         }
-    
         if (comment.replyUser.UserName)
         {
             [linkStrings addObject:comment.replyUser.UserName];
@@ -85,7 +83,6 @@
                 }};
             
             [taphandlers addObject:taphandler];
-            
         }
         if (i == 0)
         {
@@ -94,7 +91,6 @@
         }
         else
         {
-            
             NSString *appendString = [NSString stringWithFormat:@"\n%@",comment.commentString];
             NSAttributedString *attributedString = [[NSAttributedString alloc]initWithString:appendString attributes:@{NSForegroundColorAttributeName:THEME_COLOR_DARK_GREY_PARENT,NSFontAttributeName:WZ_FONT_COMMON_SIZE}];
             [self appendText:attributedString linkStrings:linkStrings defaultAttributes:defaultAttributes highlightedAttributes:highlightedAttributes tapHandlers:taphandlers];
@@ -104,15 +100,13 @@
     }
     if (moreCount>5)
     {
-        LinkedStringRangeTapHandler taphandler = ^(NSRange linkStringRange) {
-            
+        LinkedStringRangeTapHandler taphandler = ^(NSRange linkStringRange)
+        {
             if ([self.commentTextViewDelegate respondsToSelector:@selector(moreCommentClick:)])
             {
                 [self.commentTextViewDelegate moreCommentClick:self];
             }
         };
-        
-     
         NSString *commentString = [NSString stringWithFormat:@"\n查看全部%ld条评论",(long)moreCount];
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
         paragraphStyle.lineSpacing = 6;

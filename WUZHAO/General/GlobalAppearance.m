@@ -35,10 +35,17 @@
        NSFontAttributeName:WZ_FONT_TITLE,
        }];
     [appearance setBarStyle:UIBarStyleDefault];
-    //UIBarButtonItem *barItemAppearance = [UIBarButtonItem appearance];
+    
     //[barItemAppearance setBackgroundImage:[UIImage new] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     
+    //导航栏
+    UIImage *bgImage = [UIImage imageNamed:@"back_nav"];
+    
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:bgImage forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:bgImage forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance]setBackButtonTitlePositionAdjustment:UIOffsetMake(bgImage.size.width, 0) forBarMetrics:UIBarMetricsDefault];
+
 }
 
     

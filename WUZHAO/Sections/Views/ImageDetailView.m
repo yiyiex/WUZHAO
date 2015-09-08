@@ -10,7 +10,7 @@
 #import "macro.h"
 #import "UIImageView+WebCache.h"
 #import "PhotoCommon.h"
-#define spacing 8.0f
+#define spacing 20.0f
 @interface ImageDetailView()<UIScrollViewDelegate,UIGestureRecognizerDelegate>
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableArray *zoomScrollViews;
@@ -37,28 +37,33 @@
     [self.pageControl setCurrentPage:index];
     
     [images enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
-        UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(idx*(WZ_DEVICE_SIZE.width+spacing),(WZ_DEVICE_SIZE.height-WZ_DEVICE_SIZE.width)/2, WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.width)];
-        imageView.image = image;
-        imageView.userInteractionEnabled = YES;
-        imageView.tag = 100+idx;
-        UITapGestureRecognizer *imageClick = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismiss:)];
-        [imageView addGestureRecognizer:imageClick];
-        [self.imageViews addObject:imageView];
+        CGRect zoomViewFrame = CGRectMake(idx*(WZ_DEVICE_SIZE.width + spacing), (WZ_DEVICE_SIZE.height-WZ_DEVICE_SIZE.width)/2, WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.width);
+        // CGRect zoomViewFrame = CGRectMake(idx*(WZ_DEVICE_SIZE.width + spacing), 0, WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.height);
         
-        /*
-        UIScrollView *zoomView = [[UIScrollView alloc]initWithFrame:imageView.frame];
+        
+        UIScrollView *zoomView = [[UIScrollView alloc]initWithFrame:zoomViewFrame];
         zoomView.layer.masksToBounds = NO;
-        [zoomView setMaximumZoomScale:2.0f];
+        [zoomView setMaximumZoomScale:3.0f];
         [zoomView setMinimumZoomScale:1.0f];
-        [zoomView setShowsHorizontalScrollIndicator:NO];
-        [zoomView setShowsVerticalScrollIndicator:NO];
-        zoomView.contentSize = CGSizeMake(WZ_DEVICE_SIZE.width*2, WZ_DEVICE_SIZE.width*2);
+        zoomView.showsHorizontalScrollIndicator = NO;
+        zoomView.showsVerticalScrollIndicator = NO;
+        zoomView.contentSize = CGSizeMake(WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.width);
         zoomView.tag = 200;
         zoomView.delegate = self;
         [self.scrollView addSubview:zoomView];
-        [imageView setFrame:zoomView.bounds];
+        
+        UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, zoomViewFrame.size.width, zoomViewFrame.size.height)];
+        [imageView setImage:image];
+        imageView.userInteractionEnabled = YES;
+        UITapGestureRecognizer *imageClick = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismiss:)];
+        [imageView addGestureRecognizer:imageClick];
+        imageView.tag = 100+idx;
+        [self.imageViews addObject:imageView];
+        
+        
         [zoomView addSubview:imageView];
-        [self.zoomScrollViews addObject:zoomView];*/
+        [self.zoomScrollViews addObject:zoomView];
+
     }];
     return self;
     
@@ -90,12 +95,13 @@
     
     [imageUrls enumerateObjectsUsingBlock:^(NSString *imageUrl, NSUInteger idx, BOOL *stop) {
         
+        CGRect zoomViewFrame = CGRectMake(idx*(WZ_DEVICE_SIZE.width + spacing), (WZ_DEVICE_SIZE.height-WZ_DEVICE_SIZE.width)/2, WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.width);
+       // CGRect zoomViewFrame = CGRectMake(idx*(WZ_DEVICE_SIZE.width + spacing), 0, WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.height);
         
-        CGRect zoomViewFrame = CGRectMake(idx*(WZ_DEVICE_SIZE.width+spacing), (WZ_DEVICE_SIZE.height-WZ_DEVICE_SIZE.width)/2, WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.width);
-        /*
+        
         UIScrollView *zoomView = [[UIScrollView alloc]initWithFrame:zoomViewFrame];
         zoomView.layer.masksToBounds = NO;
-        [zoomView setMaximumZoomScale:2.0f];
+        [zoomView setMaximumZoomScale:3.0f];
         [zoomView setMinimumZoomScale:1.0f];
         zoomView.showsHorizontalScrollIndicator = NO;
         zoomView.showsVerticalScrollIndicator = NO;
@@ -103,8 +109,9 @@
         zoomView.tag = 200;
         zoomView.delegate = self;
         [self.scrollView addSubview:zoomView];
-        */
-        UIImageView *imageView = [[UIImageView alloc]initWithFrame:zoomViewFrame];
+        
+        UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, zoomViewFrame.size.width, zoomViewFrame.size.height)];
+        //[imageView setContentMode:UIViewContentModeScaleAspectFit];
         UIActivityIndicatorView *aiv = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         [imageView addSubview:aiv];
         [imageView bringSubviewToFront:aiv];
@@ -140,9 +147,9 @@
         imageView.tag = 100+idx;
         [self.imageViews addObject:imageView];
 
-        /*
+        
         [zoomView addSubview:imageView];
-        [self.zoomScrollViews addObject:zoomView];*/
+        [self.zoomScrollViews addObject:zoomView];
         
     }];
     return self;
@@ -270,6 +277,7 @@
 
 -(void)show
 {
+    [[UIApplication sharedApplication]setStatusBarHidden:YES];
     if (!self.overlayView.superview)
     {
         NSEnumerator *frontToBackWindows = [[UIApplication sharedApplication].windows reverseObjectEnumerator];
@@ -298,9 +306,11 @@
     
     [self.scrollView setAlpha:0.0f];
     
+    
+    /*
     [self.imageViews enumerateObjectsUsingBlock:^(UIImageView *imageView, NSUInteger idx, BOOL *stop) {
         [self.scrollView addSubview:imageView];
-    }];
+    }];*/
     
     [UIView animateWithDuration:0.3 animations:^{
         [self.scrollView setAlpha:1.0f];
@@ -336,6 +346,8 @@
         _imageViews = nil;
         [_overlayView removeFromSuperview];
         _overlayView = nil;
+        
+        [[UIApplication sharedApplication]setStatusBarHidden:NO];
         
     }];
 }
@@ -543,21 +555,46 @@
 
 
 #pragma mark - scrollview delegate
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView
+-(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
 {
-    if (scrollView.tag == 300)
-    {
-
-    }
     
+    if (scrollView.tag == 200)
+    {
+        NSLog(@"contentoffset %f,%f",scrollView.contentOffset.x,scrollView.contentOffset.y);
+        NSLog(@"contentsize %f ,%f",scrollView.contentSize.width,scrollView.contentSize.height);
+        if (targetContentOffset->x>8 && targetContentOffset->x < scrollView.contentSize.width- scrollView.frame.size.width-8)
+        {
+            NSLog(@"set scroll view enable no");
+            self.scrollView.scrollEnabled = NO;
+        }
+        else
+        {
+            NSLog(@"setscrollview enable yes");
+            self.scrollView.scrollEnabled = YES;
+        }
+    }
+    if (scrollView.tag == 300 && scrollView.scrollEnabled)
+    {
+        
+        //[self.scrollView setFrame:CGRectMake(0, 0, WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.height)];
+        [self.scrollView setContentSize:CGSizeMake((WZ_DEVICE_SIZE.width+spacing)*self.zoomScrollViews.count, WZ_DEVICE_SIZE.height)];
+        [self.zoomScrollViews enumerateObjectsUsingBlock:^(UIScrollView *zoomView, NSUInteger idx, BOOL *stop) {
+            [zoomView setZoomScale:1.0f animated:YES];
+            zoomView.frame = CGRectMake(idx*(WZ_DEVICE_SIZE.width+spacing), (WZ_DEVICE_SIZE.height-WZ_DEVICE_SIZE.width)/2, WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.width);
+            zoomView.contentSize=CGSizeMake(WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.width);
+        }];
+        
+        
+    }
 }
+
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    if (scrollView.tag == 300)
+    if (scrollView.tag == 300 )
     {
         NSInteger currentIndex = self.scrollView.contentOffset.x/WZ_DEVICE_SIZE.width;
+        
         [self.pageControl setCurrentPage:currentIndex];
         if (self.pageControl.numberOfPages >1)
         {
@@ -575,17 +612,8 @@
                 }];
             });
         }
-        [self.zoomScrollViews enumerateObjectsUsingBlock:^(UIScrollView *zoomView, NSUInteger idx, BOOL *stop) {
-            UIImageView *imageView = (UIImageView *)[self viewWithTag:(100+idx)];
-            if (zoomView.zoomScale >1.0f)
-            {
-                zoomView.frame = CGRectMake(idx*(WZ_DEVICE_SIZE.width+spacing), (WZ_DEVICE_SIZE.height-WZ_DEVICE_SIZE.width)/2, WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.width);
-                zoomView.contentSize=CGSizeMake(WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.width);
-                zoomView.zoomScale = 1.0f;
-                imageView.frame=CGRectMake(0, 0, WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.width);
-            }
-        }];
         [self updateInfoIconState];
+        
     }
 }
 
@@ -593,9 +621,14 @@
 {
     if (scrollView.tag == 200)
     {
-         NSInteger currentIndex = self.scrollView.contentOffset.x/WZ_DEVICE_SIZE.width;
-        UIImageView *view = (UIImageView *)[self viewWithTag:(100+currentIndex)];
-        return view;
+        __block UIImageView *imageView;
+        [scrollView.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([obj isKindOfClass:[UIImageView class]])
+            {
+                imageView = (UIImageView*)obj;
+            }
+        }];
+        return imageView;
     }
     return nil;
 }
@@ -610,7 +643,16 @@
 }
 -(void)scrollViewDidZoom:(UIScrollView *)scrollView
 {
-
+    if(scrollView.zoomScale <=1) scrollView.zoomScale = 1.0f;
+    CGFloat xcenter = scrollView.frame.size.width/2 , ycenter = scrollView.frame.size.height/2;
+    
+    xcenter = scrollView.contentSize.width > scrollView.frame.size.width ? scrollView.contentSize.width/2 : xcenter;
+    
+    ycenter = scrollView.contentSize.height > scrollView.frame.size.height ? scrollView.contentSize.height/2 : ycenter;
+    
+    NSInteger currentIndex = self.scrollView.contentOffset.x/WZ_DEVICE_SIZE.width;
+    UIImageView *imageView = (UIImageView *)[self viewWithTag:(100+currentIndex)];
+    [imageView setCenter:CGPointMake(xcenter, ycenter)];
 }
 
 -(void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale

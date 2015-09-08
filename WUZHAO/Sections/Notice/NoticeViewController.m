@@ -17,9 +17,9 @@
 
 typedef NS_ENUM(NSInteger, ChildViewIndex)
 {
-    ChildViewIndexSystemNotice,
-     ChildViewIndexPlaceNotice,
-    ChildViewIndexPrivateLetter
+    ChildViewIndexSystemNotice = 0,
+    ChildViewIndexPlaceNotice = 1,
+    ChildViewIndexPrivateLetter =2
    
 };
 @interface NoticeViewController()
@@ -74,6 +74,26 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
     [self setBackItem];
     
     [self disableUserInteractive];
+    
+    NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
+    if ([[NSUserDefaults standardUserDefaults]valueForKey:@"launchIndex"])
+    {
+        NSInteger launchIndex = [[userdefaults valueForKey:@"launchIndex"]integerValue];
+        if (launchIndex == 3  )
+        {
+            if ([userdefaults valueForKey:@"noticeIndex"])
+            {
+                NSInteger noticeIndex = [[userdefaults valueForKey:@"noticeIndex"]integerValue];
+                if (noticeIndex ==1 || noticeIndex == 2)
+                {
+                    [self moveToViewControllerAtIndex:noticeIndex animated:YES];
+                }
+                [userdefaults removeObjectForKey:@"noticeIndex"];
+            }
+            [userdefaults removeObjectForKey:@"launchIndex"];
+            [userdefaults synchronize];
+        }
+    }
     
 }
 

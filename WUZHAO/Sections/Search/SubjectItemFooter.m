@@ -27,26 +27,37 @@
     }
     return self;
 }
+-(NSDictionary *)summaryTextAttributes
+{
+    if (!_summaryTextAttributes)
+    {
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+        paragraphStyle.lineSpacing = 6;
+        _summaryTextAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_FONT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle};
+    }
+    return _summaryTextAttributes;
+}
 
 -(void)initView
 {
    [self.contentView setBackgroundColor:[UIColor whiteColor]];
-    self.summaryLabel = [[UILabel alloc]init];
-    [self.summaryLabel setTextColor:THEME_COLOR_DARK_GREY];
-    [self.summaryLabel setFont:WZ_FONT_COMMON_SIZE];
+    self.summaryLabel = [[UITextView alloc]init];
+    [self.summaryLabel setScrollEnabled:NO];
+    [self.summaryLabel setEditable:NO];
     [self addSubview:self.summaryLabel];
     
 }
 -(void)configureFooterWithSubject:(Subject *)subject
 {
-    self.summaryLabel.text = subject.summary;
+    NSAttributedString *summaryText = [[NSAttributedString alloc]initWithString:subject.summary attributes:self.summaryTextAttributes];
+    [self.summaryLabel setAttributedText:summaryText];
 }
 
 -(void)layoutSubviews
 {
     [super layoutSubviews];
-    CGSize newSize = [self.summaryLabel sizeThatFits:CGSizeMake(WZ_APP_SIZE.width -16, FLT_MAX)];
-    [self.summaryLabel setFrame:CGRectMake(8, 8, newSize.width, newSize.height)];
+    CGSize newSize = [self.summaryLabel sizeThatFits:CGSizeMake(WZ_APP_SIZE.width -8, FLT_MAX)];
+    [self.summaryLabel setFrame:CGRectMake(4, 8, newSize.width, newSize.height)];
 }
 
 

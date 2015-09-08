@@ -41,6 +41,7 @@
 
 -(void)sharedInit
 {
+    self.rotateEnabled = YES;
     _allAnnotations = [[NSMutableSet alloc] init];
     _annotationsToIgnore = [[NSMutableSet alloc] init];
     _clusterSize = 0.2;

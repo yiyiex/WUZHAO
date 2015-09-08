@@ -38,7 +38,7 @@
     if (self)
     {
         //[self initSubjectTableView];
-        [self setTitle:@"Place专题"];
+        [self setTitle:@"专题"];
     }
     return self;
 }
@@ -79,6 +79,7 @@
 -(void)initSubjectTableView
 {
     self.tableView = [[UITableView alloc]initWithFrame:self.view.frame style:UITableViewStyleGrouped];
+    [self.tableView setBackgroundColor:[UIColor colorWithWhite:240 alpha:1.0f]];
     [self.tableView registerNib:[UINib nibWithNibName:@"SubjectItemWithPostTableViewCell" bundle:nil] forCellReuseIdentifier:@"itemWithPost"];
     [self.tableView registerNib:[UINib nibWithNibName:@"SubjectItemWithoutPostTableViewCell" bundle:nil] forCellReuseIdentifier:@"itemWithoutPost"];
     
@@ -112,13 +113,13 @@
         
         [self.prototypeCellWithPost configureWithContent:post];
         [self.prototypeCellWithPost layoutSubviews];
-        return 38+ 64+ WZ_APP_SIZE.width + self.prototypeCellWithPost.photoDescription.frame.size.height;
+        return 4 + self.prototypeCellWithPost.title.frame.size.height + self.prototypeCellWithPost.postUserAvatar.frame.size.height + 8 + WZ_APP_SIZE.width + 4 + self.prototypeCellWithPost.photoDescription.frame.size.height;
     }
     else
     {
         [self.prototypeCellWithoutPost configureWithContent:post];
         [self.prototypeCellWithoutPost layoutSubviews];
-        return 44 + WZ_APP_SIZE.width + self.prototypeCellWithoutPost.photoDescription.frame.size.height;
+        return 4 + self.prototypeCellWithoutPost.title.frame.size.height + WZ_APP_SIZE.width + 4 + self.prototypeCellWithoutPost.photoDescription.frame.size.height;
     }
     return 100;
 }
@@ -185,12 +186,14 @@
         [cell.photo addGestureRecognizer:photoTap];
         [cell.photo setUserInteractionEnabled:YES];
         [cell.followButton addTarget:self action:@selector(followButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }
     else
     {
         SubjectItemWithoutPostTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"itemWithoutPost" forIndexPath:indexPath];
         [cell configureWithContent:post];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }
     

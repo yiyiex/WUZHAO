@@ -7,6 +7,7 @@
 //
 
 #import "District.h"
+#import "WhatsGoingOn.h"
 
 @implementation District
 
@@ -17,6 +18,13 @@
         _POIs = [[NSMutableArray alloc]init];
     }
     return _POIs;
+}
+-(NSMutableArray *)photosList
+{
+    if (!_photosList) {
+        _photosList = [[NSMutableArray alloc]init];
+    }
+    return _photosList;
 }
 
 -(instancetype)initWithDictionary:(NSDictionary *)dictionary
@@ -30,7 +38,11 @@
         }
         if ([dictionary objectForKey:@"id"])
         {
-            self.distirctId = [[dictionary objectForKey:@"id"]integerValue];
+            self.distirctId = [(NSNumber *)[dictionary objectForKey:@"id"]integerValue];
+        }
+        if ([dictionary objectForKey:@"type"])
+        {
+            self.type = [(NSNumber *)[dictionary objectForKey:@"type"] integerValue];
         }
         if ([dictionary objectForKey:@"description"])
         {
@@ -45,6 +57,13 @@
             [[dictionary objectForKey:@"poiList"]enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL *stop) {
                 POI *poi = [[POI alloc]initWithDictionary:obj];
                 [self.POIs addObject:poi];
+            }];
+        }
+        if ([dictionary objectForKey:@"photoList"])
+        {
+            [[dictionary objectForKey:@"photoList"]enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL *stop) {
+                WhatsGoingOn *item = [[WhatsGoingOn alloc]initWithAttributes:obj];
+                [self.photosList addObject:item];
             }];
         }
     }

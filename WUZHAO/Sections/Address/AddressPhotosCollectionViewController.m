@@ -175,19 +175,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     return cell;
 }
 
--(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-{
-    AddressPhotoCollectionHeaderView *view = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"headView" forIndexPath:indexPath];
-    if (indexPath.section == 0)
-    {
-        view.headLabel.text = @"精选";
-    }
-    else if (indexPath.section == 1)
-    {
-        view.headLabel.text= @"最新";
-    }
-    return view;
-}
+
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
@@ -202,6 +190,20 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
     return 1.0f;
+}
+
+-(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    AddressPhotoCollectionHeaderView *view = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"headView" forIndexPath:indexPath];
+    if (indexPath.section == 0)
+    {
+        view.headLabel.text = @"精选";
+    }
+    else if (indexPath.section == 1)
+    {
+        view.headLabel.text= @"最新";
+    }
+    return view;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
@@ -238,9 +240,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
     if (item)
     {
         [self gotoPhotoDetailPageWithItem:item];
-        
     }
-    
 }
 
 #pragma mark - transition

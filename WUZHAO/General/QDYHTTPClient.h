@@ -92,7 +92,13 @@
 -(void)GetPOIInfoWithPoiId:(NSInteger)poiId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 -(void)GetPOIInfoWithPoiId:(NSInteger)poiId recommendFirstPostId:(NSInteger)postId whenComplete:(void (^)(NSDictionary *))whenComplete;
 
+//get district info with DISTRICT name and type
+-(void)GetDistrictInfoWithDistrictName:(NSString *)districtName type:(NSInteger)type whenComplete:(void (^)(NSDictionary *))whenComplete;
+
 //get photo info with userId or photo post Id
+/**
+ type  1=城市 2=国家
+ */
 -(void) GetPhotoInfoWithPostId:(NSInteger)postId userId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *returnData))whenComplete;
 
 #pragma mark - comment, zan post
@@ -123,6 +129,8 @@
 
 //search photo
 -(void)explorephotoWithUserId:(NSInteger)userId whenComplete:(void (^)(NSDictionary *))whenComplete;
+-(void)exploreLatestPhotosWhenComplete:(void (^)(NSDictionary *))whenComplete;
+-(void)exploreSelectedPhotosWhenComplete:(void (^)(NSDictionary *))whenComplete;
 //search user
 -(void)exploreUserWhenComplete:(void (^)(NSDictionary *))whenComplete;
 //search place
@@ -139,7 +147,7 @@
 //private letter
 -(void)getLetterListWithUserId:(NSInteger)myUserId whenComplete:(void (^)(NSDictionary *))whenComplete;
 
--(void)getConversationWithUserId:(NSInteger)myUserId otherUserId:(NSInteger)otherUserId  whenComplete:(void (^)(NSDictionary *))whenComplete;
+-(void)getConversationWithUserId:(NSInteger)myUserId otherUserId:(NSInteger)otherUserId timeStamp:(NSString *)timestamp whenComplete:(void (^)(NSDictionary *))whenComplete;
 
 -(void)sendMessageWithMyUserId:(NSInteger)myUserId toUserId:(NSInteger)toUserId content:(NSString *)content whenComplete:(void (^)(NSDictionary *))whenComplete;
 

@@ -45,6 +45,8 @@
     
     [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsUser.avatarImageURLString]];
     
+    [self.contentTextView reset];
+    
     NSString *content =  [NSString stringWithFormat:@"%@ 关注了你  %@",feeds.feedsUser.UserName,feeds.time];
     NSMutableAttributedString *attributeContent = [[NSMutableAttributedString alloc]initWithString:content];
     NSRange userNameRange = [content rangeOfString:feeds.feedsUser.UserName];

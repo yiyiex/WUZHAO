@@ -10,9 +10,9 @@
 
 @interface AddressMarkAnnotationView2 : MKAnnotationView
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UILabel *imageNumLabel;
+//@property (nonatomic, strong) UILabel *imageNumLabel;
 
--(void)setImageWithImageUrl:(NSString*)url;
--(void)setPhotoNumber:(NSInteger )num;
+//-(void)setImageWithImageUrl:(NSString*)url;
+//-(void)setPhotoNumber:(NSInteger )num;
 
 @end

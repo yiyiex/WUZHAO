@@ -22,10 +22,11 @@
     {
         self.bounds = CGRectMake(0.f, 0.f, 24, 24);
         self.backgroundColor = [UIColor clearColor];
+        
         self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 24 , 24)];
         [self.imageView setImage:[UIImage imageNamed:@"flag_green"]];
         [self addSubview:self.imageView];
-
+        /*
         self.imageNumLabel = [[UILabel alloc]initWithFrame:CGRectMake(12 , 0, 20, 20)];
             [self.imageNumLabel setBackgroundColor:THEME_COLOR_DARK];
             [self.imageNumLabel setTextColor:THEME_COLOR_WHITE];
@@ -33,11 +34,12 @@
             [self.imageNumLabel setTextAlignment:NSTextAlignmentCenter];
             [self.imageNumLabel.layer setCornerRadius:20/2];
             self.imageNumLabel.layer.masksToBounds = YES;
-            [self addSubview:self.imageNumLabel];
+            [self addSubview:self.imageNumLabel];*/
         
     }
         return self;
 }
+/*
 -(void)setPhotoNumber:(NSInteger )num
 {
     if (num >1)
@@ -57,7 +59,7 @@
     }
     
     // [self.imageNumLabel sizeToFit];
-}
+}*/
 
 
 @end

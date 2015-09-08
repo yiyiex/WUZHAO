@@ -12,6 +12,10 @@
 #import "HomeTableViewController.h"
 #import "AddressViewController.h"
 #import "PhotosCollectionViewController.h"
+#import "AddresslistTableHeaderView.h"
+#import "AddressDistrictTableViewCell.h"
+#import "OneDistrictViewController.h"
+#import "DistrictViewController.h"
 
 #import "macro.h"
 #import "UIImageView+WebCache.h"
@@ -25,8 +29,10 @@
 #define spacing 2
 #define photoWidth (WZ_APP_SIZE.width + spacing)/3-spacing
 
-@interface AddressListTableViewController ()
+@interface AddressListTableViewController ()<AddressDistrictTableViewCellDelegate>
 @property (nonatomic, strong) CLLocationUtility *locationUtility;
+@property (nonatomic, strong) NSArray *countryDisctrcts;
+@property (nonatomic, strong) NSArray *cityDistricts;
 @end
 
 @implementation AddressListTableViewController
@@ -36,11 +42,29 @@
     [super viewDidLoad];
     [self setupRefreshControl];
     [self.tableView registerNib:[UINib nibWithNibName:@"HomeAddressListCell" bundle:nil] forCellReuseIdentifier:@"AddressListCell"];
+    [self.tableView registerNib:[UINib nibWithNibName:@"AddressDistrictTableViewCell" bundle:nil] forCellReuseIdentifier:@"DistrictCell"];
+    [self.tableView registerClass:[AddresslistTableHeaderView class] forHeaderFooterViewReuseIdentifier:@"sectionHeader"];
     self.tableView.allowsSelection = NO;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;    
     //[self getLatestDataAnimated];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearUserInfo) name:@"deleteUserInfo" object:nil];
+}
+-(NSArray *)cityDistricts
+{
+    if (!_cityDistricts)
+    {
+        _cityDistricts = [[NSArray alloc]init];
+    }
+    return _cityDistricts;
+}
+-(NSArray *)countryDisctrcts
+{
+    if (!_countryDisctrcts)
+    {
+        _countryDisctrcts = [[NSArray alloc]init];
+    }
+    return _countryDisctrcts;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -92,51 +116,144 @@
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 3;
 }
 
 -(CGFloat)caculateHeightForRowAtIndexPath:(NSIndexPath *)indexpath
 {
-    CGFloat basicHeight = 8+ 24 + 10 + 10;
-    CGFloat imageHeight = 0;
-    
-    AddressPhotos *content = [self.datasource objectAtIndex:indexpath.row];
-    NSInteger imageRowNum =ceilf((float)content.photoList.count/3);
-    imageHeight = imageRowNum * (photoWidth+spacing);
-    CGFloat height = basicHeight + imageHeight;
-    return height;
+    if (indexpath.section==2)
+    {
+        CGFloat basicHeight = 8+ 24 + 10 + 10;
+        CGFloat imageHeight = 0;
+        
+        AddressPhotos *content = [self.datasource objectAtIndex:indexpath.row];
+        NSInteger imageRowNum =ceilf((float)content.photoList.count/3);
+        imageHeight = imageRowNum * (photoWidth+spacing);
+        CGFloat height = basicHeight + imageHeight;
+        return height;
+    }
+    else if(indexpath.section == 0)
+    {
+        return self.countryDisctrcts.count/3*((WZ_APP_SIZE.width-32)/3*9/16+8);
+    }
+    else if (indexpath.section == 1)
+    {
+        return self.cityDistricts.count/3*((WZ_APP_SIZE.width-32)/3*9/16+8);
+    }
+    else return 0;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return [self caculateHeightForRowAtIndexPath:indexPath];
 }
-
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    //return 0;
+    
+    if (section == 0 && self.countryDisctrcts.count == 0)
+    {
+        return 0;
+    }
+    else if (section == 1 && self.cityDistricts.count == 0)
+    {
+        return 0;
+    }
+    else if (section == 2 )
+    {
+        return 0;
+    }
+    return 32;
+}
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return [self caculateHeightForRowAtIndexPath:indexPath];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (section == 2)
+    {
+        return [self.datasource count];
+    }
+    else if (section == 0)
+    {
+        if (self.countryDisctrcts.count == 0)
+        {
+            return 0;
+        }
+        return 1;
+    }
+    else if (section == 1)
+    {
+        if (self.cityDistricts.count == 0)
+        {
+            return 0;
+        }
+        return 1;
+    }
+    return 0;
     
-    return [self.datasource count];
 }
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    AddresslistTableHeaderView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"sectionHeader"];
+    if (section == 0)
+    {
+        [headerView.headerLabel setText:@"热门国家"];
+    }
+    else if (section == 1)
+    {
+        [headerView.headerLabel setText:@"热门城市"];
+    }
+    else
+    {
+        
+    }
+    return headerView;
+    
+}
+
+
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HomeAddressListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AddressListCell" forIndexPath:indexPath];
-    AddressPhotos *content = [self.datasource objectAtIndex:indexPath.row];
-    [cell.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if ([obj isKindOfClass:[UIImageView class]])
-        {
-            [obj removeFromSuperview];
-        }
-    }];
-    cell.addressNameLabel.text = content.poi.name;
-    cell.addressDescriptionLabel.text = content.addressDescription;
+    if (indexPath.section == 2)
+    {
+        HomeAddressListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AddressListCell" forIndexPath:indexPath];
+        AddressPhotos *content = [self.datasource objectAtIndex:indexPath.row];
+        [cell.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([obj isKindOfClass:[UIImageView class]])
+            {
+                [obj removeFromSuperview];
+            }
+        }];
+        cell.addressNameLabel.text = content.poi.name;
+        cell.addressDescriptionLabel.text = content.addressDescription;
 
-    [self ConfigureCell:cell WithPhotoList:content.photoList];
-    return cell;
+        [self ConfigureCell:cell WithPhotoList:content.photoList];
+        return cell;
+    }
+    else
+    {
+        AddressDistrictTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DistrictCell" forIndexPath:indexPath];
+        if (!cell)
+        {
+            cell = [[AddressDistrictTableViewCell alloc]init];
+        }
+        if (indexPath.section == 0)
+        {
+            cell.DistrictList = self.countryDisctrcts;
+        }
+        else if (indexPath.section == 1)
+        {
+            cell.DistrictList = self.cityDistricts;
+        }
+        [cell.collectionView reloadData];
+        cell.delegate = self;
+        
+        return cell;
+    }
 }
 #pragma mark - control the model
 
@@ -153,30 +270,32 @@
     }
     [self.locationUtility getCurrentLocationWithComplete:^(NSDictionary *result) {
         self.shouldRefreshData = YES;
+        NSString *location = @"";
         if ([[result objectForKey:@"success"]isEqualToString:@"NO"])
         {
             NSLog(@"定位失败");
-            [self endRefreshing];
         }
         else
         {
             CLLocation  *searchLocation = [result objectForKey:@"location"];
-            NSString *location = [NSString stringWithFormat:@"%f,%f",searchLocation.coordinate.latitude,searchLocation.coordinate.longitude];
-            [[QDYHTTPClient sharedInstance]GetHomeAddressWithLocation:location whenComplete:^(NSDictionary *returnData) {
-                if ([returnData objectForKey:@"data"])
-                {
-                    self.datasource = [returnData objectForKey:@"data"];
-                    [self loadData];
-                }
-                else if ([returnData objectForKey:@"error"])
-                {
-                    [SVProgressHUD showErrorWithStatus:@"获取数据失败"];
-                }
-                [self endRefreshing];
-                
-            }];
-          
+            location = [NSString stringWithFormat:@"%f,%f",searchLocation.coordinate.latitude,searchLocation.coordinate.longitude];
         }
+        [[QDYHTTPClient sharedInstance]GetHomeAddressWithLocation:location whenComplete:^(NSDictionary *returnData) {
+            if ([returnData objectForKey:@"data"])
+            {
+                NSDictionary *data = [returnData objectForKey:@"data"];
+                self.countryDisctrcts = [data objectForKey:@"hotCountries"];
+                self.cityDistricts = [data objectForKey:@"hotCities"];
+                self.datasource = [data objectForKey:@"hotPOIs"];
+                [self loadData];
+            }
+            else if ([returnData objectForKey:@"error"])
+            {
+                [SVProgressHUD showErrorWithStatus:@"获取数据失败"];
+            }
+            [self endRefreshing];
+            
+        }];
        
     }];
     
@@ -236,6 +355,15 @@
 -(NSString *)titleForPagerViewController:(PagerViewController *)pagerViewController
 {
     return @"地点";
+}
+
+#pragma mark - addressDistrictTableViewCell delegate
+-(void)gotoDistrictPageWithDisctrict:(District *)district
+{
+    DistrictViewController *districtViewController = [[DistrictViewController alloc]init];
+    districtViewController.data = district;
+    [self pushToViewController:districtViewController animated:YES hideBottomBar:YES];
+
 }
 
 

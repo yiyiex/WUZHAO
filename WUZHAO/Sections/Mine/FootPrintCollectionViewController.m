@@ -104,9 +104,6 @@ static NSString * const reuseIdentifier = @"Cell";
         [cell.shotStackView addGestureRecognizer:tapgesture];
         [cell.shotStackView setUserInteractionEnabled:YES];
     }];
-    UITapGestureRecognizer *photoNumLabelTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(photoNumLabelClick:)];
-    [cell.photoNumLabel addGestureRecognizer:photoNumLabelTap];
-    [cell.photoNumLabel setUserInteractionEnabled:YES];
     
     UITapGestureRecognizer *addressNameLabelTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addressLabelClick:)];
     [cell.addressNameLabel addGestureRecognizer:addressNameLabelTap];

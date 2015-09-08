@@ -7,6 +7,7 @@
 //
 
 #import "BasicCollectionViewController.h"
+#import "ScrollViewOnlyHorizonScroll.h"
 
 @interface PhotosSuggestCollectionViewController : BasicCollectionViewController
 -(void)getLatestSubjects;

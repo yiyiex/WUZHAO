@@ -13,16 +13,17 @@
 - (BOOL)gestureRecognizer:(UIPanGestureRecognizer *)gestureRecognizer
 shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIPanGestureRecognizer *)otherGestureRecognizer
 {
-    return NO;
+    return YES;
 }
 
 
 -(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
+    
     if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         CGPoint velocity = [(UIPanGestureRecognizer *)gestureRecognizer velocityInView:self];
         
-        if (fabs(velocity.x)  > fabs(velocity.y)*2) {
+        if (fabs(velocity.x)  > fabs(velocity.y)) {
             return YES;
         }
         else

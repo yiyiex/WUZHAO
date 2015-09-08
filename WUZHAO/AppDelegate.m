@@ -48,35 +48,66 @@
     if (launchOptions)
     {
         NSDictionary * userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        if ([userDefaults objectForKey:@"launchIndex"])
+        {
+            [userDefaults removeObjectForKey:@"launchIndex"];
+        }
+        if ([userDefaults objectForKey:@"noticeIndex"])
+        {
+            [userDefaults removeObjectForKey:@"noticeIndex"];
+        }
+        if ([userDefaults objectForKey:@"subjectId"])
+        {
+            [userDefaults removeObjectForKey:@"subjectId"];
+        }
+        [userDefaults synchronize];
         if(userInfo)
         {
             NSInteger  noticeType  = [[userInfo valueForKey:@"noticeType"]integerValue];
+            //noticetype 1-点赞 2-关注 3-评论 4-回复评论
             if (noticeType == 1 || noticeType == 2 ||noticeType == 3 || noticeType ==4)
             {
                 //3-notice tab
-                [[NSUserDefaults standardUserDefaults]setObject:@3 forKey:@"launchIndex"];
-                //0 -- system notice tab  1-- private letter tab
-                [[NSUserDefaults standardUserDefaults]setObject:@0 forKey:@"noticeIndex"];
-                [[NSUserDefaults standardUserDefaults]synchronize];
+                [userDefaults setObject:@3 forKey:@"launchIndex"];
+                // 0-- notice tab
+                [userDefaults  setObject:@0 forKey:@"noticeIndex"];
+                [userDefaults synchronize];
                 
             }
+            //noticetype 5 私信通知
             else if (noticeType == 5)
             {
                 //3-notice tab
-                [[NSUserDefaults standardUserDefaults]setObject:@3 forKey:@"launchIndex"];
-                //0 -- system notice tab  1-- private letter tab
-                [[NSUserDefaults standardUserDefaults]setObject:@1 forKey:@"noticeIndex"];
-                [[NSUserDefaults standardUserDefaults]synchronize];
+                [userDefaults setObject:@3 forKey:@"launchIndex"];
+                //  2-- private letter tab
+                [userDefaults setObject:@2 forKey:@"noticeIndex"];
+                [userDefaults synchronize];
             }
-            if (noticeType == 6)
+            //noticetype 6 系统推荐通知
+            else if (noticeType == 6)
             {
                 //3-notice tab
-                [[NSUserDefaults standardUserDefaults]setObject:@3 forKey:@"launchIndex"];
-                //0 -- system notice tab  1-- private letter tab
-                [[NSUserDefaults standardUserDefaults]setObject:@0 forKey:@"noticeIndex"];
-                [[NSUserDefaults standardUserDefaults]synchronize];
+                [userDefaults setObject:@3 forKey:@"launchIndex"];
+                // 1-- systemrecommend tab
+                [userDefaults setObject:@1 forKey:@"noticeIndex"];
+                [userDefaults synchronize];
                 
             }
+            //notice type 7 专题通知
+            else if (noticeType == 7)
+            {
+                //2-search tab
+                [userDefaults setObject:@1 forKey:@"launchIndex"];
+                //0 -- system notice tab  1-- private letter tab
+                if ([userInfo valueForKey:@"id"])
+                {
+                    NSNumber *subjectId =(NSNumber *)[userInfo valueForKey:@"id"];
+                    [userDefaults setObject:subjectId forKey:@"subjectId"];
+                }
+                [userDefaults synchronize];
+            }
+            
             [[QDYHTTPClient sharedInstance] getLatestNoticeNumber];
         }
         
@@ -104,7 +135,7 @@
     
     //设置友盟sdk key
     [UMSocialData setAppKey:@"55a5c86567e58ecd13000507"];
-    [UMSocialWechatHandler setWXAppId:@"wx439fd7dddb2fccd0" appSecret:@"745a38ee5cbad3948d7b353e24f1e637" url:nil];
+    [UMSocialWechatHandler setWXAppId:@"wx3500a7f0233ad0c1" appSecret:@"700af0c2cbb79a08a47e841f36e6cc23" url:nil];
    //  [UMSocialSinaSSOHandler openNewSinaSSOWithRedirectURL:nil];
    // [UMSocialSinaHandler openSSOWithRedirectURL:@"http://sns.whalecloud.com/sina2/callback"];
     [UMSocialQQHandler setQQWithAppId:@"1104705877" appKey:@"xaYJeCHCVxI3yVT1" url:@"http://placeapp.cn"];

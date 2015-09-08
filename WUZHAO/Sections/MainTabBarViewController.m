@@ -88,6 +88,7 @@ static NSInteger loginState = 1;
     self.delegate = self;
     
     self.currentTabIndex = WZ_HOME_TAB;
+
     [self setSelectedIndex:self.currentTabIndex];
     firstEntryFlag[0] = @1;
     
@@ -98,12 +99,16 @@ static NSInteger loginState = 1;
     //从通知中心启动，进入指定页面
     if ([[NSUserDefaults standardUserDefaults]valueForKey:@"launchIndex"])
     {
-        self.selectedIndex  = self.currentTabIndex = [[[NSUserDefaults standardUserDefaults]valueForKey:@"launchIndex"]integerValue];
-        
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"launchIndex"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        NSInteger launchIndex =  [[[NSUserDefaults standardUserDefaults]valueForKey:@"launchIndex"]integerValue];
+        if (launchIndex == WZ_SHARE_TAB)
+        {
+            self.selectedIndex = self.currentTabIndex = 0;
+        }
+        else if (launchIndex >=WZ_HOME_TAB && launchIndex <=WZ_MINE_TAB)
+        {
+            self.selectedIndex = self.currentTabIndex = launchIndex;
+        }
     }
-    
     [self activeCurrentTab];
     
     //register notification
@@ -114,17 +119,12 @@ static NSInteger loginState = 1;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logOut) name:@"logOut" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNoticeInfo:) name:@"updateNotificationNum" object:nil];
     
-     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideTabBar) name:@"hideTabBar" object:nil];
-     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showTabBar) name:@"showTabBar" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideTabBar) name:@"hideTabBar" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showTabBar) name:@"showTabBar" object:nil];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showCameraView) name:CaptureViewDidTouchDownInsideNotification object:nil];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showFeedBack) name:@"showFeedbackPage" object:nil];
-    
-    /*
-    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.navigationItem.backBarButtonItem = backBarItem;
-     */
     
 }
 

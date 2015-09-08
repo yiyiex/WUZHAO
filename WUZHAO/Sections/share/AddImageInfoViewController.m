@@ -91,6 +91,7 @@
 }
 -(void)viewWillAppear:(BOOL)animated
 {
+    [[UIApplication sharedApplication]setStatusBarHidden:YES];
     if (self.poiInfo && self.hasPoi)
     {
         if (self.poiInfo.type == POI_TYPE_GAODE)

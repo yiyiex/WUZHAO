@@ -32,10 +32,6 @@
 @property (nonatomic, strong) MyMessageTableViewCell *myMessagePrototypeCell;
 @property (nonatomic, strong) OtherMessageTableViewCell *otherMessagePrototypeCell;
 
-
-
-
-
 @end
 
 @implementation PrivateLetterDetailViewController
@@ -51,7 +47,8 @@
     [self initConversationTableView];
     [self addToolBar];
     [self setKeyboard];
-    [self getLatestConversation];
+
+    [self getConversationWithTimeStamp:@""];
     // Do any additional setup after loading the view.
 }
 
@@ -267,7 +264,12 @@
             cell = [[MyMessageTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"myMessage"];
         }
         [cell configureCellWithMessage:message];
-        [cell.avatarView sd_setImageWithURL:[NSURL URLWithString:self.conversation.me.avatarImageURLString]];
+        NSString *avatar = self.conversation.me.avatarImageURLString;
+        if (!avatar || [avatar isEqualToString:@""])
+        {
+            avatar = [[NSUserDefaults standardUserDefaults]valueForKey:@"avatarUrl"];
+        }
+        [cell.avatarView sd_setImageWithURL:[NSURL URLWithString:avatar]];
         UITapGestureRecognizer *avatarTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(avatarTapped:)];
         [cell.avatarView addGestureRecognizer:avatarTap];
         [cell.avatarView setUserInteractionEnabled:YES];
@@ -308,7 +310,11 @@
 {
     if (self.shouldRefreshData)
     {
-        [self getLatestConversation];
+        NSArray *firstSectionMessage = self.conversation.messageList.firstObject;
+        Message *firstMsg = [firstSectionMessage firstObject];
+        NSString *timeStamp = firstMsg.timeStamp;
+        [self getConversationWithTimeStamp:timeStamp];
+        //[self getLatestConversation];
     }
     else
     {
@@ -398,6 +404,20 @@
     [self goToPersonalPageWithUserInfo:user];
 }
 
+#pragma mark - scrollview delegate
+
+/*
+-(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    //loadmore
+    CGPoint loadMorePoint = CGPointMake(0, self.conversationTableView.contentSize.height);
+    CGPoint targetPoint = *targetContentOffset;
+    if (targetPoint.y >= loadMorePoint.y - self.conversationTableView.frame.size.height )
+    {
+        [self getConversationWithTimeStamp:@""];
+    }
+}*/
+
 #pragma mark - control the model
 -(void)resendCommentAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -423,13 +443,13 @@
 
     
 }
--(void)getLatestConversation
+-(void)getConversationWithTimeStamp:(NSString *)timeStamp
 {
     if (!self.shouldRefreshData)
     {
         self.shouldRefreshData = NO;
     }
-    [[QDYHTTPClient sharedInstance]getConversationWithUserId:self.conversation.me.UserID otherUserId:self.conversation.other.UserID whenComplete:^(NSDictionary *returnData) {
+    [[QDYHTTPClient sharedInstance]getConversationWithUserId:self.conversation.me.UserID otherUserId:self.conversation.other.UserID timeStamp:timeStamp whenComplete:^(NSDictionary *returnData) {
         self.shouldRefreshData = YES;
         if ([self.refreshControl isRefreshing])
         {
@@ -439,26 +459,43 @@
         {
             [[QDYHTTPClient sharedInstance]getLatestNoticeNumber];
             Conversation *c = [returnData objectForKey:@"data"];
-            if (c.me.UserID>0 && c.other.UserID >0)
+            if (c.messageList.count>0)
             {
+                //重新获取第一页
+                if ([timeStamp isEqualToString:@""])
+                {
+                    self.conversation.latestMsg = c.latestMsg;
+                    self.conversation.newMessageCount = c.newMessageCount;
+                    self.conversation.messageList = c.messageList;
+                }
                 
-                self.conversation.me = c.me;
-                self.conversation.other = c.other;
-                self.conversation.messageList = c.messageList;
-                self.conversation.latestMsg = c.latestMsg;
-                self.conversation.newMessageCount = c.newMessageCount;
+                else
+                {
+                    [self.conversation.messageList insertObjects:c.messageList atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, c.messageList.count)]];
+
+                }
+                if (c.me.UserID>0 && c.other.UserID >0)
+                {
+                    
+                    self.conversation.me = c.me;
+                    self.conversation.other = c.other;
+                }
+               
+                NSArray *lastSection = [c.messageList lastObject];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:lastSection.count -1 inSection:c.messageList.count-1];
+                [self.conversationTableView reloadData];
+                [self.conversationTableView scrollToRowAtIndexPath:indexPath  atScrollPosition:UITableViewScrollPositionTop animated:NO];
             }
             else
             {
-                NSLog(@"暂时无信息");
+                //[SVProgressHUD showInfoWithStatus:@"没有更多信息了"];
+                [self.conversationTableView setContentOffset:CGPointMake(0, 0)];
             }
-        
         }
         else
         {
             [SVProgressHUD showErrorWithStatus:[returnData objectForKey:@"error"]];
         }
-        [self loadDataWithAnimate:NO];
     }];
 }
 
@@ -474,7 +511,7 @@
     //float contentsize = self.conversationTableView.contentSize.height;
     if (self.conversationTableView.contentSize.height >tableViewVisibleHeight)
     {
-        [self.conversationTableView setContentOffset:CGPointMake(0,self.conversationTableView.contentSize.height - tableViewVisibleHeight) animated:animate];
+        [self.conversationTableView setContentOffset:CGPointMake(0,self.conversationTableView.contentSize.height - tableViewVisibleHeight + 40) animated:animate];
     }
     if ([self.refreshControl isRefreshing])
     {

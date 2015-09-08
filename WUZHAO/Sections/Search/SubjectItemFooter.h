@@ -10,6 +10,7 @@
 #import "Subject.h"
 
 @interface SubjectItemFooter : UITableViewHeaderFooterView
-@property (nonatomic, strong) UILabel *summaryLabel;
+@property (nonatomic, strong) UITextView *summaryLabel;
+@property (nonatomic, strong) NSDictionary *summaryTextAttributes;
 -(void)configureFooterWithSubject:(Subject *)subject;
 @end

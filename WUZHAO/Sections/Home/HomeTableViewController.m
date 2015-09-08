@@ -129,9 +129,12 @@ static NSString *reuseIdentifier = @"HomeTableCell";
     {
         [self.tableView beginUpdates];
         PhotoTableViewCell *commentCell = (PhotoTableViewCell *) [self.tableView cellForRowAtIndexPath:self.currentCommentIndexPath];
-        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.currentCommentIndexPath] withRowAnimation:UITableViewRowAnimationNone];
-        [commentCell configureComment];
-        [commentCell reloadInputViews];
+        if (commentCell)
+        {
+            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.currentCommentIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+            [commentCell configureComment];
+            [commentCell reloadInputViews];
+        }
         [self.tableView endUpdates];
     }
     if (self.datasource == nil || self.datasource.count == 0)
@@ -914,6 +917,11 @@ static NSString *reuseIdentifier = @"HomeTableCell";
 -(void)loadMore
 {
     //get new page data;
+    if (!self.shouldLoadMore)
+    {
+        return;
+    }
+    self.shouldLoadMore = NO;
     [self.loadMoreAiv startAnimating];
     [self.loadMoreButton setHidden:YES];
     if (self.tableStyle == WZ_TABLEVIEWSTYLE_HOME)
@@ -921,6 +929,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             [[QDYHTTPClient sharedInstance]GetWhatsGoingOnWithUserId:self.currentUser.UserID page:self.currentPage+1 whenComplete:^(NSDictionary *result) {
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    self.shouldLoadMore = YES;
                     if ([result objectForKey:@"data"])
                     {
                         NSMutableArray *newData = [result objectForKey:@"data"];
@@ -953,6 +962,7 @@ static NSString *reuseIdentifier = @"HomeTableCell";
         //load more of the suggest page
         [[QDYHTTPClient sharedInstance]GetHomeRecommendListWithPageNum:self.currentPage +1 whenComplete:^(NSDictionary *returnData) {
             dispatch_async(dispatch_get_main_queue(), ^{
+                self.shouldLoadMore = YES;
                 if ([returnData objectForKey:@"data"])
                 {
                     NSMutableArray *newData = [returnData objectForKey:@"data"];

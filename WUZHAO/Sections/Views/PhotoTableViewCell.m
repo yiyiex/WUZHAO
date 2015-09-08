@@ -19,6 +19,7 @@
 #import "SVProgressHUD.h"
 
 #import "UIImage+WebP.h"
+#import "UIImageView+SetImage.h"
 #import "ImageDetailView.h"
 
 #import "macro.h"
@@ -97,8 +98,11 @@
     [self.descriptionTextView setScrollEnabled:NO];
     [self.descriptionTextView setEditable:NO];
     
+    [self.likeLabel setRoundCornerAppearance];
     [self.likeLabel setThemeLabelAppearance];
-    [self.likeLabel setBackgroundColor:THEME_COLOR_LIGHT_GREY_PARENT];
+    self.likeLabel.layer.borderWidth = 0.5f;
+    self.likeLabel.layer.borderColor = [THEME_COLOR_LIGHT_GREY CGColor];
+    self.likeLabel.backgroundColor = THEME_COLOR_WHITE;
     
     [self.zanClickButton setNormalButtonWithBoldFontAppearance];
     //[self.zanClickButton setGreyBackGroundAppearance];
@@ -314,8 +318,8 @@
         [self.descriptionViewVerticalSpaceToUpView setConstant:6.0f];
     }
    // if (imageUrl)
-    [self.homeCellImageView sd_setImageWithURL:[NSURL URLWithString:self.content.imageUrlString]
-                              placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [self.homeCellImageView sd_setImageWithURL:[NSURL URLWithString:self.content.imageUrlString] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    //[self.homeCellImageView setImageWithImageUrlString:self.content.imageUrlString showProgress:YES];
     if (self.content.imageUrlList.count >1)
     {
         [self.imagesContainerViewHeightConstrant setConstant:86];
@@ -482,8 +486,6 @@
             [heightConstraint setConstant:newSize.height];
         }
     }
-    
-
 }
 
 #pragma mark - collection view delegate
@@ -529,7 +531,14 @@
     }];
     if (self.content.imageUrlList.count == 1)
     {
-        self.allPhotos = [[NSMutableArray alloc]initWithArray:@[self.homeCellImageView.image]];
+        if (self.homeCellAvatorImageView.image)
+        {
+            self.allPhotos = [[NSMutableArray alloc]initWithArray:@[self.homeCellImageView.image]];
+        }
+        else
+        {
+            self.allPhotos = [[NSMutableArray alloc]init];
+        }
     }
     ImageDetailView *imageDetailView = [[ImageDetailView alloc]initWithImageUrls:originImageUrls currentImageIndex:index placeHolderImages:self.allPhotos];
     [imageDetailView show];

@@ -8,15 +8,19 @@
 
 #import "DistrictViewController.h"
 #import "DistrictCollectionViewCell.h"
+#import "OneDistrictViewController.h"
 #import "UIImageView+WebCache.h"
 #import "PhotoCommon.h"
+#import "QDYHTTPClient.h"
 
 #import "AddressViewController.h"
-#import "UIViewController+Basic.h"
 #import "UIView+ChangeAppearance.h"
 #import "macro.h"
 
 @interface DistrictViewController ()
+{
+    BOOL shouldGotoPhotosPage;
+}
 @property (nonatomic, strong) UIImageView *defaultImageView;
 @property (nonatomic, strong) UIImage *defaultImage;
 
@@ -26,8 +30,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setAutomaticallyAdjustsScrollViewInsets:NO];
+
     [self initView];
-    // Do any additional setup after loading the view.
     [self loadData];
 }
 
@@ -38,8 +43,13 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBarHidden = YES;
-    [self setNeedsStatusBarAppearanceUpdate];
+    shouldGotoPhotosPage = NO;
+    if (self.collectionView.contentOffset.y <=CHBlurCoverViewHeight-64)
+    {
+        [self setTransparentNav];
+    }
+
+    //[self setNeedsStatusBarAppearanceUpdate];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -51,6 +61,9 @@
         if (![self.data.defaultImageUrl isEqualToString:@""])
         {
             UIImageView *imageView = [[UIImageView alloc]init];
+            UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(gotoDistrictPage)];
+            [imageView addGestureRecognizer:tapGesture];
+            [imageView setUserInteractionEnabled:YES];
             [imageView sd_setImageWithURL:[NSURL URLWithString:self.data.defaultImageUrl] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [self.collectionView addBlurCoverWithImage:image];
                 [self.defaultImageView removeFromSuperview];
@@ -60,6 +73,9 @@
                 [districtNameLabel setFont: WZ_FONT_HIRAGINO_MID_SIZE];
                 [districtNameLabel setTextAlignment:NSTextAlignmentLeft];
                 [self.collectionView addSubview:districtNameLabel];
+                UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(gotoDistrictPage)];
+                [self.collectionView.blurCoverView addGestureRecognizer:tapGesture];
+                [self.collectionView.blurCoverView setUserInteractionEnabled:YES];
             }];
         }
         else
@@ -71,6 +87,9 @@
             [districtNameLabel setFont: WZ_FONT_HIRAGINO_MID_SIZE];
             [districtNameLabel setTextAlignment:NSTextAlignmentLeft];
             [self.collectionView addSubview:districtNameLabel];
+            UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(gotoDistrictPage)];
+            [self.collectionView.blurCoverView addGestureRecognizer:tapGesture];
+            [self.collectionView.blurCoverView setUserInteractionEnabled:YES];
             
         }
     }
@@ -79,8 +98,10 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    self.navigationController.navigationBarHidden = NO;
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:nil];
+    
+   // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
 }
 -(UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -96,30 +117,8 @@
 {
     [self.view addSubview:self.collectionView];
     
-    //back button
-    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(8, 24, 35, 35)];
-    UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(6, 8, 19, 19)];
-    [view addSubview:backButton];
-    [view setBackgroundColor:THEME_COLOR_DARK_GREY_PARENT];
-    UITapGestureRecognizer *tapgesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backButtonClick:)];
-    [view addGestureRecognizer:tapgesture];
-    [view setUserInteractionEnabled:YES];
-    [view setRoundAppearance];
-    [backButton setBackgroundImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
-    [backButton addTarget:self action:@selector(backButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:view];
-    
-    //backitem
-    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.navigationItem.backBarButtonItem = backBarItem;
-    
-    //default Image
-    UIView *statusBarBackGroundView = [[UIView alloc]initWithFrame:CGRectMake(0, -20, WZ_APP_SIZE.width, 20)];
-    statusBarBackGroundView.backgroundColor = THEME_COLOR_DARK;
-    [self.view addSubview:statusBarBackGroundView];
-    [self.view sendSubviewToBack:statusBarBackGroundView];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
-    _defaultImage = [PhotoCommon createImageWithColor:THEME_COLOR_DARK size:CGSizeMake(WZ_APP_SIZE.width, CHBlurCoverViewHeight)];
+   // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
+    _defaultImage = [PhotoCommon createImageWithColor:THEME_COLOR_FONT_GREY size:CGSizeMake(WZ_APP_SIZE.width, CHBlurCoverViewHeight)];
     self.defaultImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, CHBlurCoverViewHeight)];
     [self.defaultImageView setImage:_defaultImage];
     [self.collectionView addSubview:self.defaultImageView];
@@ -182,6 +181,7 @@
     }
 }
 
+
 #pragma mark - method
 -(void)goToPOIPageWithPOIInfo:(POI *)poi
 {
@@ -192,10 +192,50 @@
     addressViewCon.poiName = poi.name;
     [self pushToViewController:addressViewCon animated:YES hideBottomBar:YES];
 }
-
--(void)backButtonClick:(UIButton *)button
+-(void)gotoDistrictPage
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    UIStoryboard *addressStoryboard = [UIStoryboard storyboardWithName:@"Address" bundle:nil];
+    OneDistrictViewController *districtViewController = [addressStoryboard instantiateViewControllerWithIdentifier:@"DistrictViewController"];
+    districtViewController.district = self.data;
+    [self pushToViewController:districtViewController animated:NO hideBottomBar:YES];
+    shouldGotoPhotosPage = NO;
 }
 
+
+
+#pragma mark - scrollview delegate
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (scrollView.contentOffset.y <-80)
+    {
+        shouldGotoPhotosPage = YES;
+
+    }
+    if (scrollView.contentOffset.y > CHBlurCoverViewHeight && scrollView.contentOffset.y <CHBlurCoverViewHeight + 64)
+    {
+        float navAlpha = (scrollView.contentOffset.y-CHBlurCoverViewHeight)/64;
+        UIImage *backImage = [PhotoCommon createImageWithColor:[UIColor colorWithWhite:240 alpha:navAlpha] size:CGSizeMake(WZ_DEVICE_SIZE.width, 64)];
+        [self.navigationController.navigationBar setBackgroundImage:backImage forBarMetrics:UIBarMetricsDefault];
+        [self setTitle:self.data.districtName];
+    }
+    else if(scrollView.contentOffset.y <=CHBlurCoverViewHeight)
+    {
+        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"transparent_nav"] forBarMetrics:UIBarMetricsDefault];
+        self.navigationController.navigationBar.shadowImage = [UIImage imageNamed:@"transparent_nav"];
+        [self setTitle:@""];
+    }
+    else
+    {
+        UIImage *backImage = [PhotoCommon createImageWithColor:[UIColor colorWithWhite:240 alpha:1.0f] size:CGSizeMake(WZ_DEVICE_SIZE.width, 64)];
+        [self.navigationController.navigationBar setBackgroundImage:backImage forBarMetrics:UIBarMetricsDefault];
+        [self setTitle:self.data.districtName];
+    }
+}
+-(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
+{
+    if ( shouldGotoPhotosPage)
+    {
+        [self gotoDistrictPage];
+    }
+}
 @end

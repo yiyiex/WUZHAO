@@ -122,7 +122,7 @@
 
 -(void)setTitleNum:(NSInteger)num
 {
-    [self.titleLabel setText:[NSString stringWithFormat:@"%ld个地点",(long)num]];
+    [self.titleLabel setText:[NSString stringWithFormat:@"%ld个发布",(long)num]];
 }
 
 @end

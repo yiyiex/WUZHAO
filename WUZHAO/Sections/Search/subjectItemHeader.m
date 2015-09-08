@@ -29,6 +29,16 @@
     }
     return self;
 }
+-(NSDictionary *)subjectDescriptionAttributes
+{
+    if (!_subjectDescriptionAttributes)
+    {
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+        paragraphStyle.lineSpacing = 6;
+        _subjectDescriptionAttributes = @{NSForegroundColorAttributeName:THEME_COLOR_FONT_GREY,NSFontAttributeName:WZ_FONT_COMMON_SIZE,NSParagraphStyleAttributeName:paragraphStyle};
+    }
+    return _subjectDescriptionAttributes;
+}
 
 -(void)initView
 {
@@ -45,10 +55,10 @@
     [self.subtitle setTextAlignment:NSTextAlignmentCenter];
     [self.contentView  addSubview:self.subtitle];
     
-    self.subjectDescription = [[UILabel alloc]init];
-    [self.subjectDescription setNumberOfLines:0];
-    [self.subjectDescription setTextColor:THEME_COLOR_DARK_GREY];
-    [self.subjectDescription setFont:WZ_FONT_COMMON_SIZE];
+    self.subjectDescription = [[UITextView alloc]init];
+    [self.subjectDescription setScrollEnabled:NO];
+    [self.subjectDescription setEditable:NO];
+
     [self.contentView addSubview:self.subjectDescription];
     
 }
@@ -64,7 +74,8 @@
     {
         [self.subtitle  setHidden:NO];
     }
-    self.subjectDescription.text = subject.subjectDescription;
+    NSAttributedString *subjectDescriptionText = [[NSAttributedString alloc]initWithString:subject.subjectDescription attributes:self.subjectDescriptionAttributes];
+    [self.subjectDescription setAttributedText:subjectDescriptionText];
     if ([subject.subjectDescription isEqualToString:@""])
     {
         [self.subjectDescription setHidden:YES];
@@ -88,10 +99,10 @@
     }
     if (!self.subjectDescription.isHidden)
     {
-        CGSize subjectDescriptionSize = [self.subjectDescription sizeThatFits:CGSizeMake(WZ_APP_SIZE.width - 16, FLT_MAX)];
-        [self.subjectDescription setFrame:CGRectMake(8, 8+self.title.frame.size.height +self.subtitle.frame.size.height , subjectDescriptionSize.width, subjectDescriptionSize.height+12)];
+        CGSize subjectDescriptionSize = [self.subjectDescription sizeThatFits:CGSizeMake(WZ_APP_SIZE.width - 8, FLT_MAX)];
+        [self.subjectDescription setFrame:CGRectMake(4, 8+self.title.frame.size.height +self.subtitle.frame.size.height , subjectDescriptionSize.width, subjectDescriptionSize.height+12)];
     }
-    [PhotoCommon drawALineWithFrame:CGRectMake(8, 8+self.title.frame.size.height +self.subtitle.frame.size.height + self.subjectDescription.frame.size.height+4, WZ_APP_SIZE.width - 16, 0.5) andColor:THEME_COLOR_LIGHT_GREY inLayer:self.contentView.layer];
+    [PhotoCommon drawALineWithFrame:CGRectMake(0, self.title.frame.size.height +self.subtitle.frame.size.height + self.subjectDescription.frame.size.height+8, WZ_APP_SIZE.width , 0.5) andColor:THEME_COLOR_FONT_GREY inLayer:self.contentView.layer];
 }
 
 @end

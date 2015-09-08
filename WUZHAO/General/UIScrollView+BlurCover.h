@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
-#define CHBlurCoverViewHeight 240
+#define CHBlurCoverViewHeight 180
 
 @interface CHBlurCoverView : UIImageView
 @property (nonatomic, weak) UIScrollView *scrollView;

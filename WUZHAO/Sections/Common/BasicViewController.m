@@ -20,7 +20,7 @@
     self = [super init];
     if (self)
     {
-        [self initView];
+        [self initBasicView];
     }
     return self;
 }
@@ -30,7 +30,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
     {
-        [self initView];
+        [self initBasicView];
     }
     return self;
 }
@@ -40,7 +40,7 @@
     self = [super initWithCoder:aDecoder];
     if (self)
     {
-        [self initView];
+        [self initBasicView];
     }
     return self;
 }
@@ -55,7 +55,7 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)initView
+-(void)initBasicView
 {
     //导航栏
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -67,8 +67,8 @@
 #pragma mark - navigation
 -(void)setTransparentNav
 {
-    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    [self.navigationController.navigationBar setShadowImage:nil];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"transparent_nav"] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage imageNamed:@"transparent_nav"];
 }
 
 #pragma mark - refresh control

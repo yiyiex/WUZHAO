@@ -33,10 +33,21 @@
 
     [self initNavigationItem];
     [self initView];
+    
   
     // Do any additional setup after loading the view.
 }
-
+-(void)viewWillAppear:(BOOL)animated
+{
+    [self.searchBar becomeFirstResponder];
+}
+-(void)viewWillDisappear:(BOOL)animated
+{
+    if ([self.searchBar isFirstResponder])
+    {
+        [self.searchBar resignFirstResponder];
+    }
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -55,7 +66,7 @@
     {
         _searchBar = [[UISearchBar alloc]init];
         [_searchBar setBarStyle:UIBarStyleDefault];
-        [_searchBar setPlaceholder:@"搜索用户"];
+        [_searchBar setPlaceholder:@"输入搜索内容"];
        // [_searchBar setShowsCancelButton:YES];
         _searchBar.delegate = self;
     }
@@ -153,10 +164,7 @@
     [self.searchAddressListTableView reloadData];
  
 }
--(void)viewWillDisappear:(BOOL)animated
-{
-    [self.searchBar resignFirstResponder];
-}
+
 #pragma mark - loaddata
 -(void)reloadAllDatas
 {

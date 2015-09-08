@@ -40,9 +40,10 @@
 {
     self.parentController = parentController;
     
-    
     [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsUser.avatarImageURLString]];
     [self.feedsImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsPhoto.imageUrlString]];
+    
+    [self.contentTextView reset];
     
     NSString *content = [NSString stringWithFormat:@"%@  %@",feeds.content,feeds.time];
    

@@ -27,8 +27,21 @@
 #import "UMSocialSnsService.h"
 #import "UMSocial.h"
 #import "ClusterMapView.h"
+#import "PhotoCommon.h"
+
+typedef NS_ENUM(NSInteger, FLAGSTYLE)
+{
+    FLAGSTYLE_PHOTOS = 0,
+    FLAGSTYLE_FLAG = 1
+};
+typedef NS_ENUM(NSInteger, MAP_DIRECTION)
+{
+    MAP_DIRECTION_PORTRAIT,
+    MAP_DIRECTION_LANDSCAPE
+};
 
 static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
+static CGFloat kFLAGCLUSTERSIZE = 0;
 
 @interface AddressMarkViewController ()<MKMapViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate>
 @property (nonatomic, strong) UIView *achivementPanel;
@@ -53,8 +66,16 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
 @property (nonatomic, strong) AddressMarkCollectionView *annotationsPhotosList;
 @property (nonatomic, strong) NSArray *annotationsPhotosDatasource;
 
+@property (nonatomic, strong) UIView *buttonsView;
 @property (nonatomic, strong) UIView *backView;
 @property (nonatomic, strong) UIButton *shareButton;
+@property (nonatomic, strong) UIButton *rotateButton;
+
+@property (nonatomic, strong) UIView *shareView;
+@property (nonatomic, strong) UIImage *shareImage;
+
+@property (nonatomic) FLAGSTYLE flagStyle;
+@property (nonatomic) MAP_DIRECTION map_direction;
 
 @end
 
@@ -65,9 +86,13 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
     // Do any additional setup after loading the view.
     //[self.view setBackgroundColor:rgba_WZ(249, 245, 237, 1.0)];
     [self.view setBackgroundColor:rgba_WZ(165, 220, 241, 1.0)];
+    self.flagStyle = FLAGSTYLE_PHOTOS;
+    self.map_direction = MAP_DIRECTION_PORTRAIT;
+    
     [self initMapView];
     [self initAchivementPanel];
-    [self setNavigation];
+    [self setButtons];
+    
     //[self setDashboardInfo];
    // [self updateAchivementPanel];
     
@@ -82,6 +107,10 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
 {
     [super viewDidDisappear:animated];
      [self.navigationController setNavigationBarHidden:NO];
+    if (self.map_direction == MAP_DIRECTION_LANDSCAPE)
+    {
+        [self rotateButtonClick:self.rotateButton];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -167,10 +196,12 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
 }
 
 
--(void)setNavigation
+-(void)setButtons
 {
+    self.buttonsView = [[UIView alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height - 44, WZ_APP_SIZE.width, 44)];
+    [self.view addSubview:self.buttonsView];
     //back button
-    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(8, self.view.frame.size.height - 48, 35, 35)];
+    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(8, self.view.frame.size.height - 44, 35, 35)];
     UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(6, 8, 19, 19)];
     [view addSubview:backButton];
     [view setBackgroundColor:THEME_COLOR_DARK_GREY_PARENT];
@@ -183,8 +214,51 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
     self.backView = view;
     [view setRoundAppearance];
     [self.view bringSubviewToFront:backButton];
+    
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
+    
+    //share button
+    
+    float shareButtonSpace = 44;
+    if (self.userInfo.UserID == [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
+    {
+        UIButton *shareButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width - 44, 0, 36, 36)];
+        [shareButton setImage:[UIImage imageNamed:@"share_c"] forState:UIControlStateNormal];
+        [shareButton setBackgroundColor:THEME_COLOR_DARK_GREY_PARENT];
+        [shareButton setRoundAppearance];
+        [shareButton addTarget:self action:@selector(generateShareImage) forControlEvents:UIControlEventTouchUpInside];
+        [self.buttonsView addSubview:shareButton];
+        self.shareButton = shareButton;
+    }
+    else
+    {
+        shareButtonSpace = 0;
+    }
+    //flag exchange button
+    UIButton *exchangeButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width - 44 -shareButtonSpace, 0, 36, 36)];
+    if (self.flagStyle == FLAGSTYLE_FLAG)
+    {
+        [exchangeButton setImage:[UIImage imageNamed:@"photoFlag"] forState:UIControlStateNormal];
+    }
+    else if (self.flagStyle == FLAGSTYLE_PHOTOS)
+    {
+        [exchangeButton setImage:[UIImage imageNamed:@"flag"] forState:UIControlStateNormal];
+    }
+    [exchangeButton setBackgroundColor:THEME_COLOR_DARK_GREY_PARENT];
+    [exchangeButton setRoundAppearance];
+    [exchangeButton addTarget:self action:@selector(exchangeFlag:) forControlEvents:UIControlEventTouchUpInside];
+    [self.buttonsView addSubview:exchangeButton];
+    
+    //rotate button
+    UIButton *rotateButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width - 88 - shareButtonSpace, 0, 36, 36)];
+    [rotateButton setRoundAppearance];
+    [rotateButton setImage:[UIImage imageNamed:@"rotate"] forState:UIControlStateNormal];
+    [rotateButton setBackgroundColor:THEME_COLOR_DARK_GREY_PARENT];
+    [rotateButton addTarget:self action:@selector(rotateButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.buttonsView addSubview:rotateButton];
+    self.rotateButton = rotateButton;
+    
 }
 
 -(void)initAchivementPanel
@@ -276,24 +350,7 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
     handleSwipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
     [self.achivementPanelHandleImage addGestureRecognizer:handleSwipeGestureDown];
     
-    //share button
-    UIButton *shareButton = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width - 36, 20, 35, 35)];
-    [shareButton setImage:[UIImage imageNamed:@"share_c"] forState:UIControlStateNormal];
-    //[shareButton setTitle:@"分享" forState:UIControlStateNormal];
-    [shareButton.titleLabel setTextColor:[UIColor whiteColor]];
-    [shareButton.titleLabel setFont:WZ_FONT_LARGE_BOLD_SIZE];
-    [shareButton setRoundCornerAppearance];
-    [shareButton addTarget:self action:@selector(shareToSNS) forControlEvents:UIControlEventTouchUpInside];
-    [self.achivementPanel addSubview:shareButton];
-    self.shareButton = shareButton;
-    if (self.userInfo.UserID == [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
-    {
-        [self.shareButton setHidden:NO];
-    }
-    else
-    {
-        [self.shareButton setHidden:YES];
-    }
+
     [self.achivementPanel setUserInteractionEnabled:YES];
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(achivementPanelTap:)];
     [self.achivementPanel addGestureRecognizer:tapGesture];
@@ -310,12 +367,28 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
 {
     self.mapView = [[ClusterMapView alloc]initWithFrame:CGRectMake(0, 20, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-20)];
     self.mapView.delegate = self;
-    self.mapView.clusterSize = kDEFAULTCLUSTERSIZE;
+    if (self.flagStyle == FLAGSTYLE_PHOTOS)
+    {
+        self.mapView.clusterSize = kDEFAULTCLUSTERSIZE;
+    }
+    else
+    {
+        self.mapView.clusterSize = kFLAGCLUSTERSIZE;
+    }
     self.mapView.showsUserLocation = NO;
     [self.view addSubview:self.mapView];
 }
 -(void)addAnnotations
 {
+    
+    if (self.flagStyle == FLAGSTYLE_PHOTOS)
+    {
+        self.mapView.clusterSize = kDEFAULTCLUSTERSIZE;
+    }
+    else
+    {
+        self.mapView.clusterSize = kFLAGCLUSTERSIZE;
+    }
     __block AddressMarkAnnotation *centerAnnotation;
     [self.mapView removeAnnotations:self.annotations];
     [self.annotations removeAllObjects];
@@ -349,63 +422,63 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
 
 #pragma mark - MAMapViewDelegate
 -(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation> )annotation
-{        static NSString *annotationReuseIdentifier = @"addressMarkAnnotation";
-    
-    AddressMarkAnnotationView *annotationView = (AddressMarkAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationReuseIdentifier];
-    if (annotationView == nil)
+{
+    static NSString *annotationReuseIdentifierFlag = @"addressMarkAnnotation_flag";
+    static NSString *annotationReuseIdentifierPhoto = @"addressMarkAnnotation_photo";
+    if (self.flagStyle == FLAGSTYLE_PHOTOS)
     {
-        annotationView = [[AddressMarkAnnotationView alloc]initWithAnnotation:annotation reuseIdentifier:annotationReuseIdentifier];
-    }
-    if ([annotation isKindOfClass:[ClusterAnnotation class]])
-    {
-        ClusterAnnotation *clusterAnnotation = (ClusterAnnotation *)annotation;
-        NSArray *annotionsInCluster = [clusterAnnotation annotationsInCluster];
-        AddressMarkAnnotation *firtstAnnotation = [annotionsInCluster firstObject];
-        NSInteger photoNum = 0;
-        for (AddressMarkAnnotation *annotation in annotionsInCluster)
+        AddressMarkAnnotationView *annotationView = (AddressMarkAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationReuseIdentifierPhoto];
+        if (annotationView == nil)
         {
-            photoNum += annotation.photoNum;
+            annotationView = [[AddressMarkAnnotationView alloc]initWithAnnotation:annotation reuseIdentifier:annotationReuseIdentifierPhoto];
         }
-        [annotationView setPhotoNumber:photoNum];
-        WhatsGoingOn *item = firtstAnnotation.photoList[0];
-        [annotationView setImageWithImageUrl:item.imageUrlString];
+        if ([annotation isKindOfClass:[ClusterAnnotation class]])
+        {
+            ClusterAnnotation *clusterAnnotation = (ClusterAnnotation *)annotation;
+            NSArray *annotionsInCluster = [clusterAnnotation annotationsInCluster];
+            AddressMarkAnnotation *firtstAnnotation = [annotionsInCluster firstObject];
+            NSInteger photoNum = 0;
+            for (AddressMarkAnnotation *annotation in annotionsInCluster)
+            {
+                photoNum += annotation.photoNum;
+            }
+            [annotationView setPhotoNumber:photoNum];
+            WhatsGoingOn *item = firtstAnnotation.photoList[0];
+            [annotationView setImageWithImageUrl:item.imageUrlString];
+            
+        }
+        
+        else if ([annotation isKindOfClass:[AddressMarkAnnotation class]])
+        {
+            AddressMarkAnnotation *addressAnnotation = (AddressMarkAnnotation *)annotation;
+
+            WhatsGoingOn *item = addressAnnotation.photoList[0];
+            [annotationView setPhotoNumber:addressAnnotation.photoNum];
+            [annotationView setImageWithImageUrl:item.imageUrlString];
+        
+        }
+        return annotationView;
+    }
+    else if (self.flagStyle == FLAGSTYLE_FLAG)
+    {
+        /*
+         AddressMarkAnnotationView2 *annotationView = (AddressMarkAnnotationView2 *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationReuseIdentifierFlag];
+         if (annotationView == nil)
+         {
+             annotationView = [[AddressMarkAnnotationView2 alloc]initWithAnnotation:annotation reuseIdentifier:annotationReuseIdentifierFlag];
+         }
+        return annotationView;*/
+        MKPinAnnotationView *annotationView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationReuseIdentifierFlag];
+        if (annotationView == nil)
+        {
+            annotationView = [[MKPinAnnotationView alloc]initWithAnnotation:annotation reuseIdentifier:annotationReuseIdentifierFlag];
+        }
+        annotationView.pinColor = MKPinAnnotationColorRed;
+        return annotationView;
         
     }
-    
-    else if ([annotation isKindOfClass:[AddressMarkAnnotation class]])
-    {
-        AddressMarkAnnotation *addressAnnotation = (AddressMarkAnnotation *)annotation;
-
-        WhatsGoingOn *item = addressAnnotation.photoList[0];
-        [annotationView setPhotoNumber:addressAnnotation.photoNum];
-        [annotationView setImageWithImageUrl:item.imageUrlString];
-    
-    }
-    /*
-     AddressMarkAnnotationView2 *annotationView = (AddressMarkAnnotationView2 *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationReuseIdentifier];
-     if (annotationView == nil)
-     {
-         annotationView = [[AddressMarkAnnotationView2 alloc]initWithAnnotation:annotation reuseIdentifier:annotationReuseIdentifier];
-     }
-     if ([annotation isKindOfClass:[ClusterAnnotation class]])
-     {
-         ClusterAnnotation *clusterAnnotation = (ClusterAnnotation *)annotation;
-         NSArray *annotionsInCluster = [clusterAnnotation annotationsInCluster];
-         NSInteger photoNum = 0;
-         for (AddressMarkAnnotation *annotation in annotionsInCluster)
-         {
-         photoNum += annotation.photoNum;
-         }
-         [annotationView setPhotoNumber:photoNum];
-     }
-     
-     else if ([annotation isKindOfClass:[AddressMarkAnnotation class]])
-     {
-         AddressMarkAnnotation *addressAnnotation = (AddressMarkAnnotation *)annotation;
-         [annotationView setPhotoNumber:addressAnnotation.photoNum];
-     
-     }*/
-    return annotationView;
+    return  nil;
+ 
 }
 
 -(void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
@@ -557,7 +630,67 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
+-(void)exchangeFlag:(UIButton *)button
+{
+    if (self.flagStyle == FLAGSTYLE_PHOTOS)
+    {
+        [button setImage:[UIImage imageNamed:@"photoFlag"] forState:UIControlStateNormal];
+        [button setEnabled:NO];
+        self.flagStyle = FLAGSTYLE_FLAG;
+        [self addAnnotations];
+        [button setEnabled:YES];
 
+    }
+    else if (self.flagStyle == FLAGSTYLE_FLAG)
+    {
+        [button setImage:[UIImage imageNamed:@"flag"] forState:UIControlStateNormal];
+        [button setEnabled:NO];
+        self.flagStyle = FLAGSTYLE_PHOTOS;
+        [self addAnnotations];
+        [button setEnabled:YES];
+    }
+}
+-(void)rotateButtonClick:(UIButton *)button
+{
+    [button setEnabled:NO];
+    if (self.map_direction == MAP_DIRECTION_PORTRAIT)
+    {
+        
+        MKCoordinateSpan worldSpan = MKCoordinateSpanMake(180, 360);
+        CGAffineTransform buttonViewTransform = CGAffineTransformMakeTranslation(-WZ_APP_SIZE.width/2+ 20, -WZ_APP_SIZE.width/2+24);
+        CGAffineTransform backButtonTransform = CGAffineTransformMakeTranslation(-4, -WZ_APP_SIZE.height + 48);
+        [self.mapView setRegion:MKCoordinateRegionMake(self.mapView.centerCoordinate, worldSpan) animated:YES];
+        [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+            self.mapView.transform = CGAffineTransformMakeRotation(M_PI/2);
+            self.buttonsView.transform = CGAffineTransformRotate(buttonViewTransform, M_PI/2);
+            self.backView.transform = CGAffineTransformRotate(backButtonTransform, M_PI/2);
+            [self hideAchievmentPanel];
+        } completion:^(BOOL finished) {
+            //[self hideAchievmentPanel];
+            //[self.mapView setFrame:CGRectMake(0,self.achivementPanel.frame.size.height, WZ_APP_SIZE.width, WZ_APP_SIZE.height - self.achivementPanel.frame.size.height +20)];
+            self.map_direction = MAP_DIRECTION_LANDSCAPE;
+            [button setEnabled:YES];
+        }];
+    }
+    else if (self.map_direction == MAP_DIRECTION_LANDSCAPE)
+    {
+        
+        MKCoordinateSpan worldSpan = MKCoordinateSpanMake(180, 360);
+        [self.mapView setRegion:MKCoordinateRegionMake(self.mapView.centerCoordinate, worldSpan) animated:YES];
+        [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+            self.mapView.transform = CGAffineTransformIdentity;
+            self.buttonsView.transform = CGAffineTransformIdentity;
+            self.backView.transform = CGAffineTransformIdentity;
+            [self showAchivementPanel];
+        } completion:^(BOOL finished) {
+            self.map_direction = MAP_DIRECTION_PORTRAIT;
+            
+            [button setEnabled:YES];
+        }];
+    }
+    
+    //[self.mapView mapRectThatFits:MKMapRectMake(10, 10, 300, 200)];
+}
 /*
 #pragma mark -random coordinates
 - (NSArray *)randomCoordinatesGenerator:(int)numberOfCoordinates
@@ -712,23 +845,192 @@ static CGFloat kDEFAULTCLUSTERSIZE = 0.1;
     }];
 }
 #pragma mark - share to SNS
+-(void)generateShareImage
+{
+    [SVProgressHUD showWithStatus:@"照片地图生成中" maskType:SVProgressHUDMaskTypeBlack];
+    //改变mapview frame 的宽 高 比例参数
+    float widthFactor = 1.6;
+    float heightFactor = 1.2;
+    
+    //恢复所用参数
+    CGRect originFrame = self.mapView.frame;
+    MKCoordinateRegion originRegion = self.mapView.region;
+    BOOL shouldShowAchivementPanel = NO;
+    
+    CGRect wholeFrame = CGRectMake(0, 0, self.view.frame.size.width*widthFactor, self.view.frame.size.height*heightFactor);
+    
+    
+    if (self.achivementPanel.frame.origin.y<0)
+    {
+        shouldShowAchivementPanel = YES;
+        [self hideAchievmentPanel];
+    }
+    
+    [self.mapView setFrame:wholeFrame];
+
+    //西半球
+    MKCoordinateSpan worldSpan = MKCoordinateSpanMake(180, 180);
+    [self.mapView setRegion:MKCoordinateRegionMake(CLLocationCoordinate2DMake(30, 100), worldSpan)];
+    
+    //东半球与西半球 输出图片
+    __block UIImage *image1;
+    __block UIImage *image2;
+    
+    MKMapSnapshotOptions *options1 = [[MKMapSnapshotOptions alloc] init];
+    options1.region = MKCoordinateRegionMake(CLLocationCoordinate2DMake(30, -80), MKCoordinateSpanMake(150, 180));
+    options1.scale = [UIScreen mainScreen].scale;
+    options1.size = wholeFrame.size;
+    
+    MKMapSnapshotter *snapshotter1 = [[MKMapSnapshotter alloc] initWithOptions:options1];
+    [snapshotter1 startWithCompletionHandler:^(MKMapSnapshot *snapshot, NSError *error) {
+        //西半球截图完成
+        image1 = [self flagInSnapShort:snapshot];
+        //东半球
+        MKMapSnapshotOptions *options2 = [[MKMapSnapshotOptions alloc] init];
+        options2.region = MKCoordinateRegionMake(CLLocationCoordinate2DMake(30, 100), MKCoordinateSpanMake(150, 180));
+        options2.scale = [UIScreen mainScreen].scale;
+        options2.size = wholeFrame.size;
+        
+        MKMapSnapshotter *snapshotter2 = [[MKMapSnapshotter alloc] initWithOptions:options2];
+        [snapshotter2 startWithCompletionHandler:^(MKMapSnapshot *snapshot, NSError *error) {
+            //东半球截图完成
+            image2 = [self flagInSnapShort:snapshot];
+
+            //合成图片并保存
+            UIImage *wholeImage = [PhotoCommon composeTwoImage:image1 rightImage:image2];
+            UIImage *iconImage = [UIImage imageNamed:@"addressMapIcon"];
+            UILabel *nameLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, WZ_APP_SIZE.width, 30)];
+            [nameLabel setNumberOfLines:2];
+            [nameLabel setText:[NSString stringWithFormat:@"by %@\nPlace",self.userInfo.UserName]];
+            [nameLabel setTextColor:[UIColor whiteColor]];
+            [nameLabel setFont:WZ_FONT_COMMON_SIZE];
+            [nameLabel sizeToFit];
+            
+            
+            iconImage = [PhotoCommon generateIconWithImage:iconImage logo:nameLabel];
+            
+            self.shareImage =  [PhotoCommon addImage:iconImage toImage:wholeImage atPosition:CGPointMake(16, wholeImage.size.height - 16 - iconImage.size.height)];
+            
+            [PhotoCommon saveImageToPhotoAlbum:self.shareImage];
+            
+            [SVProgressHUD showInfoWithStatus:@"照片地图已保存到相册"];
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self showShareWindow];
+            });
+            
+            //恢复
+            [self.mapView setFrame:originFrame];
+            [self.mapView setRegion:originRegion];
+            if (shouldShowAchivementPanel)
+            {
+                [self showAchivementPanel];
+            }
+      
+        }];
+    }];
+}
+
+-(void)showShareWindow
+{
+    if (!self.shareImage)
+        return;
+    if (!self.shareView)
+    {
+        self.shareView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WZ_DEVICE_SIZE.width, WZ_DEVICE_SIZE.height)];
+        [self.shareView setBackgroundColor:THEME_COLOR_DARK_GREY_BIT_PARENT];
+        
+        float margin = 16;
+        float imageViewRatio = self.shareImage.size.width/self.shareImage.size.height;
+        
+        float shareImageViewHeight = self.shareView.frame.size.height - 68 - margin*2 ;
+        UIImageView *shareImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, shareImageViewHeight*imageViewRatio, shareImageViewHeight)];
+        [shareImageView setImage:self.shareImage];
+        
+        UIScrollView *shareImageScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(margin, margin+20, self.shareView.frame.size.width-margin*2,shareImageViewHeight)];
+        [self.shareView addSubview:shareImageScrollView];
+        [shareImageScrollView setContentSize:CGSizeMake(shareImageViewHeight*imageViewRatio, shareImageViewHeight)];
+        [shareImageScrollView setMaximumZoomScale:(self.shareImage.size.height/shareImageViewHeight)];
+        [shareImageScrollView setContentOffset:CGPointMake((shareImageViewHeight*imageViewRatio/3),0)];
+        [shareImageScrollView addSubview:shareImageView];
+        
+        
+        float buttonWidth = (self.shareView.frame.size.width-margin*3)/2;
+        UIButton *cancelButton = [[UIButton alloc]initWithFrame:CGRectMake(margin, shareImageScrollView.frame.origin.y+ shareImageScrollView.frame.size.height+margin, buttonWidth, 40)];
+        [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+        [cancelButton setTitleColor:THEME_COLOR_DARK_GREY forState:UIControlStateNormal];
+        [cancelButton setBackgroundColor:[UIColor whiteColor]];
+        [cancelButton addTarget:self action:@selector(hideShareView) forControlEvents:UIControlEventTouchUpInside];
+        [cancelButton.layer setCornerRadius:3.0f];
+        [cancelButton.layer setMasksToBounds:YES];
+        [self.shareView addSubview:cancelButton];
+        
+        UIButton *shareButton = [[UIButton alloc]initWithFrame:CGRectMake(margin+buttonWidth+margin,shareImageScrollView.frame.origin.y+ shareImageScrollView.frame.size.height+margin, buttonWidth ,40)];
+        
+        [shareButton setTitle:@"分享" forState:UIControlStateNormal];
+        [shareButton setTitleColor:THEME_COLOR_DARK forState:UIControlStateNormal];
+        [shareButton setBackgroundColor:[UIColor whiteColor]];
+        [shareButton addTarget:self action:@selector(shareToSNS) forControlEvents:UIControlEventTouchUpInside];
+        [shareButton.layer setCornerRadius:3.0f];
+        [shareButton.layer setMasksToBounds:YES];
+        [self.shareView addSubview:shareButton];
+    }
+    
+    [self.view.window addSubview:self.shareView];
+    [self.view.window bringSubviewToFront:self.shareView];
+    
+}
+
+-(void)hideShareView
+{
+    [self.shareView removeFromSuperview];
+    self.shareView = nil;
+}
+
 -(void)shareToSNS
 {
+    [self.shareView removeFromSuperview];
+    self.shareView = nil;
+    //share config
     [UMSocialData defaultData].extConfig.wxMessageType = UMSocialWXMessageTypeImage;
-    
     [UMSocialData defaultData].extConfig.qqData.title = @"来自Place的分享";
     [UMSocialData defaultData].extConfig.qzoneData.title = @"来自Place的分享";
     [UMSocialData defaultData].extConfig.qqData.qqMessageType = UMSocialQQMessageTypeImage;
-   // [UMSocialData defaultData].extConfig.qzoneData.url = shareUrl;
+    // [UMSocialData defaultData].extConfig.qzoneData.url = shareUrl;
     //[UMSocialData defaultData].extConfig.qqData.url = shareUrl;
-    [self.backView setHidden:YES];
-    [self.shareButton setHidden:YES];
-    [self.achivementPanelHandleImage setHidden:YES];
-    UIImage *image = [[UMSocialScreenShoterDefault screenShoter] getScreenShot];
-    [self.backView setHidden:NO];
-    [self.shareButton setHidden:NO];
-    [self.achivementPanelHandleImage setHidden:NO];
-    [UMSocialSnsService presentSnsIconSheetView:self appKey:@"55a5c86567e58ecd13000507" shareText:@"我的照片地图 | place" shareImage:image shareToSnsNames:[NSArray arrayWithObjects:UMShareToWechatSession,UMShareToWechatTimeline,UMShareToWechatFavorite,UMShareToQQ,UMShareToEmail,nil] delegate:nil];
+    
+    [UMSocialSnsService presentSnsIconSheetView:self appKey:@"55a5c86567e58ecd13000507" shareText:@"我的照片地图 | place" shareImage:self.shareImage shareToSnsNames:[NSArray arrayWithObjects:UMShareToWechatSession,UMShareToWechatTimeline,UMShareToWechatFavorite,UMShareToQQ,UMShareToEmail,nil] delegate:nil];
 }
 
+-(UIImage *)flagInSnapShort:(MKMapSnapshot *)snapshot
+{
+    UIImage *image = snapshot.image;
+    CGRect finalImageRect = CGRectMake(0, 0, image.size.width, image.size.height);
+    //AddressMarkAnnotationView2 *pin = [[AddressMarkAnnotationView2 alloc]initWithAnnotation:nil reuseIdentifier:@""];
+    //UIImage *pinImage = [UIImage imageNamed:@"flag_green"];
+    MKPinAnnotationView *pin = [[MKPinAnnotationView alloc]initWithAnnotation:nil reuseIdentifier:@""];
+    pin.pinColor = MKPinAnnotationColorRed;
+    UIImage *pinImage = pin.image;
+    UIGraphicsBeginImageContextWithOptions(image.size, YES, image.scale);
+    [image drawAtPoint:CGPointMake(0, 0)];
+    for (id<MKAnnotation>annotation in self.mapView.annotations)
+    {
+        CGPoint point = [snapshot pointForCoordinate:annotation.coordinate];
+        if (CGRectContainsPoint(finalImageRect, point))
+        {
+            CGPoint pinCenterOffset = pin.centerOffset;
+            point.x -= pin.bounds.size.width / 2.0;
+            point.y -= pin.bounds.size.height / 2.0;
+            point.x += pinCenterOffset.x;
+            
+            [pinImage drawAtPoint:point];
+        }
+    }
+    UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return finalImage;
+}
+
+
 @end
+

@@ -29,7 +29,7 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
     
 };
 
-@interface SearchViewController ()<UISearchBarDelegate,UISearchControllerDelegate,UISearchResultsUpdating,PagerViewControllerDelegate,UserListViewControllerDataSource>
+@interface SearchViewController ()<UISearchBarDelegate,UISearchResultsUpdating,PagerViewControllerDelegate,UserListViewControllerDataSource>
 @property (nonatomic, strong) PhotosSuggestViewController *suggestPhotosViewController;
 @property (nonatomic, strong) NSMutableArray *suggestPhotoData;
 
@@ -41,8 +41,6 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
 
 @property (nonatomic, strong) SearchResultViewController *searchResultTableView;
 @property (nonatomic, strong) NSMutableArray *searchResult;
-
-@property (nonatomic, strong) UISearchController *searchController;
 
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UIBarButtonItem *searchButton;
@@ -95,15 +93,6 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    // restore the searchController's active state
-    if (self.searchControllerWasActive) {
-        self.searchController.active = self.searchControllerWasActive;
-        _searchControllerWasActive = NO;
-        if (self.searchControllerSearchFieldWasFirstResponder) {
-            [self.searchController.searchBar becomeFirstResponder];
-            _searchControllerSearchFieldWasFirstResponder = NO;
-        }
-    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -124,38 +113,33 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
 }
 -(void)initSearchController
 {
-    
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Search" bundle:nil];
-    _searchResultTableView = [storyboard instantiateViewControllerWithIdentifier:@"SearchResult"];
-    
-    _searchController = [[UISearchController alloc]initWithSearchResultsController:_searchResultTableView];
-    
-    self.searchController.searchResultsUpdater = self;
-    
-    self.searchController.hidesNavigationBarDuringPresentation = NO;
-    self.searchController.searchBar.searchBarStyle = UISearchBarStyleDefault;
-    
-    [self.searchController.searchBar sizeToFit];
-    //self.navigationItem.titleView = self.searchController.searchBar;
-    self.definesPresentationContext = YES;
-    
-    self.searchController.delegate = self;
-    
-    self.searchController.dimsBackgroundDuringPresentation = NO;
-    self.searchController.searchBar.delegate = self;
-    
+    UISearchBar *searchBar = [[UISearchBar alloc]init];
+    searchBar.searchBarStyle = UISearchBarStyleDefault;
+    searchBar.placeholder = @"搜索用户或者地点";
+    self.tabBarController.navigationItem.titleView = searchBar;
+    self.navigationItem.titleView = searchBar;
+    self.searchBar = searchBar;
+    UITapGestureRecognizer *searchBarTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showSearchResultView)];
+    [self.searchBar addGestureRecognizer:searchBarTap];
+    [self.searchBar setUserInteractionEnabled:YES];
+    [self.searchBar setDelegate:self];
     self.searchButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchResultView)];
     
-    //[self.navigationItem setTitle:@"发现"];
-    //self.tabBarController.navigationItem.title = @"发现";
-    self.navigationItem.rightBarButtonItem = self.searchButton;
-    
 
-    
+    //self.navigationItem.rightBarButtonItem = self.searchButton;
 }
+
+#pragma mark - searchbar delegate
+-(BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
+{
+    [self showSearchResultView];
+    return NO;
+}
+
 
 -(void)showSearchResultView
 {
+    [self.searchBar resignFirstResponder];
     UIStoryboard *searchStoryboard = [UIStoryboard storyboardWithName:@"Search" bundle:nil];
     SearchResultViewController *searchResult = [searchStoryboard instantiateViewControllerWithIdentifier:@"SearchResult"];
     
@@ -178,6 +162,7 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
 {
     UIStoryboard *searchStoryboard = [UIStoryboard storyboardWithName:@"Search" bundle:nil];
     self.suggestPhotosViewController = [searchStoryboard instantiateViewControllerWithIdentifier:@"SuggestPhotos"];
+    /*
     self.suggestAddressViewController = [searchStoryboard instantiateViewControllerWithIdentifier:@"SuggestAddress"];
     UIStoryboard *userStoryboard = [UIStoryboard storyboardWithName:@"UserList" bundle:nil];
     self.suggestUserListViewConstroller = [userStoryboard instantiateViewControllerWithIdentifier:@"userListTableView"];
@@ -202,9 +187,9 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
             }
         }];
         
-    };
+    };*/
     
-    return @[self.suggestPhotosViewController,self.suggestUserListViewConstroller];
+    return @[self.suggestPhotosViewController];
 }
 
 /*
@@ -304,5 +289,4 @@ typedef NS_ENUM(NSInteger, ChildViewIndex)
     }];
     
 }
-
 @end

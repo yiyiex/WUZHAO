@@ -283,5 +283,51 @@
     return newImage;
 }
 
++(UIImage *)composeTwoImage:(UIImage *)leftImage rightImage:(UIImage *)rightImage {
+    CGSize size = CGSizeMake(leftImage.size.width+rightImage.size.width, MAX(leftImage.size.height, rightImage.size.height));
+    UIGraphicsBeginImageContext(size);
+    [leftImage drawInRect:CGRectMake(0,
+                                  0,
+                                  leftImage.size.width,
+                                  leftImage.size.height)];
+    [rightImage drawInRect:CGRectMake(leftImage.size.width,
+                                   0,
+                                   rightImage.size.width,
+                                   rightImage.size.height)];
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
++(UIImage *)addImage:(UIImage *)subImage toImage:(UIImage *)parentImage atPosition:(CGPoint)position
+{
+    CGSize size = parentImage.size;
+    UIGraphicsBeginImageContext(size);
+    [parentImage drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    [subImage drawInRect:CGRectMake(position.x, position.y, subImage.size.width, subImage.size.height)];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+    
+}
+
++(UIImage *)generateIconWithImage:(UIImage *)iconImage logo:(UILabel *)logoLabel
+{
+    UIGraphicsBeginImageContext(logoLabel.frame.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [logoLabel.layer renderInContext:context];
+    UIImage *logoImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    CGSize size =  CGSizeMake(iconImage.size.width + 8 + logoImage.size.width, MAX(iconImage.size.height, logoImage.size.height));
+    UIGraphicsBeginImageContext(size);
+    [iconImage drawInRect:CGRectMake(0, (size.height - iconImage.size.height)/2, iconImage.size.width, iconImage.size.height)];
+    [logoImage drawInRect:CGRectMake(iconImage.size.width + 8, (size.height - logoImage.size.height)/2, logoImage.size.width, logoImage.size.height)];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+    
+}
 
 @end

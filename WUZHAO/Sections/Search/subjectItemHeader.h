@@ -12,7 +12,8 @@
 @interface subjectItemHeader: UITableViewHeaderFooterView
 @property (nonatomic, strong) UILabel *title;
 @property (nonatomic, strong) UILabel *subtitle;
-@property (nonatomic, strong) UILabel *subjectDescription;
+@property (nonatomic, strong) UITextView *subjectDescription;
+@property (nonatomic, strong) NSDictionary *subjectDescriptionAttributes;
 
 -(void)configureHeaderWithSubject:(Subject *)subject;
 @end

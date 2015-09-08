@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSString *content;
 @property (nonatomic, strong) NSString *createTime;
 @property (nonatomic) BOOL isFailed;
+@property (nonatomic) NSString *timeStamp;
 -(instancetype)initWithDictionary:(NSDictionary *)dic;
 @end
 

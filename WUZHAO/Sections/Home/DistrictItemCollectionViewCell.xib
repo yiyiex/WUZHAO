@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DistrictItem" id="r2T-hX-sz2" userLabel="DistrictItem" customClass="DistrictItemCollectionViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bXH-P9-Zb0">
+                        <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                    </imageView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C2O-55-rMn" userLabel="maskView">
+                        <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3xL-y7-IyV">
+                        <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            </view>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="3xL-y7-IyV" secondAttribute="trailing" id="0XJ-yf-r19"/>
+                <constraint firstItem="bXH-P9-Zb0" firstAttribute="top" secondItem="r2T-hX-sz2" secondAttribute="top" id="4ZW-ZA-69l"/>
+                <constraint firstAttribute="trailing" secondItem="C2O-55-rMn" secondAttribute="trailing" id="7lC-Pb-RjE"/>
+                <constraint firstAttribute="bottom" secondItem="bXH-P9-Zb0" secondAttribute="bottom" id="Ad1-VX-9bA"/>
+                <constraint firstItem="C2O-55-rMn" firstAttribute="leading" secondItem="r2T-hX-sz2" secondAttribute="leading" id="AiH-gT-qj4"/>
+                <constraint firstItem="bXH-P9-Zb0" firstAttribute="centerY" secondItem="3xL-y7-IyV" secondAttribute="centerY" id="KGg-q2-Cya"/>
+                <constraint firstAttribute="trailing" secondItem="bXH-P9-Zb0" secondAttribute="trailing" id="Nnw-sG-9Cz"/>
+                <constraint firstItem="C2O-55-rMn" firstAttribute="top" secondItem="r2T-hX-sz2" secondAttribute="top" id="O87-g3-Y6v"/>
+                <constraint firstAttribute="bottom" secondItem="C2O-55-rMn" secondAttribute="bottom" id="Teu-7v-35B"/>
+                <constraint firstItem="bXH-P9-Zb0" firstAttribute="centerX" secondItem="3xL-y7-IyV" secondAttribute="centerX" id="ULK-VH-Yf6"/>
+                <constraint firstItem="3xL-y7-IyV" firstAttribute="top" secondItem="r2T-hX-sz2" secondAttribute="top" id="YBF-j0-Mfl"/>
+                <constraint firstItem="bXH-P9-Zb0" firstAttribute="leading" secondItem="r2T-hX-sz2" secondAttribute="leading" id="dnr-bc-Eje"/>
+                <constraint firstItem="3xL-y7-IyV" firstAttribute="leading" secondItem="r2T-hX-sz2" secondAttribute="leading" id="jdM-nE-jnf"/>
+                <constraint firstAttribute="bottom" secondItem="3xL-y7-IyV" secondAttribute="bottom" id="sUS-XQ-vIK"/>
+            </constraints>
+            <size key="customSize" width="133" height="133"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="0XJ-yf-r19"/>
+                    <exclude reference="YBF-j0-Mfl"/>
+                    <exclude reference="jdM-nE-jnf"/>
+                    <exclude reference="sUS-XQ-vIK"/>
+                </mask>
+            </variation>
+            <connections>
+                <outlet property="DistrictNameLabel" destination="3xL-y7-IyV" id="1fz-G0-rZt"/>
+                <outlet property="districtImage" destination="bXH-P9-Zb0" id="OfC-Gm-Gcj"/>
+                <outlet property="maskView" destination="C2O-55-rMn" id="nc6-6m-CzD"/>
+            </connections>
+            <point key="canvasLocation" x="390.5" y="380.5"/>
+        </collectionViewCell>
+    </objects>
+</document>

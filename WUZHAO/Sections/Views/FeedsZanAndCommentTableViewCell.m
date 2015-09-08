@@ -31,6 +31,7 @@
     [self.avatarImageView setRoundConerWithRadius:self.avatarImageView.frame.size.width/2];
     [self.feedsImageView setBackgroundColor:THEME_COLOR_LIGHT_GREY_MORE_PARENT];
     [self.feedsImageView setRoundConerWithRadius:1.0f];
+    
 }
 -(void)configureGesture
 {
@@ -57,10 +58,13 @@
 }
 -(void)configureReplyCommentWithFeeds:(Feeds *)feeds parentController:(UIViewController *)parentController
 {
+
     self.parentController = parentController;
     
     [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsUser.avatarImageURLString]];
     [self.feedsImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsPhoto.imageUrlString]];
+    
+    [self.contentTextView reset];
     
     NSString *content =  [NSString stringWithFormat:@"%@ 回复了你的评论：%@  %@",feeds.feedsUser.UserName,feeds.content,feeds.time];
     NSMutableAttributedString *attributeContent = [[NSMutableAttributedString alloc]initWithString:content];
@@ -90,6 +94,8 @@
     [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsUser.avatarImageURLString]];
     [self.feedsImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsPhoto.imageUrlString]];
     
+    [self.contentTextView reset];
+    
     NSString *content =  [NSString stringWithFormat:@"%@ 评论了你的照片：%@  %@",feeds.feedsUser.UserName,feeds.content,feeds.time];
     NSMutableAttributedString *attributeContent = [[NSMutableAttributedString alloc]initWithString:content];
     NSRange userNameRange = [content rangeOfString:feeds.feedsUser.UserName];
@@ -115,6 +121,8 @@
     
     [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsUser.avatarImageURLString]];
     [self.feedsImageView sd_setImageWithURL:[NSURL URLWithString:feeds.feedsPhoto.imageUrlString]];
+    
+    [self.contentTextView reset];
     
     NSString *content =  [NSString stringWithFormat:@"%@ 赞了你的照片  %@",feeds.feedsUser.UserName,feeds.time];
     NSMutableAttributedString *attributeContent = [[NSMutableAttributedString alloc]initWithString:content];

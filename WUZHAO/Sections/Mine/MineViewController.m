@@ -9,8 +9,8 @@
 #define TOPCOVERHEIGHT 248
 #define kNavBarHeight 64
 #define kAvatarWidth 86
-#define kAvatarVerticalOffset 28
-#define kFollowsLabelOffset 62
+#define kAvatarVerticalOffset 64
+#define kFollowsLabelOffset 28
 
 #import "MineViewController.h"
 
@@ -119,7 +119,11 @@
 static NSString * const minePhotoCell = @"minePhotosCell";
 - (void)viewDidLoad {    
     [super viewDidLoad];
-
+    self.navigationController.navigationBarHidden = NO;
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"transparent_nav"] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage imageNamed:@"transparent_nav"];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+    
     [self initView];
 
     
@@ -163,12 +167,12 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-   // [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"transparent_nav"] forBarMetrics:UIBarMetricsDefault];
-   // self.navigationController.navigationBar.shadowImage = [UIImage imageNamed:@"transparent_nav"];
-    self.navigationController.navigationBarHidden = YES;
-    self.tabBarController.navigationItem.backBarButtonItem.title = @"";
-    self.tabBarController.navigationController.navigationBarHidden = NO;
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+    self.navigationController.navigationBarHidden = NO;
+    if(self.scrollView.contentOffset.y <=64)
+    {
+        [self setTransparentNavigationBar];
+    }
+ 
 }
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -185,8 +189,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 {
     [super viewWillDisappear:animated];
     self.navigationController.navigationBarHidden = NO;
-   // [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    // [self.navigationController.navigationBar setShadowImage:nil];
+    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+     [self.navigationController.navigationBar setShadowImage:nil];
      [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
 }
 
@@ -240,26 +244,11 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     __block float bottomHeight = 44;
     if (self.myPhotosLabel.highlighted)
     {
-        if (_myPhotosCollectionDatasource.count >6)
-        {
-             bottomHeight += (ceil((float)_myPhotosCollectionDatasource.count/3)) * WZ_APP_SIZE.width/3 ;
-        }
-        else
-        {
-            //bottomHeight = 4*WZ_APP_SIZE.width/3;
-            bottomHeight = WZ_APP_SIZE.height -topHeight +30;
-        }
+        bottomHeight = MAX((ceil((float)_myPhotosCollectionDatasource.count/3)) * WZ_APP_SIZE.width/3 + bottomHeight, WZ_APP_SIZE.height -topHeight + 30);
     }
     else if (self.myAddressLabel.highlighted)
     {
-        if (self.myAddressListDatasource.count>2)
-        {
-            bottomHeight += (ceil((float)_myAddressListDatasource.count/2))*((WZ_APP_SIZE.width-24)/2+24+8);
-        }
-        else
-        {
-            bottomHeight = WZ_APP_SIZE.height - topHeight +30;
-        }
+          bottomHeight = MAX((ceil((float)_myAddressListDatasource.count/2))*((WZ_APP_SIZE.width-24)/2+24+8) + bottomHeight, WZ_APP_SIZE.height -topHeight + 30);
     }
     
     return topHeight + bottomHeight;
@@ -275,7 +264,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     frame.origin.y = kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset;
     if ([self.userInfo.selfDescriptions isEqualToString:@""])
     {
-        frame.origin.y -=20;
+        frame.origin.y -=16;
     }
     frame.size.height = 20;
     [self.followsNumLabel setFrame:frame];
@@ -288,8 +277,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.seperateLabel setFrame:CGRectMake(WZ_APP_SIZE.width/2-4, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset , 8,22)];
     if ([self.userInfo.selfDescriptions isEqualToString:@""])
     {
-        followsFrame.origin.y -=20;
-        [self.seperateLabel setFrame:CGRectMake(WZ_APP_SIZE.width/2-4, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset - 20 , 8,22)];
+        followsFrame.origin.y -=16;
+        [self.seperateLabel setFrame:CGRectMake(WZ_APP_SIZE.width/2-4, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset - 16 , 8,22)];
     }
     followsFrame.size.height = 20;
     [self.followsLabel setFrame:followsFrame];
@@ -303,7 +292,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     frame.origin.y = kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset;
     if ([self.userInfo.selfDescriptions isEqualToString:@""])
     {
-        frame.origin.y -=20;
+        frame.origin.y -=16;
     }
     frame.size.height = 20;
     [self.followersLabel setFrame:frame];
@@ -316,8 +305,8 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.seperateLabel setFrame:CGRectMake(WZ_APP_SIZE.width/2-4, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset , 8,22)];
     if ([self.userInfo.selfDescriptions isEqualToString:@""])
     {
-        followersNumFrame.origin.y -=20;
-        [self.seperateLabel setFrame:CGRectMake(WZ_APP_SIZE.width/2-4, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset - 20 , 8,22)];
+        followersNumFrame.origin.y -=16;
+        [self.seperateLabel setFrame:CGRectMake(WZ_APP_SIZE.width/2-4, kAvatarVerticalOffset + kAvatarWidth + kFollowsLabelOffset - -16 , 8,22)];
     }
     followersNumFrame.size.height = 20;
     [self.followersNumLabel setFrame:followersNumFrame];
@@ -325,6 +314,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 
 -(void)initView
 {
+    
     
     float avatarVerticalOffset = kAvatarVerticalOffset;
     float avatarViewWidth = kAvatarWidth;
@@ -376,7 +366,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.mineButton addTarget:self action:@selector(MineButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
     //self description
-    self.selfDescriptionLabel = [[UILabel alloc]initWithFrame:CGRectMake(8, self.userNameLabel.frame.origin.y + labelHeight , WZ_APP_SIZE.width - 16 , 36)];
+    self.selfDescriptionLabel = [[UILabel alloc]initWithFrame:CGRectMake(8, kAvatarVerticalOffset + kAvatarWidth , WZ_APP_SIZE.width - 16 , 36)];
     [self.scrollView addSubview:self.selfDescriptionLabel];
     [self.selfDescriptionLabel setTextColor:THEME_COLOR_FONT_GREY];
     [self.selfDescriptionLabel setFont:WZ_FONT_COMMON_SIZE];
@@ -485,30 +475,19 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     
 
     //setting button
+    /*
     UIButton *setting = [[UIButton alloc]initWithFrame:CGRectMake(WZ_APP_SIZE.width - 42, 24, 36, 36)];
     [setting setImage:[UIImage imageNamed:@"setting"] forState:UIControlStateNormal];
     [setting addTarget:self action:@selector(settingButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.scrollView addSubview:setting];
+     */
+    UIBarButtonItem *setting = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"setting"] style:UIBarButtonItemStylePlain target:self action:@selector(settingButtonClick:)];
+    [setting setTintColor:THEME_COLOR_FONT_GREY];
+    //[self.scrollView addSubview:setting];
     
     //back button
-    if (self.userInfo )
+    if (!self.userInfo || self.userInfo.UserID == [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
     {
-        UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 20, 36, 36)];
-        UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(6, 6, 24, 24)];
-        [view addSubview:backButton];
-        UITapGestureRecognizer *tapgesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backButtonClick:)];
-        [view addGestureRecognizer:tapgesture];
-        [view setUserInteractionEnabled:YES];
-        [view setRoundAppearance];
-        [backButton setBackgroundImage:[UIImage imageNamed:@"back_arrow_bold"] forState:UIControlStateNormal];
-        [backButton addTarget:self action:@selector(backButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:view];
-        
-        if (self.userInfo.UserID != [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
-        {
-            [setting setHidden:YES];
-        }
+        self.navigationItem.rightBarButtonItem = setting;
     }
 
 }
@@ -518,8 +497,14 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     [self.mineButton setHidden:YES];
     //[self.mineButton setTitle:@"正在加载..." forState:UIControlStateNormal];
     self.shouldRefreshData = NO;
-    
-    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
+    if (self.scrollView.contentOffset.y>100)
+    {
+        [self.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
+    }
+    else
+    {
+        [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+    }
     if (!_userInfo)
     {
         _userInfo = [[User alloc]init];
@@ -703,7 +688,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
             UITapGestureRecognizer *greyMaskClick = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(greyMaskClick:)];
             [greyMaskView addGestureRecognizer:greyMaskClick];
         }
-        [self.view addSubview:greyMaskView];
+        [self.view.window addSubview:greyMaskView];
         if (!bigImageView)
         {
             bigImageView= [UIImageView new];
@@ -730,7 +715,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         UITapGestureRecognizer *bigImageClick = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backToSmallImage:)];
         [bigImageView addGestureRecognizer:bigImageClick];
         
-        [self.view addSubview:bigImageView];
+        [self.view.window addSubview:bigImageView];
         [UIView animateWithDuration:0.5 animations:^{
             bigImageView.frame = CGRectMake(0, (WZ_APP_SIZE.height-WZ_APP_SIZE.width)/2, WZ_APP_SIZE.width, WZ_APP_SIZE.width);
             imageView.userInteractionEnabled = YES;
@@ -982,16 +967,25 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 
 -(void) updateMyInfomationUI
 {
-    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
-    if ([self.userInfo.UserName isEqualToString:@""])
+    if (self.scrollView.contentOffset.y>100)
     {
-        self.userNameLabel.text = @"个人主页";
+        [self.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
+    }
+    else
+    {
+        [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+    }
+    if ([self.userInfo.UserName isEqualToString:@""]||self.userInfo.UserID == [[NSUserDefaults standardUserDefaults]integerForKey:@"userId"])
+    {
+       // self.userNameLabel.text = @"个人主页";
         self.tabBarController.navigationItem.title = @"个人主页";
         self.navigationItem.title = @"个人主页";
     }
     else
     {
-        self.userNameLabel.text = self.userInfo.UserName;
+        //self.userNameLabel.text = self.userInfo.UserName;
+        self.tabBarController.navigationItem.title = self.userInfo.UserName;
+        self.navigationItem.title = self.userInfo.UserName;
     }
     if (self.userInfo.avatarImageURLString)
     {
@@ -1182,7 +1176,14 @@ static NSString * const minePhotoCell = @"minePhotosCell";
 -(void)SetAddressListData
 {
     //根据个人信息，获取更多信息
-    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
+    if (self.scrollView.contentOffset.y<100)
+    {
+        [self.scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+    }
+    else
+    {
+        [self.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
+    }
     if (!_myAddressListDatasource)
     {
         [self.aiv setCenter:CGPointMake(self.myAddressLabel.center.x, self.myAddressLabel.center.y-10)];
@@ -1229,6 +1230,7 @@ static NSString * const minePhotoCell = @"minePhotosCell";
         [self.scrollContentView layoutIfNeeded];
         [self.myFootPrintViewController setDatasource:_myAddressListDatasource];
         [self.myFootPrintViewController loadData];
+        
     }
 
 }
@@ -1299,6 +1301,25 @@ static NSString * const minePhotoCell = @"minePhotosCell";
     {
         [self loadMoreCollectionData];
         
+    }
+}
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (scrollView.contentOffset.y > 64 && scrollView.contentOffset.y < TOPCOVERHEIGHT)
+    {
+        float navAlpha = (scrollView.contentOffset.y-64)/(TOPCOVERHEIGHT-64);
+        UIImage *backImage = [PhotoCommon createImageWithColor:[UIColor colorWithWhite:240 alpha:navAlpha] size:CGSizeMake(WZ_DEVICE_SIZE.width, 64)];
+        [self.navigationController.navigationBar setBackgroundImage:backImage forBarMetrics:UIBarMetricsDefault];
+    }
+    else if(scrollView.contentOffset.y <=64)
+    {
+        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"transparent_nav"] forBarMetrics:UIBarMetricsDefault];
+        self.navigationController.navigationBar.shadowImage = [UIImage imageNamed:@"transparent_nav"];
+    }
+    else
+    {
+        UIImage *backImage = [PhotoCommon createImageWithColor:[UIColor colorWithWhite:240 alpha:1.0f] size:CGSizeMake(WZ_DEVICE_SIZE.width, 64)];
+        [self.navigationController.navigationBar setBackgroundImage:backImage forBarMetrics:UIBarMetricsDefault];
     }
 }
 #pragma mark - photosCollectionView datasource

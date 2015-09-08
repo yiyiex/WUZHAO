@@ -24,8 +24,8 @@ typedef NS_ENUM(NSUInteger, DETAIL_STYLE)
 
 @property (nonatomic, weak) id<PhotoCollectionViewControllerDataSource>dataSource;
 
-@property (nonatomic,strong) NSMutableArray *datasource;
 @property (nonatomic) DETAIL_STYLE detailStyle;
+@property (nonatomic,strong) UIView *infoView;
 
 -(void)loadData;
 

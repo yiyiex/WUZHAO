@@ -862,7 +862,7 @@
 
 -(void)GetHomeAddressWithLocation:(NSString *)location whenComplete:(void (^)(NSDictionary *))whenComplete
 {
-    NSString *api = [NSString stringWithFormat:@"api/homeplaces"];
+    NSString *api = [NSString stringWithFormat:@"api/homeplacesv2"];
     NSDictionary *param = @{@"location":location};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
@@ -870,16 +870,43 @@
         {
             if ([[result objectForKey:@"success"] isEqualToString:@"true"])
             {
-                NSArray *data = [result objectForKey:@"data"];
+                NSDictionary *data = [result objectForKey:@"data"];
+                NSMutableArray *hotCountries = [[NSMutableArray alloc]init];
+                NSMutableArray *hotCities = [[NSMutableArray alloc]init];
+                NSMutableArray *hotPOIs = [[NSMutableArray alloc]init];
                 if (data)
                 {
-                    NSMutableArray *addressList = [[NSMutableArray alloc]init];
-                    [data enumerateObjectsUsingBlock:^(NSDictionary *item, NSUInteger idx, BOOL *stop) {
-                        AddressPhotos *address = [[AddressPhotos alloc]initWithData:item];
-                        [addressList addObject:address];
-                        
-                    }];
-                    [returnData setObject:addressList forKey:@"data"];
+                    //hot countries
+                    if ([data objectForKey:@"hotCountries"])
+                    {
+                        NSArray *countries = [data objectForKey:@"hotCountries"];
+                        [countries enumerateObjectsUsingBlock:^(NSDictionary *country, NSUInteger idx, BOOL *stop) {
+                            District *district = [[District alloc]initWithDictionary:country];
+                            [hotCountries addObject:district];
+                        }];
+                    }
+                    
+                    //hot cities
+                    if ([data objectForKey:@"hotCities"])
+                    {
+                        NSArray *cities = [data objectForKey:@"hotCities"];
+                        [cities enumerateObjectsUsingBlock:^(NSDictionary *city, NSUInteger idx, BOOL *stop) {
+                            District *district = [[District alloc]initWithDictionary:city];
+                            [hotCities addObject:district];
+                        }];
+                    }
+                    
+                    //hot pois
+                    if ([data objectForKey:@"hotPois"])
+                    {
+                        NSArray *POIs = [data objectForKey:@"hotPois"];
+                        [POIs enumerateObjectsUsingBlock:^(NSDictionary *address, NSUInteger idx, BOOL *stop) {
+                            AddressPhotos *hotpoi = [[AddressPhotos alloc]initWithData:address];
+                            [hotPOIs addObject:hotpoi];
+                        }];
+                    }
+                    [returnData setObject:@{@"hotCountries":hotCountries,@"hotCities":hotCities,@"hotPOIs":hotPOIs} forKey:@"data"];
+                  
                 }
             }
             else if ([result objectForKey:@"msg"])
@@ -1272,6 +1299,44 @@
     }];
 }
 
+#pragma mark - district
+-(void)GetDistrictInfoWithDistrictName:(NSString *)districtName type:(NSInteger)type whenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = @"api/areadetail";
+    NSDictionary *param = @{@"name":districtName,@"type":[NSNumber numberWithInteger:type]};
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                
+                NSDictionary *data = [result objectForKey:@"data"];
+                if (data)
+                {
+                    NSDictionary *districtDetail = [data objectForKey:@"areaDetail"];
+                    District *district = [[District alloc]initWithDictionary:districtDetail];
+                    [returnData setObject:district forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+            
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
 #pragma mark- search with type [poi,user]
 -(void)searchWithType:(NSString *)type keyword:(NSString *)keyword whenComplete:(void (^)(NSDictionary *))whenComplete
 {
@@ -1342,6 +1407,92 @@
                 if (data)
                 {
                     for (NSDictionary *d in data)
+                    {
+                        WhatsGoingOn *item  = [[WhatsGoingOn alloc]init];
+                        item.postId = [(NSNumber *)[d objectForKey:@"post_id"]integerValue];
+                        item.postTime = [d objectForKey:@"create_time"];
+                        item.imageUrlString = [d objectForKey:@"photo"];
+                        [poiInfo addObject:item];
+                    }
+                    [returnData setObject:poiInfo forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+            
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+-(void)exploreLatestPhotosWhenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    NSString *api = [NSString stringWithFormat:@"api/latestphotos"];
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSDictionary *data = [result objectForKey:@"data"];
+                NSArray *latestPhotos = [data objectForKey:@"latestPhotos"];
+                NSMutableArray *poiInfo = [[NSMutableArray alloc]init];
+                if (data)
+                {
+                    for (NSDictionary *d in latestPhotos)
+                    {
+                        WhatsGoingOn *item  = [[WhatsGoingOn alloc]init];
+                        item.postId = [(NSNumber *)[d objectForKey:@"post_id"]integerValue];
+                        item.postTime = [d objectForKey:@"create_time"];
+                        item.imageUrlString = [d objectForKey:@"photo"];
+                        [poiInfo addObject:item];
+                    }
+                    [returnData setObject:poiInfo forKey:@"data"];
+                }
+            }
+            else if ([result objectForKey:@"msg"])
+            {
+                [returnData setValue:[result objectForKey:@"msg"] forKey:@"error"];
+            }
+            else
+            {
+                [returnData setValue:@"服务器错误" forKey:@"error"];
+            }
+            
+        }
+        else if (error)
+        {
+            [returnData setValue:@"服务器错误" forKey:@"error"];
+        }
+        whenComplete(returnData);
+    }];
+}
+
+-(void)exploreSelectedPhotosWhenComplete:(void (^)(NSDictionary *))whenComplete
+{
+    
+    NSString *api = [NSString stringWithFormat:@"api/chosenphotos"];
+    NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
+    [self ExecuteRequestWithMethod:@"GET" api:api parameters:nil complete:^(NSDictionary *result, NSError *error) {
+        if (result)
+        {
+            if ([[result objectForKey:@"success"] isEqualToString:@"true"])
+            {
+                NSDictionary *data = [result objectForKey:@"data"];
+                NSArray *latestPhotos = [data objectForKey:@"chosenPhotos"];
+                NSMutableArray *poiInfo = [[NSMutableArray alloc]init];
+                if (data)
+                {
+                    for (NSDictionary *d in latestPhotos)
                     {
                         WhatsGoingOn *item  = [[WhatsGoingOn alloc]init];
                         item.postId = [(NSNumber *)[d objectForKey:@"post_id"]integerValue];
@@ -1643,10 +1794,10 @@
     }];
 }
 
--(void)getConversationWithUserId:(NSInteger)myUserId otherUserId:(NSInteger)otherUserId whenComplete:(void (^)(NSDictionary *))whenComplete
+-(void)getConversationWithUserId:(NSInteger)myUserId otherUserId:(NSInteger)otherUserId timeStamp:(NSString *)timestamp whenComplete:(void (^)(NSDictionary *))whenComplete
 {
     NSString *api = @"api/msglist";
-    NSDictionary *param = @{@"meid":[NSNumber numberWithInteger:myUserId],@"otherid":[NSNumber numberWithInteger:otherUserId]};
+    NSDictionary *param = @{@"meid":[NSNumber numberWithInteger:myUserId],@"otherid":[NSNumber numberWithInteger:otherUserId],@"timestamp":timestamp};
     NSMutableDictionary *returnData = [[NSMutableDictionary alloc]init];
     [self ExecuteRequestWithMethod:@"GET" api:api parameters:param complete:^(NSDictionary *result, NSError *error) {
         if (result)

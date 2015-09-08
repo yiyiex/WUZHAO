@@ -101,7 +101,7 @@ static char UIScrollViewBlurCover;
     if (self) {
         self.contentMode = UIViewContentModeScaleAspectFill;
         self.clipsToBounds = YES;
-        blurImages_ = [[NSMutableArray alloc] initWithCapacity:12];
+        blurImages_ = [[NSMutableArray alloc] initWithCapacity:6];
         topView = view;
     }
     return self;
@@ -125,9 +125,9 @@ static char UIScrollViewBlurCover;
 {
     CGFloat factor = 0.36;
  
-    for (NSInteger i = 11; i >= 0; i--) {
+    for (NSInteger i = 5; i >= 0; i--) {
         [blurImages_ addObject:[self.image boxblurImageWithBlur:factor]];
-        factor -= 0.03;
+        factor -= 0.06;
         factor = MAX(0, factor);
     }
     [blurImages_ addObject:self.image];

@@ -30,4 +30,10 @@
 + (UIImage *)imageByScalingToMaxSize:(UIImage *)sourceImage;
 
 + (UIImage *)imageByScalingAndCroppingForSourceImage:(UIImage *)sourceImage targetSize:(CGSize)targetSize;
+
++ (UIImage *)composeTwoImage:(UIImage *)leftImage rightImage:(UIImage *)rightImage;
+
++(UIImage *)addImage:(UIImage *)subImage toImage:(UIImage *)parentImage atPosition:(CGPoint)position;
+
++(UIImage *)generateIconWithImage:(UIImage *)iconImage logo:(UILabel *)logoLabel;
 @end

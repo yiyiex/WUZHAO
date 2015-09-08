@@ -24,7 +24,6 @@
 
 
 @interface PhotosCollectionViewController ()
-@property (nonatomic,strong) UIView *infoView;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 @end
@@ -56,6 +55,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
 {
     [self.collectionView reloadData];
     [self.collectionView setContentOffset:CGPointMake(0, 0) animated:YES];
+    /*
     if (self.datasource.count == 0)
     {
         if (![self.infoView superview])
@@ -76,7 +76,7 @@ static NSString * const reuseIdentifier = @"photoCollectionViewCell";
         {
             [self.infoView removeFromSuperview];
         }
-    }
+    }*/
     if ([self.refreshControl isRefreshing])
     {
         [self.refreshControl endRefreshing];

@@ -33,11 +33,10 @@
     //默认分页
     self.shouldLoadMore = NO;
     
-    //导航栏
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backBarItem;
     
-    //
+
 }
 
 -(void)setDatasource:(NSMutableArray *)datasource

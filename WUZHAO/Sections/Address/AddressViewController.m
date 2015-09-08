@@ -47,8 +47,6 @@
 @synthesize searchType = _searchType;
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationController.navigationBarHidden = NO;
-
     [self setBackItem];
     [self initMapView];
     [self initAnnocations];

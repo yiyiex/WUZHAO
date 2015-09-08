@@ -20,6 +20,7 @@
 @property (nonatomic, strong) UIActivityIndicatorView *refreshaiv;
 
 
+-(void)setTransparentNav;
 //right bar aiv
 -(void)setupRightBarRefreshAiv;
 -(void)starRightBartAiv;

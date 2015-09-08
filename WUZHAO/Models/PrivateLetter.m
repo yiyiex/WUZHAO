@@ -36,6 +36,10 @@
         {
             self.content = [dic objectForKey:@"content"];
         }
+        if ([dic objectForKey:@"timeStamp"])
+        {
+            self.timeStamp = [dic objectForKey:@"timeStamp"];
+        }
 
     }
     return self;
@@ -73,6 +77,7 @@
         {
             self.newMessageCount = [(NSNumber *)[dic objectForKey:@"unReadNum"]integerValue];
         }
+
         
     }
     return self;
